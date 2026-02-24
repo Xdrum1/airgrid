@@ -457,13 +457,21 @@ export default function Dashboard() {
       </div>
 
       {/* MAIN LAYOUT */}
-      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+      <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
 
         {/* LEFT — City List */}
         <div
           style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            zIndex: 10,
             width: 272,
             borderRight: "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(5,5,8,0.88)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
             display: "flex",
             flexDirection: "column",
             flexShrink: 0,
@@ -549,7 +557,7 @@ export default function Dashboard() {
 
         {/* CENTER — Map / Rankings / Filings / Activity */}
         <div
-          style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}
+          style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, display: "flex", flexDirection: "column", minWidth: 0 }}
         >
           {/* Tab bar */}
           <div
@@ -557,7 +565,10 @@ export default function Dashboard() {
               display: "flex",
               borderBottom: "1px solid rgba(255,255,255,0.06)",
               padding: "0 20px",
+              paddingLeft: 292,
               flexShrink: 0,
+              zIndex: 5,
+              background: "rgba(5,5,8,0.95)",
             }}
           >
             {(
@@ -1335,12 +1346,19 @@ export default function Dashboard() {
         {/* RIGHT — Detail Panel */}
         <div
           style={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            bottom: 0,
+            zIndex: 10,
             width: 296,
             borderLeft: "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(5,5,8,0.88)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
             display: "flex",
             flexDirection: "column",
             overflow: "auto",
-            flexShrink: 0,
           }}
         >
           {/* Score Header */}
