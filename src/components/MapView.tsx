@@ -740,7 +740,7 @@ export default function MapView({
         ref={mapRef}
         mapboxAccessToken={token}
         initialViewState={INITIAL_VIEW}
-        projection="mercator"
+        projection={{ name: "mercator" }}
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
         onClick={handleMapClick}
