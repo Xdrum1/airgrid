@@ -42,13 +42,12 @@ interface PopupInfo {
 const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 
 // Continental US bounding box — SW corner to NE corner
-// Bounding box tightly around the 20 tracked cities
-// Southernmost: Miami (25.7°N) — Northernmost: Minneapolis (44.9°N)
-// Westernmost: Seattle (-122.3°W) — Easternmost: Boston (-71.0°W)
-const US_BOUNDS: [[number, number], [number, number]] = [
-  [-125, 22],  // SW: well below Miami
-  [-69, 42],   // NE: above Boston (42.3°N)
-];
+// Continental US center — mercator projection
+const INITIAL_VIEW = {
+  longitude: -96,
+  latitude: 35,
+  zoom: 4.3,
+};
 
 // -------------------------------------------------------
 // Vertiport status colors
@@ -742,20 +741,10 @@ export default function MapView({
       <Map
         ref={mapRef}
         mapboxAccessToken={token}
-        initialViewState={{
-          longitude: -96,
-          latitude: 38,
-          zoom: 3,
-        }}
+        initialViewState={INITIAL_VIEW}
         projection={{ name: "mercator" }}
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
-        onLoad={(e) => {
-          e.target.fitBounds(US_BOUNDS, {
-            padding: 20,
-            duration: 0,
-          });
-        }}
         onClick={handleMapClick}
         onMouseEnter={() => {
           const canvas = mapRef.current?.getCanvas();
