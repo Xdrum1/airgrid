@@ -42,9 +42,12 @@ interface PopupInfo {
 const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 
 // Continental US bounding box — SW corner to NE corner
+// Bounding box tightly around the 20 tracked cities
+// Southernmost: Miami (25.7°N) — Northernmost: Minneapolis (44.9°N)
+// Westernmost: Seattle (-122.3°W) — Easternmost: Boston (-71.0°W)
 const US_BOUNDS: [[number, number], [number, number]] = [
-  [-124, 25],  // SW: includes Miami, San Diego
-  [-67, 49],   // NE: includes Seattle, Boston, Minneapolis
+  [-125, 24],  // SW: below Miami
+  [-69, 46],   // NE: above Minneapolis
 ];
 
 // -------------------------------------------------------
