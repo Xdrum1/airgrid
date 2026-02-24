@@ -1,10 +1,73 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { City, Operator } from "@/types";
-import { CITIES, OPERATORS_MAP } from "@/data/seed";
+import dynamic from "next/dynamic";
+import { City, Operator, Vertiport, Corridor, ChangelogEntry } from "@/types";
+import type { FederalFiling } from "@/lib/faa-api";
+import { CITIES, OPERATORS_MAP, getVertiportsForCity, getCorridorsForCity } from "@/data/seed";
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
+import SubscribeForm from "./SubscribeForm";
+
+const MapView = dynamic(() => import("./MapView"), {
+  ssr: false,
+  loading: () => (
+    <div style={{
+      flex: 1,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "#07070e",
+      color: "#2a2a3a",
+      fontFamily: "'Space Mono', monospace",
+      fontSize: 10,
+      letterSpacing: 2,
+    }}>
+      LOADING MAP...
+    </div>
+  ),
+});
+
+// -------------------------------------------------------
+// Helpers
+// -------------------------------------------------------
+
+const VERTIPORT_STATUS_COLORS: Record<string, string> = {
+  planned: "#f59e0b",
+  permitted: "#00d4ff",
+  under_construction: "#7c3aed",
+  operational: "#00ff88",
+};
+
+const CORRIDOR_STATUS_COLORS: Record<string, string> = {
+  proposed: "#f59e0b",
+  authorized: "#00d4ff",
+  active: "#00ff88",
+  suspended: "#ff4444",
+};
+
+const CHANGE_TYPE_COLORS: Record<string, string> = {
+  new_filing: "#00d4ff",
+  status_change: "#f59e0b",
+  new_law: "#00ff88",
+  faa_update: "#7c3aed",
+};
+
+function formatRelativeTime(timestamp: string): string {
+  const now = Date.now();
+  const then = new Date(timestamp).getTime();
+  const diffMs = now - then;
+  const diffSec = Math.floor(diffMs / 1000);
+  if (diffSec < 60) return "just now";
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDay = Math.floor(diffHr / 24);
+  if (diffDay < 30) return `${diffDay}d ago`;
+  const diffMon = Math.floor(diffDay / 30);
+  return `${diffMon}mo ago`;
+}
 
 // -------------------------------------------------------
 // Sub-components
@@ -182,17 +245,78 @@ function BreakdownRow({
 // -------------------------------------------------------
 
 type FilterKey = "all" | "hot" | "operators" | "vertiport";
+type TabKey = "map" | "rank" | "filings" | "activity";
 
 export default function Dashboard() {
   const [selected, setSelected] = useState<City>(CITIES[0]);
   const [filter, setFilter] = useState<FilterKey>("all");
-  const [tab, setTab] = useState<"map" | "rank">("map");
+  const [tab, setTab] = useState<TabKey>("map");
   const [animate, setAnimate] = useState(false);
+
+  // Filings state
+  const [filings, setFilings] = useState<FederalFiling[]>([]);
+  const [filingsLoading, setFilingsLoading] = useState(false);
+  const [filingsError, setFilingsError] = useState<string | null>(null);
+  const [filingsFetchedAt, setFilingsFetchedAt] = useState<string | null>(null);
+
+  // Changelog / Activity state
+  const [changelog, setChangelog] = useState<ChangelogEntry[]>([]);
+  const [changelogLoading, setChangelogLoading] = useState(false);
+  const [changelogError, setChangelogError] = useState<string | null>(null);
+  const [changelogFetchedAt, setChangelogFetchedAt] = useState<string | null>(null);
+
+  // Vertiport & Corridor state
+  const [selectedVertiport, setSelectedVertiport] = useState<Vertiport | null>(null);
+  const [selectedCorridor, setSelectedCorridor] = useState<Corridor | null>(null);
+
+  // Derived data for selected city
+  const cityVertiports = getVertiportsForCity(selected.id);
+  const cityCorridors = getCorridorsForCity(selected.id);
 
   useEffect(() => {
     const t = setTimeout(() => setAnimate(true), 80);
     return () => clearTimeout(t);
   }, []);
+
+  // Fetch filings on tab switch
+  useEffect(() => {
+    if (tab !== "filings" || filingsFetchedAt) return;
+    setFilingsLoading(true);
+    setFilingsError(null);
+    fetch("/api/filings?days=90")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((json) => {
+        setFilings(json.data);
+        setFilingsFetchedAt(json.fetchedAt);
+      })
+      .catch((err) => {
+        setFilingsError(err.message ?? "Failed to fetch filings");
+      })
+      .finally(() => setFilingsLoading(false));
+  }, [tab, filingsFetchedAt]);
+
+  // Fetch changelog on tab switch
+  useEffect(() => {
+    if (tab !== "activity" || changelogFetchedAt) return;
+    setChangelogLoading(true);
+    setChangelogError(null);
+    fetch("/api/changelog?limit=100")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((json) => {
+        setChangelog(json.data);
+        setChangelogFetchedAt(json.fetchedAt);
+      })
+      .catch((err) => {
+        setChangelogError(err.message ?? "Failed to fetch changelog");
+      })
+      .finally(() => setChangelogLoading(false));
+  }, [tab, changelogFetchedAt]);
 
   const filtered = CITIES.filter((c) => {
     if (filter === "hot") return (c.score ?? 0) >= 60;
@@ -219,30 +343,6 @@ export default function Dashboard() {
       color: "#888",
     },
   ];
-
-  // Simple US map dot positions (% based, approximated)
-  const mapPositions: Record<string, { x: number; y: number }> = {
-    los_angeles: { x: 8, y: 55 },
-    san_francisco: { x: 6, y: 42 },
-    san_diego: { x: 10, y: 62 },
-    las_vegas: { x: 14, y: 53 },
-    phoenix: { x: 18, y: 62 },
-    denver: { x: 35, y: 45 },
-    dallas: { x: 52, y: 68 },
-    houston: { x: 50, y: 75 },
-    austin: { x: 49, y: 72 },
-    minneapolis: { x: 60, y: 22 },
-    chicago: { x: 68, y: 30 },
-    nashville: { x: 70, y: 55 },
-    atlanta: { x: 72, y: 62 },
-    charlotte: { x: 77, y: 52 },
-    orlando: { x: 76, y: 76 },
-    miami: { x: 78, y: 83 },
-    washington_dc: { x: 83, y: 42 },
-    boston: { x: 93, y: 25 },
-    new_york: { x: 90, y: 33 },
-    seattle: { x: 7, y: 14 },
-  };
 
   return (
     <div
@@ -291,7 +391,7 @@ export default function Dashboard() {
               letterSpacing: "-0.5px",
             }}
           >
-            AIRGRID
+            AIRINDEX
           </span>
           <span
             style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2 }}
@@ -324,7 +424,6 @@ export default function Dashboard() {
             flexShrink: 0,
           }}
         >
-          {/* Filter bar */}
           <div
             style={{
               padding: "12px 14px 10px",
@@ -378,7 +477,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* List */}
           <div
             style={{ flex: 1, overflowY: "auto", padding: "10px 12px" }}
           >
@@ -404,7 +502,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* CENTER — Map or Rankings */}
+        {/* CENTER — Map / Rankings / Filings / Activity */}
         <div
           style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}
         >
@@ -417,7 +515,14 @@ export default function Dashboard() {
               flexShrink: 0,
             }}
           >
-            {(["map", "rank"] as const).map((t) => (
+            {(
+              [
+                ["map", "MAP VIEW"],
+                ["rank", "RANKINGS"],
+                ["filings", "FILINGS"],
+                ["activity", "ACTIVITY"],
+              ] as [TabKey, string][]
+            ).map(([t, label]) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -438,172 +543,397 @@ export default function Dashboard() {
                   textTransform: "uppercase",
                 }}
               >
-                {t === "map" ? "MAP VIEW" : "RANKINGS"}
+                {label}
               </button>
             ))}
           </div>
 
-          {tab === "map" ? (
-            <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-              {/* Grid lines */}
-              {[20, 40, 60, 80].map((pct) => (
-                <div
-                  key={pct}
-                  style={{
-                    position: "absolute",
-                    left: `${pct}%`,
-                    top: 0,
-                    bottom: 0,
-                    borderLeft: "1px solid rgba(255,255,255,0.015)",
-                  }}
-                />
-              ))}
-              {[25, 50, 75].map((pct) => (
-                <div
-                  key={pct}
-                  style={{
-                    position: "absolute",
-                    top: `${pct}%`,
-                    left: 0,
-                    right: 0,
-                    borderTop: "1px solid rgba(255,255,255,0.015)",
-                  }}
-                />
-              ))}
+          {/* ACTIVITY tab */}
+          {tab === "activity" ? (
+            <div
+              style={{ flex: 1, overflow: "auto", padding: "16px 20px" }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                  marginBottom: 14,
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      color: "#2a2a3a",
+                      fontSize: 8,
+                      letterSpacing: 2,
+                      marginBottom: 4,
+                    }}
+                  >
+                    CHANGELOG
+                  </div>
+                  <div style={{ color: "#555", fontSize: 10 }}>
+                    Recent data ingestion events and regulatory changes
+                  </div>
+                </div>
+                {changelogFetchedAt && (
+                  <span style={{ color: "#2a2a3a", fontSize: 8, flexShrink: 0 }}>
+                    FETCHED {new Date(changelogFetchedAt).toLocaleTimeString()}
+                  </span>
+                )}
+              </div>
 
-              {/* City dots */}
-              {CITIES.map((city) => {
-                const pos = mapPositions[city.id];
-                if (!pos) return null;
-                const color = getScoreColor(city.score ?? 0);
-                const isSelected = selected?.id === city.id;
-                const dotSize =
-                  (city.score ?? 0) >= 70
-                    ? 14
-                    : (city.score ?? 0) >= 45
-                    ? 10
-                    : 7;
+              {changelogLoading && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "40px 0",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 16,
+                      height: 16,
+                      border: "2px solid rgba(0,212,255,0.2)",
+                      borderTopColor: "#00d4ff",
+                      borderRadius: "50%",
+                      animation: "spin 0.8s linear infinite",
+                    }}
+                  />
+                  <span style={{ color: "#555", fontSize: 11 }}>
+                    Fetching activity...
+                  </span>
+                </div>
+              )}
+
+              {changelogError && (
+                <div
+                  style={{
+                    border: "1px solid rgba(255,68,68,0.3)",
+                    background: "rgba(255,68,68,0.05)",
+                    borderRadius: 6,
+                    padding: "12px 16px",
+                    color: "#ff4444",
+                    fontSize: 11,
+                  }}
+                >
+                  Failed to load activity: {changelogError}
+                </div>
+              )}
+
+              {!changelogLoading && !changelogError && changelog.length === 0 && changelogFetchedAt && (
+                <div
+                  style={{
+                    color: "#444",
+                    fontSize: 11,
+                    textAlign: "center",
+                    padding: "40px 0",
+                  }}
+                >
+                  No activity yet. Run data ingestion to populate the changelog.
+                </div>
+              )}
+
+              {changelog.map((entry, i) => {
+                const badgeColor = CHANGE_TYPE_COLORS[entry.changeType] ?? "#555";
+                const entityLabel = entry.relatedEntityType.toUpperCase();
 
                 return (
                   <div
-                    key={city.id}
-                    onClick={() => setSelected(city)}
+                    key={entry.id}
                     style={{
-                      position: "absolute",
-                      left: `${pos.x}%`,
-                      top: `${pos.y}%`,
-                      transform: "translate(-50%, -50%)",
-                      cursor: "pointer",
-                      zIndex: isSelected ? 10 : 2,
+                      background: "rgba(255,255,255,0.02)",
+                      border: "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: 8,
+                      padding: "14px 16px",
+                      marginBottom: 8,
+                      opacity: animate ? 1 : 0,
+                      transform: animate ? "translateY(0)" : "translateY(4px)",
+                      transition: `opacity 0.25s ease ${i * 0.02}s, transform 0.25s ease ${i * 0.02}s`,
                     }}
                   >
                     <div
                       style={{
-                        width: dotSize,
-                        height: dotSize,
-                        borderRadius: "50%",
-                        background: color,
-                        border: isSelected
-                          ? "2px solid #fff"
-                          : `1px solid ${color}`,
-                        boxShadow: `0 0 ${isSelected ? 18 : 6}px ${color}`,
-                        transition: "all 0.2s",
-                        position: "relative",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        marginBottom: 6,
                       }}
                     >
-                      {isSelected && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            bottom: "calc(100% + 8px)",
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            background: "#0d0d1a",
-                            border: `1px solid ${color}`,
-                            borderRadius: 4,
-                            padding: "4px 8px",
-                            whiteSpace: "nowrap",
-                            fontFamily: "'Space Mono', monospace",
-                            fontSize: 9,
-                            color: "#fff",
-                            pointerEvents: "none",
-                          }}
-                        >
-                          {city.city} —{" "}
-                          <span style={{ color }}>{city.score}</span>
-                        </div>
-                      )}
+                      <span
+                        style={{
+                          color: badgeColor,
+                          fontSize: 7,
+                          letterSpacing: 1,
+                          border: `1px solid ${badgeColor}44`,
+                          borderRadius: 3,
+                          padding: "2px 6px",
+                          textTransform: "uppercase",
+                          fontFamily: "'Space Mono', monospace",
+                        }}
+                      >
+                        {entry.changeType.replace(/_/g, " ")}
+                      </span>
+                      <span
+                        style={{
+                          color: "#555",
+                          fontSize: 7,
+                          letterSpacing: 1,
+                          border: "1px solid rgba(255,255,255,0.08)",
+                          borderRadius: 3,
+                          padding: "2px 6px",
+                          fontFamily: "'Space Mono', monospace",
+                        }}
+                      >
+                        {entityLabel}
+                      </span>
+                      <span style={{ color: "#333", fontSize: 9, marginLeft: "auto" }}>
+                        {formatRelativeTime(entry.timestamp)}
+                      </span>
                     </div>
+                    <div
+                      style={{
+                        color: "#ddd",
+                        fontSize: 11,
+                        lineHeight: 1.5,
+                        fontFamily: "'Space Mono', monospace",
+                      }}
+                    >
+                      {entry.summary}
+                    </div>
+                    {entry.sourceUrl && (
+                      <a
+                        href={entry.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          color: "#00d4ff",
+                          fontSize: 9,
+                          marginTop: 6,
+                          display: "inline-block",
+                        }}
+                      >
+                        View source →
+                      </a>
+                    )}
                   </div>
                 );
               })}
-
-              {/* Legend */}
+            </div>
+          ) : tab === "filings" ? (
+            <div
+              style={{ flex: 1, overflow: "auto", padding: "16px 20px" }}
+            >
               <div
                 style={{
-                  position: "absolute",
-                  bottom: 18,
-                  left: 18,
-                  background: "rgba(5,5,8,0.9)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  borderRadius: 8,
-                  padding: "10px 14px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                  marginBottom: 14,
                 }}
               >
+                <div>
+                  <div
+                    style={{
+                      color: "#2a2a3a",
+                      fontSize: 8,
+                      letterSpacing: 2,
+                      marginBottom: 4,
+                    }}
+                  >
+                    FEDERAL REGISTER
+                  </div>
+                  <div style={{ color: "#555", fontSize: 10 }}>
+                    UAM / eVTOL / vertiport regulatory filings — last 90 days
+                  </div>
+                </div>
+                {filingsFetchedAt && (
+                  <span style={{ color: "#2a2a3a", fontSize: 8, flexShrink: 0 }}>
+                    FETCHED {new Date(filingsFetchedAt).toLocaleTimeString()}
+                  </span>
+                )}
+              </div>
+
+              {filingsLoading && (
                 <div
                   style={{
-                    color: "#333",
-                    fontSize: 8,
-                    letterSpacing: 2,
-                    marginBottom: 8,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "40px 0",
+                    justifyContent: "center",
                   }}
                 >
-                  READINESS SCORE
-                </div>
-                {(
-                  [
-                    ["≥ 75 HIGH", "#00ff88", 14],
-                    ["50–74 MODERATE", "#00d4ff", 10],
-                    ["30–49 EARLY", "#f59e0b", 7],
-                    ["< 30 NASCENT", "#ff4444", 6],
-                  ] as [string, string, number][]
-                ).map(([lbl, color, size]) => (
                   <div
-                    key={lbl}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      marginBottom: 5,
+                      width: 16,
+                      height: 16,
+                      border: "2px solid rgba(0,212,255,0.2)",
+                      borderTopColor: "#00d4ff",
+                      borderRadius: "50%",
+                      animation: "spin 0.8s linear infinite",
                     }}
+                  />
+                  <span style={{ color: "#555", fontSize: 11 }}>
+                    Fetching filings...
+                  </span>
+                </div>
+              )}
+
+              {filingsError && (
+                <div
+                  style={{
+                    border: "1px solid rgba(255,68,68,0.3)",
+                    background: "rgba(255,68,68,0.05)",
+                    borderRadius: 6,
+                    padding: "12px 16px",
+                    color: "#ff4444",
+                    fontSize: 11,
+                  }}
+                >
+                  Failed to load filings: {filingsError}
+                </div>
+              )}
+
+              {!filingsLoading && !filingsError && filings.length === 0 && filingsFetchedAt && (
+                <div
+                  style={{
+                    color: "#444",
+                    fontSize: 11,
+                    textAlign: "center",
+                    padding: "40px 0",
+                  }}
+                >
+                  No filings found in the last 90 days.
+                </div>
+              )}
+
+              {filings.map((filing, i) => {
+                const typeColors: Record<string, string> = {
+                  Rule: "#ff4444",
+                  "Proposed Rule": "#f59e0b",
+                  Notice: "#00d4ff",
+                  "Presidential Document": "#7c3aed",
+                };
+                const badgeColor = typeColors[filing.type] ?? "#555";
+
+                return (
+                  <a
+                    key={filing.document_number}
+                    href={filing.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "block",
+                      background: "rgba(255,255,255,0.02)",
+                      border: "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: 8,
+                      padding: "14px 16px",
+                      marginBottom: 8,
+                      textDecoration: "none",
+                      cursor: "pointer",
+                      transition: "border-color 0.15s",
+                      opacity: animate ? 1 : 0,
+                      transform: animate ? "translateY(0)" : "translateY(4px)",
+                      transitionProperty: "opacity, transform, border-color",
+                      transitionDuration: "0.25s",
+                      transitionDelay: `${i * 0.02}s`,
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.borderColor = "rgba(0,212,255,0.3)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)")
+                    }
                   >
                     <div
                       style={{
-                        width: size,
-                        height: size,
-                        borderRadius: "50%",
-                        background: color,
-                        boxShadow: `0 0 4px ${color}`,
-                        flexShrink: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        marginBottom: 6,
                       }}
-                    />
-                    <span style={{ color: "#555", fontSize: 9 }}>{lbl}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 18,
-                  right: 18,
-                  color: "#1a1a28",
-                  fontSize: 9,
-                  letterSpacing: 1,
-                }}
-              >
-                AIRGRID v0.1 — US MARKETS
-              </div>
+                    >
+                      <span
+                        style={{
+                          color: badgeColor,
+                          fontSize: 7,
+                          letterSpacing: 1,
+                          border: `1px solid ${badgeColor}44`,
+                          borderRadius: 3,
+                          padding: "2px 6px",
+                          textTransform: "uppercase",
+                          fontFamily: "'Space Mono', monospace",
+                        }}
+                      >
+                        {filing.type}
+                      </span>
+                      <span style={{ color: "#444", fontSize: 9 }}>
+                        {filing.publication_date}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        color: "#ddd",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        lineHeight: 1.4,
+                        marginBottom: 6,
+                        fontFamily: "'Space Mono', monospace",
+                      }}
+                    >
+                      {filing.title}
+                    </div>
+                    {filing.abstract && (
+                      <div
+                        style={{
+                          color: "#666",
+                          fontSize: 10,
+                          lineHeight: 1.6,
+                          marginBottom: 8,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 3,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {filing.abstract}
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span style={{ color: "#333", fontSize: 8 }}>
+                        {filing.document_number}
+                      </span>
+                      <span style={{ color: "#333", fontSize: 8 }}>
+                        federalregister.gov →
+                      </span>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          ) : tab === "map" ? (
+            <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+              <MapView
+                cities={CITIES}
+                selected={selected}
+                onCitySelect={setSelected}
+                vertiports={cityVertiports}
+                selectedVertiport={selectedVertiport}
+                onVertiportSelect={setSelectedVertiport}
+                corridors={cityCorridors}
+                selectedCorridor={selectedCorridor}
+                onCorridorSelect={setSelectedCorridor}
+              />
             </div>
           ) : (
             <div
@@ -968,6 +1298,154 @@ export default function Dashboard() {
             </div>
           )}
 
+          {/* Vertiports */}
+          {cityVertiports.length > 0 && (
+            <div
+              style={{
+                padding: "14px 20px",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              <div
+                style={{
+                  color: "#2a2a3a",
+                  fontSize: 8,
+                  letterSpacing: 2,
+                  marginBottom: 10,
+                }}
+              >
+                VERTIPORTS
+              </div>
+              {cityVertiports.map((v) => {
+                const statusColor = VERTIPORT_STATUS_COLORS[v.status] ?? "#888";
+                const isVpSelected = selectedVertiport?.id === v.id;
+                return (
+                  <div
+                    key={v.id}
+                    onClick={() => setSelectedVertiport(isVpSelected ? null : v)}
+                    style={{
+                      background: isVpSelected
+                        ? "rgba(0,212,255,0.06)"
+                        : "rgba(255,255,255,0.02)",
+                      border: isVpSelected
+                        ? "1px solid rgba(0,212,255,0.3)"
+                        : "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: 6,
+                      padding: "10px 12px",
+                      marginBottom: 6,
+                      cursor: "pointer",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: 4,
+                      }}
+                    >
+                      <span style={{ color: "#ccc", fontSize: 11, fontWeight: 700 }}>
+                        {v.name}
+                      </span>
+                      <span
+                        style={{
+                          color: statusColor,
+                          fontSize: 7,
+                          letterSpacing: 1,
+                          border: `1px solid ${statusColor}44`,
+                          borderRadius: 3,
+                          padding: "2px 6px",
+                        }}
+                      >
+                        {v.status.replace("_", " ").toUpperCase()}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", gap: 10, color: "#555", fontSize: 9 }}>
+                      <span>{v.siteType.replace("_", " ")}</span>
+                      {v.padCount != null && <span>{v.padCount} pads</span>}
+                      {v.expectedOpenDate && <span>Opens {v.expectedOpenDate}</span>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Corridors */}
+          {cityCorridors.length > 0 && (
+            <div
+              style={{
+                padding: "14px 20px",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              <div
+                style={{
+                  color: "#2a2a3a",
+                  fontSize: 8,
+                  letterSpacing: 2,
+                  marginBottom: 10,
+                }}
+              >
+                CORRIDORS
+              </div>
+              {cityCorridors.map((c) => {
+                const statusColor = CORRIDOR_STATUS_COLORS[c.status] ?? "#888";
+                const isCorSelected = selectedCorridor?.id === c.id;
+                return (
+                  <div
+                    key={c.id}
+                    onClick={() => setSelectedCorridor(isCorSelected ? null : c)}
+                    style={{
+                      background: isCorSelected
+                        ? "rgba(0,212,255,0.06)"
+                        : "rgba(255,255,255,0.02)",
+                      border: isCorSelected
+                        ? "1px solid rgba(0,212,255,0.3)"
+                        : "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: 6,
+                      padding: "10px 12px",
+                      marginBottom: 6,
+                      cursor: "pointer",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: 4,
+                      }}
+                    >
+                      <span style={{ color: "#ccc", fontSize: 11, fontWeight: 700 }}>
+                        {c.name}
+                      </span>
+                      <span
+                        style={{
+                          color: statusColor,
+                          fontSize: 7,
+                          letterSpacing: 1,
+                          border: `1px solid ${statusColor}44`,
+                          borderRadius: 3,
+                          padding: "2px 6px",
+                        }}
+                      >
+                        {c.status.toUpperCase()}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", gap: 10, color: "#555", fontSize: 9 }}>
+                      <span>{c.distanceKm} km</span>
+                      <span>{c.estimatedFlightMinutes} min</span>
+                      <span>{c.maxAltitudeFt} ft</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
           {/* Key Milestones */}
           {selected.keyMilestones?.length > 0 && (
             <div
@@ -1038,6 +1516,11 @@ export default function Dashboard() {
             >
               {selected.notes}
             </p>
+          </div>
+
+          {/* Alert Subscriptions */}
+          <div style={{ padding: "14px 20px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+            <SubscribeForm cityId={selected.id} cityName={selected.city} />
           </div>
 
           {/* Last Updated */}

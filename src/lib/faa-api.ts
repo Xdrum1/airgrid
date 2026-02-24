@@ -135,7 +135,7 @@ export async function fetchOperatorFilings(
   try {
     const url = `https://data.sec.gov/submissions/CIK${cik}.json`;
     const res = await fetch(url, {
-      headers: { "User-Agent": "AirGrid contact@airgrid.io" },
+      headers: { "User-Agent": "AirIndex contact@airindex.io" },
     });
     const json = await res.json();
 

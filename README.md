@@ -1,8 +1,8 @@
-# AIRGRID — UAM Market Intelligence Platform
+# AIRINDEX — UAM Market Intelligence Platform
 > The intelligence layer for the Urban Air Mobility industry.
 
 ## What This Is
-AirGrid tracks vertiports, operators, regulatory filings, and market readiness 
+AirIndex tracks vertiports, operators, regulatory filings, and market readiness 
 scores across US Urban Air Mobility markets. This is the MVP — a curated data 
 product built to establish a defensible position in the UAM data layer before 
 the industry scales.

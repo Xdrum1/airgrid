@@ -1,5 +1,5 @@
 // ============================================================
-// AIRGRID — Core Types
+// AIRINDEX — Core Types
 // ============================================================
 
 export type RegulatoryPosture = "friendly" | "neutral" | "restrictive" | "unknown";
@@ -97,6 +97,24 @@ export interface Vertiport {
   chargingCapable: boolean;
   permitFilingDate?: string;
   expectedOpenDate?: string;
+  sourceUrl?: string;
+  lastUpdated: string;
+}
+
+// --- Corridor ---
+export interface Corridor {
+  id: string;
+  name: string;
+  status: CorridorStatus;
+  cityId: string;
+  operatorId?: string;
+  startPoint: { lat: number; lng: number; label: string };
+  endPoint: { lat: number; lng: number; label: string };
+  waypoints?: { lat: number; lng: number }[];
+  distanceKm: number;
+  estimatedFlightMinutes: number;
+  maxAltitudeFt: number;
+  notes?: string;
   sourceUrl?: string;
   lastUpdated: string;
 }
