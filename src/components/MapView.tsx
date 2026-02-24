@@ -44,8 +44,8 @@ const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 // Initial view — continental US
 const INITIAL_VIEW = {
   longitude: -95,
-  latitude: 33,
-  zoom: 3.8,
+  latitude: 30,
+  zoom: 3.5,
 };
 
 // -------------------------------------------------------
