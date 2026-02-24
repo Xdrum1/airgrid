@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { City, Operator, Vertiport, Corridor, ChangelogEntry } from "@/types";
 import type { FederalFiling } from "@/lib/faa-api";
-import { CITIES, OPERATORS_MAP, getVertiportsForCity, getCorridorsForCity } from "@/data/seed";
+import { CITIES, OPERATORS, OPERATORS_MAP, getVertiportsForCity, getCorridorsForCity } from "@/data/seed";
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
 import SubscribeForm from "./SubscribeForm";
@@ -51,6 +52,26 @@ const CHANGE_TYPE_COLORS: Record<string, string> = {
   status_change: "#f59e0b",
   new_law: "#00ff88",
   faa_update: "#7c3aed",
+};
+
+const SCORE_COMPONENT_COLORS: Record<string, string> = {
+  activePilotProgram: "#00ff88",
+  approvedVertiport: "#00d4ff",
+  activeOperatorPresence: "#f59e0b",
+  vertiportZoning: "#7c3aed",
+  regulatoryPosture: "#ff6b35",
+  stateLegislation: "#ff4444",
+  laancCoverage: "#10b981",
+};
+
+const SCORE_COMPONENT_LABELS: Record<string, string> = {
+  activePilotProgram: "Pilot Program",
+  approvedVertiport: "Vertiport",
+  activeOperatorPresence: "Operators",
+  vertiportZoning: "Zoning",
+  regulatoryPosture: "Regulatory",
+  stateLegislation: "Legislation",
+  laancCoverage: "LAANC",
 };
 
 function formatRelativeTime(timestamp: string): string {
@@ -192,6 +213,24 @@ function CityCard({
         </div>
       </div>
       <ScoreBar value={city.score ?? 0} color={color} />
+      <Link
+        href={`/city/${city.id}`}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          display: "block",
+          color: "#555",
+          fontSize: 8,
+          letterSpacing: 1,
+          textDecoration: "none",
+          marginTop: 8,
+          textAlign: "right",
+          transition: "color 0.15s",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#00d4ff")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "#555")}
+      >
+        VIEW DETAILS →
+      </Link>
     </div>
   );
 }
@@ -245,7 +284,7 @@ function BreakdownRow({
 // -------------------------------------------------------
 
 type FilterKey = "all" | "hot" | "operators" | "vertiport";
-type TabKey = "map" | "rank" | "filings" | "activity";
+type TabKey = "map" | "rank" | "filings" | "activity" | "analytics";
 
 export default function Dashboard() {
   const [selected, setSelected] = useState<City>(CITIES[0]);
@@ -272,6 +311,12 @@ export default function Dashboard() {
   // Derived data for selected city
   const cityVertiports = getVertiportsForCity(selected.id);
   const cityCorridors = getCorridorsForCity(selected.id);
+
+  // Analytics computed values
+  const top10 = CITIES.slice(0, 10);
+  const avgScore = Math.round(CITIES.reduce((a, c) => a + (c.score ?? 0), 0) / CITIES.length);
+  const vertiportCityCount = CITIES.filter((c) => c.vertiportCount > 0).length;
+  const operatorCount = OPERATORS.length;
 
   useEffect(() => {
     const t = setTimeout(() => setAnimate(true), 80);
@@ -521,6 +566,7 @@ export default function Dashboard() {
                 ["rank", "RANKINGS"],
                 ["filings", "FILINGS"],
                 ["activity", "ACTIVITY"],
+                ["analytics", "ANALYTICS"],
               ] as [TabKey, string][]
             ).map(([t, label]) => (
               <button
@@ -548,8 +594,218 @@ export default function Dashboard() {
             ))}
           </div>
 
-          {/* ACTIVITY tab */}
-          {tab === "activity" ? (
+          {/* Tab content */}
+          {tab === "analytics" ? (
+            <div style={{ flex: 1, overflow: "auto", padding: "16px 20px" }}>
+              {/* Summary Stats Row */}
+              <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
+                {[
+                  { label: "TOTAL MARKETS", value: CITIES.length, color: "#00d4ff" },
+                  { label: "AVG SCORE", value: avgScore, color: "#00ff88" },
+                  { label: "VERTIPORT CITIES", value: vertiportCityCount, color: "#f59e0b" },
+                  { label: "OPERATORS", value: operatorCount, color: "#7c3aed" },
+                ].map((stat, i) => (
+                  <div
+                    key={stat.label}
+                    style={{
+                      flex: 1,
+                      background: "rgba(255,255,255,0.02)",
+                      border: "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: 8,
+                      padding: "16px 14px",
+                      opacity: animate ? 1 : 0,
+                      transform: animate ? "translateY(0)" : "translateY(8px)",
+                      transition: `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s`,
+                    }}
+                  >
+                    <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
+                      {stat.label}
+                    </div>
+                    <div style={{ color: stat.color, fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28 }}>
+                      {stat.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Horizontal Bar Chart — Top 10 by Readiness Score */}
+              <div style={{ marginBottom: 32 }}>
+                <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
+                  TOP 10 MARKETS BY READINESS SCORE
+                </div>
+                <svg viewBox="0 0 600 280" style={{ width: "100%", height: "auto" }}>
+                  {/* Grid lines */}
+                  {[0, 25, 50, 75, 100].map((tick) => (
+                    <g key={tick}>
+                      <line
+                        x1={120 + (tick / 100) * 400}
+                        y1={0}
+                        x2={120 + (tick / 100) * 400}
+                        y2={270}
+                        stroke="rgba(255,255,255,0.04)"
+                        strokeWidth={1}
+                      />
+                      <text
+                        x={120 + (tick / 100) * 400}
+                        y={278}
+                        fill="#333"
+                        fontSize={9}
+                        textAnchor="middle"
+                        fontFamily="'Space Mono', monospace"
+                      >
+                        {tick}
+                      </text>
+                    </g>
+                  ))}
+                  {/* Bars */}
+                  {top10.map((city, i) => {
+                    const barColor = getScoreColor(city.score ?? 0);
+                    const barWidth = ((city.score ?? 0) / 100) * 400;
+                    return (
+                      <g key={city.id}>
+                        <text
+                          x={115}
+                          y={i * 27 + 16}
+                          fill="#888"
+                          fontSize={10}
+                          textAnchor="end"
+                          fontFamily="'Space Mono', monospace"
+                        >
+                          {city.city}
+                        </text>
+                        <rect
+                          x={120}
+                          y={i * 27 + 4}
+                          width={animate ? barWidth : 0}
+                          height={18}
+                          rx={3}
+                          fill={barColor}
+                          opacity={0.85}
+                          style={{ transition: `width 0.8s ease ${i * 0.05}s` }}
+                        />
+                        <text
+                          x={120 + barWidth + 8}
+                          y={i * 27 + 16}
+                          fill={barColor}
+                          fontSize={10}
+                          fontFamily="'Space Mono', monospace"
+                          fontWeight={700}
+                          style={{
+                            opacity: animate ? 1 : 0,
+                            transition: `opacity 0.4s ease ${0.4 + i * 0.05}s`,
+                          }}
+                        >
+                          {city.score}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </svg>
+              </div>
+
+              {/* Stacked Bar Chart — Score Breakdown by Component */}
+              <div>
+                <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 2, marginBottom: 10 }}>
+                  SCORE BREAKDOWN BY COMPONENT
+                </div>
+                {/* Legend */}
+                <div style={{ display: "flex", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
+                  {Object.entries(SCORE_COMPONENT_LABELS).map(([key, label]) => (
+                    <div key={key} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: 2, background: SCORE_COMPONENT_COLORS[key] }} />
+                      <span style={{ color: "#666", fontSize: 8, fontFamily: "'Space Mono', monospace" }}>{label}</span>
+                    </div>
+                  ))}
+                </div>
+                <svg viewBox="0 0 600 280" style={{ width: "100%", height: "auto" }}>
+                  {/* Grid lines */}
+                  {[0, 25, 50, 75, 100].map((tick) => (
+                    <g key={tick}>
+                      <line
+                        x1={120 + (tick / 100) * 400}
+                        y1={0}
+                        x2={120 + (tick / 100) * 400}
+                        y2={270}
+                        stroke="rgba(255,255,255,0.04)"
+                        strokeWidth={1}
+                      />
+                      <text
+                        x={120 + (tick / 100) * 400}
+                        y={278}
+                        fill="#333"
+                        fontSize={9}
+                        textAnchor="middle"
+                        fontFamily="'Space Mono', monospace"
+                      >
+                        {tick}
+                      </text>
+                    </g>
+                  ))}
+                  {/* Stacked bars */}
+                  {top10.map((city, i) => {
+                    const breakdown = city.breakdown;
+                    const keys = Object.keys(SCORE_COMPONENT_COLORS) as (keyof typeof SCORE_COMPONENT_COLORS)[];
+                    const segments = keys.reduce<{ key: string; x: number; width: number; color: string }[]>(
+                      (acc, key) => {
+                        const val = breakdown?.[key as keyof typeof breakdown] ?? 0;
+                        const prevEnd = acc.length > 0 ? acc[acc.length - 1].x + acc[acc.length - 1].width : 0;
+                        if (val > 0) {
+                          acc.push({
+                            key,
+                            x: prevEnd,
+                            width: (val / 100) * 400,
+                            color: SCORE_COMPONENT_COLORS[key],
+                          });
+                        }
+                        return acc;
+                      },
+                      []
+                    );
+                    return (
+                      <g key={city.id}>
+                        <text
+                          x={115}
+                          y={i * 27 + 16}
+                          fill="#888"
+                          fontSize={10}
+                          textAnchor="end"
+                          fontFamily="'Space Mono', monospace"
+                        >
+                          {city.city}
+                        </text>
+                        {segments.map((seg) => (
+                          <rect
+                            key={seg.key}
+                            x={120 + (animate ? seg.x : 0)}
+                            y={i * 27 + 4}
+                            width={animate ? seg.width : 0}
+                            height={18}
+                            rx={1}
+                            fill={seg.color}
+                            opacity={0.85}
+                            style={{ transition: `width 0.8s ease ${i * 0.05}s, x 0.8s ease ${i * 0.05}s` }}
+                          />
+                        ))}
+                        <text
+                          x={120 + ((city.score ?? 0) / 100) * 400 + 8}
+                          y={i * 27 + 16}
+                          fill="#555"
+                          fontSize={10}
+                          fontFamily="'Space Mono', monospace"
+                          style={{
+                            opacity: animate ? 1 : 0,
+                            transition: `opacity 0.4s ease ${0.4 + i * 0.05}s`,
+                          }}
+                        >
+                          {city.score}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </svg>
+              </div>
+            </div>
+          ) : tab === "activity" ? (
             <div
               style={{ flex: 1, overflow: "auto", padding: "16px 20px" }}
             >
@@ -1102,16 +1358,23 @@ export default function Dashboard() {
               }}
             >
               <div>
-                <div
+                <Link
+                  href={`/city/${selected.id}`}
                   style={{
                     fontFamily: "'Syne', sans-serif",
                     fontWeight: 800,
                     fontSize: 19,
                     lineHeight: 1.1,
+                    color: "inherit",
+                    textDecoration: "none",
+                    display: "block",
+                    transition: "color 0.15s",
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "#00d4ff")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}
                 >
                   {selected.city}
-                </div>
+                </Link>
                 <div style={{ color: "#444", fontSize: 10, marginTop: 3 }}>
                   {selected.state} · United States
                 </div>
