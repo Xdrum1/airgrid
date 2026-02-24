@@ -45,7 +45,7 @@ const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 const INITIAL_VIEW = {
   longitude: -96,
   latitude: 37,
-  zoom: 3.6,
+  zoom: 4.2,
 };
 
 // -------------------------------------------------------
