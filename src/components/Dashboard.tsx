@@ -328,7 +328,7 @@ export default function Dashboard() {
     if (tab !== "filings" || filingsFetchedAt) return;
     setFilingsLoading(true);
     setFilingsError(null);
-    fetch("/api/filings?days=90")
+    fetch("/api/filings?days=730")
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -1003,7 +1003,7 @@ export default function Dashboard() {
                     FEDERAL REGISTER
                   </div>
                   <div style={{ color: "#555", fontSize: 10 }}>
-                    UAM / eVTOL / vertiport regulatory filings — last 90 days
+                    UAM / eVTOL / vertiport regulatory filings
                   </div>
                 </div>
                 {filingsFetchedAt && (

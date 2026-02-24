@@ -41,7 +41,9 @@ export interface DiffResult {
 // File I/O
 // -------------------------------------------------------
 
-const DATA_DIR = path.join(process.cwd(), "data");
+// Use /tmp on serverless (Lambda), process.cwd()/data locally
+const IS_LAMBDA = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+const DATA_DIR = IS_LAMBDA ? "/tmp" : path.join(process.cwd(), "data");
 const INGESTED_FILE = path.join(DATA_DIR, "ingested.json");
 const META_FILE = path.join(DATA_DIR, "ingestion-meta.json");
 
