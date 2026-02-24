@@ -45,7 +45,7 @@ const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 // Continental US center — mercator projection
 const INITIAL_VIEW = {
   longitude: -96,
-  latitude: 35,
+  latitude: 32,
   zoom: 4.3,
 };
 
