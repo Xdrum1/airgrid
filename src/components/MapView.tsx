@@ -43,8 +43,10 @@ const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 
 // Initial view — continental US
 const INITIAL_VIEW = {
-  bounds: [[-125, 24], [-66, 49]] as [[number, number], [number, number]],
-  fitBoundsOptions: { padding: 40 },
+  bounds: [[-128, 20], [-60, 50]] as [[number, number], [number, number]],
+  fitBoundsOptions: {
+    padding: { top: 10, bottom: 60, left: 10, right: 10 },
+  },
 };
 
 // -------------------------------------------------------
