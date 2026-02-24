@@ -4,7 +4,9 @@ import crypto from "crypto";
 import type { AlertSubscription, ChangeType } from "@/types";
 import { CITIES_MAP } from "@/data/seed";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+// Use /tmp on serverless (Lambda), process.cwd()/data locally
+const IS_LAMBDA = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+const DATA_DIR = IS_LAMBDA ? "/tmp" : path.join(process.cwd(), "data");
 const SUBS_FILE = path.join(DATA_DIR, "subscriptions.json");
 
 // Simple write mutex to prevent concurrent file corruption

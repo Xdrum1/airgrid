@@ -46,7 +46,7 @@ export interface FederalFiling {
 }
 
 export async function fetchFederalRegisterUAM(
-  daysBack: number = 30
+  daysBack: number = 730
 ): Promise<FederalFiling[]> {
   try {
     const endDate = new Date().toISOString().split("T")[0];
@@ -55,7 +55,7 @@ export async function fetchFederalRegisterUAM(
       .split("T")[0];
 
     const params = new URLSearchParams({
-      "conditions[term]": "urban air mobility OR eVTOL OR vertiport OR air taxi",
+      "conditions[term]": "urban air mobility OR eVTOL OR vertiport OR air taxi OR powered-lift OR unmanned aircraft",
       "conditions[publication_date][gte]": startDate,
       "conditions[publication_date][lte]": endDate,
       per_page: "20",

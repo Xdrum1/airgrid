@@ -2,11 +2,15 @@ import { promises as fs } from "fs";
 import path from "path";
 import crypto from "crypto";
 import type { ChangelogEntry, ChangeType } from "@/types";
+import { CHANGELOG_SEED } from "@/data/changelog-seed";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+// Use /tmp on serverless (Lambda), process.cwd()/data locally
+const IS_LAMBDA = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+const DATA_DIR = IS_LAMBDA ? "/tmp" : path.join(process.cwd(), "data");
 const CHANGELOG_FILE = path.join(DATA_DIR, "changelog.json");
 
 let writeLock: Promise<void> = Promise.resolve();
+let seeded = false;
 
 function withLock<T>(fn: () => Promise<T>): Promise<T> {
   const prev = writeLock;
@@ -15,12 +19,29 @@ function withLock<T>(fn: () => Promise<T>): Promise<T> {
   return prev.then(fn).finally(() => resolve!());
 }
 
+async function ensureSeeded(): Promise<void> {
+  if (seeded) return;
+  try {
+    await fs.access(CHANGELOG_FILE);
+  } catch {
+    // File doesn't exist — write seed data
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(
+      CHANGELOG_FILE,
+      JSON.stringify(CHANGELOG_SEED, null, 2) + "\n",
+      "utf-8"
+    );
+  }
+  seeded = true;
+}
+
 async function readChangelog(): Promise<ChangelogEntry[]> {
+  await ensureSeeded();
   try {
     const raw = await fs.readFile(CHANGELOG_FILE, "utf-8");
     return JSON.parse(raw);
   } catch {
-    return [];
+    return CHANGELOG_SEED;
   }
 }
 
