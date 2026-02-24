@@ -1,4 +1,4 @@
-import { Operator, City } from "@/types";
+import { Operator, City, Vertiport, Corridor } from "@/types";
 import { calculateReadinessScore } from "@/lib/scoring";
 
 // ============================================================
@@ -80,6 +80,234 @@ export const OPERATORS: Operator[] = [
 export const OPERATORS_MAP: Record<string, Operator> = Object.fromEntries(
   OPERATORS.map((op) => [op.id, op])
 );
+
+// ============================================================
+// VERTIPORTS
+// ============================================================
+export const VERTIPORTS: Vertiport[] = [
+  // Los Angeles (3)
+  {
+    id: "vp_lax_adjacent",
+    name: "LAX Adjacent Vertiport",
+    operatorId: "op_joby",
+    status: "permitted",
+    cityId: "los_angeles",
+    lat: 33.9425,
+    lng: -118.408,
+    siteType: "airport_adjacent",
+    padCount: 4,
+    chargingCapable: true,
+    permitFilingDate: "2024-08-15",
+    expectedOpenDate: "2026-06-01",
+    sourceUrl: "https://www.jobyaviation.com",
+    lastUpdated: "2025-02-01",
+  },
+  {
+    id: "vp_santa_monica",
+    name: "Archer Santa Monica",
+    operatorId: "op_archer",
+    status: "planned",
+    cityId: "los_angeles",
+    lat: 34.0195,
+    lng: -118.4912,
+    siteType: "rooftop",
+    padCount: 2,
+    chargingCapable: true,
+    expectedOpenDate: "2027-01-01",
+    sourceUrl: "https://www.archer.com",
+    lastUpdated: "2025-02-01",
+  },
+  {
+    id: "vp_dtla",
+    name: "Joby DTLA",
+    operatorId: "op_joby",
+    status: "planned",
+    cityId: "los_angeles",
+    lat: 34.0407,
+    lng: -118.2468,
+    siteType: "rooftop",
+    padCount: 3,
+    chargingCapable: true,
+    expectedOpenDate: "2027-06-01",
+    lastUpdated: "2025-02-01",
+  },
+  // Dallas (2)
+  {
+    id: "vp_dfw_texas",
+    name: "DFW Vertiport Texas",
+    status: "under_construction",
+    cityId: "dallas",
+    lat: 32.8998,
+    lng: -97.0403,
+    siteType: "airport_adjacent",
+    padCount: 6,
+    chargingCapable: true,
+    permitFilingDate: "2024-03-10",
+    expectedOpenDate: "2026-03-01",
+    lastUpdated: "2025-02-01",
+  },
+  {
+    id: "vp_wisk_corridor",
+    name: "Wisk Corridor Pad",
+    operatorId: "op_wisk",
+    status: "operational",
+    cityId: "dallas",
+    lat: 32.7767,
+    lng: -96.797,
+    siteType: "ground",
+    padCount: 2,
+    chargingCapable: true,
+    lastUpdated: "2025-02-01",
+  },
+  // New York (1)
+  {
+    id: "vp_blade_manhattan",
+    name: "Blade Manhattan Heliport",
+    operatorId: "op_blade",
+    status: "operational",
+    cityId: "new_york",
+    lat: 40.7012,
+    lng: -74.009,
+    siteType: "ground",
+    padCount: 3,
+    chargingCapable: false,
+    sourceUrl: "https://www.blade.com",
+    lastUpdated: "2025-02-01",
+  },
+  // Orlando (1)
+  {
+    id: "vp_lake_nona",
+    name: "Lake Nona Vertiport",
+    status: "permitted",
+    cityId: "orlando",
+    lat: 28.3747,
+    lng: -81.2186,
+    siteType: "ground",
+    padCount: 2,
+    chargingCapable: true,
+    permitFilingDate: "2024-11-01",
+    expectedOpenDate: "2026-09-01",
+    lastUpdated: "2025-02-01",
+  },
+  // Las Vegas (1)
+  {
+    id: "vp_lvcc_rooftop",
+    name: "LVCC Rooftop Vertiport",
+    status: "planned",
+    cityId: "las_vegas",
+    lat: 36.1311,
+    lng: -115.1526,
+    siteType: "rooftop",
+    padCount: 2,
+    chargingCapable: true,
+    expectedOpenDate: "2027-06-01",
+    lastUpdated: "2025-02-01",
+  },
+];
+
+export const VERTIPORTS_MAP: Record<string, Vertiport> = Object.fromEntries(
+  VERTIPORTS.map((v) => [v.id, v])
+);
+
+export function getVertiportsForCity(cityId: string): Vertiport[] {
+  return VERTIPORTS.filter((v) => v.cityId === cityId);
+}
+
+// ============================================================
+// CORRIDORS
+// ============================================================
+export const CORRIDORS: Corridor[] = [
+  {
+    id: "cor_lax_dtla",
+    name: "LAX – DTLA",
+    status: "proposed",
+    cityId: "los_angeles",
+    operatorId: "op_joby",
+    startPoint: { lat: 33.9425, lng: -118.408, label: "LAX Adjacent" },
+    endPoint: { lat: 34.0407, lng: -118.2468, label: "DTLA" },
+    distanceKm: 22,
+    estimatedFlightMinutes: 12,
+    maxAltitudeFt: 1500,
+    notes: "Primary Joby launch corridor connecting LAX to downtown LA.",
+    lastUpdated: "2025-02-01",
+  },
+  {
+    id: "cor_lax_santamonica",
+    name: "LAX – Santa Monica",
+    status: "proposed",
+    cityId: "los_angeles",
+    operatorId: "op_archer",
+    startPoint: { lat: 33.9425, lng: -118.408, label: "LAX Adjacent" },
+    endPoint: { lat: 34.0195, lng: -118.4912, label: "Santa Monica" },
+    distanceKm: 10,
+    estimatedFlightMinutes: 6,
+    maxAltitudeFt: 1000,
+    notes: "Short coastal corridor for Archer Midnight operations.",
+    lastUpdated: "2025-02-01",
+  },
+  {
+    id: "cor_dfw_downtown",
+    name: "DFW – Downtown Dallas",
+    status: "authorized",
+    cityId: "dallas",
+    startPoint: { lat: 32.8998, lng: -97.0403, label: "DFW Vertiport" },
+    endPoint: { lat: 32.7767, lng: -96.797, label: "Downtown Dallas" },
+    distanceKm: 18,
+    estimatedFlightMinutes: 10,
+    maxAltitudeFt: 1500,
+    notes: "First authorized UAM corridor in Texas under HB 1735.",
+    lastUpdated: "2025-02-01",
+  },
+  {
+    id: "cor_jfk_manhattan",
+    name: "JFK – Manhattan",
+    status: "proposed",
+    cityId: "new_york",
+    operatorId: "op_blade",
+    startPoint: { lat: 40.6413, lng: -73.7781, label: "JFK Airport" },
+    endPoint: { lat: 40.7012, lng: -74.009, label: "Manhattan Heliport" },
+    waypoints: [{ lat: 40.6101, lng: -73.8448 }],
+    distanceKm: 24,
+    estimatedFlightMinutes: 14,
+    maxAltitudeFt: 2000,
+    notes: "Routing via Jamaica Bay to minimize overflown population.",
+    lastUpdated: "2025-02-01",
+  },
+  {
+    id: "cor_mco_lakenona",
+    name: "MCO – Lake Nona",
+    status: "proposed",
+    cityId: "orlando",
+    startPoint: { lat: 28.4312, lng: -81.308, label: "MCO Airport" },
+    endPoint: { lat: 28.3747, lng: -81.2186, label: "Lake Nona" },
+    distanceKm: 8,
+    estimatedFlightMinutes: 5,
+    maxAltitudeFt: 800,
+    notes: "Short connector from Orlando airport to smart city district.",
+    lastUpdated: "2025-02-01",
+  },
+  {
+    id: "cor_las_convention",
+    name: "LAS – Convention Center",
+    status: "proposed",
+    cityId: "las_vegas",
+    startPoint: { lat: 36.084, lng: -115.1537, label: "LAS Airport" },
+    endPoint: { lat: 36.1311, lng: -115.1526, label: "LVCC Rooftop" },
+    distanceKm: 6,
+    estimatedFlightMinutes: 4,
+    maxAltitudeFt: 800,
+    notes: "Airport to convention center shuttle corridor.",
+    lastUpdated: "2025-02-01",
+  },
+];
+
+export const CORRIDORS_MAP: Record<string, Corridor> = Object.fromEntries(
+  CORRIDORS.map((c) => [c.id, c])
+);
+
+export function getCorridorsForCity(cityId: string): Corridor[] {
+  return CORRIDORS.filter((c) => c.cityId === cityId);
+}
 
 // ============================================================
 // CITIES (raw — scores computed below)
