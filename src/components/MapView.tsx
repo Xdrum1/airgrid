@@ -41,12 +41,11 @@ interface PopupInfo {
 // -------------------------------------------------------
 const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 
-// Initial view — continental US
-const INITIAL_VIEW = {
-  longitude: -96,
-  latitude: 39,
-  zoom: 4.3,
-};
+// Continental US bounding box — SW corner to NE corner
+const US_BOUNDS: [[number, number], [number, number]] = [
+  [-124, 25],  // SW: includes Miami, San Diego
+  [-67, 49],   // NE: includes Seattle, Boston, Minneapolis
+];
 
 // -------------------------------------------------------
 // Vertiport status colors
@@ -740,10 +739,20 @@ export default function MapView({
       <Map
         ref={mapRef}
         mapboxAccessToken={token}
-        initialViewState={INITIAL_VIEW}
+        initialViewState={{
+          longitude: -96,
+          latitude: 38,
+          zoom: 3,
+        }}
         projection={{ name: "mercator" }}
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
+        onLoad={(e) => {
+          e.target.fitBounds(US_BOUNDS, {
+            padding: 20,
+            duration: 0,
+          });
+        }}
         onClick={handleMapClick}
         onMouseEnter={() => {
           const canvas = mapRef.current?.getCanvas();
