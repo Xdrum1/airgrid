@@ -46,8 +46,8 @@ const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 // Southernmost: Miami (25.7°N) — Northernmost: Minneapolis (44.9°N)
 // Westernmost: Seattle (-122.3°W) — Easternmost: Boston (-71.0°W)
 const US_BOUNDS: [[number, number], [number, number]] = [
-  [-125, 24],  // SW: below Miami
-  [-69, 46],   // NE: above Minneapolis
+  [-125, 22],  // SW: well below Miami
+  [-69, 42],   // NE: above Boston (42.3°N)
 ];
 
 // -------------------------------------------------------
