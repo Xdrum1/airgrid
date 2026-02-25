@@ -10,6 +10,7 @@ import type { FederalFiling } from "@/lib/faa-api";
 import { CITIES, OPERATORS, OPERATORS_MAP, getVertiportsForCity, getCorridorsForCity } from "@/data/seed";
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import SubscribeForm from "./SubscribeForm";
 import AuthGate from "./AuthGate";
 
@@ -291,10 +292,13 @@ type TabKey = "map" | "rank" | "filings" | "activity" | "analytics";
 
 const GATED_TABS: TabKey[] = ["filings", "activity", "analytics"];
 
+type MobilePanel = "none" | "cityList" | "detail";
+
 export default function Dashboard() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get("tab") as TabKey) || "map";
+  const isMobile = useIsMobile();
 
   const [selected, setSelected] = useState<City>(CITIES[0]);
   const [filter, setFilter] = useState<FilterKey>("all");
@@ -303,6 +307,7 @@ export default function Dashboard() {
   );
   const [animate, setAnimate] = useState(false);
   const [showSignOut, setShowSignOut] = useState(false);
+  const [mobilePanel, setMobilePanel] = useState<MobilePanel>("none");
 
   // Filings state
   const [filings, setFilings] = useState<FederalFiling[]>([]);
@@ -417,15 +422,15 @@ export default function Dashboard() {
       <div
         style={{
           borderBottom: "1px solid rgba(255,255,255,0.06)",
-          padding: "0 24px",
+          padding: isMobile ? "0 12px" : "0 24px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          height: 54,
+          height: isMobile ? 48 : 54,
           flexShrink: 0,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12 }}>
           <div
             style={{
               width: 26,
@@ -444,20 +449,22 @@ export default function Dashboard() {
             style={{
               fontFamily: "'Syne', sans-serif",
               fontWeight: 800,
-              fontSize: 17,
+              fontSize: isMobile ? 15 : 17,
               letterSpacing: "-0.5px",
             }}
           >
             AIRINDEX
           </span>
-          <span
-            style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2 }}
-          >
-            UAM MARKET INTELLIGENCE
-          </span>
+          {!isMobile && (
+            <span
+              style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2 }}
+            >
+              UAM MARKET INTELLIGENCE
+            </span>
+          )}
         </div>
-        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          {headerStats.map((s, i) => (
+        <div style={{ display: "flex", gap: isMobile ? 8 : 24, alignItems: "center" }}>
+          {!isMobile && headerStats.map((s, i) => (
             <span
               key={i}
               style={{ color: s.color, fontSize: 9, letterSpacing: 1 }}
@@ -569,8 +576,18 @@ export default function Dashboard() {
       <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
 
         {/* LEFT — City List */}
-        <div
-          style={{
+        {(!isMobile || mobilePanel === "cityList") && <div
+          style={isMobile ? {
+            position: "fixed",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            right: 0,
+            zIndex: 50,
+            background: "#050508",
+            display: "flex",
+            flexDirection: "column",
+          } : {
             position: "absolute",
             left: 0,
             top: 0,
@@ -586,6 +603,38 @@ export default function Dashboard() {
             flexShrink: 0,
           }}
         >
+          {/* Mobile close header */}
+          {isMobile && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "12px 16px",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+                flexShrink: 0,
+              }}
+            >
+              <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 15 }}>
+                MARKETS
+              </span>
+              <button
+                onClick={() => setMobilePanel("none")}
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 6,
+                  color: "#888",
+                  fontSize: 11,
+                  padding: "6px 14px",
+                  cursor: "pointer",
+                  fontFamily: "'Space Mono', monospace",
+                }}
+              >
+                CLOSE
+              </button>
+            </div>
+          )}
           <div
             style={{
               padding: "12px 14px 10px",
@@ -657,12 +706,15 @@ export default function Dashboard() {
                   city={city}
                   rank={CITIES.indexOf(city) + 1}
                   isSelected={selected?.id === city.id}
-                  onClick={() => setSelected(city)}
+                  onClick={() => {
+                    setSelected(city);
+                    if (isMobile) setMobilePanel("detail");
+                  }}
                 />
               </div>
             ))}
           </div>
-        </div>
+        </div>}
 
         {/* CENTER — Map / Rankings / Filings / Activity */}
         <div
@@ -674,24 +726,36 @@ export default function Dashboard() {
               display: "flex",
               borderBottom: "1px solid rgba(255,255,255,0.06)",
               padding: "0 20px",
-              paddingLeft: 292,
+              paddingLeft: isMobile ? 0 : 292,
               flexShrink: 0,
               zIndex: 5,
               background: "rgba(5,5,8,0.95)",
+              overflowX: isMobile ? "auto" : undefined,
+              WebkitOverflowScrolling: "touch",
             }}
           >
-            {(
-              [
-                ["map", "MAP VIEW"],
-                ["rank", "RANKINGS"],
-                ["filings", "FILINGS"],
-                ["activity", "ACTIVITY"],
-                ["analytics", "ANALYTICS"],
-              ] as [TabKey, string][]
+            {(isMobile
+              ? [
+                  ["map", "MAP"],
+                  ["rank", "RANK"],
+                  ["filings", "FEED"],
+                  ["activity", "ACTIVITY"],
+                  ["analytics", "STATS"],
+                ] as [TabKey, string][]
+              : [
+                  ["map", "MAP VIEW"],
+                  ["rank", "RANKINGS"],
+                  ["filings", "FILINGS"],
+                  ["activity", "ACTIVITY"],
+                  ["analytics", "ANALYTICS"],
+                ] as [TabKey, string][]
             ).map(([t, label]) => (
               <button
                 key={t}
-                onClick={() => setTab(t)}
+                onClick={() => {
+                  setTab(t);
+                  if (isMobile) setMobilePanel("none");
+                }}
                 style={{
                   background: "transparent",
                   border: "none",
@@ -700,13 +764,15 @@ export default function Dashboard() {
                       ? "2px solid #00d4ff"
                       : "2px solid transparent",
                   color: tab === t ? "#00d4ff" : "#444",
-                  padding: "13px 16px",
+                  padding: isMobile ? "11px 10px" : "13px 16px",
                   fontSize: 9,
-                  letterSpacing: 2,
+                  letterSpacing: isMobile ? 1 : 2,
                   cursor: "pointer",
                   fontFamily: "'Space Mono', monospace",
                   marginBottom: -1,
                   textTransform: "uppercase",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
                 }}
               >
                 {label}
@@ -718,9 +784,14 @@ export default function Dashboard() {
           {GATED_TABS.includes(tab) && !session?.user ? (
             <AuthGate tab={tab} />
           ) : tab === "analytics" ? (
-            <div style={{ flex: 1, overflow: "auto", padding: "16px 20px" }}>
+            <div style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px" }}>
               {/* Summary Stats Row */}
-              <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
+              <div style={{
+                display: isMobile ? "grid" : "flex",
+                gridTemplateColumns: isMobile ? "1fr 1fr" : undefined,
+                gap: 12,
+                marginBottom: 24,
+              }}>
                 {[
                   { label: "TOTAL MARKETS", value: CITIES.length, color: "#00d4ff" },
                   { label: "AVG SCORE", value: avgScore, color: "#00ff88" },
@@ -929,7 +1000,7 @@ export default function Dashboard() {
             </div>
           ) : tab === "activity" ? (
             <div
-              style={{ flex: 1, overflow: "auto", padding: "16px 20px" }}
+              style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px" }}
             >
               <div
                 style={{
@@ -1103,7 +1174,7 @@ export default function Dashboard() {
             </div>
           ) : tab === "filings" ? (
             <div
-              style={{ flex: 1, overflow: "auto", padding: "16px 20px" }}
+              style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px" }}
             >
               <div
                 style={{
@@ -1304,138 +1375,212 @@ export default function Dashboard() {
               <MapView
                 cities={CITIES}
                 selected={selected}
-                onCitySelect={setSelected}
+                onCitySelect={(city) => {
+                  setSelected(city);
+                  if (isMobile) setMobilePanel("detail");
+                }}
                 vertiports={cityVertiports}
                 selectedVertiport={selectedVertiport}
                 onVertiportSelect={setSelectedVertiport}
                 corridors={cityCorridors}
                 selectedCorridor={selectedCorridor}
                 onCorridorSelect={setSelectedCorridor}
+                isMobile={isMobile}
               />
-              {/* Floating subscribe banner */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 20,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  zIndex: 20,
-                  background: "rgba(5,5,8,0.92)",
-                  backdropFilter: "blur(16px)",
-                  WebkitBackdropFilter: "blur(16px)",
-                  border: "1px solid rgba(0,255,136,0.2)",
-                  borderRadius: 10,
-                  padding: "14px 24px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 16,
-                  maxWidth: 520,
-                  width: "90%",
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
-                }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ color: "#fff", fontSize: 12, fontWeight: 700, marginBottom: 3 }}>
-                    Get alerts for {selected.city}
-                  </div>
-                  <div style={{ color: "#555", fontSize: 9 }}>
-                    Regulatory changes, new filings, operator updates
-                  </div>
-                </div>
-                <input
-                  type="email"
-                  placeholder="you@company.com"
-                  id="map-subscribe-email"
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 5,
-                    padding: "9px 12px",
-                    color: "#ccc",
-                    fontSize: 11,
-                    fontFamily: "'Space Mono', monospace",
-                    outline: "none",
-                    width: 180,
-                    flexShrink: 0,
-                  }}
-                  onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(0,255,136,0.3)")}
-                  onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")}
-                  onKeyDown={async (e) => {
-                    if (e.key !== "Enter") return;
-                    const input = e.currentTarget;
-                    const email = input.value.trim();
-                    if (!email) return;
-                    try {
-                      const res = await fetch("/api/subscribe", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          email,
-                          cityIds: [selected.id],
-                          changeTypes: ["new_filing", "status_change", "new_law", "faa_update"],
-                        }),
-                      });
-                      if (res.ok || res.status === 409) {
-                        input.value = "";
-                        input.placeholder = "Subscribed!";
-                        input.style.borderColor = "rgba(0,255,136,0.4)";
-                        setTimeout(() => {
-                          input.placeholder = "you@company.com";
-                          input.style.borderColor = "rgba(255,255,255,0.1)";
-                        }, 3000);
-                      }
-                    } catch { /* silent */ }
-                  }}
-                />
+
+              {/* Mobile: floating MARKETS button */}
+              {isMobile && (
                 <button
-                  onClick={async () => {
-                    const input = document.getElementById("map-subscribe-email") as HTMLInputElement;
-                    if (!input) return;
-                    const email = input.value.trim();
-                    if (!email) { input.focus(); return; }
-                    try {
-                      const res = await fetch("/api/subscribe", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          email,
-                          cityIds: [selected.id],
-                          changeTypes: ["new_filing", "status_change", "new_law", "faa_update"],
-                        }),
-                      });
-                      if (res.ok || res.status === 409) {
-                        input.value = "";
-                        input.placeholder = "Subscribed!";
-                        input.style.borderColor = "rgba(0,255,136,0.4)";
-                        setTimeout(() => {
-                          input.placeholder = "you@company.com";
-                          input.style.borderColor = "rgba(255,255,255,0.1)";
-                        }, 3000);
-                      }
-                    } catch { /* silent */ }
-                  }}
+                  onClick={() => setMobilePanel("cityList")}
                   style={{
-                    background: "rgba(0,255,136,0.12)",
-                    border: "1px solid rgba(0,255,136,0.3)",
-                    borderRadius: 5,
-                    padding: "9px 16px",
-                    color: "#00ff88",
+                    position: "absolute",
+                    top: 12,
+                    left: 12,
+                    zIndex: 20,
+                    background: "rgba(5,5,8,0.92)",
+                    backdropFilter: "blur(16px)",
+                    WebkitBackdropFilter: "blur(16px)",
+                    border: "1px solid rgba(0,212,255,0.3)",
+                    borderRadius: 8,
+                    padding: "8px 14px",
+                    color: "#00d4ff",
                     fontSize: 9,
-                    letterSpacing: 1,
+                    letterSpacing: 1.5,
                     fontWeight: 700,
                     cursor: "pointer",
                     fontFamily: "'Space Mono', monospace",
-                    flexShrink: 0,
-                    transition: "all 0.15s",
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
                   }}
                 >
-                  SUBSCRIBE
+                  MARKETS ({CITIES.length})
                 </button>
-              </div>
+              )}
+
+              {/* Floating subscribe banner */}
+              {isMobile ? (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 16,
+                    left: 12,
+                    right: 12,
+                    zIndex: 20,
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      if (session?.user) {
+                        setMobilePanel("detail");
+                      } else {
+                        signIn();
+                      }
+                    }}
+                    style={{
+                      background: "rgba(5,5,8,0.92)",
+                      backdropFilter: "blur(16px)",
+                      WebkitBackdropFilter: "blur(16px)",
+                      border: "1px solid rgba(0,255,136,0.3)",
+                      borderRadius: 8,
+                      padding: "10px 20px",
+                      color: "#00ff88",
+                      fontSize: 9,
+                      letterSpacing: 1.5,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      fontFamily: "'Space Mono', monospace",
+                      boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+                    }}
+                  >
+                    {session?.user ? "SUBSCRIBE" : "SIGN IN TO SUBSCRIBE"}
+                  </button>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 20,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    zIndex: 20,
+                    background: "rgba(5,5,8,0.92)",
+                    backdropFilter: "blur(16px)",
+                    WebkitBackdropFilter: "blur(16px)",
+                    border: "1px solid rgba(0,255,136,0.2)",
+                    borderRadius: 10,
+                    padding: "14px 24px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 16,
+                    maxWidth: 520,
+                    width: "90%",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+                  }}
+                >
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ color: "#fff", fontSize: 12, fontWeight: 700, marginBottom: 3 }}>
+                      Get alerts for {selected.city}
+                    </div>
+                    <div style={{ color: "#555", fontSize: 9 }}>
+                      Regulatory changes, new filings, operator updates
+                    </div>
+                  </div>
+                  <input
+                    type="email"
+                    placeholder="you@company.com"
+                    id="map-subscribe-email"
+                    style={{
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      borderRadius: 5,
+                      padding: "9px 12px",
+                      color: "#ccc",
+                      fontSize: 11,
+                      fontFamily: "'Space Mono', monospace",
+                      outline: "none",
+                      width: 180,
+                      flexShrink: 0,
+                    }}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(0,255,136,0.3)")}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")}
+                    onKeyDown={async (e) => {
+                      if (e.key !== "Enter") return;
+                      const input = e.currentTarget;
+                      const email = input.value.trim();
+                      if (!email) return;
+                      try {
+                        const res = await fetch("/api/subscribe", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            email,
+                            cityIds: [selected.id],
+                            changeTypes: ["new_filing", "status_change", "new_law", "faa_update"],
+                          }),
+                        });
+                        if (res.ok || res.status === 409) {
+                          input.value = "";
+                          input.placeholder = "Subscribed!";
+                          input.style.borderColor = "rgba(0,255,136,0.4)";
+                          setTimeout(() => {
+                            input.placeholder = "you@company.com";
+                            input.style.borderColor = "rgba(255,255,255,0.1)";
+                          }, 3000);
+                        }
+                      } catch { /* silent */ }
+                    }}
+                  />
+                  <button
+                    onClick={async () => {
+                      const input = document.getElementById("map-subscribe-email") as HTMLInputElement;
+                      if (!input) return;
+                      const email = input.value.trim();
+                      if (!email) { input.focus(); return; }
+                      try {
+                        const res = await fetch("/api/subscribe", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            email,
+                            cityIds: [selected.id],
+                            changeTypes: ["new_filing", "status_change", "new_law", "faa_update"],
+                          }),
+                        });
+                        if (res.ok || res.status === 409) {
+                          input.value = "";
+                          input.placeholder = "Subscribed!";
+                          input.style.borderColor = "rgba(0,255,136,0.4)";
+                          setTimeout(() => {
+                            input.placeholder = "you@company.com";
+                            input.style.borderColor = "rgba(255,255,255,0.1)";
+                          }, 3000);
+                        }
+                      } catch { /* silent */ }
+                    }}
+                    style={{
+                      background: "rgba(0,255,136,0.12)",
+                      border: "1px solid rgba(0,255,136,0.3)",
+                      borderRadius: 5,
+                      padding: "9px 16px",
+                      color: "#00ff88",
+                      fontSize: 9,
+                      letterSpacing: 1,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      fontFamily: "'Space Mono', monospace",
+                      flexShrink: 0,
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    SUBSCRIBE
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div
-              style={{ flex: 1, overflow: "auto", padding: "16px 20px" }}
+              style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px" }}
             >
               {CITIES.map((city, i) => {
                 const color = getScoreColor(city.score ?? 0);
@@ -1549,7 +1694,7 @@ export default function Dashboard() {
                         })}
                       </div>
                     </div>
-                    <div style={{ width: 100, flexShrink: 0 }}>
+                    <div style={{ width: isMobile ? 60 : 100, flexShrink: 0 }}>
                       <ScoreBar
                         value={city.score ?? 0}
                         color={color}
@@ -1575,8 +1720,22 @@ export default function Dashboard() {
         </div>
 
         {/* RIGHT — Detail Panel */}
-        <div
-          style={{
+        {(!isMobile || mobilePanel === "detail") && <div
+          style={isMobile ? {
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 50,
+            height: "75vh",
+            background: "#050508",
+            borderTop: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "16px 16px 0 0",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "auto",
+            animation: "slideUp 0.3s ease",
+          } : {
             position: "absolute",
             right: 0,
             top: 0,
@@ -1592,6 +1751,46 @@ export default function Dashboard() {
             overflow: "auto",
           }}
         >
+          {/* Mobile drag handle + close */}
+          {isMobile && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "10px 16px 6px",
+                flexShrink: 0,
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  width: 36,
+                  height: 4,
+                  borderRadius: 2,
+                  background: "rgba(255,255,255,0.15)",
+                }}
+              />
+              <button
+                onClick={() => setMobilePanel("none")}
+                style={{
+                  position: "absolute",
+                  right: 16,
+                  top: 8,
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 6,
+                  color: "#888",
+                  fontSize: 11,
+                  padding: "4px 12px",
+                  cursor: "pointer",
+                  fontFamily: "'Space Mono', monospace",
+                }}
+              >
+                CLOSE
+              </button>
+            </div>
+          )}
           {/* Score Header */}
           <div
             style={{
@@ -2053,7 +2252,7 @@ export default function Dashboard() {
               LAST UPDATED {selected.lastUpdated}
             </span>
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );

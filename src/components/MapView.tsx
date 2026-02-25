@@ -28,6 +28,7 @@ interface MapViewProps {
   corridors: Corridor[];
   selectedCorridor: Corridor | null;
   onCorridorSelect: (c: Corridor) => void;
+  isMobile?: boolean;
 }
 
 interface PopupInfo {
@@ -43,11 +44,18 @@ const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 
 // Continental US bounding box — SW corner to NE corner
 // Continental US center — mercator projection
-const INITIAL_VIEW = {
+const INITIAL_VIEW_DESKTOP = {
   longitude: -96,
   latitude: 41,
   zoom: 4.0,
   padding: { left: 272, right: 296, top: 0, bottom: 0 },
+};
+
+const INITIAL_VIEW_MOBILE = {
+  longitude: -96,
+  latitude: 39,
+  zoom: 3.2,
+  padding: { left: 0, right: 0, top: 0, bottom: 0 },
 };
 
 // -------------------------------------------------------
@@ -565,6 +573,7 @@ export default function MapView({
   corridors,
   selectedCorridor,
   onCorridorSelect,
+  isMobile = false,
 }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const [popup, setPopup] = useState<PopupInfo | null>(null);
@@ -742,7 +751,7 @@ export default function MapView({
       <Map
         ref={mapRef}
         mapboxAccessToken={token}
-        initialViewState={INITIAL_VIEW}
+        initialViewState={isMobile ? INITIAL_VIEW_MOBILE : INITIAL_VIEW_DESKTOP}
         projection={{ name: "mercator" }}
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
@@ -892,8 +901,8 @@ export default function MapView({
         )}
       </Map>
 
-      {/* Legend overlay */}
-      <div
+      {/* Legend overlay — hidden on mobile */}
+      {!isMobile && <div
         style={{
           position: "absolute",
           bottom: 18,
@@ -1060,7 +1069,7 @@ export default function MapView({
             </span>
           </div>
         ))}
-      </div>
+      </div>}
     </>
   );
 }
