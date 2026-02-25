@@ -21,8 +21,7 @@ export async function notifySubscribers(
         sub.changeTypes.length === 0 ||
         sub.changeTypes.includes(entry.changeType);
 
-      // Match by city — we try to infer cityId from the relatedEntityId
-      // For now, if subscriber has empty cityIds, they match everything
+      // Match by city
       const cityMatch =
         sub.cityIds.length === 0 ||
         sub.cityIds.includes(entry.relatedEntityId);

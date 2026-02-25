@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Will add API rewrites here for FAA/Federal Register once keys are configured
+  async redirects() {
+    return [
+      {
+        source: "/gate",
+        destination: "/login",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

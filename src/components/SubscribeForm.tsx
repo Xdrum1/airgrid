@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSession, signIn } from "next-auth/react";
 import type { ChangeType } from "@/types";
 
 interface SubscribeFormProps {
@@ -15,14 +16,13 @@ const CHANGE_TYPE_OPTIONS: { value: ChangeType; label: string }[] = [
   { value: "faa_update", label: "FAA UPDATE" },
 ];
 
-const LS_EMAIL_KEY = "airgrid_subscriber_email";
 const LS_SUB_PREFIX = "airgrid_sub_";
 
 type FormState = "collapsed" | "expanded" | "submitting" | "success";
 
 export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) {
+  const { data: session } = useSession();
   const [state, setState] = useState<FormState>("collapsed");
-  const [email, setEmail] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<ChangeType[]>([
     "new_filing",
     "status_change",
@@ -33,11 +33,8 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
   const [error, setError] = useState<string | null>(null);
   const [subId, setSubId] = useState<string | null>(null);
 
-  // Load saved email + check subscription status on mount / city change
+  // Check subscription status on mount / city change
   useEffect(() => {
-    const savedEmail = localStorage.getItem(LS_EMAIL_KEY);
-    if (savedEmail) setEmail(savedEmail);
-
     const cached = localStorage.getItem(LS_SUB_PREFIX + cityId);
     if (cached) {
       try {
@@ -63,10 +60,11 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
   }, []);
 
   const handleSubscribe = async () => {
-    if (!email.trim()) {
-      setError("Email is required");
+    if (!session?.user) {
+      signIn(undefined, { callbackUrl: `/?tab=map` });
       return;
     }
+
     if (selectedTypes.length === 0) {
       setError("Select at least one alert type");
       return;
@@ -80,7 +78,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), cityIds, changeTypes: selectedTypes }),
+        body: JSON.stringify({ cityIds, changeTypes: selectedTypes }),
       });
 
       const json = await res.json();
@@ -95,7 +93,6 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
         return;
       }
 
-      localStorage.setItem(LS_EMAIL_KEY, email.trim());
       localStorage.setItem(
         LS_SUB_PREFIX + cityId,
         JSON.stringify({ id: json.data.id })
@@ -111,10 +108,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
   const handleUnsubscribe = async () => {
     if (!subId) return;
     try {
-      const res = await fetch(
-        `/api/subscribe/${subId}?email=${encodeURIComponent(email.trim())}`,
-        { method: "DELETE" }
-      );
+      const res = await fetch(`/api/subscribe/${subId}`, { method: "DELETE" });
       if (res.ok) {
         localStorage.removeItem(LS_SUB_PREFIX + cityId);
         setSubId(null);
@@ -140,7 +134,13 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
           ALERT SUBSCRIPTIONS
         </div>
         <button
-          onClick={() => setState("expanded")}
+          onClick={() => {
+            if (!session?.user) {
+              signIn(undefined, { callbackUrl: `/?tab=map` });
+              return;
+            }
+            setState("expanded");
+          }}
           style={{
             width: "100%",
             background: "rgba(0,255,136,0.06)",
@@ -156,7 +156,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
           }}
         >
           <span style={{ color: "#888", fontSize: 10 }}>
-            Get alerts for {cityName}
+            {session?.user ? `Get alerts for ${cityName}` : "Sign up to get alerts"}
           </span>
           <span
             style={{
@@ -166,7 +166,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
               fontFamily: "'Space Mono', monospace",
             }}
           >
-            SUBSCRIBE
+            {session?.user ? "SUBSCRIBE" : "SIGN IN"}
           </span>
         </button>
       </div>
@@ -217,7 +217,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
             </span>
           </div>
           <div style={{ color: "#555", fontSize: 9, marginBottom: 8 }}>
-            {email} will receive alerts for {cityName}
+            {session?.user?.email ?? "You"} will receive alerts for {cityName}
           </div>
           <button
             onClick={handleUnsubscribe}
@@ -258,33 +258,22 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
         ALERT SUBSCRIPTIONS
       </div>
 
-      {/* Email input */}
-      <input
-        type="email"
-        placeholder="you@company.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        disabled={isSubmitting}
-        style={{
-          width: "100%",
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: 5,
-          padding: "9px 12px",
-          color: "#ccc",
-          fontSize: 11,
-          fontFamily: "'Space Mono', monospace",
-          outline: "none",
-          marginBottom: 10,
-          transition: "border-color 0.15s",
-        }}
-        onFocus={(e) =>
-          (e.currentTarget.style.borderColor = "rgba(0,255,136,0.3)")
-        }
-        onBlur={(e) =>
-          (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")
-        }
-      />
+      {/* Logged-in user indicator */}
+      {session?.user?.email && (
+        <div
+          style={{
+            color: "#555",
+            fontSize: 9,
+            marginBottom: 10,
+            padding: "8px 12px",
+            background: "rgba(255,255,255,0.02)",
+            border: "1px solid rgba(255,255,255,0.05)",
+            borderRadius: 5,
+          }}
+        >
+          Subscribing as {session.user.email}
+        </div>
+      )}
 
       {/* Change type chips */}
       <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 10 }}>
