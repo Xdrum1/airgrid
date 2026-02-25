@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
+import { sendSesEmail } from "@/lib/ses";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -12,14 +13,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   providers: [
     {
-      id: "resend",
+      id: "ses",
       name: "Email",
       type: "email",
       maxAge: 60 * 60, // 1 hour
       sendVerificationRequest: async ({ identifier: email, url }) => {
-        const apiKey = process.env.RESEND_API_KEY;
-        if (!apiKey) {
-          console.log(`[auth] RESEND_API_KEY not set — magic link: ${url}`);
+        const from = process.env.SES_FROM_EMAIL || "AirIndex <auth@airindex.io>";
+
+        if (!process.env.AWS_ACCESS_KEY_ID) {
+          console.log(`[auth] AWS credentials not set — magic link: ${url}`);
           return;
         }
 
@@ -43,24 +45,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           </div>
         `.trim();
 
-        const res = await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            from: "AirIndex <auth@updates.airgrid.io>",
-            to: email,
-            subject: "Sign in to AirIndex",
-            html,
-          }),
+        await sendSesEmail({
+          to: email,
+          from,
+          subject: "Sign in to AirIndex",
+          html,
         });
-
-        if (!res.ok) {
-          const body = await res.text();
-          throw new Error(`Resend error ${res.status}: ${body}`);
-        }
       },
     },
   ],

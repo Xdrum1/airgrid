@@ -20,7 +20,7 @@ function LoginForm() {
     setError("");
 
     try {
-      await signIn("resend", { email: email.trim(), callbackUrl });
+      await signIn("ses", { email: email.trim(), callbackUrl });
     } catch {
       setError("Something went wrong. Please try again.");
       setLoading(false);
