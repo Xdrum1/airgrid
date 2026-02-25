@@ -302,6 +302,7 @@ export default function Dashboard() {
     ["map", "rank", "filings", "activity", "analytics"].includes(initialTab) ? initialTab : "map"
   );
   const [animate, setAnimate] = useState(false);
+  const [showSignOut, setShowSignOut] = useState(false);
 
   // Filings state
   const [filings, setFilings] = useState<FederalFiling[]>([]);
@@ -465,26 +466,82 @@ export default function Dashboard() {
             </span>
           ))}
           {session?.user ? (
-            <button
-              onClick={() => signOut()}
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                borderRadius: 4,
-                padding: "6px 12px",
-                color: "#888",
-                fontSize: 9,
-                letterSpacing: 1,
-                cursor: "pointer",
-                fontFamily: "'Space Mono', monospace",
-                transition: "all 0.15s",
-              }}
-              title="Sign out"
-            >
-              {session.user.email && session.user.email.length > 20
-                ? session.user.email.slice(0, 20) + "..."
-                : session.user.email}
-            </button>
+            <div style={{ position: "relative" }}>
+              <button
+                onClick={() => setShowSignOut((v) => !v)}
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 4,
+                  padding: "6px 12px",
+                  color: "#888",
+                  fontSize: 9,
+                  letterSpacing: 1,
+                  cursor: "pointer",
+                  fontFamily: "'Space Mono', monospace",
+                  transition: "all 0.15s",
+                }}
+              >
+                {session.user.email && session.user.email.length > 20
+                  ? session.user.email.slice(0, 20) + "..."
+                  : session.user.email}
+              </button>
+              {showSignOut && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "calc(100% + 6px)",
+                    right: 0,
+                    background: "#0e0e16",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 6,
+                    padding: "14px 18px",
+                    zIndex: 100,
+                    minWidth: 180,
+                    fontFamily: "'Space Mono', monospace",
+                  }}
+                >
+                  <div style={{ color: "#888", fontSize: 10, marginBottom: 12 }}>
+                    Sign out?
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      onClick={() => signOut()}
+                      style={{
+                        background: "rgba(255,68,68,0.1)",
+                        border: "1px solid rgba(255,68,68,0.3)",
+                        borderRadius: 4,
+                        padding: "6px 14px",
+                        color: "#ff4444",
+                        fontSize: 9,
+                        letterSpacing: 1,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        fontFamily: "'Space Mono', monospace",
+                      }}
+                    >
+                      YES
+                    </button>
+                    <button
+                      onClick={() => setShowSignOut(false)}
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: 4,
+                        padding: "6px 14px",
+                        color: "#888",
+                        fontSize: 9,
+                        letterSpacing: 1,
+                        cursor: "pointer",
+                        fontFamily: "'Space Mono', monospace",
+                      }}
+                    >
+                      NO
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <button
               onClick={() => signIn()}
