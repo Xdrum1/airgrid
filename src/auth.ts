@@ -26,22 +26,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         const html = `
-          <div style="background:#050508;color:#fff;font-family:'Courier New',monospace;padding:32px;max-width:520px;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
-              <span style="font-weight:800;font-size:16px;letter-spacing:-0.5px;">AIRINDEX</span>
-              <span style="color:#555;font-size:9px;letter-spacing:2px;">SIGN IN</span>
+          <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
+            <div style="margin-bottom:32px;">
+              <span style="font-weight:800;font-size:20px;color:#1a1a1a;letter-spacing:-0.5px;">AIRINDEX</span>
             </div>
-            <div style="border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:20px;background:rgba(255,255,255,0.02);">
-              <p style="color:#999;font-size:13px;line-height:1.6;margin:0 0 20px;">
-                Click the button below to sign in to AirIndex.
-              </p>
-              <a href="${url}" style="display:inline-block;background:linear-gradient(135deg,#00d4ff,#7c3aed);color:#000;font-weight:700;font-size:13px;padding:12px 28px;border-radius:6px;text-decoration:none;letter-spacing:0.06em;">
-                SIGN IN
-              </a>
-              <p style="color:#444;font-size:11px;margin:20px 0 0;">
-                If you didn't request this, you can safely ignore this email.
-              </p>
-            </div>
+            <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 24px;">
+              Click the button below to sign in to AirIndex.
+            </p>
+            <a href="${url}" style="display:inline-block;background:#7c3aed;color:#ffffff;font-weight:700;font-size:14px;padding:14px 32px;border-radius:6px;text-decoration:none;letter-spacing:0.04em;">
+              SIGN IN TO AIRINDEX
+            </a>
+            <p style="color:#999;font-size:12px;line-height:1.6;margin:28px 0 0;">
+              If you didn't request this, you can safely ignore this email.
+            </p>
+            <p style="color:#bbb;font-size:11px;margin:24px 0 0;">
+              Or copy this link: <a href="${url}" style="color:#7c3aed;word-break:break-all;">${url}</a>
+            </p>
           </div>
         `.trim();
 
