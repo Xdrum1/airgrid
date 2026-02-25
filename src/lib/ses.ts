@@ -16,9 +16,9 @@ function hmacSha256(key: Buffer | string, data: string) {
 }
 
 export async function sendSesEmail({ to, from, subject, html }: SendEmailParams): Promise<void> {
-  const region = process.env.AWS_SES_REGION || "us-east-1";
-  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  const region = process.env.SES_REGION || "us-east-1";
+  const accessKeyId = process.env.SES_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
 
   if (!accessKeyId || !secretAccessKey) {
     console.log(`[ses] AWS credentials not set — skipping email to ${to}`);

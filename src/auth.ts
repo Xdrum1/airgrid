@@ -20,7 +20,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       sendVerificationRequest: async ({ identifier: email, url }) => {
         const from = process.env.SES_FROM_EMAIL || "AirIndex <auth@airindex.io>";
 
-        if (!process.env.AWS_ACCESS_KEY_ID) {
+        if (!process.env.SES_ACCESS_KEY_ID) {
           console.log(`[auth] AWS credentials not set — magic link: ${url}`);
           return;
         }
@@ -57,7 +57,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   events: {
     async createUser({ user }) {
       const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
-      if (!adminEmail || !process.env.AWS_ACCESS_KEY_ID) return;
+      if (!adminEmail || !process.env.SES_ACCESS_KEY_ID) return;
       const from = process.env.SES_FROM_EMAIL || "AirIndex <auth@airindex.io>";
       await sendSesEmail({
         to: adminEmail,

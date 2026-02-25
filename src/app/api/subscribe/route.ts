@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
     // Notify admin
     const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
-    if (adminEmail && process.env.AWS_ACCESS_KEY_ID) {
+    if (adminEmail && process.env.SES_ACCESS_KEY_ID) {
       const from = process.env.SES_FROM_EMAIL || "AirIndex <auth@airindex.io>";
       const cities = cityIds.length === 0 ? "All cities" : cityIds.join(", ");
       sendSesEmail({
