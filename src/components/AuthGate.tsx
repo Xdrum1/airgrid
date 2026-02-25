@@ -1,12 +1,15 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface AuthGateProps {
   tab: string;
 }
 
 export default function AuthGate({ tab }: AuthGateProps) {
+  const isMobile = useIsMobile();
+
   return (
     <div
       style={{
@@ -14,7 +17,7 @@ export default function AuthGate({ tab }: AuthGateProps) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 40,
+        padding: isMobile ? 20 : 40,
       }}
     >
       <div
