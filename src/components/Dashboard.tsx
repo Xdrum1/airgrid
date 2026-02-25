@@ -3,12 +3,15 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { City, Operator, Vertiport, Corridor, ChangelogEntry } from "@/types";
 import type { FederalFiling } from "@/lib/faa-api";
 import { CITIES, OPERATORS, OPERATORS_MAP, getVertiportsForCity, getCorridorsForCity } from "@/data/seed";
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
 import SubscribeForm from "./SubscribeForm";
+import AuthGate from "./AuthGate";
 
 const MapView = dynamic(() => import("./MapView"), {
   ssr: false,
@@ -286,10 +289,18 @@ function BreakdownRow({
 type FilterKey = "all" | "hot" | "operators" | "vertiport";
 type TabKey = "map" | "rank" | "filings" | "activity" | "analytics";
 
+const GATED_TABS: TabKey[] = ["filings", "activity", "analytics"];
+
 export default function Dashboard() {
+  const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const initialTab = (searchParams.get("tab") as TabKey) || "map";
+
   const [selected, setSelected] = useState<City>(CITIES[0]);
   const [filter, setFilter] = useState<FilterKey>("all");
-  const [tab, setTab] = useState<TabKey>("map");
+  const [tab, setTab] = useState<TabKey>(
+    ["map", "rank", "filings", "activity", "analytics"].includes(initialTab) ? initialTab : "map"
+  );
   const [animate, setAnimate] = useState(false);
 
   // Filings state
@@ -444,7 +455,7 @@ export default function Dashboard() {
             UAM MARKET INTELLIGENCE
           </span>
         </div>
-        <div style={{ display: "flex", gap: 24 }}>
+        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           {headerStats.map((s, i) => (
             <span
               key={i}
@@ -453,6 +464,47 @@ export default function Dashboard() {
               {s.label}
             </span>
           ))}
+          {session?.user ? (
+            <button
+              onClick={() => signOut()}
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 4,
+                padding: "6px 12px",
+                color: "#888",
+                fontSize: 9,
+                letterSpacing: 1,
+                cursor: "pointer",
+                fontFamily: "'Space Mono', monospace",
+                transition: "all 0.15s",
+              }}
+              title="Sign out"
+            >
+              {session.user.email && session.user.email.length > 20
+                ? session.user.email.slice(0, 20) + "..."
+                : session.user.email}
+            </button>
+          ) : (
+            <button
+              onClick={() => signIn()}
+              style={{
+                background: "linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15))",
+                border: "1px solid rgba(0,212,255,0.3)",
+                borderRadius: 4,
+                padding: "6px 14px",
+                color: "#00d4ff",
+                fontSize: 9,
+                letterSpacing: 2,
+                fontWeight: 700,
+                cursor: "pointer",
+                fontFamily: "'Space Mono', monospace",
+                transition: "all 0.15s",
+              }}
+            >
+              SIGN IN
+            </button>
+          )}
         </div>
       </div>
 
@@ -606,7 +658,9 @@ export default function Dashboard() {
           </div>
 
           {/* Tab content */}
-          {tab === "analytics" ? (
+          {GATED_TABS.includes(tab) && !session?.user ? (
+            <AuthGate tab={tab} />
+          ) : tab === "analytics" ? (
             <div style={{ flex: 1, overflow: "auto", padding: "16px 20px" }}>
               {/* Summary Stats Row */}
               <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>

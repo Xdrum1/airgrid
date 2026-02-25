@@ -1,23 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 import {
   addSubscription,
-  getSubscriptions,
-  validateEmail,
+  getSubscriptionsForUser,
   validateCityIds,
   validateChangeTypes,
 } from "@/lib/subscriptions";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { email, cityIds, changeTypes } = body;
-
-    if (!email || typeof email !== "string" || !validateEmail(email)) {
+    const session = await auth();
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { error: "Invalid email address" },
-        { status: 400 }
+        { error: "Authentication required" },
+        { status: 401 }
       );
     }
+
+    const body = await request.json();
+    const { cityIds, changeTypes } = body;
 
     if (!Array.isArray(cityIds) || !validateCityIds(cityIds)) {
       return NextResponse.json(
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const sub = await addSubscription(email, cityIds, changeTypes);
+    const sub = await addSubscription(session.user.id, cityIds, changeTypes);
     return NextResponse.json({ data: sub }, { status: 201 });
   } catch (err: unknown) {
     if (err instanceof Error && err.message === "DUPLICATE") {
@@ -52,7 +53,15 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const subs = await getSubscriptions();
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "Authentication required", data: [], count: 0 },
+        { status: 401 }
+      );
+    }
+
+    const subs = await getSubscriptionsForUser(session.user.id);
     return NextResponse.json({ data: subs, count: subs.length });
   } catch (err) {
     console.error("[API /subscribe GET] Error:", err);

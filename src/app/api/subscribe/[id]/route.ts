@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { removeSubscription } from "@/lib/subscriptions";
 
 export async function DELETE(
@@ -6,17 +7,16 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const email = request.nextUrl.searchParams.get("email");
-
-    if (!email) {
+    const session = await auth();
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { error: "Missing email query parameter" },
-        { status: 400 }
+        { error: "Authentication required" },
+        { status: 401 }
       );
     }
 
-    const removed = await removeSubscription(id, email);
+    const { id } = await params;
+    const removed = await removeSubscription(id, session.user.id);
 
     if (!removed) {
       return NextResponse.json(
