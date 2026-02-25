@@ -579,6 +579,7 @@ export default function MapView({
   const [popup, setPopup] = useState<PopupInfo | null>(null);
   const [vertiportPopup, setVertiportPopup] = useState<Vertiport | null>(null);
   const [corridorPopup, setCorridorPopup] = useState<Corridor | null>(null);
+  const [hasNavigated, setHasNavigated] = useState(false);
 
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -596,13 +597,16 @@ export default function MapView({
 
   const handleMarkerClick = useCallback(
     (city: City) => {
-      setPopup({ city, longitude: city.lng, latitude: city.lat });
+      if (!isMobile) {
+        setPopup({ city, longitude: city.lng, latitude: city.lat });
+      }
       setVertiportPopup(null);
       setCorridorPopup(null);
       onCitySelect(city);
       flyToCity(city);
+      setHasNavigated(true);
     },
-    [onCitySelect, flyToCity]
+    [onCitySelect, flyToCity, isMobile]
   );
 
   const handleVertiportClick = useCallback(
@@ -900,6 +904,48 @@ export default function MapView({
           </Popup>
         )}
       </Map>
+
+      {/* Reset View button */}
+      {hasNavigated && (
+        <button
+          onClick={() => {
+            const view = isMobile ? INITIAL_VIEW_MOBILE : INITIAL_VIEW_DESKTOP;
+            mapRef.current?.flyTo({
+              center: [view.longitude, view.latitude],
+              zoom: view.zoom,
+              padding: view.padding,
+              duration: 1400,
+              essential: true,
+            });
+            setPopup(null);
+            setVertiportPopup(null);
+            setCorridorPopup(null);
+            setHasNavigated(false);
+          }}
+          style={{
+            position: "absolute",
+            top: isMobile ? 56 : 12,
+            left: 12,
+            zIndex: 20,
+            background: "rgba(5,5,8,0.92)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: 8,
+            padding: isMobile ? "10px 16px" : "8px 14px",
+            color: "#ccc",
+            fontSize: isMobile ? 10 : 9,
+            letterSpacing: 1.5,
+            fontWeight: 700,
+            cursor: "pointer",
+            fontFamily: "'Space Mono', monospace",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+            transition: "all 0.15s",
+          }}
+        >
+          RESET VIEW
+        </button>
+      )}
 
       {/* Legend overlay — hidden on mobile */}
       {!isMobile && <div

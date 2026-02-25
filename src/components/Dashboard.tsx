@@ -23,7 +23,7 @@ const MapView = dynamic(() => import("./MapView"), {
       alignItems: "center",
       justifyContent: "center",
       background: "#07070e",
-      color: "#2a2a3a",
+      color: "#444",
       fontFamily: "'Space Mono', monospace",
       fontSize: 10,
       letterSpacing: 2,
@@ -170,7 +170,7 @@ function CityCard({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ color: "#2a2a3a", fontSize: 10 }}>#{rank}</span>
+          <span style={{ color: "#444", fontSize: 10 }}>#{rank}</span>
           <div>
             <span
               style={{
@@ -457,7 +457,7 @@ export default function Dashboard() {
           </span>
           {!isMobile && (
             <span
-              style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2 }}
+              style={{ color: "#444", fontSize: 9, letterSpacing: 2 }}
             >
               UAM MARKET INTELLIGENCE
             </span>
@@ -518,7 +518,7 @@ export default function Dashboard() {
                         background: "rgba(255,68,68,0.1)",
                         border: "1px solid rgba(255,68,68,0.3)",
                         borderRadius: 4,
-                        padding: "6px 14px",
+                        padding: isMobile ? "8px 14px" : "6px 14px",
                         color: "#ff4444",
                         fontSize: 9,
                         letterSpacing: 1,
@@ -535,7 +535,7 @@ export default function Dashboard() {
                         background: "rgba(255,255,255,0.04)",
                         border: "1px solid rgba(255,255,255,0.08)",
                         borderRadius: 4,
-                        padding: "6px 14px",
+                        padding: isMobile ? "8px 14px" : "6px 14px",
                         color: "#888",
                         fontSize: 9,
                         letterSpacing: 1,
@@ -556,7 +556,7 @@ export default function Dashboard() {
                 background: "linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15))",
                 border: "1px solid rgba(0,212,255,0.3)",
                 borderRadius: 4,
-                padding: "6px 14px",
+                padding: isMobile ? "8px 14px" : "6px 14px",
                 color: "#00d4ff",
                 fontSize: 9,
                 letterSpacing: 2,
@@ -574,6 +574,20 @@ export default function Dashboard() {
 
       {/* MAIN LAYOUT */}
       <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
+
+        {/* Mobile backdrop overlay */}
+        {isMobile && mobilePanel !== "none" && (
+          <div
+            onClick={() => setMobilePanel("none")}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.5)",
+              zIndex: 40,
+              animation: "fadeIn 0.2s ease",
+            }}
+          />
+        )}
 
         {/* LEFT — City List */}
         {(!isMobile || mobilePanel === "cityList") && <div
@@ -625,8 +639,8 @@ export default function Dashboard() {
                   border: "1px solid rgba(255,255,255,0.1)",
                   borderRadius: 6,
                   color: "#888",
-                  fontSize: 11,
-                  padding: "6px 14px",
+                  fontSize: 12,
+                  padding: "8px 16px",
                   cursor: "pointer",
                   fontFamily: "'Space Mono', monospace",
                 }}
@@ -643,7 +657,7 @@ export default function Dashboard() {
           >
             <div
               style={{
-                color: "#2a2a3a",
+                color: "#444",
                 fontSize: 8,
                 letterSpacing: 2,
                 marginBottom: 8,
@@ -672,10 +686,10 @@ export default function Dashboard() {
                       filter === val
                         ? "1px solid rgba(0,212,255,0.35)"
                         : "1px solid rgba(255,255,255,0.07)",
-                    color: filter === val ? "#00d4ff" : "#444",
+                    color: filter === val ? "#00d4ff" : "#555",
                     borderRadius: 4,
-                    padding: "4px 8px",
-                    fontSize: 8,
+                    padding: isMobile ? "5px 10px" : "4px 8px",
+                    fontSize: isMobile ? 9 : 8,
                     letterSpacing: 1,
                     cursor: "pointer",
                     fontFamily: "'Space Mono', monospace",
@@ -763,9 +777,9 @@ export default function Dashboard() {
                     tab === t
                       ? "2px solid #00d4ff"
                       : "2px solid transparent",
-                  color: tab === t ? "#00d4ff" : "#444",
+                  color: tab === t ? "#00d4ff" : "#666",
                   padding: isMobile ? "11px 10px" : "13px 16px",
-                  fontSize: 9,
+                  fontSize: isMobile ? 10 : 9,
                   letterSpacing: isMobile ? 1 : 2,
                   cursor: "pointer",
                   fontFamily: "'Space Mono', monospace",
@@ -811,7 +825,7 @@ export default function Dashboard() {
                       transition: `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s`,
                     }}
                   >
-                    <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
+                    <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
                       {stat.label}
                     </div>
                     <div style={{ color: stat.color, fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28 }}>
@@ -823,7 +837,7 @@ export default function Dashboard() {
 
               {/* Horizontal Bar Chart — Top 10 by Readiness Score */}
               <div style={{ marginBottom: 32 }}>
-                <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
+                <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
                   TOP 10 MARKETS BY READINESS SCORE
                 </div>
                 <svg viewBox="0 0 600 280" style={{ width: "100%", height: "auto" }}>
@@ -898,7 +912,7 @@ export default function Dashboard() {
 
               {/* Stacked Bar Chart — Score Breakdown by Component */}
               <div>
-                <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 2, marginBottom: 10 }}>
+                <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 10 }}>
                   SCORE BREAKDOWN BY COMPONENT
                 </div>
                 {/* Legend */}
@@ -1013,7 +1027,7 @@ export default function Dashboard() {
                 <div>
                   <div
                     style={{
-                      color: "#2a2a3a",
+                      color: "#444",
                       fontSize: 8,
                       letterSpacing: 2,
                       marginBottom: 4,
@@ -1026,7 +1040,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 {changelogFetchedAt && (
-                  <span style={{ color: "#2a2a3a", fontSize: 8, flexShrink: 0 }}>
+                  <span style={{ color: "#444", fontSize: 8, flexShrink: 0 }}>
                     FETCHED {new Date(changelogFetchedAt).toLocaleTimeString()}
                   </span>
                 )}
@@ -1115,7 +1129,7 @@ export default function Dashboard() {
                       <span
                         style={{
                           color: badgeColor,
-                          fontSize: 7,
+                          fontSize: 8,
                           letterSpacing: 1,
                           border: `1px solid ${badgeColor}44`,
                           borderRadius: 3,
@@ -1129,7 +1143,7 @@ export default function Dashboard() {
                       <span
                         style={{
                           color: "#555",
-                          fontSize: 7,
+                          fontSize: 8,
                           letterSpacing: 1,
                           border: "1px solid rgba(255,255,255,0.08)",
                           borderRadius: 3,
@@ -1187,7 +1201,7 @@ export default function Dashboard() {
                 <div>
                   <div
                     style={{
-                      color: "#2a2a3a",
+                      color: "#444",
                       fontSize: 8,
                       letterSpacing: 2,
                       marginBottom: 4,
@@ -1200,7 +1214,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 {filingsFetchedAt && (
-                  <span style={{ color: "#2a2a3a", fontSize: 8, flexShrink: 0 }}>
+                  <span style={{ color: "#444", fontSize: 8, flexShrink: 0 }}>
                     FETCHED {new Date(filingsFetchedAt).toLocaleTimeString()}
                   </span>
                 )}
@@ -1309,7 +1323,7 @@ export default function Dashboard() {
                       <span
                         style={{
                           color: badgeColor,
-                          fontSize: 7,
+                          fontSize: 8,
                           letterSpacing: 1,
                           border: `1px solid ${badgeColor}44`,
                           borderRadius: 3,
@@ -1402,9 +1416,9 @@ export default function Dashboard() {
                     WebkitBackdropFilter: "blur(16px)",
                     border: "1px solid rgba(0,212,255,0.3)",
                     borderRadius: 8,
-                    padding: "8px 14px",
+                    padding: "10px 16px",
                     color: "#00d4ff",
-                    fontSize: 9,
+                    fontSize: 10,
                     letterSpacing: 1.5,
                     fontWeight: 700,
                     cursor: "pointer",
@@ -1416,8 +1430,8 @@ export default function Dashboard() {
                 </button>
               )}
 
-              {/* Floating subscribe banner */}
-              {isMobile ? (
+              {/* Floating subscribe banner — hidden on mobile when detail sheet is open */}
+              {isMobile && mobilePanel === "detail" ? null : isMobile ? (
                 <div
                   style={{
                     position: "absolute",
@@ -1610,7 +1624,7 @@ export default function Dashboard() {
                   >
                     <span
                       style={{
-                        color: "#2a2a3a",
+                        color: "#444",
                         fontSize: 10,
                         width: 22,
                         textAlign: "right",
@@ -1781,8 +1795,8 @@ export default function Dashboard() {
                   border: "1px solid rgba(255,255,255,0.1)",
                   borderRadius: 6,
                   color: "#888",
-                  fontSize: 11,
-                  padding: "4px 12px",
+                  fontSize: 12,
+                  padding: "8px 16px",
                   cursor: "pointer",
                   fontFamily: "'Space Mono', monospace",
                 }}
@@ -1900,7 +1914,7 @@ export default function Dashboard() {
           >
             <div
               style={{
-                color: "#2a2a3a",
+                color: "#444",
                 fontSize: 8,
                 letterSpacing: 2,
                 marginBottom: 12,
@@ -1973,7 +1987,7 @@ export default function Dashboard() {
             >
               <div
                 style={{
-                  color: "#2a2a3a",
+                  color: "#444",
                   fontSize: 8,
                   letterSpacing: 2,
                   marginBottom: 10,
@@ -2030,7 +2044,7 @@ export default function Dashboard() {
             >
               <div
                 style={{
-                  color: "#2a2a3a",
+                  color: "#444",
                   fontSize: 8,
                   letterSpacing: 2,
                   marginBottom: 10,
@@ -2104,7 +2118,7 @@ export default function Dashboard() {
             >
               <div
                 style={{
-                  color: "#2a2a3a",
+                  color: "#444",
                   fontSize: 8,
                   letterSpacing: 2,
                   marginBottom: 10,
@@ -2178,7 +2192,7 @@ export default function Dashboard() {
             >
               <div
                 style={{
-                  color: "#2a2a3a",
+                  color: "#444",
                   fontSize: 8,
                   letterSpacing: 2,
                   marginBottom: 10,
@@ -2220,7 +2234,7 @@ export default function Dashboard() {
           <div style={{ padding: "14px 20px" }}>
             <div
               style={{
-                color: "#2a2a3a",
+                color: "#444",
                 fontSize: 8,
                 letterSpacing: 2,
                 marginBottom: 8,
@@ -2248,7 +2262,7 @@ export default function Dashboard() {
               marginTop: "auto",
             }}
           >
-            <span style={{ color: "#2a2a3a", fontSize: 8 }}>
+            <span style={{ color: "#444", fontSize: 8 }}>
               LAST UPDATED {selected.lastUpdated}
             </span>
           </div>
