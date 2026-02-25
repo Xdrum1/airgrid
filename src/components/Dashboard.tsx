@@ -1201,6 +1201,126 @@ export default function Dashboard() {
                 selectedCorridor={selectedCorridor}
                 onCorridorSelect={setSelectedCorridor}
               />
+              {/* Floating subscribe banner */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 20,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  zIndex: 20,
+                  background: "rgba(5,5,8,0.92)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
+                  border: "1px solid rgba(0,255,136,0.2)",
+                  borderRadius: 10,
+                  padding: "14px 24px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
+                  maxWidth: 520,
+                  width: "90%",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+                }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ color: "#fff", fontSize: 12, fontWeight: 700, marginBottom: 3 }}>
+                    Get alerts for {selected.city}
+                  </div>
+                  <div style={{ color: "#555", fontSize: 9 }}>
+                    Regulatory changes, new filings, operator updates
+                  </div>
+                </div>
+                <input
+                  type="email"
+                  placeholder="you@company.com"
+                  id="map-subscribe-email"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 5,
+                    padding: "9px 12px",
+                    color: "#ccc",
+                    fontSize: 11,
+                    fontFamily: "'Space Mono', monospace",
+                    outline: "none",
+                    width: 180,
+                    flexShrink: 0,
+                  }}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(0,255,136,0.3)")}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")}
+                  onKeyDown={async (e) => {
+                    if (e.key !== "Enter") return;
+                    const input = e.currentTarget;
+                    const email = input.value.trim();
+                    if (!email) return;
+                    try {
+                      const res = await fetch("/api/subscribe", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          email,
+                          cityIds: [selected.id],
+                          changeTypes: ["new_filing", "status_change", "new_law", "faa_update"],
+                        }),
+                      });
+                      if (res.ok || res.status === 409) {
+                        input.value = "";
+                        input.placeholder = "Subscribed!";
+                        input.style.borderColor = "rgba(0,255,136,0.4)";
+                        setTimeout(() => {
+                          input.placeholder = "you@company.com";
+                          input.style.borderColor = "rgba(255,255,255,0.1)";
+                        }, 3000);
+                      }
+                    } catch { /* silent */ }
+                  }}
+                />
+                <button
+                  onClick={async () => {
+                    const input = document.getElementById("map-subscribe-email") as HTMLInputElement;
+                    if (!input) return;
+                    const email = input.value.trim();
+                    if (!email) { input.focus(); return; }
+                    try {
+                      const res = await fetch("/api/subscribe", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          email,
+                          cityIds: [selected.id],
+                          changeTypes: ["new_filing", "status_change", "new_law", "faa_update"],
+                        }),
+                      });
+                      if (res.ok || res.status === 409) {
+                        input.value = "";
+                        input.placeholder = "Subscribed!";
+                        input.style.borderColor = "rgba(0,255,136,0.4)";
+                        setTimeout(() => {
+                          input.placeholder = "you@company.com";
+                          input.style.borderColor = "rgba(255,255,255,0.1)";
+                        }, 3000);
+                      }
+                    } catch { /* silent */ }
+                  }}
+                  style={{
+                    background: "rgba(0,255,136,0.12)",
+                    border: "1px solid rgba(0,255,136,0.3)",
+                    borderRadius: 5,
+                    padding: "9px 16px",
+                    color: "#00ff88",
+                    fontSize: 9,
+                    letterSpacing: 1,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    fontFamily: "'Space Mono', monospace",
+                    flexShrink: 0,
+                    transition: "all 0.15s",
+                  }}
+                >
+                  SUBSCRIBE
+                </button>
+              </div>
             </div>
           ) : (
             <div
@@ -1522,6 +1642,17 @@ export default function Dashboard() {
             />
           </div>
 
+          {/* Alert Subscriptions — prominent placement */}
+          <div
+            style={{
+              padding: "14px 20px",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              background: "rgba(0,255,136,0.02)",
+            }}
+          >
+            <SubscribeForm cityId={selected.id} cityName={selected.city} />
+          </div>
+
           {/* Active Operators */}
           {selected.activeOperators.length > 0 && (
             <div
@@ -1797,11 +1928,6 @@ export default function Dashboard() {
             >
               {selected.notes}
             </p>
-          </div>
-
-          {/* Alert Subscriptions */}
-          <div style={{ padding: "14px 20px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-            <SubscribeForm cityId={selected.id} cityName={selected.city} />
           </div>
 
           {/* Last Updated */}
