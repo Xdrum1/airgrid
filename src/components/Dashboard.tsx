@@ -798,7 +798,7 @@ export default function Dashboard() {
           {GATED_TABS.includes(tab) && !session?.user ? (
             <AuthGate tab={tab} />
           ) : tab === "analytics" ? (
-            <div style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px" }}>
+            <div style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px", paddingLeft: isMobile ? 12 : 292, paddingRight: isMobile ? 12 : 316 }}>
               {/* Summary Stats Row */}
               <div style={{
                 display: isMobile ? "grid" : "flex",
@@ -1014,7 +1014,7 @@ export default function Dashboard() {
             </div>
           ) : tab === "activity" ? (
             <div
-              style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px" }}
+              style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px", paddingLeft: isMobile ? 12 : 292, paddingRight: isMobile ? 12 : 316 }}
             >
               <div
                 style={{
@@ -1188,7 +1188,7 @@ export default function Dashboard() {
             </div>
           ) : tab === "filings" ? (
             <div
-              style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px" }}
+              style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px", paddingLeft: isMobile ? 12 : 292, paddingRight: isMobile ? 12 : 316 }}
             >
               <div
                 style={{
@@ -1594,7 +1594,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div
-              style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px" }}
+              style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px", paddingLeft: isMobile ? 12 : 292, paddingRight: isMobile ? 12 : 316 }}
             >
               {CITIES.map((city, i) => {
                 const color = getScoreColor(city.score ?? 0);
