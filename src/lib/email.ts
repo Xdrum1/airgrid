@@ -1,3 +1,5 @@
+import { sendSesEmail } from "@/lib/ses";
+
 interface AlertEmailParams {
   to: string;
   cityName: string;
@@ -13,14 +15,14 @@ export async function sendAlertEmail({
   summary,
   sourceUrl,
 }: AlertEmailParams): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-
-  if (!apiKey) {
+  if (!process.env.AWS_ACCESS_KEY_ID) {
     console.log(
-      `[email] RESEND_API_KEY not configured — skipping alert email to ${to} for ${cityName}`
+      `[email] AWS credentials not configured — skipping alert email to ${to} for ${cityName}`
     );
     return false;
   }
+
+  const from = process.env.ALERT_FROM_EMAIL || "AirIndex <alerts@airindex.io>";
 
   const sourceLink = sourceUrl
     ? `<p style="margin:16px 0 0"><a href="${sourceUrl}" style="color:#00d4ff;font-size:12px;">View source →</a></p>`
@@ -43,26 +45,12 @@ export async function sendAlertEmail({
   `.trim();
 
   try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "AirIndex <alerts@updates.airgrid.io>",
-        to,
-        subject: `[AirIndex] ${changeType.replace("_", " ")} — ${cityName}`,
-        html,
-      }),
+    await sendSesEmail({
+      to,
+      from,
+      subject: `[AirIndex] ${changeType.replace("_", " ")} — ${cityName}`,
+      html,
     });
-
-    if (!res.ok) {
-      const body = await res.text();
-      console.error(`[email] Resend API error ${res.status}: ${body}`);
-      return false;
-    }
-
     console.log(`[email] Alert sent to ${to} for ${cityName}`);
     return true;
   } catch (err) {
