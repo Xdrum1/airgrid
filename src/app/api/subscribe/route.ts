@@ -6,6 +6,7 @@ import {
   validateCityIds,
   validateChangeTypes,
 } from "@/lib/subscriptions";
+import { sendSesEmail } from "@/lib/ses";
 
 export async function POST(request: Request) {
   try {
@@ -35,6 +36,32 @@ export async function POST(request: Request) {
     }
 
     const sub = await addSubscription(session.user.id, cityIds, changeTypes);
+
+    // Notify admin
+    const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
+    if (adminEmail && process.env.AWS_ACCESS_KEY_ID) {
+      const from = process.env.SES_FROM_EMAIL || "AirIndex <auth@airindex.io>";
+      const cities = cityIds.length === 0 ? "All cities" : cityIds.join(", ");
+      sendSesEmail({
+        to: adminEmail,
+        from,
+        subject: `[AirIndex] New subscription: ${session.user.email}`,
+        html: `
+          <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
+            <div style="margin-bottom:32px;">
+              <span style="font-weight:800;font-size:20px;color:#1a1a1a;letter-spacing:-0.5px;">AIRINDEX</span>
+              <span style="color:#999;font-size:11px;margin-left:8px;">ADMIN</span>
+            </div>
+            <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 8px;">New alert subscription:</p>
+            <p style="color:#7c3aed;font-size:16px;font-weight:700;margin:0 0 12px;">${session.user.email}</p>
+            <p style="color:#555;font-size:13px;margin:0 0 4px;">Markets: ${cities}</p>
+            <p style="color:#555;font-size:13px;margin:0 0 8px;">Types: ${changeTypes.join(", ")}</p>
+            <p style="color:#999;font-size:12px;margin:0;">${new Date().toUTCString()}</p>
+          </div>
+        `.trim(),
+      }).catch((err) => console.error("[subscribe] Admin notify failed:", err));
+    }
+
     return NextResponse.json({ data: sub }, { status: 201 });
   } catch (err: unknown) {
     if (err instanceof Error && err.message === "DUPLICATE") {
