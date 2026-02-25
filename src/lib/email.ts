@@ -15,7 +15,7 @@ export async function sendAlertEmail({
   summary,
   sourceUrl,
 }: AlertEmailParams): Promise<boolean> {
-  if (!process.env.AWS_ACCESS_KEY_ID) {
+  if (!process.env.SES_ACCESS_KEY_ID) {
     console.log(
       `[email] AWS credentials not configured — skipping alert email to ${to} for ${cityName}`
     );
