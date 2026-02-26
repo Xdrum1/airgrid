@@ -23,11 +23,11 @@ const TIERS = [
   },
   {
     name: "Pro",
-    price: "$49",
-    period: "/mo",
-    yearlyNote: "$399/yr (save 32%)",
+    price: "Free",
+    period: "during beta",
+    yearlyNote: "Early access — no credit card required",
     accent: "linear-gradient(135deg, #00d4ff, #7c3aed)",
-    badge: "MOST POPULAR",
+    badge: "EARLY ACCESS",
     features: [
       "Everything in Free, plus:",
       "Federal Register filings feed",
@@ -36,13 +36,13 @@ const TIERS = [
       "Corridor intelligence",
       "Watchlists & email alerts",
     ],
-    cta: { label: "Sign up free", href: "/login" },
+    cta: { label: "Start free", href: "/login" },
   },
   {
     name: "Enterprise",
-    price: "$299",
-    period: "/mo",
-    yearlyNote: "Custom pricing available",
+    price: "Custom",
+    period: "",
+    yearlyNote: "For teams and organizations",
     accent: "#7c3aed",
     badge: null,
     features: [
@@ -452,10 +452,10 @@ export default async function LandingPage() {
               margin: "0 0 12px",
             }}
           >
-            Simple, transparent pricing
+            Free to explore. Serious about UAM? Let&apos;s talk.
           </h2>
           <p style={{ fontFamily: "'Inter', sans-serif", color: "#666", fontSize: 13, margin: 0 }}>
-            Start free. Upgrade when you need deeper intelligence.
+            Full access during beta. No credit card required.
           </p>
         </div>
 
