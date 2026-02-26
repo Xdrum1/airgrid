@@ -17,16 +17,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       id: "ses",
       name: "Email",
       type: "email",
-      maxAge: 60 * 60, // 1 hour
-      sendVerificationRequest: async ({ identifier: email, url }) => {
+      maxAge: 10 * 60, // 10 minutes
+      generateVerificationToken: () => {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        console.log(`[auth] Generated verification code: ${code}`);
+        return code;
+      },
+      sendVerificationRequest: async ({ identifier: email, token }) => {
         const from = process.env.SES_FROM_EMAIL || "AirIndex <auth@airindex.io>";
 
         if (!process.env.SES_ACCESS_KEY_ID) {
-          console.log(`[auth] AWS credentials not set — magic link: ${url}`);
+          console.log(`[auth] AWS credentials not set — verification code: ${token}`);
           return;
         }
 
-        console.log(`[auth] Sending magic link to ${email}`);
+        console.log(`[auth] Sending verification code to ${email}`);
 
         const html = `
           <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
@@ -34,16 +39,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               <span style="font-weight:800;font-size:20px;color:#1a1a1a;letter-spacing:-0.5px;">AIRINDEX</span>
             </div>
             <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 24px;">
-              Click the button below to sign in to AirIndex.
+              Your verification code for AirIndex:
             </p>
-            <a href="${url}" style="display:inline-block;background:#7c3aed;color:#ffffff;font-weight:700;font-size:14px;padding:14px 32px;border-radius:6px;text-decoration:none;letter-spacing:0.04em;">
-              SIGN IN TO AIRINDEX
-            </a>
-            <p style="color:#999;font-size:12px;line-height:1.6;margin:28px 0 0;">
-              If you didn't request this, you can safely ignore this email.
-            </p>
-            <p style="color:#bbb;font-size:11px;margin:24px 0 0;">
-              Or copy this link: <a href="${url}" style="color:#7c3aed;word-break:break-all;">${url}</a>
+            <div style="background:#f5f3ff;border:2px solid #7c3aed;border-radius:8px;padding:20px;text-align:center;margin:0 0 24px;">
+              <span style="font-family:'Courier New',monospace;font-size:32px;font-weight:700;color:#7c3aed;letter-spacing:8px;">${token}</span>
+            </div>
+            <p style="color:#999;font-size:12px;line-height:1.6;margin:0 0 0;">
+              This code expires in 10 minutes. If you didn't request this, you can safely ignore this email.
             </p>
           </div>
         `.trim();
@@ -52,12 +54,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           await sendSesEmail({
             to: email,
             from,
-            subject: "Sign in to AirIndex",
+            subject: `${token} — Your AirIndex verification code`,
             html,
           });
-          console.log(`[auth] Magic link sent successfully to ${email}`);
+          console.log(`[auth] Verification code sent successfully to ${email}`);
         } catch (err) {
-          console.error(`[auth] Failed to send magic link to ${email}:`, err);
+          console.error(`[auth] Failed to send verification code to ${email}:`, err);
           throw err;
         }
       },
