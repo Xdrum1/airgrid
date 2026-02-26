@@ -1,67 +1,31 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-function clearCookies(res: NextResponse) {
+const ALL_COOKIES = [
+  "authjs.session-token",
+  "authjs.csrf-token",
+  "authjs.callback-url",
+  "__Secure-authjs.session-token",
+  "__Secure-authjs.csrf-token",
+  "__Secure-authjs.callback-url",
+  "__Host-authjs.csrf-token",
+];
 
-  // Clear all authjs cookies — covers both HTTP and HTTPS prefixed variants.
-  // Must explicitly set path/secure/sameSite to match how NextAuth sets them,
-  // otherwise the browser won't recognise the deletion.
-  const baseCookies = [
-    "authjs.session-token",
-    "authjs.csrf-token",
-    "authjs.callback-url",
-  ];
-  const secureCookies = [
-    "__Secure-authjs.session-token",
-    "__Secure-authjs.csrf-token",
-    "__Secure-authjs.callback-url",
-  ];
-  const hostCookies = [
-    "__Host-authjs.csrf-token",
-  ];
+export async function GET() {
+  // Redirect to the real origin, not Amplify's internal Lambda URL
+  const origin = process.env.AUTH_URL || "https://www.airindex.io";
+  const res = NextResponse.redirect(origin);
 
-  for (const name of baseCookies) {
-    res.cookies.set(name, "", {
-      expires: new Date(0),
-      path: "/",
-      httpOnly: true,
-      sameSite: "lax",
-    });
+  for (const name of ALL_COOKIES) {
+    // Delete with both secure and non-secure variants to cover all environments
+    res.headers.append(
+      "Set-Cookie",
+      `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax`
+    );
+    res.headers.append(
+      "Set-Cookie",
+      `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax`
+    );
   }
 
-  for (const name of secureCookies) {
-    res.cookies.set(name, "", {
-      expires: new Date(0),
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-    });
-  }
-
-  for (const name of hostCookies) {
-    res.cookies.set(name, "", {
-      expires: new Date(0),
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-    });
-  }
-
-  return res;
-}
-
-// GET — browser navigates here directly, cookies are cleared via redirect
-export async function GET(req: NextRequest) {
-  const url = new URL("/", req.url);
-  const res = NextResponse.redirect(url);
-  clearCookies(res);
-  return res;
-}
-
-// POST — kept for backwards compat
-export async function POST() {
-  const res = NextResponse.json({ ok: true });
-  clearCookies(res);
   return res;
 }
