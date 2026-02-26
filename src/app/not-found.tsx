@@ -37,7 +37,7 @@ export default function NotFound() {
         MARKET NOT FOUND
       </div>
       <Link
-        href="/"
+        href="/dashboard"
         style={{
           color: "#00d4ff",
           fontSize: 11,

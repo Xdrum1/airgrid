@@ -63,7 +63,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
 
   const handleSubscribe = async () => {
     if (!session?.user) {
-      router.push(`/login?callbackUrl=${encodeURIComponent("/?tab=map")}`);
+      router.push(`/login?callbackUrl=${encodeURIComponent("/dashboard?tab=map")}`);
       return;
     }
 
@@ -138,7 +138,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
         <button
           onClick={() => {
             if (!session?.user) {
-              router.push(`/login?callbackUrl=${encodeURIComponent("/?tab=map")}`);
+              router.push(`/login?callbackUrl=${encodeURIComponent("/dashboard?tab=map")}`);
               return;
             }
             setState("expanded");
