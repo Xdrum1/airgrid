@@ -114,6 +114,11 @@ export interface Corridor {
   distanceKm: number;
   estimatedFlightMinutes: number;
   maxAltitudeFt: number;
+  altitudeMinFt?: number;
+  faaAuthNumber?: string;
+  effectiveDate?: string;
+  expirationDate?: string;
+  clearedOperators?: string[];
   notes?: string;
   sourceUrl?: string;
   lastUpdated: string;
