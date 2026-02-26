@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import { City, Operator, Vertiport, Corridor, ChangelogEntry } from "@/types";
 import type { FederalFiling } from "@/lib/faa-api";
 import { CITIES, OPERATORS, OPERATORS_MAP, getVertiportsForCity, getCorridorsForCity } from "@/data/seed";
@@ -297,6 +297,7 @@ type MobilePanel = "none" | "cityList" | "detail";
 export default function Dashboard() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialTab = (searchParams.get("tab") as TabKey) || "map";
   const isMobile = useIsMobile();
 
@@ -551,7 +552,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <button
-              onClick={() => signIn()}
+              onClick={() => router.push("/login")}
               style={{
                 background: "linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15))",
                 border: "1px solid rgba(0,212,255,0.3)",
@@ -1448,7 +1449,7 @@ export default function Dashboard() {
                       if (session?.user) {
                         setMobilePanel("detail");
                       } else {
-                        signIn();
+                        router.push("/login");
                       }
                     }}
                     style={{
