@@ -32,6 +32,7 @@ export async function notifySubscribers(
 
         await sendAlertEmail({
           to: sub.email,
+          subscriptionId: sub.id,
           cityName,
           changeType: entry.changeType,
           summary: entry.summary,

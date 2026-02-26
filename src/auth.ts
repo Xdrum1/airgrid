@@ -67,25 +67,61 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   events: {
     async createUser({ user }) {
-      const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
-      if (!adminEmail || !process.env.SES_ACCESS_KEY_ID) return;
+      if (!process.env.SES_ACCESS_KEY_ID) return;
       const from = process.env.SES_FROM_EMAIL || "AirIndex <auth@airindex.io>";
-      await sendSesEmail({
-        to: adminEmail,
-        from,
-        subject: `[AirIndex] New signup: ${user.email}`,
-        html: `
-          <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
-            <div style="margin-bottom:32px;">
-              <span style="font-weight:800;font-size:20px;color:#1a1a1a;letter-spacing:-0.5px;">AIRINDEX</span>
-              <span style="color:#999;font-size:11px;margin-left:8px;">ADMIN</span>
+      const appUrl = process.env.AUTH_URL || "https://airindex.io";
+
+      // Welcome email to the new user
+      if (user.email) {
+        sendSesEmail({
+          to: user.email,
+          from,
+          subject: "Welcome to AirIndex",
+          html: `
+            <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
+              <div style="margin-bottom:32px;">
+                <span style="font-weight:800;font-size:20px;color:#1a1a1a;letter-spacing:-0.5px;">AIRINDEX</span>
+              </div>
+              <p style="color:#333;font-size:16px;font-weight:600;line-height:1.6;margin:0 0 16px;">
+                Welcome to AirIndex.
+              </p>
+              <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 8px;">
+                You now have access to market readiness scores, regulatory filings, corridor tracking, and alert subscriptions across 20 US urban air mobility markets.
+              </p>
+              <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 24px;">
+                Subscribe to alerts on any city page to get notified when filings, legislation, or FAA updates drop.
+              </p>
+              <a href="${appUrl}/dashboard" style="display:inline-block;padding:12px 28px;background:#00d4ff;color:#050508;font-size:13px;font-weight:700;text-decoration:none;border-radius:6px;">
+                Open Dashboard
+              </a>
+              <p style="color:#bbb;font-size:11px;margin-top:32px;line-height:1.6;">
+                AirIndex — the intelligence layer for urban air mobility.
+              </p>
             </div>
-            <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 8px;">New user signed up:</p>
-            <p style="color:#7c3aed;font-size:16px;font-weight:700;margin:0 0 8px;">${user.email}</p>
-            <p style="color:#999;font-size:12px;margin:0;">${new Date().toUTCString()}</p>
-          </div>
-        `.trim(),
-      }).catch((err) => console.error("[auth] Admin notify failed:", err));
+          `.trim(),
+        }).catch((err) => console.error("[auth] Welcome email failed:", err));
+      }
+
+      // Admin notification
+      const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
+      if (adminEmail) {
+        sendSesEmail({
+          to: adminEmail,
+          from,
+          subject: `[AirIndex] New signup: ${user.email}`,
+          html: `
+            <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
+              <div style="margin-bottom:32px;">
+                <span style="font-weight:800;font-size:20px;color:#1a1a1a;letter-spacing:-0.5px;">AIRINDEX</span>
+                <span style="color:#999;font-size:11px;margin-left:8px;">ADMIN</span>
+              </div>
+              <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 8px;">New user signed up:</p>
+              <p style="color:#7c3aed;font-size:16px;font-weight:700;margin:0 0 8px;">${user.email}</p>
+              <p style="color:#999;font-size:12px;margin:0;">${new Date().toUTCString()}</p>
+            </div>
+          `.trim(),
+        }).catch((err) => console.error("[auth] Admin notify failed:", err));
+      }
     },
   },
   callbacks: {
