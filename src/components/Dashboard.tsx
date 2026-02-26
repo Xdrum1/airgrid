@@ -514,7 +514,10 @@ export default function Dashboard() {
                   </div>
                   <div style={{ display: "flex", gap: 8 }}>
                     <button
-                      onClick={() => signOut()}
+                      onClick={async () => {
+                        await signOut({ redirect: false });
+                        window.location.href = "/";
+                      }}
                       style={{
                         background: "rgba(255,68,68,0.1)",
                         border: "1px solid rgba(255,68,68,0.3)",
