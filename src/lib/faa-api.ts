@@ -45,6 +45,39 @@ export interface FederalFiling {
   type: string;
 }
 
+// The Federal Register API doesn't support OR queries reliably.
+// We run parallel searches per term and merge/deduplicate.
+const UAM_SEARCH_TERMS = [
+  "eVTOL",
+  "powered-lift",
+  '"advanced air mobility"',
+  "vertiport",
+  '"unmanned aircraft system"',
+];
+
+async function fetchFederalRegisterTerm(
+  term: string,
+  startDate: string,
+  endDate: string
+): Promise<FederalFiling[]> {
+  try {
+    const params = new URLSearchParams({
+      "conditions[term]": term,
+      "conditions[publication_date][gte]": startDate,
+      "conditions[publication_date][lte]": endDate,
+      per_page: "20",
+      order: "newest",
+    });
+
+    const url = `${FEDERAL_REGISTER_BASE}/documents.json?${params}`;
+    const res = await fetch(url);
+    const json = await res.json();
+    return json.results ?? [];
+  } catch {
+    return [];
+  }
+}
+
 export async function fetchFederalRegisterUAM(
   daysBack: number = 730
 ): Promise<FederalFiling[]> {
@@ -54,20 +87,39 @@ export async function fetchFederalRegisterUAM(
       .toISOString()
       .split("T")[0];
 
-    const params = new URLSearchParams({
-      "conditions[term]": "urban air mobility OR eVTOL OR vertiport OR air taxi OR powered-lift OR unmanned aircraft",
-      "conditions[publication_date][gte]": startDate,
-      "conditions[publication_date][lte]": endDate,
-      per_page: "20",
-      order: "newest",
-    });
+    console.log(`[FederalRegister] Fetching ${UAM_SEARCH_TERMS.length} terms from ${startDate} to ${endDate}`);
 
-    const url = `${FEDERAL_REGISTER_BASE}/documents.json?${params}`;
-    console.log("[FederalRegister] Fetching:", url);
+    const results = await Promise.all(
+      UAM_SEARCH_TERMS.map((term) => fetchFederalRegisterTerm(term, startDate, endDate))
+    );
 
-    const res = await fetch(url);
-    const json = await res.json();
-    return json.results ?? [];
+    // Merge and deduplicate by document_number
+    const seen = new Set<string>();
+    const merged: FederalFiling[] = [];
+    for (const batch of results) {
+      for (const filing of batch) {
+        if (!seen.has(filing.document_number)) {
+          seen.add(filing.document_number);
+          merged.push(filing);
+        }
+      }
+    }
+
+    // Filter out irrelevant results that slipped through broad search terms.
+    // Keep filings whose title OR abstract mentions UAM-related keywords.
+    const UAM_KEYWORDS = /evtol|vtol|powered.lift|vertiport|air.taxi|air.mobility|unmanned.aircraft|drone|uas\b|aam\b|airworthiness|airspace|pilot.cert|flight.restrict|special.condition|beyond.visual/i;
+    const NOISE = /safety zone|marine mammal|coast guard/i;
+    const filtered = merged.filter(
+      (f) =>
+        (UAM_KEYWORDS.test(f.title) || UAM_KEYWORDS.test(f.abstract || "")) &&
+        !NOISE.test(f.title)
+    );
+
+    // Sort newest first
+    filtered.sort((a, b) => b.publication_date.localeCompare(a.publication_date));
+
+    console.log(`[FederalRegister] ${merged.length} total → ${filtered.length} relevant filings`);
+    return filtered;
   } catch (err) {
     console.error("[FederalRegister] Fetch failed:", err);
     return [];
