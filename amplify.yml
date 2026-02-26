@@ -4,7 +4,7 @@ frontend:
     preBuild:
       commands:
         - npm ci
-        - env | grep -E '^(CRON_SECRET|NEXT_PUBLIC_|FAA_|FEDERAL_|LEGISCAN_|SEC_|RESEND_|ALERT_|DATABASE_)' >> .env.production
+        - env | grep -E '^(AUTH_|SES_|ADMIN_|CRON_SECRET|NEXT_PUBLIC_|FAA_|FEDERAL_|LEGISCAN_|SEC_|RESEND_|ALERT_|DATABASE_)' >> .env.production
     build:
       commands:
         - npm run build
