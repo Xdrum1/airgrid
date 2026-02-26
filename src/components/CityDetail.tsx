@@ -235,8 +235,8 @@ export default function CityDetail({
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <h1
                   style={{
-                    fontFamily: "'Syne', sans-serif",
-                    fontWeight: 800,
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontWeight: 700,
                     fontSize: 42,
                     margin: 0,
                     lineHeight: 1.1,
@@ -275,8 +275,8 @@ export default function CityDetail({
           <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginTop: 20, marginBottom: 20 }}>
             <span
               style={{
-                fontFamily: "'Syne', sans-serif",
-                fontWeight: 800,
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700,
                 fontSize: 64,
                 color: scoreColor,
                 lineHeight: 1,
@@ -397,7 +397,7 @@ export default function CityDetail({
                   </div>
                   <div
                     style={{
-                      fontFamily: "'Syne', sans-serif",
+                      fontFamily: "'Space Grotesk', sans-serif",
                       fontWeight: 700,
                       fontSize: 22,
                       color: value > 0 ? color : "#1a1a28",
@@ -464,8 +464,8 @@ export default function CityDetail({
                     />
                     <span
                       style={{
-                        fontFamily: "'Syne', sans-serif",
-                        fontWeight: 700,
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontWeight: 600,
                         fontSize: 16,
                         color: "#eee",
                       }}

@@ -160,9 +160,9 @@ function LoginForm() {
           <>
             <h1
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: 20,
-                fontWeight: 800,
+                fontWeight: 700,
                 color: "#fff",
                 marginBottom: 12,
               }}
@@ -171,6 +171,7 @@ function LoginForm() {
             </h1>
             <p
               style={{
+                fontFamily: "'Inter', sans-serif",
                 color: "#888899",
                 fontSize: 12,
                 marginBottom: 32,
@@ -273,9 +274,9 @@ function LoginForm() {
 
             <h1
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: 20,
-                fontWeight: 800,
+                fontWeight: 700,
                 color: "#fff",
                 marginBottom: 12,
               }}
@@ -284,6 +285,7 @@ function LoginForm() {
             </h1>
             <p
               style={{
+                fontFamily: "'Inter', sans-serif",
                 color: "#888899",
                 fontSize: 12,
                 marginBottom: 32,

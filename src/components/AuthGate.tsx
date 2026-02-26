@@ -65,9 +65,9 @@ export default function AuthGate({ tab }: AuthGateProps) {
 
         <h2
           style={{
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 18,
-            fontWeight: 800,
+            fontWeight: 700,
             color: "#fff",
             marginBottom: 8,
             margin: "0 0 8px",
@@ -77,6 +77,7 @@ export default function AuthGate({ tab }: AuthGateProps) {
         </h2>
         <p
           style={{
+            fontFamily: "'Inter', sans-serif",
             color: "#666",
             fontSize: 11,
             lineHeight: 1.7,
