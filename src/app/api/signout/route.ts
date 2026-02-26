@@ -1,7 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export async function POST() {
-  const res = NextResponse.json({ ok: true });
+function clearCookies(res: NextResponse) {
 
   // Clear all authjs cookies — covers both HTTP and HTTPS prefixed variants.
   // Must explicitly set path/secure/sameSite to match how NextAuth sets them,
@@ -49,5 +48,20 @@ export async function POST() {
     });
   }
 
+  return res;
+}
+
+// GET — browser navigates here directly, cookies are cleared via redirect
+export async function GET(req: NextRequest) {
+  const url = new URL("/", req.url);
+  const res = NextResponse.redirect(url);
+  clearCookies(res);
+  return res;
+}
+
+// POST — kept for backwards compat
+export async function POST() {
+  const res = NextResponse.json({ ok: true });
+  clearCookies(res);
   return res;
 }
