@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useState } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import Map, {
   Marker,
   Popup,
@@ -607,6 +607,30 @@ export default function MapView({
     },
     []
   );
+
+  // Fly to corridor bounds when selectedCorridor changes (e.g. from CORRIDORS tab)
+  useEffect(() => {
+    if (!selectedCorridor || !mapRef.current) return;
+    const allPoints = [
+      selectedCorridor.startPoint,
+      ...(selectedCorridor.waypoints ?? []),
+      selectedCorridor.endPoint,
+    ];
+    const lngs = allPoints.map((p) => p.lng);
+    const lats = allPoints.map((p) => p.lat);
+    const sw: [number, number] = [Math.min(...lngs), Math.min(...lats)];
+    const ne: [number, number] = [Math.max(...lngs), Math.max(...lats)];
+
+    mapRef.current.fitBounds([sw, ne], {
+      padding: isMobile ? 60 : { top: 80, bottom: 80, left: 320, right: 340 },
+      duration: 1400,
+      maxZoom: 11,
+    });
+    setCorridorPopup(selectedCorridor);
+    setPopup(null);
+    setVertiportPopup(null);
+    setHasNavigated(true);
+  }, [selectedCorridor, isMobile]);
 
   const handleMarkerClick = useCallback(
     (city: City) => {
