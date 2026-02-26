@@ -16,8 +16,8 @@ export default function NotFound() {
     >
       <div
         style={{
-          fontFamily: "'Syne', sans-serif",
-          fontWeight: 800,
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontWeight: 700,
           fontSize: 96,
           color: "#1a1a28",
           lineHeight: 1,
