@@ -220,8 +220,8 @@ export default async function LandingPage() {
             style={{
               display: "inline-block",
               padding: "14px 32px",
-              background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
-              color: "#000",
+              background: "#00d4ff",
+              color: "#050508",
               fontSize: 12,
               fontWeight: 700,
               fontFamily: "'Syne', sans-serif",
@@ -281,8 +281,8 @@ export default async function LandingPage() {
             >
               <div
                 style={{
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 800,
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
                   fontSize: 32,
                   color: "#00d4ff",
                   lineHeight: 1,
@@ -345,14 +345,14 @@ export default async function LandingPage() {
             >
               <div
                 style={{
-                  width: 36,
-                  height: 36,
+                  width: 44,
+                  height: 44,
                   borderRadius: "50%",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  border: "1px solid rgba(0,212,255,0.2)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 14,
+                  fontSize: 20,
                   color: "#00d4ff",
                   marginBottom: 16,
                 }}
@@ -629,6 +629,63 @@ export default async function LandingPage() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* ======== Closing CTA ======== */}
+      <section
+        style={{
+          maxWidth: 1120,
+          margin: "0 auto",
+          padding: "0 32px 100px",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            paddingTop: 72,
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(20px, 2.5vw, 30px)",
+              margin: "0 0 12px",
+              color: "#fff",
+            }}
+          >
+            The UAM industry moves fast. Stay ahead of it.
+          </h2>
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              color: "#555",
+              fontSize: 13,
+              margin: "0 0 32px",
+            }}
+          >
+            Free access to market scores, rankings, and the interactive map.
+          </p>
+          <Link
+            href="/login"
+            style={{
+              display: "inline-block",
+              padding: "14px 36px",
+              background: "#00d4ff",
+              color: "#050508",
+              fontSize: 12,
+              fontWeight: 700,
+              fontFamily: "'Syne', sans-serif",
+              letterSpacing: "0.06em",
+              textDecoration: "none",
+              borderRadius: 6,
+              transition: "opacity 0.15s",
+            }}
+          >
+            Sign up free
+          </Link>
         </div>
       </section>
 
