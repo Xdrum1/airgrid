@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import type { ChangeType } from "@/types";
 
 interface SubscribeFormProps {
@@ -22,6 +23,7 @@ type FormState = "collapsed" | "expanded" | "submitting" | "success";
 
 export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) {
   const { data: session } = useSession();
+  const router = useRouter();
   const [state, setState] = useState<FormState>("collapsed");
   const [selectedTypes, setSelectedTypes] = useState<ChangeType[]>([
     "new_filing",
@@ -61,7 +63,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
 
   const handleSubscribe = async () => {
     if (!session?.user) {
-      signIn(undefined, { callbackUrl: `/?tab=map` });
+      router.push(`/login?callbackUrl=${encodeURIComponent("/?tab=map")}`);
       return;
     }
 
@@ -136,7 +138,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
         <button
           onClick={() => {
             if (!session?.user) {
-              signIn(undefined, { callbackUrl: `/?tab=map` });
+              router.push(`/login?callbackUrl=${encodeURIComponent("/?tab=map")}`);
               return;
             }
             setState("expanded");
