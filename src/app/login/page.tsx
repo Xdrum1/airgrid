@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
 
 function LoginForm() {
@@ -10,6 +10,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
+  const router = useRouter();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   const authError = searchParams.get("error");
 
@@ -20,7 +21,20 @@ function LoginForm() {
     setError("");
 
     try {
-      await signIn("ses", { email: email.trim(), callbackUrl });
+      const result = await signIn("ses", {
+        email: email.trim(),
+        callbackUrl,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError(result.error === "Configuration"
+          ? "Auth service error — please try again or contact support."
+          : "Something went wrong. Please try again.");
+        setLoading(false);
+      } else {
+        router.push("/login/check-email");
+      }
     } catch {
       setError("Something went wrong. Please try again.");
       setLoading(false);
