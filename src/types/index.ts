@@ -61,6 +61,13 @@ export interface City {
   score?: number;
   breakdown?: ScoreBreakdown;
 
+  // Source citations per scoring factor
+  scoreSources?: Partial<Record<keyof ScoreBreakdown, {
+    citation: string;
+    date: string;          // "YYYY-MM" verification date
+    url?: string;
+  }>>;
+
   // Content
   notes: string;
   keyMilestones: string[];

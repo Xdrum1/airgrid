@@ -379,6 +379,7 @@ export default function CityDetail({
               const value = city.breakdown?.[key as keyof typeof city.breakdown] ?? 0;
               const color = SCORE_COMPONENT_COLORS[key] ?? "#555";
               const label = SCORE_COMPONENT_LABELS[key] ?? key;
+              const source = city.scoreSources?.[key as keyof typeof city.scoreSources];
               return (
                 <div
                   key={key}
@@ -406,7 +407,7 @@ export default function CityDetail({
                   >
                     {value}/{max}
                   </div>
-                  <div style={{ background: "#0a0a0f", borderRadius: 2, height: 4, overflow: "hidden" }}>
+                  <div style={{ background: "#0a0a0f", borderRadius: 2, height: 4, overflow: "hidden", marginBottom: source ? 10 : 0 }}>
                     <div
                       style={{
                         width: mounted ? `${(value / max) * 100}%` : "0%",
@@ -417,6 +418,27 @@ export default function CityDetail({
                       }}
                     />
                   </div>
+                  {source && (
+                    <div style={{ marginTop: 2 }}>
+                      <div style={{ color: "#444", fontSize: 9, lineHeight: 1.5 }}>
+                        {source.url ? (
+                          <a
+                            href={source.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: "#444", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                          >
+                            {source.citation}
+                          </a>
+                        ) : (
+                          source.citation
+                        )}
+                      </div>
+                      <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 1, marginTop: 3 }}>
+                        VERIFIED {source.date}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
