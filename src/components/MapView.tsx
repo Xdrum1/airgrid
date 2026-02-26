@@ -593,6 +593,7 @@ export default function MapView({
   const [vertiportPopup, setVertiportPopup] = useState<Vertiport | null>(null);
   const [corridorPopup, setCorridorPopup] = useState<Corridor | null>(null);
   const [hasNavigated, setHasNavigated] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -609,8 +610,9 @@ export default function MapView({
   );
 
   // Fly to corridor bounds when selectedCorridor changes (e.g. from CORRIDORS tab)
+  // mapLoaded dep ensures this fires after the map is ready on remount
   useEffect(() => {
-    if (!selectedCorridor || !mapRef.current) return;
+    if (!selectedCorridor || !mapLoaded || !mapRef.current) return;
     const allPoints = [
       selectedCorridor.startPoint,
       ...(selectedCorridor.waypoints ?? []),
@@ -630,7 +632,7 @@ export default function MapView({
     setPopup(null);
     setVertiportPopup(null);
     setHasNavigated(true);
-  }, [selectedCorridor, isMobile]);
+  }, [selectedCorridor, mapLoaded, isMobile]);
 
   const handleMarkerClick = useCallback(
     (city: City) => {
@@ -796,6 +798,7 @@ export default function MapView({
         projection={{ name: "mercator" }}
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
+        onLoad={() => setMapLoaded(true)}
         onClick={handleMapClick}
         onMouseEnter={() => {
           const canvas = mapRef.current?.getCanvas();
