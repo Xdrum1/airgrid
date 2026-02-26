@@ -26,6 +26,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return;
         }
 
+        console.log(`[auth] Sending magic link to ${email}`);
+
         const html = `
           <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
             <div style="margin-bottom:32px;">
@@ -46,12 +48,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           </div>
         `.trim();
 
-        await sendSesEmail({
-          to: email,
-          from,
-          subject: "Sign in to AirIndex",
-          html,
-        });
+        try {
+          await sendSesEmail({
+            to: email,
+            from,
+            subject: "Sign in to AirIndex",
+            html,
+          });
+          console.log(`[auth] Magic link sent successfully to ${email}`);
+        } catch (err) {
+          console.error(`[auth] Failed to send magic link to ${email}:`, err);
+          throw err;
+        }
       },
     },
   ],
