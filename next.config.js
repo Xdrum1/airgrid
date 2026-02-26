@@ -7,6 +7,7 @@ const nextConfig = {
   env: {
     AUTH_SECRET: process.env.AUTH_SECRET,
     AUTH_TRUST_HOST: process.env.AUTH_TRUST_HOST,
+    AUTH_URL: process.env.AUTH_URL,
     DATABASE_URL: process.env.DATABASE_URL,
     SES_ACCESS_KEY_ID: process.env.SES_ACCESS_KEY_ID,
     SES_SECRET_ACCESS_KEY: process.env.SES_SECRET_ACCESS_KEY,
