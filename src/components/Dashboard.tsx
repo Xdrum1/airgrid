@@ -11,7 +11,9 @@ import { CITIES, OPERATORS, OPERATORS_MAP, getVertiportsForCity, getCorridorsFor
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useWatchlist } from "@/hooks/useWatchlist";
 import SubscribeForm from "./SubscribeForm";
+import WatchlistStar from "./WatchlistStar";
 import AuthGate from "./AuthGate";
 
 const MapView = dynamic(() => import("./MapView"), {
@@ -135,11 +137,13 @@ function CityCard({
   isSelected,
   onClick,
   rank,
+  starNode,
 }: {
   city: City;
   isSelected: boolean;
   onClick: () => void;
   rank: number;
+  starNode?: React.ReactNode;
 }) {
   const color = getScoreColor(city.score ?? 0);
   const posture = getPostureConfig(city.regulatoryPosture);
@@ -193,6 +197,7 @@ function CityCard({
               {city.state}
             </span>
           </div>
+          {starNode}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span
@@ -287,7 +292,7 @@ function BreakdownRow({
 // Main Dashboard
 // -------------------------------------------------------
 
-type FilterKey = "all" | "hot" | "operators" | "vertiport";
+type FilterKey = "all" | "hot" | "operators" | "vertiport" | "watching";
 type TabKey = "map" | "rank" | "filings" | "activity" | "analytics";
 
 const GATED_TABS: TabKey[] = ["filings", "activity", "analytics"];
@@ -321,6 +326,9 @@ export default function Dashboard() {
   const [changelogLoading, setChangelogLoading] = useState(false);
   const [changelogError, setChangelogError] = useState<string | null>(null);
   const [changelogFetchedAt, setChangelogFetchedAt] = useState<string | null>(null);
+
+  // Watchlist
+  const { cityIds: watchedCityIds, isWatched, toggle: toggleWatch, isAuthenticated } = useWatchlist();
 
   // Vertiport & Corridor state
   const [selectedVertiport, setSelectedVertiport] = useState<Vertiport | null>(null);
@@ -382,6 +390,7 @@ export default function Dashboard() {
   }, [tab, changelogFetchedAt]);
 
   const filtered = CITIES.filter((c) => {
+    if (filter === "watching") return watchedCityIds.includes(c.id);
     if (filter === "hot") return (c.score ?? 0) >= 60;
     if (filter === "operators") return c.activeOperators.length > 0;
     if (filter === "vertiport") return c.vertiportCount > 0;
@@ -675,33 +684,39 @@ export default function Dashboard() {
                   ["hot", "HOT"],
                   ["operators", "ACTIVE OPS"],
                   ["vertiport", "VERTIPORT"],
+                  ...(watchedCityIds.length > 0
+                    ? ([["watching", `WATCHING (${watchedCityIds.length})`]] as [FilterKey, string][])
+                    : []),
                 ] as [FilterKey, string][]
-              ).map(([val, lbl]) => (
-                <button
-                  key={val}
-                  onClick={() => setFilter(val)}
-                  style={{
-                    background:
-                      filter === val
-                        ? "rgba(0,212,255,0.12)"
+              ).map(([val, lbl]) => {
+                const isWatching = val === "watching";
+                const isActive = filter === val;
+                const activeColor = isWatching ? "#f59e0b" : "#00d4ff";
+                return (
+                  <button
+                    key={val}
+                    onClick={() => setFilter(val)}
+                    style={{
+                      background: isActive
+                        ? isWatching ? "rgba(245,158,11,0.12)" : "rgba(0,212,255,0.12)"
                         : "transparent",
-                    border:
-                      filter === val
-                        ? "1px solid rgba(0,212,255,0.35)"
+                      border: isActive
+                        ? `1px solid ${activeColor}59`
                         : "1px solid rgba(255,255,255,0.07)",
-                    color: filter === val ? "#00d4ff" : "#555",
-                    borderRadius: 4,
-                    padding: isMobile ? "5px 10px" : "4px 8px",
-                    fontSize: isMobile ? 9 : 8,
-                    letterSpacing: 1,
-                    cursor: "pointer",
-                    fontFamily: "'Space Mono', monospace",
-                    transition: "all 0.15s",
-                  }}
-                >
-                  {lbl}
-                </button>
-              ))}
+                      color: isActive ? activeColor : "#555",
+                      borderRadius: 4,
+                      padding: isMobile ? "5px 10px" : "4px 8px",
+                      fontSize: isMobile ? 9 : 8,
+                      letterSpacing: 1,
+                      cursor: "pointer",
+                      fontFamily: "'Space Mono', monospace",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    {lbl}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -727,6 +742,15 @@ export default function Dashboard() {
                     setSelected(city);
                     if (isMobile) setMobilePanel("detail");
                   }}
+                  starNode={
+                    <WatchlistStar
+                      cityId={city.id}
+                      isWatched={isWatched(city.id)}
+                      onToggle={toggleWatch}
+                      isAuthenticated={isAuthenticated}
+                      size="sm"
+                    />
+                  }
                 />
               </div>
             ))}
@@ -1403,6 +1427,9 @@ export default function Dashboard() {
                 selectedCorridor={selectedCorridor}
                 onCorridorSelect={setSelectedCorridor}
                 isMobile={isMobile}
+                watchedCityIds={watchedCityIds}
+                onToggleWatch={toggleWatch}
+                isAuthenticated={isAuthenticated}
               />
 
               {/* Mobile: floating MARKETS button */}
@@ -1636,6 +1663,13 @@ export default function Dashboard() {
                     >
                       {i + 1}
                     </span>
+                    <WatchlistStar
+                      cityId={city.id}
+                      isWatched={isWatched(city.id)}
+                      onToggle={toggleWatch}
+                      isAuthenticated={isAuthenticated}
+                      size="sm"
+                    />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div
                         style={{
@@ -1823,23 +1857,32 @@ export default function Dashboard() {
               }}
             >
               <div>
-                <Link
-                  href={`/city/${selected.id}`}
-                  style={{
-                    fontFamily: "'Syne', sans-serif",
-                    fontWeight: 800,
-                    fontSize: 19,
-                    lineHeight: 1.1,
-                    color: "inherit",
-                    textDecoration: "none",
-                    display: "block",
-                    transition: "color 0.15s",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#00d4ff")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}
-                >
-                  {selected.city}
-                </Link>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <Link
+                    href={`/city/${selected.id}`}
+                    style={{
+                      fontFamily: "'Syne', sans-serif",
+                      fontWeight: 800,
+                      fontSize: 19,
+                      lineHeight: 1.1,
+                      color: "inherit",
+                      textDecoration: "none",
+                      display: "block",
+                      transition: "color 0.15s",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = "#00d4ff")}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}
+                  >
+                    {selected.city}
+                  </Link>
+                  <WatchlistStar
+                    cityId={selected.id}
+                    isWatched={isWatched(selected.id)}
+                    onToggle={toggleWatch}
+                    isAuthenticated={isAuthenticated}
+                    size="md"
+                  />
+                </div>
                 <div style={{ color: "#444", fontSize: 10, marginTop: 3 }}>
                   {selected.state} · United States
                 </div>

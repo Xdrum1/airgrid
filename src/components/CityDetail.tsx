@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { City, Operator, Vertiport, Corridor } from "@/types";
 import { getScoreColor, getScoreTier, getPostureConfig, SCORE_WEIGHTS } from "@/lib/scoring";
+import { useWatchlist } from "@/hooks/useWatchlist";
+import WatchlistStar from "./WatchlistStar";
 import SubscribeForm from "./SubscribeForm";
 
 // -------------------------------------------------------
@@ -123,6 +125,7 @@ export default function CityDetail({
   corridors,
 }: CityDetailProps) {
   const [mounted, setMounted] = useState(false);
+  const { isWatched, toggle: toggleWatch, isAuthenticated } = useWatchlist();
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 60);
     return () => clearTimeout(t);
@@ -229,17 +232,26 @@ export default function CityDetail({
         >
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 8 }}>
             <div>
-              <h1
-                style={{
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 800,
-                  fontSize: 42,
-                  margin: 0,
-                  lineHeight: 1.1,
-                }}
-              >
-                {city.city}
-              </h1>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <h1
+                  style={{
+                    fontFamily: "'Syne', sans-serif",
+                    fontWeight: 800,
+                    fontSize: 42,
+                    margin: 0,
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {city.city}
+                </h1>
+                <WatchlistStar
+                  cityId={city.id}
+                  isWatched={isWatched(city.id)}
+                  onToggle={toggleWatch}
+                  isAuthenticated={isAuthenticated}
+                  size="md"
+                />
+              </div>
               <div style={{ color: "#555", fontSize: 13, marginTop: 6 }}>
                 {city.state}, {city.country}
               </div>

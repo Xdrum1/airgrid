@@ -13,6 +13,7 @@ import Map, {
 } from "react-map-gl";
 import { City, Vertiport, Corridor } from "@/types";
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
+import WatchlistStar from "./WatchlistStar";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 // -------------------------------------------------------
@@ -29,6 +30,9 @@ interface MapViewProps {
   selectedCorridor: Corridor | null;
   onCorridorSelect: (c: Corridor) => void;
   isMobile?: boolean;
+  watchedCityIds?: string[];
+  onToggleWatch?: (cityId: string) => void;
+  isAuthenticated?: boolean;
 }
 
 interface PopupInfo {
@@ -372,10 +376,12 @@ function CityPopup({
   city,
   onClose,
   onSelect,
+  starNode,
 }: {
   city: City;
   onClose: () => void;
   onSelect: (city: City) => void;
+  starNode?: React.ReactNode;
 }) {
   const score = city.score ?? 0;
   const color = getScoreColor(score);
@@ -402,16 +408,19 @@ function CityPopup({
         }}
       >
         <div>
-          <div
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              fontWeight: 800,
-              fontSize: 15,
-              color: "#fff",
-              lineHeight: 1.1,
-            }}
-          >
-            {city.city}
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 800,
+                fontSize: 15,
+                color: "#fff",
+                lineHeight: 1.1,
+              }}
+            >
+              {city.city}
+            </div>
+            {starNode}
           </div>
           <div style={{ color: "#444", fontSize: 10, marginTop: 2 }}>
             {city.state} · United States
@@ -574,6 +583,9 @@ export default function MapView({
   selectedCorridor,
   onCorridorSelect,
   isMobile = false,
+  watchedCityIds = [],
+  onToggleWatch,
+  isAuthenticated = false,
 }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const [popup, setPopup] = useState<PopupInfo | null>(null);
@@ -869,6 +881,17 @@ export default function MapView({
                 onCitySelect(city);
                 setPopup(null);
               }}
+              starNode={
+                !isMobile && onToggleWatch ? (
+                  <WatchlistStar
+                    cityId={popup.city.id}
+                    isWatched={watchedCityIds.includes(popup.city.id)}
+                    onToggle={onToggleWatch}
+                    isAuthenticated={isAuthenticated}
+                    size="sm"
+                  />
+                ) : undefined
+              }
             />
           </Popup>
         )}
