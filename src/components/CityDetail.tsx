@@ -167,7 +167,7 @@ export default function CityDetail({
           }}
         >
           <Link
-            href="/"
+            href="/dashboard"
             style={{
               display: "flex",
               alignItems: "center",
@@ -202,7 +202,7 @@ export default function CityDetail({
             </span>
           </Link>
           <Link
-            href="/"
+            href="/dashboard"
             style={{
               color: "#555",
               fontSize: 10,
@@ -729,7 +729,7 @@ export default function CityDetail({
             LAST UPDATED {city.lastUpdated}
           </span>
           <Link
-            href="/"
+            href="/dashboard"
             style={{
               color: "#555",
               fontSize: 10,
