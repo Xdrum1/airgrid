@@ -538,12 +538,10 @@ function CityPopup({
         </div>
       )}
 
-      <button
-        onClick={() => {
-          onSelect(city);
-          onClose();
-        }}
+      <a
+        href={`/city/${city.id}`}
         style={{
+          display: "block",
           width: "100%",
           background: `${color}15`,
           border: `1px solid ${color}44`,
@@ -555,16 +553,19 @@ function CityPopup({
           cursor: "pointer",
           fontFamily: "'Space Mono', monospace",
           transition: "all 0.15s",
+          textAlign: "center",
+          textDecoration: "none",
+          boxSizing: "border-box",
         }}
         onMouseEnter={(e) => {
-          (e.target as HTMLButtonElement).style.background = `${color}25`;
+          (e.currentTarget).style.background = `${color}25`;
         }}
         onMouseLeave={(e) => {
-          (e.target as HTMLButtonElement).style.background = `${color}15`;
+          (e.currentTarget).style.background = `${color}15`;
         }}
       >
         VIEW FULL DETAILS →
-      </button>
+      </a>
     </div>
   );
 }
