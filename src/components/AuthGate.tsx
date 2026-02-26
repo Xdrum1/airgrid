@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface AuthGateProps {
@@ -9,6 +9,7 @@ interface AuthGateProps {
 
 export default function AuthGate({ tab }: AuthGateProps) {
   const isMobile = useIsMobile();
+  const router = useRouter();
 
   return (
     <div
@@ -86,7 +87,7 @@ export default function AuthGate({ tab }: AuthGateProps) {
         </p>
 
         <button
-          onClick={() => signIn(undefined, { callbackUrl: `/?tab=${tab}` })}
+          onClick={() => router.push(`/login?callbackUrl=${encodeURIComponent(`/?tab=${tab}`)}`)}
           style={{
             padding: "13px 32px",
             background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
