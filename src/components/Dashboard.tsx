@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { City, Operator, Vertiport, Corridor, ChangelogEntry } from "@/types";
 import type { FederalFiling } from "@/lib/faa-api";
 import { CITIES, OPERATORS, OPERATORS_MAP, getVertiportsForCity, getCorridorsForCity } from "@/data/seed";
@@ -516,18 +516,10 @@ export default function Dashboard() {
                     <button
                       onClick={async () => {
                         try {
-                          await signOut({ redirect: false });
+                          await fetch("/api/signout", { method: "POST" });
                         } catch {
-                          // signOut may fail due to CSRF — clear cookies manually
+                          // best-effort
                         }
-                        // Clear all auth cookies as fallback
-                        document.cookie.split(";").forEach((c) => {
-                          const name = c.split("=")[0].trim();
-                          if (name.includes("authjs") || name.includes("next-auth")) {
-                            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-                            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
-                          }
-                        });
                         window.location.href = "/";
                       }}
                       style={{
