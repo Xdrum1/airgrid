@@ -514,13 +514,8 @@ export default function Dashboard() {
                   </div>
                   <div style={{ display: "flex", gap: 8 }}>
                     <button
-                      onClick={async () => {
-                        try {
-                          await fetch("/api/signout", { method: "POST" });
-                        } catch {
-                          // best-effort
-                        }
-                        window.location.href = "/";
+                      onClick={() => {
+                        window.location.href = "/api/signout";
                       }}
                       style={{
                         background: "rgba(255,68,68,0.1)",
