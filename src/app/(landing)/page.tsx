@@ -176,23 +176,34 @@ export default async function LandingPage() {
           textAlign: "center",
         }}
       >
+        <div
+          style={{
+            fontFamily: "'Space Mono', monospace",
+            fontSize: 10,
+            letterSpacing: 2,
+            color: "#555",
+            textTransform: "uppercase",
+            marginBottom: 20,
+          }}
+        >
+          Tracking the build-out of urban air mobility in real time
+        </div>
         <h1
           style={{
-            fontFamily: "'Syne', sans-serif",
-            fontWeight: 800,
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontWeight: 700,
             fontSize: "clamp(32px, 5vw, 56px)",
             lineHeight: 1.1,
             margin: "0 auto 20px",
             maxWidth: 720,
-            background: "linear-gradient(135deg, #fff 60%, #00d4ff)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+            color: "#fff",
           }}
         >
           The intelligence layer for Urban Air Mobility
         </h1>
         <p
           style={{
+            fontFamily: "'Inter', sans-serif",
             color: "#777",
             fontSize: "clamp(13px, 1.4vw, 16px)",
             lineHeight: 1.7,
@@ -288,6 +299,92 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* ======== Feature Explainer ======== */}
+      <section
+        style={{
+          maxWidth: 1120,
+          margin: "0 auto",
+          padding: "64px 32px 0",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: 16,
+          }}
+        >
+          {[
+            {
+              icon: "◈",
+              title: "Market Readiness Scores",
+              description:
+                "7-factor scoring model tracking pilot programs, zoning, operators, regulation, and infrastructure across 20 US markets.",
+            },
+            {
+              icon: "⟿",
+              title: "Corridor Intelligence",
+              description:
+                "Real-time tracking of proposed and authorized UAM flight corridors — from FAA filings to operator clearances.",
+            },
+            {
+              icon: "◉",
+              title: "Regulatory Filings",
+              description:
+                "Federal Register filings, state legislation, and FAA updates aggregated into a single searchable feed.",
+            },
+          ].map((card) => (
+            <div
+              key={card.title}
+              style={{
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 10,
+                padding: "28px 24px",
+              }}
+            >
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 14,
+                  color: "#00d4ff",
+                  marginBottom: 16,
+                }}
+              >
+                {card.icon}
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 600,
+                  fontSize: 15,
+                  color: "#eee",
+                  marginBottom: 8,
+                }}
+              >
+                {card.title}
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 12.5,
+                  lineHeight: 1.65,
+                  color: "#666",
+                }}
+              >
+                {card.description}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ======== Dashboard Preview ======== */}
       <section
         style={{
@@ -349,15 +446,15 @@ export default async function LandingPage() {
         <div style={{ textAlign: "center", marginBottom: 56 }}>
           <h2
             style={{
-              fontFamily: "'Syne', sans-serif",
-              fontWeight: 800,
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
               fontSize: "clamp(24px, 3vw, 36px)",
               margin: "0 0 12px",
             }}
           >
             Simple, transparent pricing
           </h2>
-          <p style={{ color: "#666", fontSize: 13, margin: 0 }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", color: "#666", fontSize: 13, margin: 0 }}>
             Start free. Upgrade when you need deeper intelligence.
           </p>
         </div>
