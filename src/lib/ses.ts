@@ -5,6 +5,7 @@ interface SendEmailParams {
   from: string;
   subject: string;
   html: string;
+  headers?: Record<string, string>;
 }
 
 function sha256(data: string) {
@@ -15,33 +16,43 @@ function hmacSha256(key: Buffer | string, data: string) {
   return createHmac("sha256", key).update(data, "utf8").digest();
 }
 
-export async function sendSesEmail({ to, from, subject, html }: SendEmailParams): Promise<void> {
-  const region = process.env.SES_REGION || "us-east-1";
-  const accessKeyId = process.env.SES_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
+function buildRawMessage(
+  { to, from, subject, html, headers }: SendEmailParams
+): string {
+  const boundary = `----=_Part_${Date.now()}`;
+  const lines = [
+    `From: ${from}`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    `MIME-Version: 1.0`,
+  ];
 
-  if (!accessKeyId || !secretAccessKey) {
-    console.log(`[ses] AWS credentials not set — skipping email to ${to}`);
-    return;
+  if (headers) {
+    for (const [key, value] of Object.entries(headers)) {
+      lines.push(`${key}: ${value}`);
+    }
   }
 
-  const payload = new URLSearchParams({
-    Action: "SendEmail",
-    Source: from,
-    "Destination.ToAddresses.member.1": to,
-    "Message.Subject.Data": subject,
-    "Message.Subject.Charset": "UTF-8",
-    "Message.Body.Html.Data": html,
-    "Message.Body.Html.Charset": "UTF-8",
-    Version: "2010-12-01",
-  });
+  lines.push(
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    "",
+    `--${boundary}`,
+    "Content-Type: text/html; charset=UTF-8",
+    "Content-Transfer-Encoding: 7bit",
+    "",
+    html,
+    "",
+    `--${boundary}--`,
+  );
 
+  return lines.join("\r\n");
+}
+
+function signRequest(body: string, region: string, accessKeyId: string, secretAccessKey: string) {
   const host = `email.${region}.amazonaws.com`;
-  const endpoint = `https://${host}/`;
   const now = new Date();
   const amzDate = now.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   const dateStamp = amzDate.slice(0, 8);
-  const body = payload.toString();
 
   const credentialScope = `${dateStamp}/${region}/ses/aws4_request`;
   const canonicalHeaders = `content-type:application/x-www-form-urlencoded\nhost:${host}\nx-amz-date:${amzDate}\n`;
@@ -70,9 +81,54 @@ export async function sendSesEmail({ to, from, subject, html }: SendEmailParams)
     .update(stringToSign, "utf8")
     .digest("hex");
 
-  const authorization = `AWS4-HMAC-SHA256 Credential=${accessKeyId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+  return {
+    host,
+    amzDate,
+    authorization: `AWS4-HMAC-SHA256 Credential=${accessKeyId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`,
+  };
+}
 
-  const res = await fetch(endpoint, {
+export async function sendSesEmail(params: SendEmailParams): Promise<void> {
+  const region = process.env.SES_REGION || "us-east-1";
+  const accessKeyId = process.env.SES_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
+
+  if (!accessKeyId || !secretAccessKey) {
+    console.log(`[ses] AWS credentials not set — skipping email to ${params.to}`);
+    return;
+  }
+
+  // Use SendRawEmail when custom headers are needed (e.g., List-Unsubscribe)
+  // Otherwise use the simpler SendEmail API
+  const useRaw = !!params.headers && Object.keys(params.headers).length > 0;
+
+  let payload: URLSearchParams;
+
+  if (useRaw) {
+    const rawMessage = buildRawMessage(params);
+    const encodedMessage = Buffer.from(rawMessage).toString("base64");
+    payload = new URLSearchParams({
+      Action: "SendRawEmail",
+      "RawMessage.Data": encodedMessage,
+      Version: "2010-12-01",
+    });
+  } else {
+    payload = new URLSearchParams({
+      Action: "SendEmail",
+      Source: params.from,
+      "Destination.ToAddresses.member.1": params.to,
+      "Message.Subject.Data": params.subject,
+      "Message.Subject.Charset": "UTF-8",
+      "Message.Body.Html.Data": params.html,
+      "Message.Body.Html.Charset": "UTF-8",
+      Version: "2010-12-01",
+    });
+  }
+
+  const body = payload.toString();
+  const { host, amzDate, authorization } = signRequest(body, region, accessKeyId, secretAccessKey);
+
+  const res = await fetch(`https://${host}/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",

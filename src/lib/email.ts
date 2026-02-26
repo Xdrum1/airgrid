@@ -1,7 +1,9 @@
 import { sendSesEmail } from "@/lib/ses";
+import { generateUnsubscribeToken } from "@/lib/unsubscribe-token";
 
 interface AlertEmailParams {
   to: string;
+  subscriptionId: string;
   cityName: string;
   changeType: string;
   summary: string;
@@ -10,6 +12,7 @@ interface AlertEmailParams {
 
 export async function sendAlertEmail({
   to,
+  subscriptionId,
   cityName,
   changeType,
   summary,
@@ -23,9 +26,14 @@ export async function sendAlertEmail({
   }
 
   const from = process.env.ALERT_FROM_EMAIL || "AirIndex <alerts@airindex.io>";
+  const appUrl = process.env.AUTH_URL || "https://airindex.io";
+
+  // Generate unsubscribe link
+  const token = generateUnsubscribeToken(subscriptionId, to);
+  const unsubscribeUrl = `${appUrl}/api/unsubscribe?id=${subscriptionId}&token=${token}`;
 
   const sourceLink = sourceUrl
-    ? `<p style="margin:16px 0 0"><a href="${sourceUrl}" style="color:#00d4ff;font-size:12px;">View source →</a></p>`
+    ? `<p style="margin:16px 0 0"><a href="${sourceUrl}" style="color:#00d4ff;font-size:12px;">View source &rarr;</a></p>`
     : "";
 
   const html = `
@@ -40,7 +48,10 @@ export async function sendAlertEmail({
         <p style="color:#999;font-size:13px;line-height:1.6;margin:0;">${summary}</p>
         ${sourceLink}
       </div>
-      <p style="color:#333;font-size:10px;margin-top:24px;">You're receiving this because you subscribed to AirIndex alerts.</p>
+      <p style="color:#333;font-size:10px;margin-top:24px;">
+        You're receiving this because you subscribed to AirIndex alerts.
+        <a href="${unsubscribeUrl}" style="color:#555;text-decoration:underline;">Unsubscribe</a>
+      </p>
     </div>
   `.trim();
 
@@ -50,6 +61,10 @@ export async function sendAlertEmail({
       from,
       subject: `[AirIndex] ${changeType.replace("_", " ")} — ${cityName}`,
       html,
+      headers: {
+        "List-Unsubscribe": `<${unsubscribeUrl}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      },
     });
     console.log(`[email] Alert sent to ${to} for ${cityName}`);
     return true;
