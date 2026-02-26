@@ -515,7 +515,19 @@ export default function Dashboard() {
                   <div style={{ display: "flex", gap: 8 }}>
                     <button
                       onClick={async () => {
-                        await signOut({ redirect: false });
+                        try {
+                          await signOut({ redirect: false });
+                        } catch {
+                          // signOut may fail due to CSRF — clear cookies manually
+                        }
+                        // Clear all auth cookies as fallback
+                        document.cookie.split(";").forEach((c) => {
+                          const name = c.split("=")[0].trim();
+                          if (name.includes("authjs") || name.includes("next-auth")) {
+                            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+                            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+                          }
+                        });
                         window.location.href = "/";
                       }}
                       style={{
