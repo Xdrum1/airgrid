@@ -154,8 +154,8 @@ export default async function LandingPage() {
                   letterSpacing: "0.06em",
                   textDecoration: "none",
                   padding: "8px 20px",
-                  background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
-                  color: "#000",
+                  background: "#00d4ff",
+                  color: "#050508",
                   borderRadius: 6,
                   transition: "opacity 0.15s",
                 }}
@@ -536,8 +536,8 @@ export default async function LandingPage() {
                 <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
                   <span
                     style={{
-                      fontFamily: "'Syne', sans-serif",
-                      fontWeight: 800,
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontWeight: 700,
                       fontSize: 36,
                       color: "#fff",
                     }}
@@ -587,11 +587,11 @@ export default async function LandingPage() {
                       textAlign: "center",
                       padding: "12px 24px",
                       background: isPro
-                        ? "linear-gradient(135deg, #00d4ff, #7c3aed)"
+                        ? "#00d4ff"
                         : "rgba(255,255,255,0.04)",
                       border: isPro ? "none" : "1px solid rgba(255,255,255,0.1)",
                       borderRadius: 6,
-                      color: isPro ? "#000" : "#aaa",
+                      color: isPro ? "#050508" : "#aaa",
                       fontSize: 11,
                       fontWeight: 700,
                       fontFamily: "'Syne', sans-serif",
@@ -610,11 +610,11 @@ export default async function LandingPage() {
                       textAlign: "center",
                       padding: "12px 24px",
                       background: isPro
-                        ? "linear-gradient(135deg, #00d4ff, #7c3aed)"
+                        ? "#00d4ff"
                         : "rgba(255,255,255,0.04)",
                       border: isPro ? "none" : "1px solid rgba(255,255,255,0.1)",
                       borderRadius: 6,
-                      color: isPro ? "#000" : "#aaa",
+                      color: isPro ? "#050508" : "#aaa",
                       fontSize: 11,
                       fontWeight: 700,
                       fontFamily: "'Syne', sans-serif",
@@ -746,6 +746,22 @@ export default async function LandingPage() {
             >
               SIGN IN
             </Link>
+            <a
+              href="https://x.com/airaborneindex"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              X
+            </a>
+            <a
+              href="https://linkedin.com/company/airindex"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              LINKEDIN
+            </a>
             <a
               href="mailto:alan@airindex.io"
               style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
