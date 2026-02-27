@@ -2,6 +2,15 @@ import type { ChangelogEntry } from "@/types";
 
 export const CHANGELOG_SEED: ChangelogEntry[] = [
   {
+    id: "cl_013",
+    changeType: "status_change",
+    relatedEntityType: "operator",
+    relatedEntityId: "op_joby",
+    summary: "Joby Aviation launches Uber Air commercial eVTOL service in Dubai — first-ever commercial air taxi operations using Joby S4 aircraft. Service operated in partnership with Uber and Dubai's Roads and Transport Authority (RTA). Signals Joby is commercially operational ahead of US market launches in Los Angeles and Dallas.",
+    timestamp: "2026-02-26T08:00:00Z",
+    sourceUrl: "https://www.jobyaviation.com/news/",
+  },
+  {
     id: "cl_001",
     changeType: "new_law",
     relatedEntityType: "city",
