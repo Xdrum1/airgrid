@@ -95,7 +95,7 @@ export default async function LandingPage() {
           style={{
             maxWidth: 1120,
             margin: "0 auto",
-            padding: "0 32px",
+            padding: "0 20px",
             height: 64,
             display: "flex",
             alignItems: "center",
@@ -128,9 +128,10 @@ export default async function LandingPage() {
               AIRINDEX
             </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div className="landing-nav-buttons" style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Link
               href="/dashboard"
+              className="nav-hide-mobile"
               style={{
                 color: "#888",
                 fontSize: 11,
@@ -189,7 +190,7 @@ export default async function LandingPage() {
         style={{
           maxWidth: 1120,
           margin: "0 auto",
-          padding: "100px 32px 60px",
+          padding: "clamp(60px, 10vw, 100px) 20px 40px",
           textAlign: "center",
         }}
       >
@@ -274,10 +275,11 @@ export default async function LandingPage() {
         style={{
           maxWidth: 1120,
           margin: "0 auto",
-          padding: "0 32px",
+          padding: "0 20px",
         }}
       >
         <div
+          className="landing-stats-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
@@ -321,13 +323,13 @@ export default async function LandingPage() {
         style={{
           maxWidth: 1120,
           margin: "0 auto",
-          padding: "64px 32px 0",
+          padding: "48px 20px 0",
         }}
       >
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
             gap: 16,
           }}
         >
@@ -407,7 +409,7 @@ export default async function LandingPage() {
         style={{
           maxWidth: 1120,
           margin: "0 auto",
-          padding: "80px 32px",
+          padding: "clamp(40px, 8vw, 80px) 20px",
         }}
       >
         <div
@@ -459,7 +461,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ======== Pricing ======== */}
-      <section id="pricing" style={{ maxWidth: 1120, margin: "0 auto", padding: "40px 32px 100px", scrollMarginTop: 80 }}>
+      <section id="pricing" style={{ maxWidth: 1120, margin: "0 auto", padding: "40px 20px clamp(60px, 8vw, 100px)", scrollMarginTop: 80 }}>
         <div style={{ textAlign: "center", marginBottom: 56 }}>
           <h2
             style={{
@@ -479,7 +481,7 @@ export default async function LandingPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
             gap: 20,
             alignItems: "start",
           }}
@@ -654,7 +656,7 @@ export default async function LandingPage() {
         style={{
           maxWidth: 1120,
           margin: "0 auto",
-          padding: "0 32px 100px",
+          padding: "0 20px clamp(60px, 8vw, 100px)",
           textAlign: "center",
         }}
       >
@@ -710,7 +712,7 @@ export default async function LandingPage() {
       <footer
         style={{
           borderTop: "1px solid rgba(255,255,255,0.06)",
-          padding: "40px 32px",
+          padding: "40px 20px",
           maxWidth: 1120,
           margin: "0 auto",
         }}
@@ -750,7 +752,7 @@ export default async function LandingPage() {
               AIRINDEX
             </span>
           </div>
-          <div style={{ display: "flex", gap: 24 }}>
+          <div className="landing-footer-links" style={{ display: "flex", gap: 24 }}>
             <Link
               href="/dashboard"
               style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
