@@ -11,32 +11,19 @@ const TIERS = [
     name: "Free",
     price: "$0",
     period: "forever",
-    accent: "#00d4ff",
+    accent: "linear-gradient(135deg, #00d4ff, #7c3aed)",
     badge: null,
     features: [
-      "Interactive map view",
-      "Market rankings & readiness scores",
-      "7-factor scoring breakdown",
+      "Interactive map & market rankings",
+      "Readiness scores & 7-factor breakdown",
       "City detail pages",
-    ],
-    cta: { label: "Get started", href: "/dashboard" },
-  },
-  {
-    name: "Pro",
-    price: "Free",
-    period: "during beta",
-    yearlyNote: "Early access — no credit card required",
-    accent: "linear-gradient(135deg, #00d4ff, #7c3aed)",
-    badge: "EARLY ACCESS",
-    features: [
-      "Everything in Free, plus:",
       "Federal Register filings feed",
       "Activity & changelog tracking",
       "Analytics dashboard",
       "Corridor intelligence",
       "Watchlists & email alerts",
     ],
-    cta: { label: "Start free", href: "/login" },
+    cta: { label: "Get started — it's free", href: "/login" },
   },
   {
     name: "Enterprise",
@@ -46,14 +33,14 @@ const TIERS = [
     accent: "#7c3aed",
     badge: null,
     features: [
-      "Everything in Pro, plus:",
+      "Everything in Free, plus:",
       "REST API access",
       "Embeddable widgets",
       "Team seats & permissions",
       "Custom market reports",
       "Dedicated account manager",
     ],
-    cta: { label: "Contact us", href: "mailto:alan@airindex.io" },
+    cta: { label: "Contact us", href: "mailto:sales@airindex.io" },
   },
 ] as const;
 
@@ -453,31 +440,33 @@ export default async function LandingPage() {
               margin: "0 0 12px",
             }}
           >
-            Free to explore. Serious about UAM? Let&apos;s talk.
+            Full access. No credit card required.
           </h2>
           <p style={{ fontFamily: "'Inter', sans-serif", color: "#666", fontSize: 13, margin: 0 }}>
-            Full access during beta. No credit card required.
+            Everything you need to track the UAM market — free forever.
           </p>
         </div>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
-            gap: 20,
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))",
+            gap: 24,
+            maxWidth: 720,
+            margin: "0 auto",
             alignItems: "start",
           }}
         >
           {TIERS.map((tier) => {
-            const isPro = tier.name === "Pro";
+            const isFree = tier.name === "Free";
             return (
               <div
                 key={tier.name}
                 style={{
                   position: "relative",
                   background: "rgba(255,255,255,0.02)",
-                  border: isPro
-                    ? "1px solid rgba(124,58,237,0.3)"
+                  border: isFree
+                    ? "1px solid rgba(0,212,255,0.3)"
                     : "1px solid rgba(255,255,255,0.06)",
                   borderRadius: 12,
                   padding: "36px 28px 32px",
@@ -587,12 +576,12 @@ export default async function LandingPage() {
                       display: "block",
                       textAlign: "center",
                       padding: "12px 24px",
-                      background: isPro
+                      background: isFree
                         ? "#00d4ff"
                         : "rgba(255,255,255,0.04)",
-                      border: isPro ? "none" : "1px solid rgba(255,255,255,0.1)",
+                      border: isFree ? "none" : "1px solid rgba(255,255,255,0.1)",
                       borderRadius: 6,
-                      color: isPro ? "#050508" : "#aaa",
+                      color: isFree ? "#050508" : "#aaa",
                       fontSize: 11,
                       fontWeight: 700,
                       fontFamily: "'Syne', sans-serif",
@@ -610,12 +599,12 @@ export default async function LandingPage() {
                       display: "block",
                       textAlign: "center",
                       padding: "12px 24px",
-                      background: isPro
+                      background: isFree
                         ? "#00d4ff"
                         : "rgba(255,255,255,0.04)",
-                      border: isPro ? "none" : "1px solid rgba(255,255,255,0.1)",
+                      border: isFree ? "none" : "1px solid rgba(255,255,255,0.1)",
                       borderRadius: 6,
-                      color: isPro ? "#050508" : "#aaa",
+                      color: isFree ? "#050508" : "#aaa",
                       fontSize: 11,
                       fontWeight: 700,
                       fontFamily: "'Syne', sans-serif",
@@ -876,10 +865,18 @@ export default async function LandingPage() {
               SIGN IN
             </Link>
             <a
-              href="mailto:alan@airindex.io"
+              href="mailto:sales@airindex.io"
               style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
               CONTACT
+            </a>
+            <a
+              href="https://x.com/AirIndexHQ"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              @AIRINDEXHQ
             </a>
           </div>
           <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 1 }}>
