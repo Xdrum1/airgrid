@@ -3,6 +3,7 @@ import path from "path";
 import crypto from "crypto";
 import { fetchFederalRegisterUAM, fetchStateBills, fetchOperatorFilings, OPERATOR_CIKS } from "@/lib/faa-api";
 import type { FederalFiling, StateBill, SecFiling } from "@/lib/faa-api";
+import { fetchAllOperatorNews } from "@/lib/operator-news";
 import { addChangelogEntries } from "@/lib/changelog";
 import { notifySubscribers } from "@/lib/notifications";
 import { evaluateRules } from "@/lib/rules-engine";
@@ -15,7 +16,7 @@ import type { ChangelogEntry } from "@/types";
 
 export interface IngestedRecord {
   id: string;
-  source: "federal_register" | "legiscan" | "sec_edgar";
+  source: "federal_register" | "legiscan" | "sec_edgar" | "operator_news";
   sourceId: string;
   title: string;
   summary: string;
@@ -182,19 +183,26 @@ export async function runIngestion(): Promise<{
     }
     console.log(`[ingestion] LegiScan: ${allBills.length} bills`);
 
-    // 3. Fetch SEC EDGAR 8-K filings for tracked operators
+    // 3. Fetch SEC EDGAR filings for tracked operators (8-K, 10-K, 10-Q)
+    const SEC_FORM_TYPES = ["8-K", "10-K", "10-Q"];
     const allSecFilings: IngestedRecord[] = [];
     for (const operatorId of Object.keys(OPERATOR_CIKS)) {
-      const filings = await fetchOperatorFilings(operatorId, "8-K");
-      allSecFilings.push(...filings.map((f) => normalizeSecFiling(f, operatorId)));
+      for (const formType of SEC_FORM_TYPES) {
+        const filings = await fetchOperatorFilings(operatorId, formType);
+        allSecFilings.push(...filings.map((f) => normalizeSecFiling(f, operatorId)));
+      }
     }
-    console.log(`[ingestion] SEC EDGAR: ${allSecFilings.length} 8-K filings`);
+    console.log(`[ingestion] SEC EDGAR: ${allSecFilings.length} filings (${SEC_FORM_TYPES.join(", ")})`);
 
-    // 4. Normalize and merge all sources
+    // 4. Fetch operator news via Google News RSS
+    const operatorNews = await fetchAllOperatorNews(30);
+
+    // 5. Normalize and merge all sources
     const incomingRecords: IngestedRecord[] = [
       ...federalFilings.map(normalizeFederalFiling),
       ...allBills.map(normalizeStateBill),
       ...allSecFilings,
+      ...operatorNews,
     ];
 
     // 5. Diff against existing

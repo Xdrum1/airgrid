@@ -89,6 +89,19 @@ model ScoreSnapshot {
   @@index([cityId, capturedAt])
 }
 
+model ChangelogEntry {
+  id                String   @id @default(cuid())
+  changeType        String   // "new_filing" | "status_change" | "new_law" | "faa_update" | "score_change"
+  relatedEntityType String   // "city" | "vertiport" | "operator" | "corridor" | "filing"
+  relatedEntityId   String
+  summary           String
+  sourceUrl         String?
+  timestamp         DateTime @default(now())
+
+  @@index([timestamp])
+  @@index([changeType])
+}
+
 model ScoringOverride {
   id             String    @id @default(cuid())
   cityId         String
