@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runIngestion } from "@/lib/ingestion";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
@@ -15,6 +16,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { success: false, error: "Unauthorized" },
       { status: 401 }
+    );
+  }
+
+  // Max 4 runs per hour
+  const rl = rateLimit("ingest", 4, 60 * 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { success: false, error: "Rate limited — try again later" },
+      { status: 429 }
     );
   }
 
@@ -50,6 +60,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { success: false, error: "Unauthorized" },
       { status: 401 }
+    );
+  }
+
+  const rl = rateLimit("ingest", 4, 60 * 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { success: false, error: "Rate limited — try again later" },
+      { status: 429 }
     );
   }
 

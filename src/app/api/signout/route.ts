@@ -10,13 +10,10 @@ const ALL_COOKIES = [
   "__Host-authjs.csrf-token",
 ];
 
-export async function GET() {
-  // Redirect to the real origin, not Amplify's internal Lambda URL
-  const origin = process.env.AUTH_URL || "https://www.airindex.io";
-  const res = NextResponse.redirect(origin);
+export async function POST() {
+  const res = NextResponse.json({ success: true });
 
   for (const name of ALL_COOKIES) {
-    // Delete with both secure and non-secure variants to cover all environments
     res.headers.append(
       "Set-Cookie",
       `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax`

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { fetchFederalRegisterUAM } from "@/lib/faa-api";
 
 export async function GET(request: NextRequest) {
-  const days = Number(request.nextUrl.searchParams.get("days") ?? 90);
+  const days = Math.min(Math.max(Number(request.nextUrl.searchParams.get("days") ?? 90), 1), 730);
 
   try {
     const data = await fetchFederalRegisterUAM(days);

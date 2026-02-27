@@ -3,7 +3,7 @@ import { getChangelogEntries } from "@/lib/changelog";
 import type { ChangeType } from "@/types";
 
 export async function GET(request: NextRequest) {
-  const limit = Number(request.nextUrl.searchParams.get("limit") ?? 50);
+  const limit = Math.min(Math.max(Number(request.nextUrl.searchParams.get("limit") ?? 50), 1), 500);
   const type = request.nextUrl.searchParams.get("type") as ChangeType | null;
 
   try {

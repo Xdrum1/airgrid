@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
@@ -19,19 +20,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       type: "email",
       maxAge: 10 * 60, // 10 minutes
       generateVerificationToken: () => {
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
-        console.log(`[auth] Generated verification code: ${code}`);
-        return code;
+        return crypto.randomInt(100000, 999999).toString();
       },
       sendVerificationRequest: async ({ identifier: email, token }) => {
         const from = process.env.SES_FROM_EMAIL || "AirIndex <auth@airindex.io>";
 
         if (!process.env.SES_ACCESS_KEY_ID) {
-          console.log(`[auth] AWS credentials not set — verification code: ${token}`);
+          if (process.env.NODE_ENV === "development") {
+            console.log(`[auth] Dev mode — verification code: ${token}`);
+          }
           return;
         }
-
-        console.log(`[auth] Sending verification code to ${email}`);
 
         const html = `
           <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
