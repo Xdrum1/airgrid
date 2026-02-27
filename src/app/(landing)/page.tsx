@@ -103,20 +103,6 @@ export default async function LandingPage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div
-              style={{
-                width: 28,
-                height: 28,
-                background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
-                borderRadius: 6,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 12,
-              }}
-            >
-              ✦
-            </div>
             <img
               src="/images/logo/airindex-wordmark.svg"
               alt="AirIndex"
@@ -722,20 +708,6 @@ export default async function LandingPage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div
-              style={{
-                width: 22,
-                height: 22,
-                background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
-                borderRadius: 5,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 9,
-              }}
-            >
-              ✦
-            </div>
             <img
               src="/images/logo/airindex-wordmark.svg"
               alt="AirIndex"

@@ -46,22 +46,11 @@ export default function AuthGate({ tab }: AuthGateProps) {
           }}
         />
 
-        <div
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 10,
-            background: "linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15))",
-            border: "1px solid rgba(0,212,255,0.2)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto 20px",
-            fontSize: 18,
-          }}
-        >
-          ✦
-        </div>
+        <img
+          src="/images/logo/airindex-icon.svg"
+          alt="AirIndex"
+          style={{ width: 44, height: 44, margin: "0 auto 20px", display: "block" }}
+        />
 
         <h2
           style={{
