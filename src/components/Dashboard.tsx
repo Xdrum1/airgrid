@@ -520,7 +520,9 @@ export default function Dashboard({ initialCities }: DashboardProps) {
                   <div style={{ display: "flex", gap: 8 }}>
                     <button
                       onClick={() => {
-                        window.location.href = "/api/signout";
+                        fetch("/api/signout", { method: "POST" }).then(() => {
+                          window.location.href = "/";
+                        });
                       }}
                       style={{
                         background: "rgba(255,68,68,0.1)",

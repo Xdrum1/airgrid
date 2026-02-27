@@ -1,11 +1,12 @@
-import { createHmac } from "crypto";
+import { createHmac, timingSafeEqual } from "crypto";
 
 /**
  * Generate an HMAC token for one-click unsubscribe links.
  * Uses AUTH_SECRET as the signing key so tokens can't be forged.
  */
 export function generateUnsubscribeToken(subscriptionId: string, email: string): string {
-  const secret = process.env.AUTH_SECRET || "fallback-secret";
+  const secret = process.env.AUTH_SECRET;
+  if (!secret) throw new Error("AUTH_SECRET is required for unsubscribe tokens");
   return createHmac("sha256", secret)
     .update(`${subscriptionId}:${email}`)
     .digest("hex")
@@ -18,5 +19,6 @@ export function verifyUnsubscribeToken(
   email: string
 ): boolean {
   const expected = generateUnsubscribeToken(subscriptionId, email);
-  return token === expected;
+  if (token.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(token), Buffer.from(expected));
 }
