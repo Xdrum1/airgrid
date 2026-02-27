@@ -35,7 +35,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const html = `
           <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
             <div style="margin-bottom:32px;">
-              <span style="font-weight:800;font-size:20px;color:#1a1a1a;letter-spacing:-0.5px;">AIRINDEX</span>
+              <img src="https://www.airindex.io/images/logo/airindex-wordmark-light.png" alt="AirIndex" width="160" height="35" style="display:block;" />
             </div>
             <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 24px;">
               Your verification code for AirIndex:
@@ -79,7 +79,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           html: `
             <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
               <div style="margin-bottom:32px;">
-                <span style="font-weight:800;font-size:20px;color:#1a1a1a;letter-spacing:-0.5px;">AIRINDEX</span>
+                <img src="https://www.airindex.io/images/logo/airindex-wordmark-light.png" alt="AirIndex" width="160" height="35" style="display:block;" />
               </div>
               <p style="color:#333;font-size:16px;font-weight:600;line-height:1.6;margin:0 0 16px;">
                 Welcome to AirIndex.

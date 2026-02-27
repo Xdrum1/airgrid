@@ -33,24 +33,24 @@ export async function sendAlertEmail({
   const unsubscribeUrl = `${appUrl}/api/unsubscribe?id=${subscriptionId}&token=${token}`;
 
   const sourceLink = sourceUrl
-    ? `<p style="margin:16px 0 0"><a href="${sourceUrl}" style="color:#00d4ff;font-size:12px;">View source &rarr;</a></p>`
+    ? `<p style="margin:16px 0 0;"><a href="${sourceUrl}" style="color:#0077aa;font-size:13px;text-decoration:none;">View source &rarr;</a></p>`
     : "";
 
   const html = `
-    <div style="background:#050508;color:#fff;font-family:'Courier New',monospace;padding:32px;max-width:520px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
-        <span style="font-weight:800;font-size:16px;letter-spacing:-0.5px;">AIRINDEX</span>
-        <span style="color:#555;font-size:9px;letter-spacing:2px;">ALERT</span>
+    <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
+      <div style="margin-bottom:32px;">
+        <img src="https://www.airindex.io/images/logo/airindex-wordmark-light.png" alt="AirIndex" width="160" height="35" style="display:block;" />
       </div>
-      <div style="border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:20px;background:rgba(255,255,255,0.02);">
-        <div style="color:#00ff88;font-size:10px;letter-spacing:2px;margin-bottom:8px;">${changeType.toUpperCase().replace("_", " ")}</div>
-        <div style="font-size:18px;font-weight:700;margin-bottom:12px;">${cityName}</div>
-        <p style="color:#999;font-size:13px;line-height:1.6;margin:0;">${summary}</p>
-        ${sourceLink}
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:4px 12px;display:inline-block;margin-bottom:16px;">
+        <span style="color:#15803d;font-size:11px;font-weight:700;letter-spacing:1px;">${changeType.toUpperCase().replace("_", " ")}</span>
       </div>
-      <p style="color:#333;font-size:10px;margin-top:24px;">
+      <p style="color:#1a1a1a;font-size:18px;font-weight:700;margin:0 0 12px;">${cityName}</p>
+      <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 8px;">${summary}</p>
+      ${sourceLink}
+      <hr style="border:none;border-top:1px solid #eee;margin:28px 0 16px;" />
+      <p style="color:#999;font-size:11px;line-height:1.6;margin:0;">
         You're receiving this because you subscribed to AirIndex alerts.
-        <a href="${unsubscribeUrl}" style="color:#555;text-decoration:underline;">Unsubscribe</a>
+        <a href="${unsubscribeUrl}" style="color:#999;text-decoration:underline;">Unsubscribe</a>
       </p>
     </div>
   `.trim();
