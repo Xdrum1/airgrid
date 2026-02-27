@@ -145,23 +145,40 @@ export default async function LandingPage() {
               {isAuthed ? "Go to Dashboard" : "View Dashboard"}
             </Link>
             {!isAuthed && (
-              <Link
-                href="/login"
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  fontFamily: "'Syne', sans-serif",
-                  letterSpacing: "0.06em",
-                  textDecoration: "none",
-                  padding: "8px 20px",
-                  background: "#00d4ff",
-                  color: "#050508",
-                  borderRadius: 6,
-                  transition: "opacity 0.15s",
-                }}
-              >
-                Sign up free
-              </Link>
+              <>
+                <Link
+                  href="/login"
+                  style={{
+                    color: "#888",
+                    fontSize: 11,
+                    letterSpacing: "0.06em",
+                    textDecoration: "none",
+                    padding: "8px 16px",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 6,
+                    transition: "all 0.15s",
+                  }}
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/login"
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    fontFamily: "'Syne', sans-serif",
+                    letterSpacing: "0.06em",
+                    textDecoration: "none",
+                    padding: "8px 20px",
+                    background: "#00d4ff",
+                    color: "#050508",
+                    borderRadius: 6,
+                    transition: "opacity 0.15s",
+                  }}
+                >
+                  Sign up free
+                </Link>
+              </>
             )}
           </div>
         </div>
