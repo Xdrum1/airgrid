@@ -850,25 +850,25 @@ export default async function LandingPage() {
             <img
               src="/images/logo/airindex-wordmark.svg"
               alt="AirIndex"
-              style={{ height: 18, opacity: 0.4 }}
+              style={{ height: 18, opacity: 0.7 }}
             />
           </div>
           <div className="landing-footer-links" style={{ display: "flex", gap: 24 }}>
             <Link
               href="/dashboard"
-              style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
               DASHBOARD
             </Link>
             <Link
               href="/login"
-              style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
               SIGN IN
             </Link>
             <a
               href="mailto:sales@airindex.io"
-              style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
               CONTACT
             </a>
@@ -876,12 +876,12 @@ export default async function LandingPage() {
               href="https://x.com/AirIndexHQ"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
               @AIRINDEXHQ
             </a>
           </div>
-          <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 1 }}>
+          <div style={{ color: "#666", fontSize: 9, letterSpacing: 1 }}>
             &copy; {new Date().getFullYear()} AIRINDEX
           </div>
         </div>
