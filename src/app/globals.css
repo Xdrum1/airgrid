@@ -98,3 +98,21 @@ body {
     overflow: auto;
   }
 }
+
+/* Landing page responsive */
+@media (max-width: 640px) {
+  .landing-nav-buttons {
+    gap: 8px !important;
+  }
+  .landing-nav-buttons .nav-hide-mobile {
+    display: none !important;
+  }
+  .landing-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .landing-footer-links {
+    gap: 16px !important;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
