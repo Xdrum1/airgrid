@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@AirIndexHQ",
     title: "AirIndex — UAM Market Intelligence",
     description: "Track vertiports, operators, regulatory filings, and market readiness scores across 20 US urban air mobility markets.",
     images: ["/images/dashboard-preview.png"],
