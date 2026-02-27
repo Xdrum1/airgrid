@@ -766,22 +766,6 @@ export default async function LandingPage() {
               SIGN IN
             </Link>
             <a
-              href="https://x.com/airaborneindex"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              X
-            </a>
-            <a
-              href="https://linkedin.com/company/airindex"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              LINKEDIN
-            </a>
-            <a
               href="mailto:alan@airindex.io"
               style={{ color: "#444", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
