@@ -150,10 +150,15 @@ export async function fetchStateBills(state: string): Promise<StateBill[]> {
   }
 
   try {
-    const url = `${LEGISCAN_BASE}/?key=${apiKey}&op=getSearch&state=${state}&query=urban+air+mobility+evtol+drone+vertiport`;
+    const url = `${LEGISCAN_BASE}/?key=${apiKey}&op=getSearch&state=${state}&query=drone+OR+evtol+OR+%22air+mobility%22+OR+vertiport`;
     const res = await fetch(url);
     const json = await res.json();
-    return json.searchresult?.results ?? [];
+    const sr = json.searchresult;
+    if (!sr) return [];
+    // LegiScan returns results as numbered keys, not an array
+    return Object.entries(sr)
+      .filter(([k]) => k !== "summary")
+      .map(([, v]) => v as StateBill);
   } catch (err) {
     console.error("[LegiScan] Fetch failed:", err);
     return [];
@@ -172,8 +177,8 @@ export interface SecFiling {
 }
 
 export const OPERATOR_CIKS: Record<string, string> = {
-  op_joby: "0001823652",    // Joby Aviation CIK
-  op_archer: "0001819989",  // Archer Aviation CIK
+  op_joby: "0001819848",    // Joby Aviation CIK
+  op_archer: "0001824502",  // Archer Aviation CIK
   op_blade: "0001779128",   // Blade Air Mobility CIK
 };
 
@@ -202,7 +207,7 @@ export async function fetchOperatorFilings(
           filingDate: recentFilings.filingDate[i],
           form: recentFilings.form[i],
           primaryDocument: recentFilings.primaryDocument[i],
-          primaryDescription: recentFilings.primaryDescription[i],
+          primaryDescription: recentFilings.primaryDocDescription?.[i] ?? recentFilings.primaryDescription?.[i] ?? "",
         });
         if (filtered.length >= 10) break;
       }
