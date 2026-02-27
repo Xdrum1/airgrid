@@ -26,7 +26,8 @@ export type ChangeType =
   | "new_filing"
   | "status_change"
   | "new_law"
-  | "faa_update";
+  | "faa_update"
+  | "score_change";
 
 // --- Score Breakdown ---
 export interface ScoreBreakdown {

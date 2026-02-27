@@ -9,6 +9,7 @@ const VALID_CHANGE_TYPES: ChangeType[] = [
   "status_change",
   "new_law",
   "faa_update",
+  "score_change",
 ];
 
 export function validateEmail(email: string): boolean {

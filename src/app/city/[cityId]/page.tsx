@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { CITIES, CITIES_MAP, OPERATORS_MAP, getVertiportsForCity, getCorridorsForCity } from "@/data/seed";
+import { CITIES, OPERATORS_MAP, getVertiportsForCity, getCorridorsForCity, getCitiesWithOverrides, getCitiesMapWithOverrides } from "@/data/seed";
 import CityDetail from "@/components/CityDetail";
 
 interface Props {
@@ -9,7 +9,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { cityId } = await params;
-  const city = CITIES_MAP[cityId];
+  const citiesMap = await getCitiesMapWithOverrides();
+  const city = citiesMap[cityId];
   if (!city) return { title: "Market Not Found — AirIndex" };
   return {
     title: `${city.city}, ${city.state} — AirIndex`,
@@ -23,10 +24,12 @@ export function generateStaticParams() {
 
 export default async function CityPage({ params }: Props) {
   const { cityId } = await params;
-  const city = CITIES_MAP[cityId];
+  const cities = await getCitiesWithOverrides();
+  const citiesMap = Object.fromEntries(cities.map((c) => [c.id, c]));
+  const city = citiesMap[cityId];
   if (!city) notFound();
 
-  const rank = CITIES.findIndex((c) => c.id === cityId) + 1;
+  const rank = cities.findIndex((c) => c.id === cityId) + 1;
   const operators = city.activeOperators
     .map((id) => OPERATORS_MAP[id])
     .filter(Boolean);
@@ -37,7 +40,7 @@ export default async function CityPage({ params }: Props) {
     <CityDetail
       city={city}
       rank={rank}
-      totalCities={CITIES.length}
+      totalCities={cities.length}
       operators={operators}
       vertiports={vertiports}
       corridors={corridors}

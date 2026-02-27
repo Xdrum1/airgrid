@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/auth";
-import { CITIES, OPERATORS, VERTIPORTS, CORRIDORS } from "@/data/seed";
+import { OPERATORS, VERTIPORTS, CORRIDORS, getCitiesWithOverrides } from "@/data/seed";
 
 // -------------------------------------------------------
 // Pricing tier data
@@ -63,6 +63,7 @@ const TIERS = [
 export default async function LandingPage() {
   const session = await auth();
   const isAuthed = !!session?.user;
+  const CITIES = await getCitiesWithOverrides();
 
   const stats = [
     { value: CITIES.length, label: "Markets" },
