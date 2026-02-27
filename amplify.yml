@@ -6,8 +6,7 @@ frontend:
         - npm ci
         - env | grep -E '^(AUTH_|SES_|ADMIN_|CRON_SECRET|NEXT_PUBLIC_|FAA_|FEDERAL_|LEGISCAN_|SEC_|RESEND_|ALERT_|DATABASE_)' >> .env.production
         - npx prisma generate
-        - grep "^DATABASE_URL=" .env.production > .env && echo "DATABASE_URL written to .env" || echo "DATABASE_URL not found in .env.production"
-        - cat .env | wc -l
+        - env | grep '^DATABASE_URL=' > .env
         - npx prisma migrate deploy
     build:
       commands:
