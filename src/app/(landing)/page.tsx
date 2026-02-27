@@ -454,7 +454,7 @@ export default async function LandingPage() {
             gap: 24,
             maxWidth: 720,
             margin: "0 auto",
-            alignItems: "start",
+            alignItems: "stretch",
           }}
         >
           {TIERS.map((tier) => {
@@ -464,6 +464,8 @@ export default async function LandingPage() {
                 key={tier.name}
                 style={{
                   position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
                   background: "rgba(255,255,255,0.02)",
                   border: isFree
                     ? "1px solid rgba(0,212,255,0.3)"
@@ -544,7 +546,7 @@ export default async function LandingPage() {
                 {!("yearlyNote" in tier) && <div style={{ marginBottom: 20 }} />}
 
                 {/* Features */}
-                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px" }}>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px", flex: 1 }}>
                   {tier.features.map((f) => (
                     <li
                       key={f}
