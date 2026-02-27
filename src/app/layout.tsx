@@ -6,6 +6,19 @@ export const metadata: Metadata = {
   title: "AirIndex — UAM Market Intelligence",
   description: "The intelligence layer for the Urban Air Mobility industry. Track vertiports, operators, regulatory filings, and market readiness scores across the US.",
   keywords: ["urban air mobility", "eVTOL", "vertiport", "air taxi", "UAM", "Joby", "Archer"],
+  openGraph: {
+    title: "AirIndex — UAM Market Intelligence",
+    description: "Track vertiports, operators, regulatory filings, and market readiness scores across 20 US urban air mobility markets.",
+    siteName: "AirIndex",
+    images: [{ url: "/images/dashboard-preview.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AirIndex — UAM Market Intelligence",
+    description: "Track vertiports, operators, regulatory filings, and market readiness scores across 20 US urban air mobility markets.",
+    images: ["/images/dashboard-preview.png"],
+  },
 };
 
 export default function RootLayout({
