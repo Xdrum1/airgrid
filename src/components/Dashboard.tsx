@@ -295,7 +295,7 @@ function BreakdownRow({
 type FilterKey = "all" | "hot" | "operators" | "vertiport" | "watching";
 type TabKey = "map" | "rank" | "corridors" | "filings" | "activity" | "analytics";
 
-const GATED_TABS: TabKey[] = ["filings", "activity", "analytics"];
+const GATED_TABS: TabKey[] = ["filings", "analytics"];
 
 type MobilePanel = "none" | "cityList" | "detail";
 
