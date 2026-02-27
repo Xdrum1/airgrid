@@ -299,14 +299,24 @@ const GATED_TABS: TabKey[] = ["filings", "activity", "analytics"];
 
 type MobilePanel = "none" | "cityList" | "detail";
 
-export default function Dashboard() {
+interface DashboardProps {
+  initialCities?: City[];
+}
+
+export default function Dashboard({ initialCities }: DashboardProps) {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialTab = (searchParams.get("tab") as TabKey) || "map";
   const isMobile = useIsMobile();
 
-  const [selected, setSelected] = useState<City>(CITIES[0]);
+  // Use dynamic cities from server if available, otherwise fall back to static
+  const CITIES_RESOLVED = initialCities ?? CITIES;
+  const CITIES_MAP_RESOLVED: Record<string, City> = Object.fromEntries(
+    CITIES_RESOLVED.map((c) => [c.id, c])
+  );
+
+  const [selected, setSelected] = useState<City>(CITIES_RESOLVED[0]);
   const [filter, setFilter] = useState<FilterKey>("all");
   const [tab, setTab] = useState<TabKey>(
     ["map", "rank", "corridors", "filings", "activity", "analytics"].includes(initialTab) ? initialTab : "map"
@@ -340,9 +350,9 @@ export default function Dashboard() {
   const cityCorridors = getCorridorsForCity(selected.id);
 
   // Analytics computed values
-  const top10 = CITIES.slice(0, 10);
-  const avgScore = Math.round(CITIES.reduce((a, c) => a + (c.score ?? 0), 0) / CITIES.length);
-  const vertiportCityCount = CITIES.filter((c) => c.vertiportCount > 0).length;
+  const top10 = CITIES_RESOLVED.slice(0, 10);
+  const avgScore = Math.round(CITIES_RESOLVED.reduce((a, c) => a + (c.score ?? 0), 0) / CITIES_RESOLVED.length);
+  const vertiportCityCount = CITIES_RESOLVED.filter((c) => c.vertiportCount > 0).length;
   const operatorCount = OPERATORS.length;
 
   useEffect(() => {
@@ -390,7 +400,7 @@ export default function Dashboard() {
       .finally(() => setChangelogLoading(false));
   }, [tab, changelogFetchedAt]);
 
-  const filtered = CITIES.filter((c) => {
+  const filtered = CITIES_RESOLVED.filter((c) => {
     if (filter === "watching") return watchedCityIds.includes(c.id);
     if (filter === "hot") return (c.score ?? 0) >= 60;
     if (filter === "operators") return c.activeOperators.length > 0;
@@ -402,17 +412,17 @@ export default function Dashboard() {
   const posture = getPostureConfig(selected.regulatoryPosture);
 
   const headerStats = [
-    { label: `${CITIES.length} MARKETS`, color: "#00d4ff" },
+    { label: `${CITIES_RESOLVED.length} MARKETS`, color: "#00d4ff" },
     {
-      label: `${CITIES.filter((c) => (c.score ?? 0) >= 60).length} HIGH READINESS`,
+      label: `${CITIES_RESOLVED.filter((c) => (c.score ?? 0) >= 60).length} HIGH READINESS`,
       color: "#00ff88",
     },
     {
-      label: `${CITIES.filter((c) => c.vertiportCount > 0).length} VERTIPORT CITIES`,
+      label: `${CITIES_RESOLVED.filter((c) => c.vertiportCount > 0).length} VERTIPORT CITIES`,
       color: "#f59e0b",
     },
     {
-      label: `AVG SCORE ${Math.round(CITIES.reduce((a, b) => a + (b.score ?? 0), 0) / CITIES.length)}`,
+      label: `AVG SCORE ${Math.round(CITIES_RESOLVED.reduce((a, b) => a + (b.score ?? 0), 0) / CITIES_RESOLVED.length)}`,
       color: "#888",
     },
   ];
@@ -718,7 +728,7 @@ export default function Dashboard() {
               >
                 <CityCard
                   city={city}
-                  rank={CITIES.indexOf(city) + 1}
+                  rank={CITIES_RESOLVED.indexOf(city) + 1}
                   isSelected={selected?.id === city.id}
                   onClick={() => {
                     setSelected(city);
@@ -860,7 +870,7 @@ export default function Dashboard() {
               {/* Corridor cards */}
               {CORRIDORS.map((corridor, i) => {
                 const statusColor = CORRIDOR_STATUS_COLORS[corridor.status] ?? "#888";
-                const city = CITIES_MAP[corridor.cityId];
+                const city = CITIES_MAP_RESOLVED[corridor.cityId];
                 const operator = corridor.operatorId ? OPERATORS_MAP[corridor.operatorId] : null;
 
                 return (
@@ -1039,7 +1049,7 @@ export default function Dashboard() {
                 marginBottom: 24,
               }}>
                 {[
-                  { label: "TOTAL MARKETS", value: CITIES.length, color: "#00d4ff" },
+                  { label: "TOTAL MARKETS", value: CITIES_RESOLVED.length, color: "#00d4ff" },
                   { label: "AVG SCORE", value: avgScore, color: "#00ff88" },
                   { label: "VERTIPORT CITIES", value: vertiportCityCount, color: "#f59e0b" },
                   { label: "OPERATORS", value: operatorCount, color: "#7c3aed" },
@@ -1619,7 +1629,7 @@ export default function Dashboard() {
           ) : tab === "map" ? (
             <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
               <MapView
-                cities={CITIES}
+                cities={CITIES_RESOLVED}
                 selected={selected}
                 onCitySelect={(city) => {
                   setSelected(city);
@@ -1661,7 +1671,7 @@ export default function Dashboard() {
                     boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
                   }}
                 >
-                  MARKETS ({CITIES.length})
+                  MARKETS ({CITIES_RESOLVED.length})
                 </button>
               )}
 
@@ -1831,7 +1841,7 @@ export default function Dashboard() {
             <div
               style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px", paddingLeft: isMobile ? 12 : 292, paddingRight: isMobile ? 12 : 316 }}
             >
-              {CITIES.map((city, i) => {
+              {CITIES_RESOLVED.map((city, i) => {
                 const color = getScoreColor(city.score ?? 0);
                 const isSelected = selected?.id === city.id;
                 return (

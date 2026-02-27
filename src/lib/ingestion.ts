@@ -1,10 +1,12 @@
 import { promises as fs } from "fs";
 import path from "path";
 import crypto from "crypto";
-import { fetchFederalRegisterUAM, fetchStateBills } from "@/lib/faa-api";
-import type { FederalFiling, StateBill } from "@/lib/faa-api";
+import { fetchFederalRegisterUAM, fetchStateBills, fetchOperatorFilings, OPERATOR_CIKS } from "@/lib/faa-api";
+import type { FederalFiling, StateBill, SecFiling } from "@/lib/faa-api";
 import { addChangelogEntries } from "@/lib/changelog";
 import { notifySubscribers } from "@/lib/notifications";
+import { evaluateRules } from "@/lib/rules-engine";
+import { applyOverrides } from "@/lib/score-updater";
 import type { ChangelogEntry } from "@/types";
 
 // -------------------------------------------------------
@@ -13,7 +15,7 @@ import type { ChangelogEntry } from "@/types";
 
 export interface IngestedRecord {
   id: string;
-  source: "federal_register" | "legiscan";
+  source: "federal_register" | "legiscan" | "sec_edgar";
   sourceId: string;
   title: string;
   summary: string;
@@ -110,6 +112,21 @@ function normalizeStateBill(b: StateBill): IngestedRecord {
   };
 }
 
+function normalizeSecFiling(f: SecFiling, operatorId: string): IngestedRecord {
+  return {
+    id: `sec_edgar_${f.accessionNo}`,
+    source: "sec_edgar",
+    sourceId: f.accessionNo,
+    title: `${operatorId} ${f.form}: ${f.primaryDescription || "Filing"}`,
+    summary: f.primaryDescription || "",
+    status: f.form,
+    date: f.filingDate,
+    url: `https://www.sec.gov/Archives/edgar/data/${OPERATOR_CIKS[operatorId]}/${f.accessionNo.replace(/-/g, "")}/${f.primaryDocument}`,
+    raw: { ...f, operatorId } as unknown as Record<string, unknown>,
+    ingestedAt: new Date().toISOString(),
+  };
+}
+
 // -------------------------------------------------------
 // Diff engine
 // -------------------------------------------------------
@@ -165,20 +182,29 @@ export async function runIngestion(): Promise<{
     }
     console.log(`[ingestion] LegiScan: ${allBills.length} bills`);
 
-    // 3. Normalize
+    // 3. Fetch SEC EDGAR 8-K filings for tracked operators
+    const allSecFilings: IngestedRecord[] = [];
+    for (const operatorId of Object.keys(OPERATOR_CIKS)) {
+      const filings = await fetchOperatorFilings(operatorId, "8-K");
+      allSecFilings.push(...filings.map((f) => normalizeSecFiling(f, operatorId)));
+    }
+    console.log(`[ingestion] SEC EDGAR: ${allSecFilings.length} 8-K filings`);
+
+    // 4. Normalize and merge all sources
     const incomingRecords: IngestedRecord[] = [
       ...federalFilings.map(normalizeFederalFiling),
       ...allBills.map(normalizeStateBill),
+      ...allSecFilings,
     ];
 
-    // 4. Diff against existing
+    // 5. Diff against existing
     const existing = await readIngested();
     const diff = diffRecords(existing, incomingRecords);
     console.log(
       `[ingestion] Diff: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged`
     );
 
-    // 5. Merge and persist
+    // 6. Merge and persist
     const existingMap = new Map(existing.map((r) => [r.id, r]));
     for (const r of diff.newRecords) existingMap.set(r.id, r);
     for (const r of diff.updatedRecords) existingMap.set(r.id, r);
@@ -186,7 +212,7 @@ export async function runIngestion(): Promise<{
 
     await writeIngested(merged);
 
-    // 6. Write meta
+    // 7. Write meta
     const sources = Array.from(new Set(incomingRecords.map((r) => r.source)));
     const meta: IngestionMeta = {
       lastRunAt: new Date().toISOString(),
@@ -195,7 +221,7 @@ export async function runIngestion(): Promise<{
     };
     await writeMeta(meta);
 
-    // 7. Create changelog entries
+    // 8. Create changelog entries
     const changelogBatch: Omit<ChangelogEntry, "id" | "timestamp">[] = [];
 
     for (const r of diff.newRecords) {
@@ -226,6 +252,18 @@ export async function runIngestion(): Promise<{
       notifySubscribers(newEntries).catch((err) =>
         console.error("[ingestion] Notification dispatch error:", err)
       );
+    }
+
+    // 9. Run rules engine on new/updated records
+    const changedRecords = [...diff.newRecords, ...diff.updatedRecords];
+    if (changedRecords.length > 0) {
+      const overrideCandidates = evaluateRules(changedRecords);
+      if (overrideCandidates.length > 0) {
+        const result = await applyOverrides(overrideCandidates);
+        console.log(
+          `[ingestion] Rules engine: ${result.persisted} overrides persisted, ${result.applied} auto-applied, ${result.scoreChanges.length} score changes`
+        );
+      }
     }
 
     console.log("[ingestion] Run complete.");

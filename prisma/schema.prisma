@@ -88,3 +88,19 @@ model ScoreSnapshot {
 
   @@index([cityId, capturedAt])
 }
+
+model ScoringOverride {
+  id             String    @id @default(cuid())
+  cityId         String
+  field          String    // scoring input name (e.g. "hasStateLegislation")
+  value          Json      // the override value (e.g. true)
+  reason         String
+  sourceRecordId String?   // links to IngestedRecord.id
+  sourceUrl      String?
+  confidence     String    // "high" | "medium" | "needs_review"
+  appliedAt      DateTime? // set when auto-applied
+  supersededAt   DateTime? // set when a newer override replaces this one
+  createdAt      DateTime  @default(now())
+
+  @@index([cityId, field])
+}

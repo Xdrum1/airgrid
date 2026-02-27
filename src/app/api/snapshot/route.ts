@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { CITIES } from "@/data/seed";
+import { getCitiesWithOverrides } from "@/data/seed";
 
 export async function GET(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
@@ -29,6 +29,7 @@ export async function POST() {
 async function captureSnapshots() {
   try {
     const now = new Date();
+    const CITIES = await getCitiesWithOverrides();
 
     const result = await prisma.scoreSnapshot.createMany({
       data: CITIES.map((city) => ({

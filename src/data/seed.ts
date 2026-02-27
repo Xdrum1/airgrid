@@ -579,3 +579,75 @@ export const CITIES: City[] = RAW_CITIES.map((city) => {
 export const CITIES_MAP: Record<string, City> = Object.fromEntries(
   CITIES.map((c) => [c.id, c])
 );
+
+// ============================================================
+// DYNAMIC CITIES (with DB overrides)
+// ============================================================
+
+let cachedCities: City[] | null = null;
+let cacheTimestamp = 0;
+const CACHE_TTL_MS = 60_000; // 60 seconds
+
+export function invalidateCitiesCache() {
+  cachedCities = null;
+  cacheTimestamp = 0;
+}
+
+/**
+ * Returns cities with active high-confidence scoring overrides merged in.
+ * Scores are recalculated with overrides applied.
+ * Falls back to static CITIES when no overrides exist or DB is unavailable.
+ */
+export async function getCitiesWithOverrides(): Promise<City[]> {
+  const now = Date.now();
+  if (cachedCities && now - cacheTimestamp < CACHE_TTL_MS) {
+    return cachedCities;
+  }
+
+  try {
+    // Dynamic import to prevent client bundle contamination
+    const { prisma } = await import("@/lib/prisma");
+
+    const overrides = await prisma.scoringOverride.findMany({
+      where: {
+        confidence: "high",
+        appliedAt: { not: null },
+        supersededAt: null,
+      },
+    });
+
+    if (overrides.length === 0) {
+      cachedCities = CITIES;
+      cacheTimestamp = now;
+      return CITIES;
+    }
+
+    // Group overrides by city
+    const overridesByCity = new Map<string, Record<string, unknown>>();
+    for (const override of overrides) {
+      const existing = overridesByCity.get(override.cityId) ?? {};
+      existing[override.field] = override.value;
+      overridesByCity.set(override.cityId, existing);
+    }
+
+    // Rebuild cities with overrides merged
+    const cities = RAW_CITIES.map((city) => {
+      const cityOverrides = overridesByCity.get(city.id);
+      const merged = cityOverrides ? { ...city, ...cityOverrides } : city;
+      const { score, breakdown } = calculateReadinessScore(merged as City);
+      return { ...merged, score, breakdown } as City;
+    }).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+
+    cachedCities = cities;
+    cacheTimestamp = now;
+    return cities;
+  } catch (err) {
+    console.error("[seed] Failed to load overrides, falling back to static data:", err);
+    return CITIES;
+  }
+}
+
+export async function getCitiesMapWithOverrides(): Promise<Record<string, City>> {
+  const cities = await getCitiesWithOverrides();
+  return Object.fromEntries(cities.map((c) => [c.id, c]));
+}

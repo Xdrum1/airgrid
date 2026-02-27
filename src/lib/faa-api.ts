@@ -171,7 +171,7 @@ export interface SecFiling {
   primaryDescription: string;
 }
 
-const OPERATOR_CIKS: Record<string, string> = {
+export const OPERATOR_CIKS: Record<string, string> = {
   op_joby: "0001823652",    // Joby Aviation CIK
   op_archer: "0001819989",  // Archer Aviation CIK
   op_blade: "0001779128",   // Blade Air Mobility CIK
