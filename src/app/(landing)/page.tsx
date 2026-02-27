@@ -881,6 +881,14 @@ export default async function LandingPage() {
             >
               @AIRINDEXHQ
             </a>
+            <a
+              href="https://www.linkedin.com/company/AirIndexHQ"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              LINKEDIN
+            </a>
           </div>
           <div style={{ color: "#666", fontSize: 9, letterSpacing: 1 }}>
             &copy; {new Date().getFullYear()} AIRINDEX
