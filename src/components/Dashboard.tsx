@@ -92,8 +92,12 @@ function formatRelativeTime(timestamp: string): string {
   if (diffHr < 24) return `${diffHr}h ago`;
   const diffDay = Math.floor(diffHr / 24);
   if (diffDay < 30) return `${diffDay}d ago`;
-  const diffMon = Math.floor(diffDay / 30);
-  return `${diffMon}mo ago`;
+  // Older than 30 days — show absolute date
+  const d = new Date(timestamp);
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const currentYear = new Date().getFullYear();
+  if (d.getFullYear() === currentYear) return `${months[d.getMonth()]} ${d.getDate()}`;
+  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 }
 
 // -------------------------------------------------------
