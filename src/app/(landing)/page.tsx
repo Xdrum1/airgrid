@@ -23,7 +23,8 @@ const TIERS = [
       "Corridor intelligence",
       "Watchlists & email alerts",
     ],
-    cta: { label: "Get started — it's free", href: "/login" },
+    yearlyNote: "Core features free forever. Advanced features coming soon.",
+    cta: { label: "Get early access — it's free", href: "/login" },
   },
   {
     name: "Enterprise",
@@ -440,7 +441,7 @@ export default async function LandingPage() {
               margin: "0 0 12px",
             }}
           >
-            Full access. No credit card required.
+            Free during beta. Free forever after.
           </h2>
           <p style={{ fontFamily: "'Inter', sans-serif", color: "#666", fontSize: 13, margin: 0 }}>
             Everything you need to track the UAM market — free forever.
