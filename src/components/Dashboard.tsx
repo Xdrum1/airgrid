@@ -442,30 +442,11 @@ export default function Dashboard() {
         }}
       >
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12, textDecoration: "none", color: "inherit" }}>
-          <div
-            style={{
-              width: 26,
-              height: 26,
-              background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
-              borderRadius: 6,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 11,
-            }}
-          >
-            ✦
-          </div>
-          <span
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              fontWeight: 800,
-              fontSize: isMobile ? 15 : 17,
-              letterSpacing: "-0.5px",
-            }}
-          >
-            AIRINDEX
-          </span>
+          <img
+            src="/images/logo/airindex-wordmark.svg"
+            alt="AirIndex"
+            style={{ height: isMobile ? 22 : 26 }}
+          />
           {!isMobile && (
             <span
               style={{ color: "#444", fontSize: 9, letterSpacing: 2 }}

@@ -117,16 +117,11 @@ export default async function LandingPage() {
             >
               ✦
             </div>
-            <span
-              style={{
-                fontFamily: "'Syne', sans-serif",
-                fontWeight: 800,
-                fontSize: 18,
-                letterSpacing: "-0.5px",
-              }}
-            >
-              AIRINDEX
-            </span>
+            <img
+              src="/images/logo/airindex-wordmark.svg"
+              alt="AirIndex"
+              style={{ height: 28 }}
+            />
           </div>
           <div className="landing-nav-buttons" style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Link
@@ -741,16 +736,11 @@ export default async function LandingPage() {
             >
               ✦
             </div>
-            <span
-              style={{
-                fontFamily: "'Syne', sans-serif",
-                fontWeight: 800,
-                fontSize: 13,
-                color: "#555",
-              }}
-            >
-              AIRINDEX
-            </span>
+            <img
+              src="/images/logo/airindex-wordmark.svg"
+              alt="AirIndex"
+              style={{ height: 18, opacity: 0.4 }}
+            />
           </div>
           <div className="landing-footer-links" style={{ display: "flex", gap: 24 }}>
             <Link

@@ -135,25 +135,11 @@ function LoginForm() {
             marginBottom: 48,
           }}
         >
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 8,
-              background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
-            }}
+          <img
+            src="/images/logo/airindex-wordmark.svg"
+            alt="AirIndex"
+            style={{ height: 36 }}
           />
-          <span
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              fontSize: 26,
-              fontWeight: 800,
-              color: "#fff",
-              letterSpacing: "0.08em",
-            }}
-          >
-            AIRINDEX
-          </span>
         </div>
 
         {step === "email" ? (
