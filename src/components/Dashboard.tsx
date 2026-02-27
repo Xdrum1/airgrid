@@ -441,7 +441,7 @@ export default function Dashboard() {
           flexShrink: 0,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12 }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12, textDecoration: "none", color: "inherit" }}>
           <div
             style={{
               width: 26,
@@ -473,7 +473,7 @@ export default function Dashboard() {
               UAM MARKET INTELLIGENCE
             </span>
           )}
-        </div>
+        </Link>
         <div style={{ display: "flex", gap: isMobile ? 8 : 24, alignItems: "center" }}>
           {!isMobile && headerStats.map((s, i) => (
             <span
