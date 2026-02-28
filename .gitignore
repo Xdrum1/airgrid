@@ -39,3 +39,6 @@ yarn-error.log*
 
 # TypeScript build info
 tsconfig.tsbuildinfo
+
+# Test output
+test-results/
