@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getToken } from "next-auth/jwt";
 import {
   getPendingOverrides,
   approveOverride,
@@ -8,14 +8,14 @@ import {
 
 const ADMIN_EMAIL = process.env.ADMIN_NOTIFY_EMAIL;
 
-async function isAdmin(): Promise<boolean> {
+async function isAdmin(req: NextRequest): Promise<boolean> {
   if (!ADMIN_EMAIL) return false;
-  const session = await auth();
-  return session?.user?.email === ADMIN_EMAIL;
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  return token?.email === ADMIN_EMAIL;
 }
 
-export async function GET() {
-  if (!(await isAdmin())) {
+export async function GET(request: NextRequest) {
+  if (!(await isAdmin(request))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -32,7 +32,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  if (!(await isAdmin())) {
+  if (!(await isAdmin(request))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
