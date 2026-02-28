@@ -19,14 +19,42 @@ const LEGISCAN_BASE = "https://api.legiscan.com";
 // FAA: LAANC Coverage Check
 // Check if a lat/lng coordinate has LAANC coverage
 // -------------------------------------------------------
-export async function checkLaancCoverage(lat: number, lng: number): Promise<boolean> {
+const LAANC_FEATURE_SERVICE =
+  "https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/arcgis/rest/services/FAA_UAS_FacilityMap_Data/FeatureServer/0/query";
+
+/**
+ * Check if a lat/lng coordinate has LAANC coverage by querying the
+ * FAA UAS Facility Map ArcGIS Feature Service. Uses a 30 km buffer
+ * around the point — LAANC grids are centered on airports, not city centers.
+ */
+export async function checkLaancCoverage(
+  lat: number,
+  lng: number,
+  radiusMeters: number = 30_000
+): Promise<boolean> {
   try {
-    // FAA UAS Facility Maps ArcGIS endpoint
-    const url = `${FAA_BASE}/datasets/faa::uas-facility-maps/api/explore`;
-    // TODO: implement real spatial query
-    // For now returning true for all — will implement in Sprint 2
-    console.log(`[FAA] Checking LAANC coverage for ${lat}, ${lng}`);
-    return true;
+    const params = new URLSearchParams({
+      where: "1=1",
+      geometry: `${lng},${lat}`,
+      geometryType: "esriGeometryPoint",
+      inSR: "4326",
+      spatialRel: "esriSpatialRelIntersects",
+      distance: String(radiusMeters),
+      units: "esriSRUnit_Meter",
+      returnCountOnly: "true",
+      f: "json",
+    });
+
+    const res = await fetch(`${LAANC_FEATURE_SERVICE}?${params}`);
+    if (!res.ok) {
+      console.error(`[FAA] LAANC API HTTP ${res.status}`);
+      return false;
+    }
+
+    const json = await res.json();
+    const hasGrid = (json.count ?? 0) > 0;
+    console.log(`[FAA] LAANC coverage for ${lat}, ${lng}: ${hasGrid} (${json.count} grids within ${radiusMeters / 1000}km)`);
+    return hasGrid;
   } catch (err) {
     console.error("[FAA] LAANC check failed:", err);
     return false;
