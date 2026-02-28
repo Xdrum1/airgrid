@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AirIndex — The Intelligence Layer for Urban Air Mobility</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS CUSTOM PROPERTIES — SCREEN (DARK CYBER)
+   ============================================================ */
+:root {
+  --bg: #050508;
+  --bg-card: #0a0a12;
+  --bg-card-hover: #10101a;
+  --border: #1a1a2e;
+  --text: #e0e0e8;
+  --text-muted: #888899;
+  --text-heading: #ffffff;
+  --accent-cyan: #00d4ff;
+  --accent-green: #00ff88;
+  --accent-purple: #7c3aed;
+  --accent-amber: #f59e0b;
+  --accent-orange: #ff6b35;
+  --accent-teal: #14b8a6;
+  --accent-red: #ff4444;
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
+  --glow-green: 0 0 20px rgba(0, 255, 136, 0.3);
+  --glow-purple: 0 0 20px rgba(124, 58, 237, 0.3);
+  --glow-amber: 0 0 20px rgba(245, 158, 11, 0.3);
+  --score-high: #00ff88;
+  --score-moderate: #00d4ff;
+  --score-early: #f59e0b;
+  --score-nascent: #ff4444;
+  --bar-bg: #1a1a2e;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+section {
+  padding: 64px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+section:last-of-type { border-bottom: none; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--text-heading);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 32px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+h2 .accent { color: var(--accent-cyan); }
+
+h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+p { margin-bottom: 16px; }
+
+a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+}
+
+a:hover { text-decoration: underline; }
+
+/* ============================================================
+   1. HERO
+   ============================================================ */
+.hero {
+  padding: 80px 0 64px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.logo-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00d4ff, #7c3aed);
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-heading);
+  letter-spacing: 0.08em;
+}
+
+.hero h1 {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero .tagline {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 640px;
+  margin: 0 auto 12px;
+  line-height: 1.7;
+}
+
+.hero .url {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-cyan);
+  margin-bottom: 40px;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stat strong {
+  color: var(--accent-cyan);
+  font-size: 15px;
+}
+
+/* ============================================================
+   2. NARRATIVE BLOCK (opportunity, what is, etc.)
+   ============================================================ */
+.narrative p {
+  font-size: 14px;
+  line-height: 1.75;
+  max-width: 720px;
+}
+
+.narrative .lead {
+  font-size: 16px;
+  color: var(--text-heading);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.narrative .highlight {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--accent-green);
+  margin-top: 24px;
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   3. FEATURES GRID — 2×3
+   ============================================================ */
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  border-top: 3px solid var(--card-color, var(--accent-cyan));
+}
+
+.feature-card h3 {
+  color: var(--card-color, var(--accent-cyan));
+  margin-bottom: 8px;
+}
+
+.feature-card p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   4. SCORE METHODOLOGY (compact)
+   ============================================================ */
+.score-components {
+  margin: 24px 0;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border-left: 4px solid var(--row-color, var(--accent-cyan));
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 8px;
+}
+
+.score-row .name {
+  font-weight: 700;
+  color: var(--text-heading);
+  min-width: 200px;
+}
+
+.score-row .weight {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--row-color, var(--accent-cyan));
+  min-width: 40px;
+  text-align: right;
+}
+
+.score-row .desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.tier-legend {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.tier-badge {
+  text-align: center;
+  padding: 12px;
+  border-radius: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.tier-badge .range {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.tier-badge .label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   5. AUDIENCE GRID — 3 column
+   ============================================================ */
+.audience-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.audience-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 28px 24px;
+  border-top: 3px solid var(--card-color, var(--accent-cyan));
+}
+
+.audience-card h3 {
+  color: var(--card-color, var(--accent-cyan));
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.audience-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.audience-card li {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 6px 0 6px 16px;
+  position: relative;
+}
+
+.audience-card li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--card-color, var(--accent-cyan));
+  opacity: 0.6;
+}
+
+/* ============================================================
+   6. ROADMAP TIMELINE
+   ============================================================ */
+.timeline {
+  position: relative;
+  padding-left: 40px;
+  margin: 8px 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+.timeline-phase {
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.timeline-phase:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -33px;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid var(--dot-color, var(--accent-cyan));
+  background: var(--bg);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.timeline-phase.active .timeline-dot {
+  background: var(--dot-color, var(--accent-cyan));
+  box-shadow: 0 0 12px var(--dot-color, rgba(0, 212, 255, 0.4));
+}
+
+.timeline-phase h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--dot-color, var(--accent-cyan));
+  margin-bottom: 8px;
+}
+
+.timeline-phase .phase-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.timeline-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-items li {
+  font-size: 13px;
+  color: var(--text);
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.timeline-items li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 11px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot-color, var(--accent-cyan));
+  opacity: 0.5;
+}
+
+/* ============================================================
+   7. STATS GRID — 4×2
+   ============================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+}
+
+.stat-card .number {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.stat-card .stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.glow-cyan   { color: var(--accent-cyan);   text-shadow: var(--glow-cyan); }
+.glow-green  { color: var(--accent-green);  text-shadow: var(--glow-green); }
+.glow-purple { color: var(--accent-purple); text-shadow: var(--glow-purple); }
+.glow-amber  { color: var(--accent-amber);  text-shadow: var(--glow-amber); }
+
+/* ============================================================
+   8. FOOTER / CTA
+   ============================================================ */
+footer {
+  padding: 48px 0;
+  text-align: center;
+}
+
+footer .cta {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-heading);
+  margin-bottom: 12px;
+}
+
+footer .footer-url {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--accent-cyan);
+  margin-bottom: 8px;
+}
+
+footer .footer-email {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.print-only { display: none; }
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+@media print {
+  :root {
+    --bg: #ffffff;
+    --bg-card: #f8f8fa;
+    --bg-card-hover: #f0f0f4;
+    --border: #d0d0d8;
+    --text: #1a1a2e;
+    --text-muted: #555566;
+    --text-heading: #0a0a12;
+    --accent-cyan: #0088aa;
+    --accent-green: #008844;
+    --accent-purple: #5b21b6;
+    --accent-amber: #b45309;
+    --accent-orange: #c2410c;
+    --accent-teal: #0f766e;
+    --accent-red: #b91c1c;
+    --score-high: #008844;
+    --score-moderate: #0088aa;
+    --score-early: #b45309;
+    --score-nascent: #b91c1c;
+    --bar-bg: #e0e0e8;
+    --glow-cyan: none;
+    --glow-green: none;
+    --glow-purple: none;
+    --glow-amber: none;
+  }
+
+  @page {
+    size: letter;
+    margin: 0.75in 0.6in;
+  }
+
+  body {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  section {
+    padding: 24px 0;
+    border-bottom-color: var(--border);
+  }
+
+  .hero {
+    padding: 24px 0;
+  }
+
+  .hero h1 {
+    font-size: 28px;
+    background: none;
+    -webkit-text-fill-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+
+  .logo-mark {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  h2 { font-size: 20px; margin-bottom: 16px; }
+  h3 { font-size: 13px; }
+
+  .narrative .lead { font-size: 13px; }
+  .narrative p { font-size: 11px; }
+  .narrative .highlight { font-size: 13px; }
+
+  .features-grid {
+    gap: 12px;
+  }
+
+  .feature-card {
+    padding: 14px;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .score-row {
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .score-row .name { min-width: 160px; font-size: 12px; }
+  .score-row .weight { font-size: 14px; }
+  .score-row .desc { font-size: 10px; }
+
+  .tier-legend { gap: 8px; }
+  .tier-badge {
+    padding: 8px;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .tier-badge .range { font-size: 16px; }
+  .tier-badge .label { font-size: 9px; }
+
+  .audience-grid {
+    gap: 12px;
+  }
+
+  .audience-card {
+    padding: 16px;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .audience-card h3 { font-size: 12px; }
+  .audience-card li { font-size: 11px; }
+
+  .timeline { padding-left: 32px; }
+  .timeline-phase { padding-bottom: 24px; }
+  .timeline-dot { left: -25px; width: 12px; height: 12px; }
+  .timeline-phase h3 { font-size: 12px; }
+  .timeline-items li { font-size: 11px; }
+
+  .stats-grid { gap: 12px; }
+  .stat-card {
+    padding: 16px;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .stat-card .number { font-size: 32px; }
+  .stat-card .stat-label { font-size: 9px; }
+
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .no-break {
+    page-break-inside: avoid;
+  }
+
+  .print-only { display: block; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     1. HERO
+     ============================================================ -->
+<div class="hero">
+  <div class="container">
+    <div class="logo-row">
+      <div class="logo-mark"></div>
+      <div class="logo-text">AIRINDEX</div>
+    </div>
+    <h1>The Intelligence Layer<br>for Urban Air Mobility</h1>
+    <p class="tagline">
+      Market readiness scoring, corridor tracking, and regulatory intelligence — aggregated into a single platform for the stakeholders building the future of air transportation.
+    </p>
+    <p class="url">airindex.io</p>
+    <div class="stats-row">
+      <span class="stat"><strong>20</strong> US Markets</span>
+      <span class="stat"><strong>7</strong> Scoring Factors</span>
+      <span class="stat"><strong>4</strong> Data Sources</span>
+      <span class="stat"><strong>Weekly</strong> Updates</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     2. THE OPPORTUNITY
+     ============================================================ -->
+<section class="narrative">
+  <div class="container">
+    <h2>The <span class="accent">Opportunity</span></h2>
+    <p class="lead">
+      Urban air mobility is no longer a concept — it's a market being built in real time. Joby Aviation launched commercial operations in Dubai in February 2026. US cities are next.
+    </p>
+    <p>
+      The projected market exceeds $1 trillion. Joby, Archer, Wisk, and Volocopter are racing toward FAA certification. Cities from Los Angeles to Dallas are writing vertiport zoning codes and designating flight corridors. Infrastructure decisions that will shape this industry for decades are being made right now.
+    </p>
+    <p>
+      But the data driving these decisions is fragmented — scattered across FAA databases, state legislatures, city planning documents, SEC filings, and press releases. No single source aggregates it. No benchmark exists to compare market readiness.
+    </p>
+    <p class="highlight">AirIndex changes that.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     3. WHAT IS AIRINDEX
+     ============================================================ -->
+<section class="narrative">
+  <div class="container">
+    <h2>What is <span class="accent">AirIndex</span></h2>
+    <p class="lead">
+      AirIndex is a market intelligence platform for urban air mobility. Think of it as the Bloomberg terminal for air mobility — a single dashboard where fragmented public data becomes actionable intelligence.
+    </p>
+    <p>
+      At its core is the AirIndex Readiness Score: a 0–100 composite index that benchmarks every tracked market across seven weighted factors — from active pilot programs and vertiport permits to regulatory posture and FAA airspace coverage. The score is designed to be cited, compared, and tracked over time.
+    </p>
+    <p>
+      Beyond scoring, the platform tracks flight corridors, monitors regulatory filings, maps vertiport infrastructure, and delivers change alerts — giving investors, operators, and city planners the same unified view of a market that didn't exist before.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     4. PLATFORM CAPABILITIES (today)
+     ============================================================ -->
+<section>
+  <div class="container">
+    <h2>Platform <span class="accent">Capabilities</span></h2>
+    <div class="features-grid">
+      <div class="feature-card" style="--card-color: var(--accent-green)">
+        <h3>Readiness Scoring</h3>
+        <p>0–100 composite index across 7 weighted factors. Every market scored, tiered, and ranked. Designed to be the benchmark the industry cites.</p>
+      </div>
+      <div class="feature-card" style="--card-color: var(--accent-cyan)">
+        <h3>Interactive Map</h3>
+        <p>Vertiports, flight corridors, operator coverage areas, and tier-based market visualization on a live, explorable map interface.</p>
+      </div>
+      <div class="feature-card" style="--card-color: var(--accent-purple)">
+        <h3>Corridor Intelligence</h3>
+        <p>Database-backed flight corridors with status tracking, operator assignment, distance and altitude data, and per-corridor subscriptions.</p>
+      </div>
+      <div class="feature-card" style="--card-color: var(--accent-amber)">
+        <h3>Historical Score Tracking</h3>
+        <p>Weekly automated snapshots with sparkline trend visualizations. Track how market readiness evolves over time as policies change and infrastructure develops.</p>
+      </div>
+      <div class="feature-card" style="--card-color: var(--accent-orange)">
+        <h3>Regulatory Ingestion</h3>
+        <p>Automated data pipelines from Federal Register, LegiScan, FAA LAANC, and SEC EDGAR. Filings surfaced by market with source attribution.</p>
+      </div>
+      <div class="feature-card" style="--card-color: var(--accent-teal)">
+        <h3>Alerts &amp; Subscriptions</h3>
+        <p>Market-level and corridor-level change notifications. Subscribe to the markets and corridors you care about — get notified when the data moves.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     5. HOW THE SCORE WORKS
+     ============================================================ -->
+<section class="page-break-before">
+  <div class="container">
+    <h2>How the <span class="accent">Score</span> Works</h2>
+    <p style="margin-bottom: 24px;">Each market is evaluated across seven binary factors, weighted by their signal strength for commercial readiness. The total produces a 0–100 score mapped to four tiers.</p>
+    <div class="score-components">
+      <div class="score-row no-break" style="--row-color: var(--accent-green)">
+        <span class="weight">20</span>
+        <span class="name">Active Pilot Program</span>
+        <span class="desc">Live testing or commercial demo operations in the market</span>
+      </div>
+      <div class="score-row no-break" style="--row-color: var(--accent-green)">
+        <span class="weight">20</span>
+        <span class="name">Approved Vertiport</span>
+        <span class="desc">Permitted, under construction, or operational vertiport infrastructure</span>
+      </div>
+      <div class="score-row no-break" style="--row-color: var(--accent-cyan)">
+        <span class="weight">15</span>
+        <span class="name">Active Operator Presence</span>
+        <span class="desc">eVTOL manufacturer or air taxi operator with declared market activity</span>
+      </div>
+      <div class="score-row no-break" style="--row-color: var(--accent-cyan)">
+        <span class="weight">15</span>
+        <span class="name">Vertiport Zoning</span>
+        <span class="desc">Municipal or county zoning code that permits vertiport development</span>
+      </div>
+      <div class="score-row no-break" style="--row-color: var(--accent-purple)">
+        <span class="weight">10</span>
+        <span class="name">Regulatory Posture</span>
+        <span class="desc">State/local government stance toward UAM — friendly, neutral, or restrictive</span>
+      </div>
+      <div class="score-row no-break" style="--row-color: var(--accent-purple)">
+        <span class="weight">10</span>
+        <span class="name">State Legislation</span>
+        <span class="desc">Enacted state-level UAM or advanced air mobility legislation</span>
+      </div>
+      <div class="score-row no-break" style="--row-color: var(--accent-amber)">
+        <span class="weight">10</span>
+        <span class="name">LAANC Coverage</span>
+        <span class="desc">FAA Low Altitude Authorization and Notification Capability active in airspace</span>
+      </div>
+    </div>
+    <div class="tier-legend">
+      <div class="tier-badge no-break" style="border-color: var(--score-high);">
+        <span class="range" style="color: var(--score-high);">75–100</span>
+        <span class="label" style="color: var(--score-high);">High Readiness</span>
+      </div>
+      <div class="tier-badge no-break" style="border-color: var(--score-moderate);">
+        <span class="range" style="color: var(--score-moderate);">50–74</span>
+        <span class="label" style="color: var(--score-moderate);">Moderate</span>
+      </div>
+      <div class="tier-badge no-break" style="border-color: var(--score-early);">
+        <span class="range" style="color: var(--score-early);">30–49</span>
+        <span class="label" style="color: var(--score-early);">Early Stage</span>
+      </div>
+      <div class="tier-badge no-break" style="border-color: var(--score-nascent);">
+        <span class="range" style="color: var(--score-nascent);">0–29</span>
+        <span class="label" style="color: var(--score-nascent);">Nascent</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     6. WHO IT'S FOR
+     ============================================================ -->
+<section>
+  <div class="container">
+    <h2>Who It's <span class="accent">For</span></h2>
+    <div class="audience-grid">
+      <div class="audience-card no-break" style="--card-color: var(--accent-cyan)">
+        <h3>Investors &amp; Analysts</h3>
+        <ul>
+          <li>Due diligence on UAM market readiness</li>
+          <li>Operator and infrastructure tracking</li>
+          <li>Market timing signals from score trends</li>
+          <li>Regulatory risk assessment by market</li>
+        </ul>
+      </div>
+      <div class="audience-card no-break" style="--card-color: var(--accent-green)">
+        <h3>Operators &amp; OEMs</h3>
+        <ul>
+          <li>Competitive intelligence across markets</li>
+          <li>Market entry strategy and prioritization</li>
+          <li>Corridor status and infrastructure gaps</li>
+          <li>Regulatory landscape comparison</li>
+        </ul>
+      </div>
+      <div class="audience-card no-break" style="--card-color: var(--accent-purple)">
+        <h3>City Planners &amp; Policy</h3>
+        <ul>
+          <li>Benchmarking against peer cities</li>
+          <li>Infrastructure planning intelligence</li>
+          <li>Regulatory comparison and best practices</li>
+          <li>Stakeholder reporting and public data</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     7. ROADMAP
+     ============================================================ -->
+<section>
+  <div class="container">
+    <h2>The <span class="accent">Roadmap</span></h2>
+    <div class="timeline">
+      <div class="timeline-phase active" style="--dot-color: var(--accent-green)">
+        <div class="timeline-dot"></div>
+        <span class="phase-label">Current</span>
+        <h3>Live Now</h3>
+        <ul class="timeline-items">
+          <li>20 US markets scored and ranked with full breakdowns</li>
+          <li>Weekly automated score snapshots with historical tracking</li>
+          <li>6 flight corridors with status, operator, and altitude data</li>
+          <li>Regulatory filing ingestion from 4 federal data sources</li>
+          <li>Market and corridor-level alert subscriptions</li>
+          <li>Interactive map with vertiports, corridors, and coverage</li>
+        </ul>
+      </div>
+      <div class="timeline-phase" style="--dot-color: var(--accent-cyan)">
+        <div class="timeline-dot"></div>
+        <span class="phase-label">In development</span>
+        <h3>Next</h3>
+        <ul class="timeline-items">
+          <li>API access for institutional and programmatic data consumers</li>
+          <li>City comparison tools — side-by-side market analysis</li>
+          <li>Per-factor historical charts and trend analysis</li>
+          <li>Corridor search, filter, and comparison views</li>
+          <li>Enhanced analytics on subscription and alert engagement</li>
+        </ul>
+      </div>
+      <div class="timeline-phase" style="--dot-color: var(--accent-purple)">
+        <div class="timeline-dot"></div>
+        <span class="phase-label">Vision</span>
+        <h3>Future</h3>
+        <ul class="timeline-items">
+          <li>International markets — Dubai, London, Singapore, Tokyo</li>
+          <li>Predictive scoring powered by regulatory and funding signals</li>
+          <li>Institutional data partnerships and licensed market reports</li>
+          <li>Operator certification tracking and fleet readiness</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     8. KEY NUMBERS
+     ============================================================ -->
+<section class="page-break-before">
+  <div class="container">
+    <h2>Key <span class="accent">Numbers</span></h2>
+    <div class="stats-grid">
+      <div class="stat-card no-break">
+        <span class="number glow-cyan">20</span>
+        <span class="stat-label">US Markets</span>
+      </div>
+      <div class="stat-card no-break">
+        <span class="number glow-green">9</span>
+        <span class="stat-label">Vertiports</span>
+      </div>
+      <div class="stat-card no-break">
+        <span class="number glow-purple">6</span>
+        <span class="stat-label">Corridors</span>
+      </div>
+      <div class="stat-card no-break">
+        <span class="number glow-amber">5</span>
+        <span class="stat-label">Operators</span>
+      </div>
+      <div class="stat-card no-break">
+        <span class="number glow-green">$4.35B+</span>
+        <span class="stat-label">Tracked Funding</span>
+      </div>
+      <div class="stat-card no-break">
+        <span class="number glow-cyan">4</span>
+        <span class="stat-label">Data Sources</span>
+      </div>
+      <div class="stat-card no-break">
+        <span class="number glow-purple">7</span>
+        <span class="stat-label">Scoring Factors</span>
+      </div>
+      <div class="stat-card no-break">
+        <span class="number glow-amber">Weekly</span>
+        <span class="stat-label">Automated Updates</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     9. FOOTER / CTA
+     ============================================================ -->
+<footer>
+  <div class="container">
+    <p class="cta">Start tracking the UAM market</p>
+    <p class="footer-url">airindex.io</p>
+    <p class="footer-email">contact@airindex.io</p>
+  </div>
+</footer>
+
+</body>
+</html>
