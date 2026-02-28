@@ -479,7 +479,7 @@ export default function Dashboard({ initialCities }: DashboardProps) {
           flexShrink: 0,
         }}
       >
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12, textDecoration: "none", color: "inherit" }}>
+        <Link href={session?.user ? "/dashboard" : "/"} style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 12, textDecoration: "none", color: "inherit" }}>
           <img
             src="/images/logo/airindex-wordmark.svg"
             alt="AirIndex"
