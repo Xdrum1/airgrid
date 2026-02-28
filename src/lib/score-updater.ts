@@ -117,7 +117,13 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
         summary: `${CITIES_MAP[change.cityId]?.city ?? change.cityId} readiness score updated: ${change.oldScore} → ${change.newScore}`,
       }));
 
-      await addChangelogEntries(changelogBatch);
+      const changelogEntries = await addChangelogEntries(changelogBatch);
+
+      // Build a map from cityId → changelog entry ID for linking snapshots
+      const cityToEntryId = new Map<string, string>();
+      for (const entry of changelogEntries) {
+        cityToEntryId.set(entry.relatedEntityId, entry.id);
+      }
 
       // Take score snapshots for affected cities
       await prisma.scoreSnapshot.createMany({
@@ -131,6 +137,7 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
             cityId: change.cityId,
             score: change.newScore,
             breakdown: (breakdown ?? {}) as unknown as Record<string, number>,
+            triggeringEventId: cityToEntryId.get(change.cityId) ?? null,
             capturedAt: now,
           };
         }),
