@@ -26,7 +26,7 @@ export async function sendAlertEmail({
   }
 
   const from = process.env.ALERT_FROM_EMAIL || "AirIndex <alerts@airindex.io>";
-  const appUrl = process.env.AUTH_URL || "https://airindex.io";
+  const appUrl = process.env.APP_URL || "https://www.airindex.io";
 
   // Generate unsubscribe link
   const token = generateUnsubscribeToken(subscriptionId, to);

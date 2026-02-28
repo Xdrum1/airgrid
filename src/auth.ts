@@ -68,7 +68,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async createUser({ user }) {
       if (!process.env.SES_ACCESS_KEY_ID) return;
       const from = process.env.SES_FROM_EMAIL || "AirIndex <auth@airindex.io>";
-      const appUrl = process.env.AUTH_URL || "https://airindex.io";
+      const appUrl = process.env.APP_URL || "https://www.airindex.io";
 
       // Welcome email to the new user
       if (user.email) {
