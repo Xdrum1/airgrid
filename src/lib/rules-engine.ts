@@ -10,7 +10,7 @@
  */
 
 import type { IngestedRecord } from "@/lib/ingestion";
-import { OPERATORS } from "@/data/seed";
+import { OPERATORS, CORRIDORS } from "@/data/seed";
 
 // -------------------------------------------------------
 // Types
@@ -24,6 +24,15 @@ export interface OverrideCandidate {
   sourceRecordId: string;
   sourceUrl: string;
   confidence: "high" | "medium" | "needs_review";
+}
+
+export interface CorridorEventCandidate {
+  corridorId: string | null; // null = unresolved
+  eventType: "status_change" | "authorization" | "suspension";
+  newStatus?: string;
+  reason: string;
+  sourceRecordId: string;
+  sourceUrl: string;
 }
 
 // -------------------------------------------------------
@@ -59,6 +68,63 @@ const FAA_CERT_8K_KEYWORDS = /faa.cert|type.certificate|airworthiness|part.135|p
 function getOperatorCities(operatorId: string): string[] {
   const op = OPERATORS.find((o) => o.id === operatorId);
   return op?.activeMarkets ?? [];
+}
+
+// Match corridor mentions by city name, airport codes, or corridor name
+const CORRIDOR_NAME_PATTERNS = CORRIDORS.map((c) => ({
+  id: c.id,
+  pattern: new RegExp(
+    [
+      c.name.replace(/[–—-]/g, ".*"),
+      c.startPoint.label,
+      c.endPoint.label,
+    ]
+      .map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      .join("|"),
+    "i"
+  ),
+}));
+
+function matchCorridor(text: string): string | null {
+  for (const { id, pattern } of CORRIDOR_NAME_PATTERNS) {
+    if (pattern.test(text)) return id;
+  }
+  return null;
+}
+
+function evaluateCorridorEvents(record: IngestedRecord): CorridorEventCandidate[] {
+  const events: CorridorEventCandidate[] = [];
+  const text = `${record.title} ${record.summary}`.toLowerCase();
+
+  if (!CORRIDOR_KEYWORDS.test(text)) return events;
+
+  const corridorId = matchCorridor(`${record.title} ${record.summary}`);
+
+  if (record.source === "federal_register") {
+    const isAuth = /authorized|approval|granted|cleared/i.test(text);
+    const isSuspend = /suspended|revoked|terminated|withdrawn/i.test(text);
+
+    events.push({
+      corridorId,
+      eventType: isSuspend ? "suspension" : isAuth ? "authorization" : "status_change",
+      newStatus: isSuspend ? "suspended" : isAuth ? "authorized" : undefined,
+      reason: `FAA corridor filing: ${record.title}`,
+      sourceRecordId: record.id,
+      sourceUrl: record.url,
+    });
+  }
+
+  if (record.source === "legiscan" && CORRIDOR_KEYWORDS.test(text)) {
+    events.push({
+      corridorId,
+      eventType: "status_change",
+      reason: `State legislation mentions corridor: ${record.title}`,
+      sourceRecordId: record.id,
+      sourceUrl: record.url,
+    });
+  }
+
+  return events;
 }
 
 // -------------------------------------------------------
@@ -176,4 +242,20 @@ export function evaluateRules(records: IngestedRecord[]): OverrideCandidate[] {
   }
   console.log(`[rules-engine] Evaluated ${records.length} records → ${candidates.length} override candidates`);
   return candidates;
+}
+
+export function evaluateRulesV2(records: IngestedRecord[]): {
+  overrideCandidates: OverrideCandidate[];
+  corridorEvents: CorridorEventCandidate[];
+} {
+  const overrideCandidates: OverrideCandidate[] = [];
+  const corridorEvents: CorridorEventCandidate[] = [];
+  for (const record of records) {
+    overrideCandidates.push(...evaluateRecord(record));
+    corridorEvents.push(...evaluateCorridorEvents(record));
+  }
+  console.log(
+    `[rules-engine] Evaluated ${records.length} records → ${overrideCandidates.length} override candidates, ${corridorEvents.length} corridor events`
+  );
+  return { overrideCandidates, corridorEvents };
 }

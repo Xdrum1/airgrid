@@ -7,7 +7,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { City, Operator, Vertiport, Corridor, ChangelogEntry } from "@/types";
 import type { FederalFiling } from "@/lib/faa-api";
-import { CITIES, CITIES_MAP, OPERATORS, OPERATORS_MAP, CORRIDORS, getVertiportsForCity, getCorridorsForCity } from "@/data/seed";
+import { CITIES, CITIES_MAP, OPERATORS, OPERATORS_MAP, CORRIDORS, getVertiportsForCity } from "@/data/seed";
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -373,10 +373,21 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
   const [selectedVertiport, setSelectedVertiport] = useState<Vertiport | null>(null);
   const [selectedCorridor, setSelectedCorridor] = useState<Corridor | null>(null);
   const [showAllCorridors, setShowAllCorridors] = useState(false);
+  const [fetchedCorridors, setFetchedCorridors] = useState<Corridor[]>(CORRIDORS);
+
+  // Fetch corridors from DB
+  useEffect(() => {
+    fetch("/api/corridors")
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.data && json.data.length > 0) setFetchedCorridors(json.data);
+      })
+      .catch(() => {});
+  }, []);
 
   // Derived data for selected city
   const cityVertiports = getVertiportsForCity(selected.id);
-  const cityCorridors = getCorridorsForCity(selected.id);
+  const cityCorridors = fetchedCorridors.filter((c) => c.cityId === selected.id);
 
   // Analytics computed values
   const top10 = CITIES_RESOLVED.slice(0, 10);
@@ -876,7 +887,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                   AIR CORRIDORS
                 </div>
                 <div style={{ color: "#555", fontSize: 10 }}>
-                  {CORRIDORS.length} designated UAM routes across {new Set(CORRIDORS.map(c => c.cityId)).size} markets
+                  {fetchedCorridors.length} designated UAM routes across {new Set(fetchedCorridors.map(c => c.cityId)).size} markets
                 </div>
               </div>
 
@@ -888,10 +899,10 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                 marginBottom: 24,
               }}>
                 {[
-                  { label: "TOTAL", value: CORRIDORS.length, color: "#00d4ff" },
-                  { label: "AUTHORIZED", value: CORRIDORS.filter(c => c.status === "authorized" || c.status === "active").length, color: "#00ff88" },
-                  { label: "PROPOSED", value: CORRIDORS.filter(c => c.status === "proposed").length, color: "#f59e0b" },
-                  { label: "MARKETS", value: new Set(CORRIDORS.map(c => c.cityId)).size, color: "#7c3aed" },
+                  { label: "TOTAL", value: fetchedCorridors.length, color: "#00d4ff" },
+                  { label: "AUTHORIZED", value: fetchedCorridors.filter(c => c.status === "authorized" || c.status === "active").length, color: "#00ff88" },
+                  { label: "PROPOSED", value: fetchedCorridors.filter(c => c.status === "proposed").length, color: "#f59e0b" },
+                  { label: "MARKETS", value: new Set(fetchedCorridors.map(c => c.cityId)).size, color: "#7c3aed" },
                 ].map((stat, i) => (
                   <div
                     key={stat.label}
@@ -917,7 +928,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
               </div>
 
               {/* Corridor cards */}
-              {CORRIDORS.map((corridor, i) => {
+              {fetchedCorridors.map((corridor, i) => {
                 const statusColor = CORRIDOR_STATUS_COLORS[corridor.status] ?? "#888";
                 const city = CITIES_MAP_RESOLVED[corridor.cityId];
                 const operator = corridor.operatorId ? OPERATORS_MAP[corridor.operatorId] : null;
@@ -1080,9 +1091,18 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                       </div>
                     )}
 
-                    {/* View on map hint */}
-                    <div style={{ color: "#333", fontSize: 8, letterSpacing: 1, marginTop: 8, textAlign: "right" }}>
-                      VIEW ON MAP →
+                    {/* Actions */}
+                    <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
+                      <Link
+                        href={`/corridor/${corridor.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ color: "#00d4ff", fontSize: 8, letterSpacing: 1, textDecoration: "none" }}
+                      >
+                        DETAILS →
+                      </Link>
+                      <div style={{ color: "#333", fontSize: 8, letterSpacing: 1 }}>
+                        VIEW ON MAP →
+                      </div>
                     </div>
                   </div>
                 );
@@ -1687,7 +1707,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                 vertiports={cityVertiports}
                 selectedVertiport={selectedVertiport}
                 onVertiportSelect={setSelectedVertiport}
-                corridors={showAllCorridors ? CORRIDORS : cityCorridors}
+                corridors={showAllCorridors ? fetchedCorridors : cityCorridors}
                 selectedCorridor={selectedCorridor}
                 onCorridorSelect={setSelectedCorridor}
                 isMobile={isMobile}
@@ -2485,10 +2505,19 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                         {c.status.toUpperCase()}
                       </span>
                     </div>
-                    <div style={{ display: "flex", gap: 10, color: "#555", fontSize: 9 }}>
-                      <span>{c.distanceKm} km</span>
-                      <span>{c.estimatedFlightMinutes} min</span>
-                      <span>{c.maxAltitudeFt} ft</span>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ display: "flex", gap: 10, color: "#555", fontSize: 9 }}>
+                        <span>{c.distanceKm} km</span>
+                        <span>{c.estimatedFlightMinutes} min</span>
+                        <span>{c.maxAltitudeFt} ft</span>
+                      </div>
+                      <Link
+                        href={`/corridor/${c.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ color: "#00d4ff", fontSize: 7, letterSpacing: 1, textDecoration: "none" }}
+                      >
+                        DETAILS →
+                      </Link>
                     </div>
                   </div>
                 );

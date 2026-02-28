@@ -4,6 +4,7 @@ import {
   addSubscription,
   getSubscriptionsForUser,
   validateCityIds,
+  validateCorridorIds,
   validateChangeTypes,
 } from "@/lib/subscriptions";
 import { sendSesEmail } from "@/lib/ses";
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { cityIds, changeTypes } = body;
+    const { cityIds, changeTypes, corridorIds } = body;
 
     if (!Array.isArray(cityIds) || !validateCityIds(cityIds)) {
       return NextResponse.json(
@@ -35,7 +36,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const sub = await addSubscription(session.user.id, cityIds, changeTypes);
+    const corridorIdList = Array.isArray(corridorIds) ? corridorIds : [];
+    if (corridorIdList.length > 0 && !(await validateCorridorIds(corridorIdList))) {
+      return NextResponse.json(
+        { error: "Invalid corridorIds" },
+        { status: 400 }
+      );
+    }
+
+    const sub = await addSubscription(session.user.id, cityIds, changeTypes, corridorIdList);
 
     // Notify admin
     const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;

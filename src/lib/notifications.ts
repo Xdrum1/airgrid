@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from "@/types";
 import { getSubscriptions } from "@/lib/subscriptions";
 import { sendAlertEmail } from "@/lib/email";
-import { CITIES_MAP } from "@/data/seed";
+import { CITIES_MAP, CORRIDORS_MAP } from "@/data/seed";
 
 export async function notifySubscribers(
   entries: ChangelogEntry[]
@@ -26,14 +26,24 @@ export async function notifySubscribers(
         sub.cityIds.length === 0 ||
         sub.cityIds.includes(entry.relatedEntityId);
 
-      if (typeMatch && cityMatch) {
-        const cityName =
-          CITIES_MAP[entry.relatedEntityId]?.city ?? entry.relatedEntityId;
+      // Match by corridor
+      const corridorMatch =
+        entry.relatedEntityType === "corridor" &&
+        sub.corridorIds.length > 0 &&
+        sub.corridorIds.includes(entry.relatedEntityId);
+
+      if (typeMatch && (cityMatch || corridorMatch)) {
+        let entityName: string;
+        if (corridorMatch) {
+          entityName = CORRIDORS_MAP[entry.relatedEntityId]?.name ?? entry.relatedEntityId;
+        } else {
+          entityName = CITIES_MAP[entry.relatedEntityId]?.city ?? entry.relatedEntityId;
+        }
 
         await sendAlertEmail({
           to: sub.email,
           subscriptionId: sub.id,
-          cityName,
+          cityName: entityName,
           changeType: entry.changeType,
           summary: entry.summary,
           sourceUrl: entry.sourceUrl,

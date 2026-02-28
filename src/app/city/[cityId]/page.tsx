@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { CITIES, OPERATORS_MAP, getVertiportsForCity, getCorridorsForCity, getCitiesWithOverrides, getCitiesMapWithOverrides } from "@/data/seed";
+import { CITIES, OPERATORS_MAP, getVertiportsForCity, getCitiesWithOverrides, getCitiesMapWithOverrides } from "@/data/seed";
+import { getCorridorsForCity } from "@/lib/corridors";
 import CityDetail from "@/components/CityDetail";
 
 interface Props {
@@ -34,7 +35,7 @@ export default async function CityPage({ params }: Props) {
     .map((id) => OPERATORS_MAP[id])
     .filter(Boolean);
   const vertiports = getVertiportsForCity(cityId);
-  const corridors = getCorridorsForCity(cityId);
+  const corridors = await getCorridorsForCity(cityId);
 
   return (
     <CityDetail

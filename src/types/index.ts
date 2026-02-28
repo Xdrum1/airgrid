@@ -169,6 +169,7 @@ export interface AlertSubscription {
   id: string;
   email: string;
   cityIds: string[];                   // Empty = all cities
+  corridorIds: string[];               // Empty = no corridor alerts
   changeTypes: ChangeType[];          // Empty = all change types
   createdAt: string;
 }
