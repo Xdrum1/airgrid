@@ -8,6 +8,7 @@ import type { ChangeType } from "@/types";
 interface SubscribeFormProps {
   cityId: string;
   cityName: string;
+  onSubscriptionChange?: (cityId: string, subscribed: boolean) => void;
 }
 
 const CHANGE_TYPE_OPTIONS: { value: ChangeType; label: string }[] = [
@@ -21,7 +22,7 @@ const LS_SUB_PREFIX = "airgrid_sub_";
 
 type FormState = "collapsed" | "expanded" | "submitting" | "success";
 
-export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) {
+export default function SubscribeForm({ cityId, cityName, onSubscriptionChange }: SubscribeFormProps) {
   const { data: session } = useSession();
   const router = useRouter();
   const [state, setState] = useState<FormState>("collapsed");
@@ -101,6 +102,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
       );
       setSubId(json.data.id);
       setState("success");
+      onSubscriptionChange?.(cityId, true);
     } catch {
       setState("expanded");
       setError("Network error — try again");
@@ -115,6 +117,7 @@ export default function SubscribeForm({ cityId, cityName }: SubscribeFormProps) 
         localStorage.removeItem(LS_SUB_PREFIX + cityId);
         setSubId(null);
         setState("collapsed");
+        onSubscriptionChange?.(cityId, false);
       }
     } catch {
       // silent fail — user can retry

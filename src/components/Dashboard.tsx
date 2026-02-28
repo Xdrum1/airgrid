@@ -341,6 +341,30 @@ export default function Dashboard({ initialCities }: DashboardProps) {
   const [changelogError, setChangelogError] = useState<string | null>(null);
   const [changelogFetchedAt, setChangelogFetchedAt] = useState<string | null>(null);
 
+  // Subscriptions — track which cities the user is subscribed to
+  const [subscribedCityIds, setSubscribedCityIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!session?.user) return;
+    fetch("/api/subscribe")
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.data) {
+          const ids = new Set<string>();
+          for (const sub of json.data) {
+            if (sub.cityIds?.length === 0) {
+              // Subscribed to all cities
+              CITIES_RESOLVED.forEach((c) => ids.add(c.id));
+            } else {
+              sub.cityIds?.forEach((id: string) => ids.add(id));
+            }
+          }
+          setSubscribedCityIds(ids);
+        }
+      })
+      .catch(() => {});
+  }, [session?.user, CITIES_RESOLVED]);
+
   // Watchlist
   const { cityIds: watchedCityIds, isWatched, toggle: toggleWatch, isAuthenticated } = useWatchlist();
 
@@ -1681,8 +1705,9 @@ export default function Dashboard({ initialCities }: DashboardProps) {
                 </button>
               )}
 
-              {/* Floating subscribe banner — hidden on mobile when detail sheet is open */}
-              {isMobile && mobilePanel === "detail" ? null : isMobile ? (
+              {/* Floating subscribe banner — hidden when subscribed or mobile detail open */}
+              {subscribedCityIds.has(selected.id) ? null :
+               isMobile && mobilePanel === "detail" ? null : isMobile ? (
                 <div
                   style={{
                     position: "absolute",
@@ -1721,7 +1746,7 @@ export default function Dashboard({ initialCities }: DashboardProps) {
                     {session?.user ? "SUBSCRIBE" : "SIGN IN TO SUBSCRIBE"}
                   </button>
                 </div>
-              ) : (
+              ) : session?.user ? (
                 <div
                   style={{
                     position: "absolute",
@@ -1738,8 +1763,7 @@ export default function Dashboard({ initialCities }: DashboardProps) {
                     display: "flex",
                     alignItems: "center",
                     gap: 16,
-                    maxWidth: 520,
-                    width: "90%",
+                    maxWidth: 480,
                     boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
                   }}
                 >
@@ -1751,75 +1775,19 @@ export default function Dashboard({ initialCities }: DashboardProps) {
                       Regulatory changes, new filings, operator updates
                     </div>
                   </div>
-                  <input
-                    type="email"
-                    placeholder="you@company.com"
-                    id="map-subscribe-email"
-                    style={{
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      borderRadius: 5,
-                      padding: "9px 12px",
-                      color: "#ccc",
-                      fontSize: 11,
-                      fontFamily: "'Space Mono', monospace",
-                      outline: "none",
-                      width: 180,
-                      flexShrink: 0,
-                    }}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(0,255,136,0.3)")}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")}
-                    onKeyDown={async (e) => {
-                      if (e.key !== "Enter") return;
-                      const input = e.currentTarget;
-                      const email = input.value.trim();
-                      if (!email) return;
-                      try {
-                        const res = await fetch("/api/subscribe", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({
-                            email,
-                            cityIds: [selected.id],
-                            changeTypes: ["new_filing", "status_change", "new_law", "faa_update"],
-                          }),
-                        });
-                        if (res.ok || res.status === 409) {
-                          input.value = "";
-                          input.placeholder = "Subscribed!";
-                          input.style.borderColor = "rgba(0,255,136,0.4)";
-                          setTimeout(() => {
-                            input.placeholder = "you@company.com";
-                            input.style.borderColor = "rgba(255,255,255,0.1)";
-                          }, 3000);
-                        }
-                      } catch { /* silent */ }
-                    }}
-                  />
                   <button
                     onClick={async () => {
-                      const input = document.getElementById("map-subscribe-email") as HTMLInputElement;
-                      if (!input) return;
-                      const email = input.value.trim();
-                      if (!email) { input.focus(); return; }
                       try {
                         const res = await fetch("/api/subscribe", {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({
-                            email,
                             cityIds: [selected.id],
                             changeTypes: ["new_filing", "status_change", "new_law", "faa_update"],
                           }),
                         });
                         if (res.ok || res.status === 409) {
-                          input.value = "";
-                          input.placeholder = "Subscribed!";
-                          input.style.borderColor = "rgba(0,255,136,0.4)";
-                          setTimeout(() => {
-                            input.placeholder = "you@company.com";
-                            input.style.borderColor = "rgba(255,255,255,0.1)";
-                          }, 3000);
+                          setSubscribedCityIds((prev) => new Set(prev).add(selected.id));
                         }
                       } catch { /* silent */ }
                     }}
@@ -1839,6 +1807,55 @@ export default function Dashboard({ initialCities }: DashboardProps) {
                     }}
                   >
                     SUBSCRIBE
+                  </button>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 20,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    zIndex: 20,
+                    background: "rgba(5,5,8,0.92)",
+                    backdropFilter: "blur(16px)",
+                    WebkitBackdropFilter: "blur(16px)",
+                    border: "1px solid rgba(0,255,136,0.2)",
+                    borderRadius: 10,
+                    padding: "14px 24px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 16,
+                    maxWidth: 480,
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+                  }}
+                >
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ color: "#fff", fontSize: 12, fontWeight: 700, marginBottom: 3 }}>
+                      Get alerts for {selected.city}
+                    </div>
+                    <div style={{ color: "#555", fontSize: 9 }}>
+                      Sign in to subscribe to regulatory changes and filings
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => router.push("/login?callbackUrl=" + encodeURIComponent("/dashboard?tab=map"))}
+                    style={{
+                      background: "rgba(0,255,136,0.12)",
+                      border: "1px solid rgba(0,255,136,0.3)",
+                      borderRadius: 5,
+                      padding: "9px 16px",
+                      color: "#00ff88",
+                      fontSize: 9,
+                      letterSpacing: 1,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      fontFamily: "'Space Mono', monospace",
+                      flexShrink: 0,
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    SIGN IN
                   </button>
                 </div>
               )}
@@ -2241,7 +2258,18 @@ export default function Dashboard({ initialCities }: DashboardProps) {
               background: "rgba(0,255,136,0.02)",
             }}
           >
-            <SubscribeForm cityId={selected.id} cityName={selected.city} />
+            <SubscribeForm
+              cityId={selected.id}
+              cityName={selected.city}
+              onSubscriptionChange={(cityId, subscribed) => {
+                setSubscribedCityIds((prev) => {
+                  const next = new Set(prev);
+                  if (subscribed) next.add(cityId);
+                  else next.delete(cityId);
+                  return next;
+                });
+              }}
+            />
           </div>
 
           {/* Active Operators */}
