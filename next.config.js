@@ -27,10 +27,10 @@ const nextConfig = {
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
-              "style-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https://*.mapbox.com",
               "connect-src 'self' https://*.mapbox.com https://events.mapbox.com https://plausible.io",
-              "font-src 'self'",
+              "font-src 'self' https://fonts.gstatic.com",
               "worker-src 'self' blob:",
               "frame-ancestors 'none'",
             ].join("; "),
