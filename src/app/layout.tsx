@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: "AirIndex — UAM Market Intelligence",
     description: "Track vertiports, operators, regulatory filings, and market readiness scores across 20 US urban air mobility markets.",
     siteName: "AirIndex",
-    images: [{ url: "/images/dashboard-preview.png", width: 1200, height: 630 }],
+    images: [{ url: "/images/og-image.png", width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     site: "@AirIndexHQ",
     title: "AirIndex — UAM Market Intelligence",
     description: "Track vertiports, operators, regulatory filings, and market readiness scores across 20 US urban air mobility markets.",
-    images: ["/images/dashboard-preview.png"],
+    images: ["/images/og-image.png"],
   },
 };
 
