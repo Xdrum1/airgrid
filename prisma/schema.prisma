@@ -80,13 +80,31 @@ model Watchlist {
 }
 
 model ScoreSnapshot {
-  id         String   @id @default(cuid())
-  cityId     String
-  score      Int
-  breakdown  Json
-  capturedAt DateTime @default(now())
+  id                String   @id @default(cuid())
+  cityId            String
+  score             Int
+  breakdown         Json
+  triggeringEventId String?  // links to ChangelogEntry.id
+  capturedAt        DateTime @default(now())
 
   @@index([cityId, capturedAt])
+}
+
+model ClassificationResult {
+  id             String   @id @default(cuid())
+  recordId       String   // IngestedRecord.id
+  eventType      String   // from the event_type vocabulary
+  factorsJson    Json     // full factors_affected array from Claude
+  affectedCities String[] // city IDs identified
+  confidence     String   // "high" | "medium" | "needs_review"
+  rawResponse    Json     // full Claude API response for debugging
+  modelUsed      String   // e.g. "claude-haiku-4-5-20251001"
+  promptVersion  String   // version string for prompt tracking
+  createdAt      DateTime @default(now())
+
+  @@index([recordId])
+  @@index([eventType])
+  @@index([confidence])
 }
 
 model ChangelogEntry {

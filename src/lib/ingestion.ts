@@ -7,6 +7,7 @@ import { fetchAllOperatorNews } from "@/lib/operator-news";
 import { addChangelogEntries } from "@/lib/changelog";
 import { notifySubscribers } from "@/lib/notifications";
 import { evaluateRules } from "@/lib/rules-engine";
+import { classifyRecords } from "@/lib/classifier";
 import { applyOverrides } from "@/lib/score-updater";
 import type { ChangelogEntry } from "@/types";
 
@@ -262,14 +263,21 @@ export async function runIngestion(): Promise<{
       );
     }
 
-    // 9. Run rules engine on new/updated records
+    // 9. Classify new/updated records with NLP (falls back to regex rules)
     const changedRecords = [...diff.newRecords, ...diff.updatedRecords];
     if (changedRecords.length > 0) {
-      const overrideCandidates = evaluateRules(changedRecords);
+      let overrideCandidates;
+      try {
+        overrideCandidates = await classifyRecords(changedRecords);
+        console.log(`[ingestion] NLP classifier: ${overrideCandidates.length} candidates`);
+      } catch (err) {
+        console.warn("[ingestion] NLP classifier failed, falling back to regex rules:", err);
+        overrideCandidates = evaluateRules(changedRecords);
+      }
       if (overrideCandidates.length > 0) {
         const result = await applyOverrides(overrideCandidates);
         console.log(
-          `[ingestion] Rules engine: ${result.persisted} overrides persisted, ${result.applied} auto-applied, ${result.scoreChanges.length} score changes`
+          `[ingestion] Score updater: ${result.persisted} overrides persisted, ${result.applied} auto-applied, ${result.scoreChanges.length} score changes`
         );
       }
     }
