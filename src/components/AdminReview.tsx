@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { CITIES } from "@/data/seed";
+import { safeHref } from "@/lib/safe-url";
 
 // -------------------------------------------------------
 // Types
@@ -712,9 +713,9 @@ function OverrideCard({
           marginBottom: isUnresolved ? 10 : 12,
         }}
       >
-        {override.sourceUrl && (
+        {safeHref(override.sourceUrl) && (
           <a
-            href={override.sourceUrl}
+            href={safeHref(override.sourceUrl)!}
             target="_blank"
             rel="noopener noreferrer"
             style={{

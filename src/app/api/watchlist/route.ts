@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { CITIES_MAP } from "@/data/seed";
 import {
   getWatchlist,
   addToWatchlist,
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const { cityId } = body;
-    if (typeof cityId !== "string" || !cityId) {
+    if (typeof cityId !== "string" || !cityId || !(cityId in CITIES_MAP)) {
       return NextResponse.json(
         { error: "Invalid cityId" },
         { status: 400 }

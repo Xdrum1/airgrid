@@ -97,8 +97,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[admin/overrides] POST error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[admin/overrides] POST error:", err);
+    return NextResponse.json({ error: "Failed to process override" }, { status: 500 });
   }
 }

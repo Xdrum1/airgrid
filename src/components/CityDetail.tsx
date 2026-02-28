@@ -8,6 +8,7 @@ import { useWatchlist } from "@/hooks/useWatchlist";
 import WatchlistStar from "./WatchlistStar";
 import SubscribeForm from "./SubscribeForm";
 import ScoreTrend from "./ScoreTrend";
+import { safeHref } from "@/lib/safe-url";
 
 // -------------------------------------------------------
 // Constants
@@ -409,9 +410,9 @@ export default function CityDetail({
                   {source && (
                     <div style={{ marginTop: 2 }}>
                       <div style={{ color: "#444", fontSize: 9, lineHeight: 1.5 }}>
-                        {source.url ? (
+                        {safeHref(source.url) ? (
                           <a
-                            href={source.url}
+                            href={safeHref(source.url)!}
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{ color: "#444", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}

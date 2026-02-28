@@ -33,6 +33,8 @@ const nextConfig = {
               "font-src 'self' https://fonts.gstatic.com",
               "worker-src blob:",
               "child-src blob:",
+              "base-uri 'self'",
+              "form-action 'self'",
               "frame-ancestors 'none'",
             ].join("; "),
           },

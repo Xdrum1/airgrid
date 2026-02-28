@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import crypto from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
 import { signAdminCookie, COOKIE_NAME } from "@/lib/admin-auth";
 
@@ -42,7 +43,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  if (body.pin !== ADMIN_PIN) {
+  const pinMatch =
+    typeof body.pin === "string" &&
+    body.pin.length === ADMIN_PIN.length &&
+    crypto.timingSafeEqual(Buffer.from(body.pin), Buffer.from(ADMIN_PIN));
+  if (!pinMatch) {
     console.log(`[admin/auth] Wrong PIN attempt from ${token.email} (${ip}), ${rl.remaining} attempts remaining`);
     return NextResponse.json({ error: "Invalid PIN" }, { status: 403 });
   }
