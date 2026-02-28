@@ -13,7 +13,11 @@ function LoginForm() {
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
   const router = useRouter();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const rawCallback = searchParams.get("callbackUrl") || "/dashboard";
+  const callbackUrl =
+    rawCallback.startsWith("/") && !rawCallback.startsWith("//")
+      ? rawCallback
+      : "/dashboard";
   const authError = searchParams.get("error");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 

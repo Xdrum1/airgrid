@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Corridor, City, Operator, ChangelogEntry } from "@/types";
 import type { CorridorStatusHistoryEntry } from "@/lib/corridors";
 import CorridorSubscribeForm from "./CorridorSubscribeForm";
+import { safeHref } from "@/lib/safe-url";
 
 // -------------------------------------------------------
 // Constants
@@ -390,9 +391,9 @@ export default function CorridorDetail({
                         {entry.reason}
                       </div>
                     )}
-                    {entry.sourceUrl && (
+                    {safeHref(entry.sourceUrl) && (
                       <a
-                        href={entry.sourceUrl}
+                        href={safeHref(entry.sourceUrl)!}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{ color: "#00d4ff", fontSize: 9, textDecoration: "none", letterSpacing: 0.5 }}
@@ -444,9 +445,9 @@ export default function CorridorDetail({
                   </span>
                 </div>
                 <div style={{ color: "#888", fontSize: 11 }}>{entry.summary}</div>
-                {entry.sourceUrl && (
+                {safeHref(entry.sourceUrl) && (
                   <a
-                    href={entry.sourceUrl}
+                    href={safeHref(entry.sourceUrl)!}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{ color: "#00d4ff", fontSize: 9, textDecoration: "none" }}
@@ -474,11 +475,11 @@ export default function CorridorDetail({
         <div style={{ paddingBottom: 48 }}>
           <div style={{ color: "#1a1a1f", fontSize: 9 }}>
             Last updated: {corridor.lastUpdated}
-            {corridor.sourceUrl && (
+            {safeHref(corridor.sourceUrl) && (
               <>
                 {" · "}
                 <a
-                  href={corridor.sourceUrl}
+                  href={safeHref(corridor.sourceUrl)!}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: "#333", textDecoration: "none" }}

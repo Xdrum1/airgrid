@@ -10,6 +10,7 @@ import type { FederalFiling } from "@/lib/faa-api";
 import { CITIES, CITIES_MAP, OPERATORS, OPERATORS_MAP, CORRIDORS, getVertiportsForCity } from "@/data/seed";
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
+import { safeHref } from "@/lib/safe-url";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useWatchlist } from "@/hooks/useWatchlist";
 import SubscribeForm from "./SubscribeForm";
@@ -1478,9 +1479,9 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                     >
                       {entry.summary}
                     </div>
-                    {entry.sourceUrl && (
+                    {safeHref(entry.sourceUrl) && (
                       <a
-                        href={entry.sourceUrl}
+                        href={safeHref(entry.sourceUrl)!}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
