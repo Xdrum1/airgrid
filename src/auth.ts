@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { sendSesEmail } from "@/lib/ses";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -23,6 +24,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return crypto.randomInt(100000, 999999).toString();
       },
       sendVerificationRequest: async ({ identifier: email, token }) => {
+        const rl = rateLimit(`magic-link:${email}`, 3, 15 * 60 * 1000);
+        if (!rl.allowed) {
+          throw new Error("Too many verification requests. Please wait a few minutes.");
+        }
+
         const from = process.env.SES_FROM_EMAIL || "AirIndex <auth@airindex.io>";
 
         if (!process.env.SES_ACCESS_KEY_ID) {
