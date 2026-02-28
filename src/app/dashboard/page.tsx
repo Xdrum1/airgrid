@@ -6,10 +6,11 @@ import Dashboard from "@/components/Dashboard";
 
 export default async function DashboardPage() {
   const cities = await getCitiesWithOverrides();
+  const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
 
   return (
     <Suspense>
-      <Dashboard initialCities={cities} />
+      <Dashboard initialCities={cities} adminEmail={adminEmail} />
     </Suspense>
   );
 }

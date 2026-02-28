@@ -305,9 +305,10 @@ type MobilePanel = "none" | "cityList" | "detail";
 
 interface DashboardProps {
   initialCities?: City[];
+  adminEmail?: string;
 }
 
-export default function Dashboard({ initialCities }: DashboardProps) {
+export default function Dashboard({ initialCities, adminEmail }: DashboardProps) {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -502,6 +503,24 @@ export default function Dashboard({ initialCities }: DashboardProps) {
               {s.label}
             </span>
           ))}
+          {adminEmail && session?.user?.email === adminEmail && (
+            <Link
+              href="/admin/review"
+              style={{
+                color: "#7c3aed",
+                fontSize: 9,
+                letterSpacing: 1,
+                textDecoration: "none",
+                fontWeight: 700,
+                opacity: 0.7,
+                transition: "opacity 0.15s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}
+            >
+              ADMIN
+            </Link>
+          )}
           {session?.user ? (
             <div style={{ position: "relative" }}>
               <button
