@@ -296,6 +296,19 @@ export default async function LandingPage() {
           padding: "48px 20px 0",
         }}
       >
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(22px, 2.5vw, 32px)",
+              margin: "0 0 10px",
+              color: "#fff",
+            }}
+          >
+            Platform capabilities
+          </h2>
+        </div>
         <div
           style={{
             display: "grid",
@@ -306,21 +319,45 @@ export default async function LandingPage() {
           {[
             {
               icon: "◈",
-              title: "Market Readiness Scores",
+              accent: "#00ff88",
+              title: "Readiness Scoring",
               description:
-                "7-factor scoring model tracking pilot programs, zoning, operators, regulation, and infrastructure across 20 US markets.",
+                "0–100 composite index across 7 weighted factors. Every market scored, tiered, and ranked — designed to be the benchmark the industry cites.",
+            },
+            {
+              icon: "◎",
+              accent: "#00d4ff",
+              title: "Interactive Map",
+              description:
+                "Vertiports, flight corridors, operator coverage areas, and tier-based market visualization on a live, explorable map interface.",
             },
             {
               icon: "⟿",
+              accent: "#7c3aed",
               title: "Corridor Intelligence",
               description:
-                "Real-time tracking of proposed and authorized UAM flight corridors — from FAA filings to operator clearances.",
+                "Database-backed flight corridors with status tracking, operator assignment, altitude data, and per-corridor subscriptions.",
+            },
+            {
+              icon: "⟋",
+              accent: "#f59e0b",
+              title: "Historical Score Tracking",
+              description:
+                "Weekly automated snapshots with sparkline trends. Track how market readiness evolves as policies change and infrastructure develops.",
             },
             {
               icon: "◉",
-              title: "Regulatory Filings",
+              accent: "#ff6b35",
+              title: "Regulatory Ingestion",
               description:
-                "Federal Register filings, state legislation, and FAA updates aggregated into a single searchable feed.",
+                "Automated data from Federal Register, LegiScan, FAA LAANC, and SEC EDGAR. Filings surfaced by market with source attribution.",
+            },
+            {
+              icon: "⚡",
+              accent: "#14b8a6",
+              title: "Alerts & Subscriptions",
+              description:
+                "Market-level and corridor-level change notifications. Subscribe to the markets and corridors you care about — get notified when the data moves.",
             },
           ].map((card) => (
             <div
@@ -330,6 +367,7 @@ export default async function LandingPage() {
                 border: "1px solid rgba(255,255,255,0.06)",
                 borderRadius: 10,
                 padding: "28px 24px",
+                borderTop: `2px solid ${card.accent}`,
               }}
             >
               <div
@@ -337,12 +375,12 @@ export default async function LandingPage() {
                   width: 44,
                   height: 44,
                   borderRadius: "50%",
-                  border: "1px solid rgba(0,212,255,0.2)",
+                  border: `1px solid ${card.accent}33`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: 20,
-                  color: "#00d4ff",
+                  color: card.accent,
                   marginBottom: 16,
                 }}
               >
@@ -427,6 +465,128 @@ export default async function LandingPage() {
             style={{ width: "100%", height: "auto", display: "block" }}
             priority
           />
+        </div>
+      </section>
+
+      {/* ======== Who It's For ======== */}
+      <section
+        style={{
+          maxWidth: 1120,
+          margin: "0 auto",
+          padding: "0 20px 64px",
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(22px, 2.5vw, 32px)",
+              margin: "0 0 10px",
+              color: "#fff",
+            }}
+          >
+            Who it&apos;s for
+          </h2>
+          <p style={{ fontFamily: "'Inter', sans-serif", color: "#555", fontSize: 13, margin: 0 }}>
+            One platform, three audiences.
+          </p>
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))",
+            gap: 16,
+          }}
+        >
+          {[
+            {
+              title: "Investors & Analysts",
+              accent: "#00d4ff",
+              items: [
+                "Due diligence on UAM market readiness",
+                "Operator and infrastructure tracking",
+                "Market timing signals from score trends",
+                "Regulatory risk assessment by market",
+              ],
+            },
+            {
+              title: "Operators & OEMs",
+              accent: "#00ff88",
+              items: [
+                "Competitive intelligence across markets",
+                "Market entry strategy and prioritization",
+                "Corridor status and infrastructure gaps",
+                "Regulatory landscape comparison",
+              ],
+            },
+            {
+              title: "City Planners & Policy",
+              accent: "#7c3aed",
+              items: [
+                "Benchmarking against peer cities",
+                "Infrastructure planning intelligence",
+                "Regulatory comparison and best practices",
+                "Stakeholder reporting and public data",
+              ],
+            },
+          ].map((card) => (
+            <div
+              key={card.title}
+              style={{
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 10,
+                padding: "28px 24px",
+                borderTop: `2px solid ${card.accent}`,
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 600,
+                  fontSize: 15,
+                  color: card.accent,
+                  marginBottom: 16,
+                }}
+              >
+                {card.title}
+              </div>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                {card.items.map((item) => (
+                  <li
+                    key={item}
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 10,
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: 12.5,
+                      lineHeight: 1.6,
+                      color: "#777",
+                      marginBottom: 8,
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: card.accent,
+                        fontSize: 6,
+                        marginTop: 6,
+                        flexShrink: 0,
+                        display: "inline-block",
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        background: card.accent,
+                        opacity: 0.6,
+                      }}
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -872,6 +1032,12 @@ export default async function LandingPage() {
               style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
               CONTACT
+            </a>
+            <a
+              href="/platform.html"
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              PLATFORM
             </a>
             <a
               href="https://x.com/AirIndexHQ"
