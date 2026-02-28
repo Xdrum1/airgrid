@@ -32,8 +32,10 @@ export async function sendAlertEmail({
   const token = generateUnsubscribeToken(subscriptionId, to);
   const unsubscribeUrl = `${appUrl}/api/unsubscribe?id=${subscriptionId}&token=${token}`;
 
-  const sourceLink = sourceUrl
-    ? `<p style="margin:16px 0 0;"><a href="${sourceUrl}" style="color:#0077aa;font-size:13px;text-decoration:none;">View source &rarr;</a></p>`
+  const safeSourceUrl =
+    sourceUrl && /^https?:\/\//i.test(sourceUrl) ? sourceUrl : null;
+  const sourceLink = safeSourceUrl
+    ? `<p style="margin:16px 0 0;"><a href="${safeSourceUrl}" style="color:#0077aa;font-size:13px;text-decoration:none;">View source &rarr;</a></p>`
     : "";
 
   const html = `
