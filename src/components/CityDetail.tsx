@@ -7,6 +7,7 @@ import { getScoreColor, getScoreTier, getPostureConfig, SCORE_WEIGHTS } from "@/
 import { useWatchlist } from "@/hooks/useWatchlist";
 import WatchlistStar from "./WatchlistStar";
 import SubscribeForm from "./SubscribeForm";
+import ScoreTrend from "./ScoreTrend";
 
 // -------------------------------------------------------
 // Constants
@@ -110,6 +111,7 @@ interface CityDetailProps {
   operators: Operator[];
   vertiports: Vertiport[];
   corridors: Corridor[];
+  scoreHistory?: { score: number; capturedAt: string }[];
 }
 
 // -------------------------------------------------------
@@ -123,6 +125,7 @@ export default function CityDetail({
   operators,
   vertiports,
   corridors,
+  scoreHistory,
 }: CityDetailProps) {
   const [mounted, setMounted] = useState(false);
   const { isWatched, toggle: toggleWatch, isAuthenticated } = useWatchlist();
@@ -271,6 +274,10 @@ export default function CityDetail({
           </div>
 
           <ScoreBar value={city.score ?? 0} color={scoreColor} />
+
+          {scoreHistory && scoreHistory.length >= 2 && (
+            <ScoreTrend history={scoreHistory} color={scoreColor} />
+          )}
 
           <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
             <span
