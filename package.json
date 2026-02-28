@@ -10,6 +10,7 @@
     "db:migrate:dev": "DATABASE_URL=postgresql://alanmichael@localhost:5432/airindex_dev npx prisma migrate dev",
     "db:studio:dev": "DATABASE_URL=postgresql://alanmichael@localhost:5432/airindex_dev npx prisma studio",
     "db:seed:dev": "DATABASE_URL=postgresql://alanmichael@localhost:5432/airindex_dev npx tsx prisma/seed-corridors.ts",
+    "db:seed:snapshots": "DATABASE_URL=postgresql://alanmichael@localhost:5432/airindex_dev npx tsx prisma/seed-snapshots.ts",
     "dev:setup": "brew services start postgresql@16 && createdb airindex_dev 2>/dev/null; npm run db:migrate:dev && npm run db:seed:dev && echo 'Dev environment ready — run: npm run dev'"
   },
   "dependencies": {

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { CITIES, OPERATORS_MAP, getVertiportsForCity, getCitiesWithOverrides, getCitiesMapWithOverrides } from "@/data/seed";
 import { getCorridorsForCity } from "@/lib/corridors";
+import { getScoreHistory } from "@/lib/score-history";
 import CityDetail from "@/components/CityDetail";
 
 interface Props {
@@ -35,7 +36,10 @@ export default async function CityPage({ params }: Props) {
     .map((id) => OPERATORS_MAP[id])
     .filter(Boolean);
   const vertiports = getVertiportsForCity(cityId);
-  const corridors = await getCorridorsForCity(cityId);
+  const [corridors, scoreHistory] = await Promise.all([
+    getCorridorsForCity(cityId),
+    getScoreHistory(cityId),
+  ]);
 
   return (
     <CityDetail
@@ -45,6 +49,7 @@ export default async function CityPage({ params }: Props) {
       operators={operators}
       vertiports={vertiports}
       corridors={corridors}
+      scoreHistory={scoreHistory}
     />
   );
 }
