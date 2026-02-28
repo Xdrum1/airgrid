@@ -62,12 +62,13 @@ model VerificationToken {
 // ── App models ──────────────────────────────────────────────
 
 model Subscription {
-  id          String   @id @default(cuid())
-  userId      String
-  cityIds     String[]
-  changeTypes String[]
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  userId       String
+  cityIds      String[]
+  corridorIds  String[] @default([])
+  changeTypes  String[]
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Watchlist {
@@ -118,6 +119,54 @@ model ChangelogEntry {
 
   @@index([timestamp])
   @@index([changeType])
+}
+
+model Corridor {
+  id                    String    @id // e.g. "cor_lax_dtla"
+  name                  String
+  status                String    // "proposed" | "authorized" | "active" | "suspended"
+  cityId                String
+  operatorId            String?
+  startPointLat         Float
+  startPointLng         Float
+  startPointLabel       String
+  endPointLat           Float
+  endPointLng           Float
+  endPointLabel         String
+  waypoints             Json?     // Array of { lat, lng }
+  distanceKm            Float
+  estimatedFlightMinutes Int
+  maxAltitudeFt         Int
+  altitudeMinFt         Int?
+  faaAuthNumber         String?
+  effectiveDate         String?
+  expirationDate        String?
+  clearedOperators      String[]
+  notes                 String?
+  sourceUrl             String?
+  lastUpdated           DateTime  @default(now())
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  statusHistory CorridorStatusHistory[]
+
+  @@index([cityId])
+  @@index([status])
+  @@index([operatorId])
+}
+
+model CorridorStatusHistory {
+  id          String    @id @default(cuid())
+  corridorId  String
+  fromStatus  String?
+  toStatus    String
+  reason      String?
+  sourceUrl   String?
+  changedAt   DateTime  @default(now())
+
+  corridor    Corridor  @relation(fields: [corridorId], references: [id], onDelete: Cascade)
+
+  @@index([corridorId, changedAt])
 }
 
 model ScoringOverride {

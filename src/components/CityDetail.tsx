@@ -618,50 +618,62 @@ export default function CityDetail({
               {corridors.map((c, i) => {
                 const statusColor = CORRIDOR_STATUS_COLORS[c.status] ?? "#888";
                 return (
-                  <div
+                  <Link
                     key={c.id}
-                    style={{
-                      background: "rgba(255,255,255,0.02)",
-                      border: "1px solid rgba(255,255,255,0.05)",
-                      borderRadius: 8,
-                      padding: "18px 20px",
-                      opacity: mounted ? 1 : 0,
-                      transform: mounted ? "translateY(0)" : "translateY(8px)",
-                      transition: `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s`,
-                    }}
+                    href={`/corridor/${c.id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                      <span style={{ color: "#eee", fontSize: 14, fontWeight: 700 }}>{c.name}</span>
-                      <span
-                        style={{
-                          color: statusColor,
-                          fontSize: 8,
-                          letterSpacing: 1,
-                          border: `1px solid ${statusColor}44`,
-                          borderRadius: 3,
-                          padding: "3px 8px",
-                        }}
-                      >
-                        {c.status.toUpperCase()}
-                      </span>
-                    </div>
-
-                    <div style={{ color: "#888", fontSize: 12, marginBottom: 14 }}>
-                      {c.startPoint.label} → {c.endPoint.label}
-                    </div>
-
-                    <div style={{ display: "flex", gap: 20, marginBottom: 14 }}>
-                      <DetailItem label="DISTANCE" value={`${c.distanceKm} km`} />
-                      <DetailItem label="FLIGHT TIME" value={`${c.estimatedFlightMinutes} min`} />
-                      <DetailItem label="MAX ALT" value={`${c.maxAltitudeFt} ft`} />
-                    </div>
-
-                    {c.notes && (
-                      <div style={{ color: "#555", fontSize: 10, lineHeight: 1.6 }}>
-                        {c.notes}
+                    <div
+                      style={{
+                        background: "rgba(255,255,255,0.02)",
+                        border: "1px solid rgba(255,255,255,0.05)",
+                        borderRadius: 8,
+                        padding: "18px 20px",
+                        opacity: mounted ? 1 : 0,
+                        transform: mounted ? "translateY(0)" : "translateY(8px)",
+                        transition: `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s, border-color 0.15s`,
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(0,212,255,0.3)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)")}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                        <span style={{ color: "#eee", fontSize: 14, fontWeight: 700 }}>{c.name}</span>
+                        <span
+                          style={{
+                            color: statusColor,
+                            fontSize: 8,
+                            letterSpacing: 1,
+                            border: `1px solid ${statusColor}44`,
+                            borderRadius: 3,
+                            padding: "3px 8px",
+                          }}
+                        >
+                          {c.status.toUpperCase()}
+                        </span>
                       </div>
-                    )}
-                  </div>
+
+                      <div style={{ color: "#888", fontSize: 12, marginBottom: 14 }}>
+                        {c.startPoint.label} → {c.endPoint.label}
+                      </div>
+
+                      <div style={{ display: "flex", gap: 20, marginBottom: 14 }}>
+                        <DetailItem label="DISTANCE" value={`${c.distanceKm} km`} />
+                        <DetailItem label="FLIGHT TIME" value={`${c.estimatedFlightMinutes} min`} />
+                        <DetailItem label="MAX ALT" value={`${c.maxAltitudeFt} ft`} />
+                      </div>
+
+                      {c.notes && (
+                        <div style={{ color: "#555", fontSize: 10, lineHeight: 1.6 }}>
+                          {c.notes}
+                        </div>
+                      )}
+
+                      <div style={{ color: "#00d4ff", fontSize: 8, letterSpacing: 1, marginTop: 10, textAlign: "right" }}>
+                        DETAILS →
+                      </div>
+                    </div>
+                  </Link>
                 );
               })}
             </div>

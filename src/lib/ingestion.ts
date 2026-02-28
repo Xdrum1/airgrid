@@ -6,7 +6,8 @@ import type { FederalFiling, StateBill, SecFiling } from "@/lib/faa-api";
 import { fetchAllOperatorNews } from "@/lib/operator-news";
 import { addChangelogEntries } from "@/lib/changelog";
 import { notifySubscribers } from "@/lib/notifications";
-import { evaluateRules } from "@/lib/rules-engine";
+import { evaluateRules, evaluateRulesV2 } from "@/lib/rules-engine";
+import { updateCorridorStatus } from "@/lib/corridors";
 import { classifyRecords } from "@/lib/classifier";
 import { applyOverrides } from "@/lib/score-updater";
 import type { ChangelogEntry } from "@/types";
@@ -279,6 +280,46 @@ export async function runIngestion(): Promise<{
         console.log(
           `[ingestion] Score updater: ${result.persisted} overrides persisted, ${result.applied} auto-applied, ${result.scoreChanges.length} score changes`
         );
+      }
+
+      // 10. Process corridor events
+      const { corridorEvents } = evaluateRulesV2(changedRecords);
+      if (corridorEvents.length > 0) {
+        console.log(`[ingestion] Processing ${corridorEvents.length} corridor events`);
+        const corridorChangelogBatch: Omit<ChangelogEntry, "id" | "timestamp">[] = [];
+
+        for (const event of corridorEvents) {
+          if (event.corridorId && event.newStatus) {
+            try {
+              await updateCorridorStatus(
+                event.corridorId,
+                event.newStatus,
+                event.reason,
+                event.sourceUrl
+              );
+              corridorChangelogBatch.push({
+                changeType: "status_change",
+                relatedEntityType: "corridor",
+                relatedEntityId: event.corridorId,
+                summary: event.reason,
+                sourceUrl: event.sourceUrl,
+              });
+              console.log(`[ingestion] Updated corridor ${event.corridorId} → ${event.newStatus}`);
+            } catch (err) {
+              console.error(`[ingestion] Failed to update corridor ${event.corridorId}:`, err);
+            }
+          } else {
+            // Unresolved corridor — log for admin review
+            console.log(`[ingestion] Unresolved corridor event: ${event.reason}`);
+          }
+        }
+
+        if (corridorChangelogBatch.length > 0) {
+          const corEntries = await addChangelogEntries(corridorChangelogBatch);
+          notifySubscribers(corEntries).catch((err) =>
+            console.error("[ingestion] Corridor notification error:", err)
+          );
+        }
       }
     }
 

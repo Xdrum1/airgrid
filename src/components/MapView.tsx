@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useCallback, useState, useEffect } from "react";
+import Link from "next/link";
 import Map, {
   Marker,
   Popup,
@@ -365,6 +366,20 @@ function CorridorPopup({
           </div>
         )}
       </div>
+      <Link
+        href={`/corridor/${corridor.id}`}
+        style={{
+          display: "block",
+          marginTop: 10,
+          color: "#00d4ff",
+          fontSize: 8,
+          letterSpacing: 1,
+          textDecoration: "none",
+          textAlign: "right",
+        }}
+      >
+        VIEW DETAILS →
+      </Link>
     </div>
   );
 }
