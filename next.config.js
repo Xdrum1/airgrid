@@ -23,7 +23,7 @@ const nextConfig = {
             value: "max-age=63072000; includeSubDomains; preload",
           },
           {
-            key: "Content-Security-Policy",
+            key: "Content-Security-Policy-Report-Only",
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
@@ -31,7 +31,8 @@ const nextConfig = {
               "img-src 'self' data: blob: https://*.mapbox.com https://*.tiles.mapbox.com",
               "connect-src 'self' https://*.mapbox.com https://*.tiles.mapbox.com https://events.mapbox.com https://plausible.io",
               "font-src 'self' https://fonts.gstatic.com",
-              "worker-src 'self' blob:",
+              "worker-src blob:",
+              "child-src blob:",
               "frame-ancestors 'none'",
             ].join("; "),
           },
