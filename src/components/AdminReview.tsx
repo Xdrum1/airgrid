@@ -67,6 +67,177 @@ function formatRelativeTime(timestamp: string): string {
 }
 
 // -------------------------------------------------------
+// PIN Prompt
+// -------------------------------------------------------
+
+function PinPrompt({ onVerified }: { onVerified: () => void }) {
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pin.trim() || submitting) return;
+
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: pin.trim() }),
+      });
+
+      if (res.ok) {
+        onVerified();
+        return;
+      }
+
+      if (res.status === 429) {
+        setError("Too many attempts. Try again later.");
+      } else {
+        const json = await res.json();
+        setError(json.error ?? "Verification failed");
+      }
+    } catch {
+      setError("Network error");
+    } finally {
+      setPin("");
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#050508",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "'Space Mono', monospace",
+        color: "#fff",
+      }}
+    >
+      <div
+        style={{
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(124,58,237,0.3)",
+          borderRadius: 12,
+          padding: "40px 36px",
+          maxWidth: 360,
+          width: "100%",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            color: "#7c3aed",
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: 3,
+            marginBottom: 8,
+          }}
+        >
+          ADMIN VERIFICATION
+        </div>
+        <div
+          style={{
+            color: "#555",
+            fontSize: 11,
+            marginBottom: 28,
+            lineHeight: 1.5,
+          }}
+        >
+          Enter your admin PIN to continue
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <input
+            type="password"
+            value={pin}
+            onChange={(e) => setPin(e.target.value)}
+            placeholder="PIN"
+            autoFocus
+            style={{
+              width: "100%",
+              background: "#0a0a0f",
+              border: error
+                ? "1px solid rgba(255,68,68,0.5)"
+                : "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 6,
+              color: "#fff",
+              fontSize: 16,
+              fontFamily: "'Space Mono', monospace",
+              padding: "12px 16px",
+              textAlign: "center",
+              letterSpacing: 6,
+              outline: "none",
+              boxSizing: "border-box",
+              transition: "border-color 0.15s",
+            }}
+          />
+
+          {error && (
+            <div
+              style={{
+                color: "#ff4444",
+                fontSize: 10,
+                letterSpacing: 1,
+                marginTop: 10,
+              }}
+            >
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={submitting || !pin.trim()}
+            style={{
+              width: "100%",
+              marginTop: 16,
+              background: submitting
+                ? "rgba(124,58,237,0.1)"
+                : "rgba(124,58,237,0.15)",
+              border: "1px solid rgba(124,58,237,0.4)",
+              borderRadius: 6,
+              padding: "12px 0",
+              color: "#7c3aed",
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: 2,
+              cursor: submitting ? "default" : "pointer",
+              fontFamily: "'Space Mono', monospace",
+              transition: "all 0.15s",
+              opacity: submitting || !pin.trim() ? 0.5 : 1,
+            }}
+          >
+            {submitting ? "VERIFYING..." : "VERIFY"}
+          </button>
+        </form>
+
+        <Link
+          href="/dashboard"
+          style={{
+            display: "inline-block",
+            marginTop: 24,
+            color: "#333",
+            fontSize: 9,
+            letterSpacing: 2,
+            textDecoration: "none",
+          }}
+        >
+          ← DASHBOARD
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// -------------------------------------------------------
 // Component
 // -------------------------------------------------------
 
@@ -79,33 +250,71 @@ export default function AdminReview({ adminEmail }: { adminEmail: string }) {
   const [actionInProgress, setActionInProgress] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [citySelections, setCitySelections] = useState<Record<string, string>>({});
+  const [pinVerified, setPinVerified] = useState(false);
+  const [needsPin, setNeedsPin] = useState(false);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 3000);
   }, []);
 
-  // Fetch overrides
-  useEffect(() => {
-    if (tab !== "overrides") return;
+  // Initial data fetch — detects if PIN is needed
+  const fetchOverrides = useCallback(() => {
     setLoading(true);
     fetch("/api/admin/overrides")
-      .then((r) => r.json())
-      .then((json) => setOverrides(json.data ?? []))
+      .then((r) => {
+        if (r.status === 403) {
+          setNeedsPin(true);
+          setLoading(false);
+          return null;
+        }
+        return r.json();
+      })
+      .then((json) => {
+        if (json) {
+          setOverrides(json.data ?? []);
+          setPinVerified(true);
+          setNeedsPin(false);
+        }
+      })
       .catch(() => showToast("Failed to load overrides"))
       .finally(() => setLoading(false));
-  }, [tab, showToast]);
+  }, [showToast]);
+
+  // Fetch overrides on mount and tab switch
+  useEffect(() => {
+    if (tab !== "overrides") return;
+    if (needsPin && !pinVerified) return;
+    fetchOverrides();
+  }, [tab, pinVerified]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch classifications
   useEffect(() => {
     if (tab !== "classifications") return;
+    if (needsPin && !pinVerified) return;
     setLoading(true);
     fetch("/api/admin/classifications?limit=50")
-      .then((r) => r.json())
-      .then((json) => setClassifications(json.data ?? []))
+      .then((r) => {
+        if (r.status === 403) {
+          setNeedsPin(true);
+          setLoading(false);
+          return null;
+        }
+        return r.json();
+      })
+      .then((json) => {
+        if (json) {
+          setClassifications(json.data ?? []);
+        }
+      })
       .catch(() => showToast("Failed to load classifications"))
       .finally(() => setLoading(false));
-  }, [tab, showToast]);
+  }, [tab, pinVerified, showToast]);
+
+  // Try fetching on mount to check if cookie already exists
+  useEffect(() => {
+    fetchOverrides();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAction = async (
     overrideId: string,
@@ -114,7 +323,6 @@ export default function AdminReview({ adminEmail }: { adminEmail: string }) {
     const override = overrides.find((o) => o.id === overrideId);
     if (!override) return;
 
-    // For unresolved overrides, require city selection before approve
     if (action === "approve" && override.cityId === "__unresolved__") {
       const selectedCity = citySelections[overrideId];
       if (!selectedCity) {
@@ -137,6 +345,17 @@ export default function AdminReview({ adminEmail }: { adminEmail: string }) {
         body: JSON.stringify(body),
       });
 
+      if (res.status === 429) {
+        showToast("Rate limited — slow down");
+        return;
+      }
+
+      if (res.status === 403) {
+        setNeedsPin(true);
+        setPinVerified(false);
+        return;
+      }
+
       const json = await res.json();
 
       if (!res.ok) {
@@ -144,7 +363,6 @@ export default function AdminReview({ adminEmail }: { adminEmail: string }) {
         return;
       }
 
-      // Remove from list (optimistic)
       setOverrides((prev) => prev.filter((o) => o.id !== overrideId));
 
       if (action === "approve" && json.scoreChange) {
@@ -189,6 +407,18 @@ export default function AdminReview({ adminEmail }: { adminEmail: string }) {
           BACK TO DASHBOARD
         </Link>
       </div>
+    );
+  }
+
+  // PIN gate — show PIN prompt if cookie missing or expired
+  if (needsPin && !pinVerified) {
+    return (
+      <PinPrompt
+        onVerified={() => {
+          setPinVerified(true);
+          setNeedsPin(false);
+        }}
+      />
     );
   }
 
