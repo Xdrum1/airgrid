@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:migrate:dev": "DATABASE_URL=postgresql://alanmichael@localhost:5432/airindex_dev npx prisma migrate dev",
+    "db:studio:dev": "DATABASE_URL=postgresql://alanmichael@localhost:5432/airindex_dev npx prisma studio",
+    "db:seed:dev": "DATABASE_URL=postgresql://alanmichael@localhost:5432/airindex_dev npx tsx prisma/seed-corridors.ts",
+    "dev:setup": "brew services start postgresql@16 && createdb airindex_dev 2>/dev/null; npm run db:migrate:dev && npm run db:seed:dev && echo 'Dev environment ready — run: npm run dev'"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
