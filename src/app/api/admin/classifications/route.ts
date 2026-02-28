@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getToken } from "next-auth/jwt";
 import { getRecentClassifications } from "@/lib/admin";
 
 const ADMIN_EMAIL = process.env.ADMIN_NOTIFY_EMAIL;
@@ -9,8 +9,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const session = await auth();
-  if (session?.user?.email !== ADMIN_EMAIL) {
+  const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
+  if (token?.email !== ADMIN_EMAIL) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
