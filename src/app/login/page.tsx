@@ -374,7 +374,11 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense>
+    <Suspense fallback={
+      <div style={{ minHeight: "100vh", background: "#050508", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ color: "#555", fontSize: 13, fontFamily: "'Space Mono', monospace", letterSpacing: 2 }}>LOADING...</div>
+      </div>
+    }>
       <LoginForm />
     </Suspense>
   );

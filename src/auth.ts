@@ -1,3 +1,4 @@
+import "@/lib/env";
 import crypto from "crypto";
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
