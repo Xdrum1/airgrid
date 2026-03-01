@@ -1,0 +1,32 @@
+name: Weekly digest cron
+
+on:
+  schedule:
+    # Run every Monday at 07:00 UTC (1 hour after snapshot)
+    - cron: "0 7 * * 1"
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger digest endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://airindex.io}"
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$URL/api/digest")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "Status: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Digest send failed with status $HTTP_CODE"
+            exit 1
+          fi
