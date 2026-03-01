@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { CITIES } from "@/data/seed";
 import { safeHref } from "@/lib/safe-url";
 import { formatRelativeTime } from "@/lib/dashboard-constants";
@@ -53,17 +52,18 @@ const CONFIDENCE_COLORS: Record<string, string> = {
 const CITY_OPTIONS = CITIES.map((c) => ({ id: c.id, label: `${c.city}, ${c.state}` }));
 
 // -------------------------------------------------------
-// PIN Prompt
+// Admin Login (email + PIN)
 // -------------------------------------------------------
 
-function PinPrompt({ onVerified }: { onVerified: () => void }) {
+function AdminLogin({ onVerified }: { onVerified: () => void }) {
+  const [email, setEmail] = useState("");
   const [pin, setPin] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pin.trim() || submitting) return;
+    if (!email.trim() || !pin.trim() || submitting) return;
 
     setSubmitting(true);
     setError(null);
@@ -72,7 +72,7 @@ function PinPrompt({ onVerified }: { onVerified: () => void }) {
       const res = await fetch("/api/admin/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin: pin.trim() }),
+        body: JSON.stringify({ email: email.trim(), pin: pin.trim() }),
       });
 
       if (res.ok) {
@@ -137,16 +137,36 @@ function PinPrompt({ onVerified }: { onVerified: () => void }) {
             lineHeight: 1.5,
           }}
         >
-          Enter your admin PIN to continue
+          Sign in with your admin credentials
         </div>
 
         <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="admin email"
+            autoFocus
+            style={{
+              width: "100%",
+              background: "#0a0a0f",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 6,
+              color: "#fff",
+              fontSize: 13,
+              fontFamily: "'Space Mono', monospace",
+              padding: "12px 16px",
+              outline: "none",
+              boxSizing: "border-box",
+              transition: "border-color 0.15s",
+              marginBottom: 12,
+            }}
+          />
           <input
             type="password"
             value={pin}
             onChange={(e) => setPin(e.target.value)}
             placeholder="PIN"
-            autoFocus
             style={{
               width: "100%",
               background: "#0a0a0f",
@@ -181,7 +201,7 @@ function PinPrompt({ onVerified }: { onVerified: () => void }) {
 
           <button
             type="submit"
-            disabled={submitting || !pin.trim()}
+            disabled={submitting || !email.trim() || !pin.trim()}
             style={{
               width: "100%",
               marginTop: 16,
@@ -198,7 +218,7 @@ function PinPrompt({ onVerified }: { onVerified: () => void }) {
               cursor: submitting ? "default" : "pointer",
               fontFamily: "'Space Mono', monospace",
               transition: "all 0.15s",
-              opacity: submitting || !pin.trim() ? 0.5 : 1,
+              opacity: submitting || !email.trim() || !pin.trim() ? 0.5 : 1,
             }}
           >
             {submitting ? "VERIFYING..." : "VERIFY"}
@@ -227,8 +247,7 @@ function PinPrompt({ onVerified }: { onVerified: () => void }) {
 // Component
 // -------------------------------------------------------
 
-export default function AdminReview({ adminEmail }: { adminEmail: string }) {
-  const { data: session, status } = useSession();
+export default function AdminReview() {
   const [tab, setTab] = useState<TabKey>("overrides");
   const [overrides, setOverrides] = useState<PendingOverride[]>([]);
   const [classifications, setClassifications] = useState<ClassificationResult[]>([]);
@@ -366,40 +385,10 @@ export default function AdminReview({ adminEmail }: { adminEmail: string }) {
     }
   };
 
-  // Session loading
-  if (status === "loading") {
-    return <div style={{ minHeight: "100vh", background: "#050508" }} />;
-  }
-
-  // Not signed in or wrong email — middleware should catch this,
-  // but double-check client-side as a fallback
-  if (!session?.user?.email || session.user.email !== adminEmail) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "#050508",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "'Space Mono', monospace",
-          color: "#fff",
-        }}
-      >
-        <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 96, color: "#1a1a28", lineHeight: 1 }}>404</div>
-        <div style={{ color: "#555", fontSize: 14, marginTop: 12, marginBottom: 32, letterSpacing: 2 }}>MARKET NOT FOUND</div>
-        <Link href="/dashboard" style={{ color: "#00d4ff", fontSize: 11, letterSpacing: 1, textDecoration: "none", border: "1px solid rgba(0,212,255,0.3)", borderRadius: 6, padding: "10px 20px" }}>
-          BACK TO DASHBOARD
-        </Link>
-      </div>
-    );
-  }
-
-  // PIN gate — show PIN prompt if cookie missing or expired
+  // Auth gate — show email+PIN login if not verified
   if (needsPin && !pinVerified) {
     return (
-      <PinPrompt
+      <AdminLogin
         onVerified={() => {
           setPinVerified(true);
           setNeedsPin(false);
