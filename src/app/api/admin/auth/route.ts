@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
 import crypto from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
 import { signAdminCookie, COOKIE_NAME } from "@/lib/admin-auth";
@@ -17,47 +16,51 @@ function getClientIp(req: NextRequest): string {
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
 
-  // Rate limit: 5 PIN attempts per 15 minutes
+  // Rate limit: 5 attempts per 15 minutes
   const rl = await rateLimit(`admin-pin:${ip}`, 5, 15 * 60 * 1000);
   if (!rl.allowed) {
-    logger.info(`Rate limited PIN attempt from ${ip}`);
+    logger.info(`Rate limited admin auth attempt from ${ip}`);
     return NextResponse.json(
       { error: "Too many attempts. Try again later." },
       { status: 429 }
     );
   }
 
-  // Verify JWT — must be logged in as admin
-  const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
-  if (!token?.email || token.email !== ADMIN_EMAIL) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
-  // Verify PIN
-  if (!ADMIN_PIN) {
-    logger.error("ADMIN_PIN not configured");
+  if (!ADMIN_PIN || !ADMIN_EMAIL) {
+    logger.error("ADMIN_PIN or ADMIN_NOTIFY_EMAIL not configured");
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
 
-  let body: { pin?: string };
+  let body: { email?: string; pin?: string };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
+  // Verify email matches admin email (timing-safe)
+  const emailMatch =
+    typeof body.email === "string" &&
+    body.email.length === ADMIN_EMAIL.length &&
+    crypto.timingSafeEqual(
+      Buffer.from(body.email.toLowerCase()),
+      Buffer.from(ADMIN_EMAIL.toLowerCase())
+    );
+
+  // Verify PIN (timing-safe)
   const pinMatch =
     typeof body.pin === "string" &&
     body.pin.length === ADMIN_PIN.length &&
     crypto.timingSafeEqual(Buffer.from(body.pin), Buffer.from(ADMIN_PIN));
-  if (!pinMatch) {
-    logger.info(`Wrong PIN attempt from ${token.email} (${ip}), ${rl.remaining} attempts remaining`);
-    return NextResponse.json({ error: "Invalid PIN" }, { status: 403 });
+
+  if (!emailMatch || !pinMatch) {
+    logger.info(`Failed admin auth from ${ip}, ${rl.remaining} attempts remaining`);
+    return NextResponse.json({ error: "Invalid credentials" }, { status: 403 });
   }
 
   // Success — set signed cookie
-  logger.info(`PIN verified for ${token.email} (${ip})`);
-  const cookieValue = signAdminCookie(token.email as string);
+  logger.info(`Admin verified from ${ip}`);
+  const cookieValue = signAdminCookie(ADMIN_EMAIL);
   const isProduction = process.env.NODE_ENV === "production";
 
   const response = NextResponse.json({ ok: true });
