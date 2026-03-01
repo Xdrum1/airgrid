@@ -16,17 +16,27 @@ const FACTORS = [
     label: "Active Pilot Program",
     weight: 20,
     description:
-      "Has the market launched or hosted an active UAM pilot program? Pilot programs demonstrate real-world operational commitment — not just regulatory intent, but aircraft flying in the airspace under FAA-approved conditions.",
-    criteria: "Binary — scored if an FAA-approved pilot program is active or completed within the market area.",
-    sources: "FAA UAS Integration Pilot Program (IPP) records, operator announcements, local government press releases.",
+      "Has the market launched or hosted an active UAM pilot program? Pilot programs demonstrate real-world operational commitment — not just regulatory intent, but aircraft flying in the airspace under FAA-approved conditions. This is the strongest signal of market readiness because it requires simultaneous coordination of regulatory approval, operator participation, infrastructure access, and community engagement.",
+    qualifies:
+      "FAA-approved pilot program active or completed within the market area. Includes UAS Integration Pilot Program (IPP) participation, BEYOND program selection, Part 135 commercial eVTOL operations, or FAA-sanctioned demonstration flights with a defined operational area.",
+    doesNotQualify:
+      "Announced partnerships without FAA operational approval. MOU signings. Feasibility studies. Operator interest without flights in the airspace.",
+    actionable:
+      "Host or participate in an FAA-sanctioned pilot program. Coordinate with operators who have active type certification programs and need flight test environments.",
+    sources: "FAA UAS Integration Pilot Program (IPP) records, BEYOND program designations, operator announcements, local government press releases.",
   },
   {
     key: "approvedVertiport",
     label: "Approved Vertiport",
     weight: 20,
     description:
-      "Does the market have at least one permitted, under-construction, or operational vertiport site? Vertiports are the physical infrastructure that makes commercial UAM possible. A market with approved vertiport sites has cleared the hardest regulatory and zoning hurdles.",
-    criteria: "Binary — scored if one or more vertiport sites have received municipal permits or are operational.",
+      "Does the market have at least one permitted, under-construction, or operational vertiport site? Vertiports are the physical infrastructure that makes commercial UAM possible. A market with approved vertiport sites has cleared the hardest regulatory and zoning hurdles — environmental review, community input, building permits, and FAA airspace coordination.",
+    qualifies:
+      "One or more vertiport sites that have received municipal permits, are under construction, or are operational. Heliport conversions with documented eVTOL adaptation plans also qualify.",
+    doesNotQualify:
+      "Sites in the planning or feasibility stage without permits filed. Announced locations without municipal approval. Existing heliports without documented UAM conversion plans.",
+    actionable:
+      "Advance vertiport sites through the permitting process. Fast-track environmental review for vertiport-zoned parcels. Partner with operators on site selection and FAA engineering briefs.",
     sources: "Municipal planning records, FAA vertiport engineering briefs, operator filings, local zoning board decisions.",
   },
   {
@@ -34,53 +44,79 @@ const FACTORS = [
     label: "Active Operator Presence",
     weight: 15,
     description:
-      "Is at least one eVTOL manufacturer or air taxi operator actively engaged in the market? Operator presence signals commercial viability — operators choose markets based on regulatory readiness, infrastructure, and demand potential.",
-    criteria: "Binary — scored if one or more operators have announced partnerships, test flights, or commercial intent in the market.",
-    sources: "Operator press releases, partnership announcements, SEC filings (for public operators), airline partnership disclosures.",
+      "Is at least one eVTOL manufacturer or air taxi operator actively engaged in the market? Operator presence is a market signal — operators choose launch markets based on regulatory readiness, infrastructure availability, demand projections, and competitive positioning. An operator committing resources to a market validates the other readiness factors.",
+    qualifies:
+      "One or more operators with announced partnerships, signed agreements, test flights, or commercial intent specific to the market. Includes eVTOL manufacturers (Joby, Archer, Wisk), air taxi platforms (Blade), and cargo/delivery operators with UAM-adjacent infrastructure.",
+    doesNotQualify:
+      "General statements of interest without market-specific commitments. Operators listing the market in investor materials without operational plans. Conference appearances or trade show presence.",
+    actionable:
+      "Establish operator engagement programs. Create incentive packages for eVTOL operators to select the market for early commercial routes. Reduce regulatory friction to attract operator commitments.",
+    sources: "Operator press releases, partnership announcements, SEC filings (for public operators like Joby and Archer), airline partnership disclosures.",
   },
   {
     key: "vertiportZoning",
     label: "Vertiport Zoning",
     weight: 15,
     description:
-      "Has the city or county adopted zoning provisions that accommodate vertiport development? Zoning is the earliest municipal signal of UAM readiness. Markets that have proactively updated land-use codes to permit vertiports are removing barriers before operators arrive.",
-    criteria: "Binary — scored if the municipality has enacted or amended zoning ordinances to permit vertiport or heliport-equivalent use.",
+      "Has the city or county adopted zoning provisions that accommodate vertiport development? Zoning is the earliest and most controllable municipal signal of UAM readiness. Markets that have proactively updated land-use codes to permit vertiports are removing barriers before operators arrive — signaling institutional readiness and reducing timeline risk for commercial deployments.",
+    qualifies:
+      "Municipality has enacted or amended zoning ordinances to permit vertiport or heliport-equivalent use in at least one zoning district. Includes conditional use permits, overlay zones, or specific vertiport land-use categories.",
+    doesNotQualify:
+      "General aviation zoning without vertiport-specific provisions. Draft ordinances not yet adopted. Study commissions without enacted code changes.",
+    actionable:
+      "Amend local zoning codes to define vertiport as a permitted or conditional use. Identify suitable zoning districts (commercial, industrial, transit-adjacent). Streamline conditional use permit processes for vertiport applications.",
     sources: "Municipal code databases, city council meeting minutes, zoning board records, urban planning documents.",
   },
   {
     key: "regulatoryPosture",
     label: "Regulatory Posture",
     weight: 10,
+    graduated: true,
     description:
-      "What is the overall regulatory stance toward UAM at the municipal level? This factor captures the qualitative environment — is the city actively facilitating UAM, passively allowing it, or creating barriers? Assessed as Friendly (full weight), Neutral (half weight), or Restrictive (zero).",
-    criteria: "Qualitative — assessed based on public statements from city officials, task force formation, participation in federal programs, and regulatory actions.",
-    sources: "City government publications, mayor/council public statements, FAA Community Engagement records, USDOT participation records.",
+      "What is the overall regulatory stance toward UAM at the municipal level? This is the only graduated factor in the model. Rather than binary yes/no, regulatory posture is assessed on a three-level scale: Friendly (10 points), Neutral (5 points), or Restrictive (0 points). This reflects the reality that regulatory environments exist on a spectrum — a city can be passively permissive without being actively supportive.",
+    qualifies:
+      "Friendly: City has formed a UAM task force, joined federal programs (e.g., NASA AAM National Campaign), issued public statements of support, or allocated staff/budget to UAM planning. Neutral: No active opposition or support; standard permitting processes apply without UAM-specific provisions. Restrictive: City has enacted ordinances limiting drone/eVTOL operations, issued public opposition, or created regulatory barriers beyond standard requirements.",
+    doesNotQualify:
+      "N/A — all markets receive a posture assessment. The assessment is based on documented actions, not inferred attitudes.",
+    actionable:
+      "Move from Neutral to Friendly: form a UAM advisory committee, participate in federal engagement programs, issue a public statement of support, or designate a point of contact for UAM operators.",
+    sources: "City government publications, mayor/council public statements, FAA Community Engagement records, USDOT participation records, local ordinances.",
   },
   {
     key: "stateLegislation",
     label: "State Legislation",
     weight: 10,
     description:
-      "Has the state enacted legislation specifically enabling or regulating UAM operations? State-level legislation creates the legal framework that allows (or blocks) commercial UAM. States that have passed enabling legislation signal long-term commitment.",
-    criteria: "Binary — scored if state-level UAM or advanced air mobility legislation has been signed into law.",
-    sources: "State legislature records (LegiScan), governor's office press releases, state DOT publications.",
+      "Has the state enacted legislation specifically enabling or regulating UAM or advanced air mobility operations? State-level legislation creates the legal framework that allows (or blocks) commercial UAM at scale. States that have passed enabling legislation signal long-term institutional commitment and provide legal certainty that municipal actions won't be preempted.",
+    qualifies:
+      "State-level UAM or advanced air mobility legislation signed into law. Includes enabling acts that define UAM in state code, task force creation with legislative mandate, state DOT integration directives, or dedicated appropriations for AAM infrastructure.",
+    doesNotQualify:
+      "Bills introduced but not passed. Resolutions without legal force. Executive orders without legislative backing. General aviation legislation without UAM-specific provisions.",
+    actionable:
+      "Advocate for state-level AAM enabling legislation. Support bills that define vertiports in state building codes, establish state-level UAM task forces, or direct state DOTs to integrate AAM into transportation planning.",
+    sources: "State legislature records (LegiScan), governor's office press releases, state DOT publications, legislative tracking services.",
   },
   {
     key: "laancCoverage",
     label: "LAANC Coverage",
     weight: 10,
     description:
-      "Does the market have FAA LAANC (Low Altitude Authorization and Notification Capability) infrastructure in place? LAANC provides automated airspace authorization for UAS operations — a foundational layer for UAM corridor management and real-time flight coordination.",
-    criteria: "Binary — scored if LAANC is available at one or more airports within the market area.",
+      "Does the market have FAA LAANC (Low Altitude Authorization and Notification Capability) infrastructure in place? LAANC provides automated airspace authorization for UAS operations — a foundational infrastructure layer for UAM corridor management and real-time flight coordination. Markets without LAANC coverage face significantly higher friction for any low-altitude commercial operations.",
+    qualifies:
+      "LAANC is available at one or more airports within the metropolitan area, providing automated near-real-time airspace authorization for UAS operations below 400 feet AGL.",
+    doesNotQualify:
+      "Markets where LAANC is available only at distant airports outside the metropolitan area. Manual airspace authorization processes without LAANC integration.",
+    actionable:
+      "This factor is primarily FAA-driven. Airports can request LAANC facility activation through the FAA UAS Data Exchange. Municipal advocacy to the FAA for LAANC expansion can accelerate coverage.",
     sources: "FAA LAANC facility map, FAA UAS Data Exchange, airport authority records.",
   },
 ];
 
 const TIERS = [
-  { label: "HIGH", range: "75–100", color: "#00ff88", description: "Market has most or all infrastructure, regulatory, and operator requirements in place. Commercial UAM operations are imminent or active." },
-  { label: "MODERATE", range: "50–74", color: "#00d4ff", description: "Significant progress across multiple factors. Key pieces are in place but gaps remain — typically missing infrastructure or operator commitment." },
-  { label: "EARLY", range: "30–49", color: "#f59e0b", description: "Some foundational elements present. Regulatory posture may be favorable but physical infrastructure and operator activity are limited." },
-  { label: "NASCENT", range: "0–29", color: "#ff4444", description: "Minimal UAM readiness. Market may have LAANC coverage or early regulatory signals but lacks substantive infrastructure or operator engagement." },
+  { label: "HIGH", range: "75\u2013100", color: "#00ff88", description: "Market has most or all infrastructure, regulatory, and operator requirements in place. Commercial UAM operations are imminent or active." },
+  { label: "MODERATE", range: "50\u201374", color: "#00d4ff", description: "Significant progress across multiple factors. Key pieces are in place but gaps remain \u2014 typically missing infrastructure or operator commitment." },
+  { label: "EARLY", range: "30\u201349", color: "#f59e0b", description: "Some foundational elements present. Regulatory posture may be favorable but physical infrastructure and operator activity are limited." },
+  { label: "NASCENT", range: "0\u201329", color: "#ff4444", description: "Minimal UAM readiness. Market may have LAANC coverage or early regulatory signals but lacks substantive infrastructure or operator engagement." },
 ];
 
 // -------------------------------------------------------
@@ -104,6 +140,25 @@ function Section({ id, title, children }: { id: string; title: string; children:
       </h2>
       {children}
     </section>
+  );
+}
+
+// -------------------------------------------------------
+// Metadata label
+// -------------------------------------------------------
+function MetaLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span
+      style={{
+        fontFamily: "'Space Mono', monospace",
+        fontSize: 9,
+        letterSpacing: 1.5,
+        color: "#555",
+        textTransform: "uppercase",
+      }}
+    >
+      {children}
+    </span>
   );
 }
 
@@ -166,7 +221,7 @@ export default function MethodologyPage() {
               marginBottom: 16,
             }}
           >
-            Scoring Methodology
+            Scoring Methodology &middot; v1.0 &middot; March 2026
           </div>
           <h1
             style={{
@@ -181,32 +236,35 @@ export default function MethodologyPage() {
             UAM Market Readiness Index
           </h1>
           <p style={{ color: "#777", fontSize: 15, lineHeight: 1.7, maxWidth: 600 }}>
-            The AirIndex Readiness Score is a 7-factor, 0&ndash;100 composite index that measures
-            how prepared a US metropolitan area is for commercial urban air mobility operations.
-            This document describes how each factor is defined, weighted, and sourced.
+            The AirIndex UAM Readiness Score measures a market&apos;s structural readiness for
+            commercial urban air mobility operations across seven independently verified factors.
+            It is not a forecast &mdash; it reflects current, documented conditions.
           </p>
         </div>
 
-        {/* Overview */}
-        <Section id="overview" title="How the Score Works">
+        {/* Section 1: What the Score Measures */}
+        <Section id="overview" title="What the Score Measures">
           <p style={{ marginBottom: 16 }}>
-            Each market is evaluated against seven binary or qualitative factors. Every factor
-            carries a fixed weight. The total score is the sum of earned weights — a market that
-            satisfies all seven factors scores {totalWeight}.
+            The Readiness Score is a 0&ndash;{totalWeight} composite index that answers one question:
+            how prepared is this metropolitan area, right now, for commercial eVTOL operations?
+            Each market is evaluated against seven factors spanning physical infrastructure,
+            operator commitment, and regulatory environment.
           </p>
           <p style={{ marginBottom: 16 }}>
-            The model is intentionally binary at this stage. A factor is either present or it
-            isn&apos;t. This eliminates subjective grading and makes scores reproducible — anyone
-            with access to the same public sources should arrive at the same number.
+            The score is evidence-based and reproducible. Every factor is verified against public
+            records &mdash; FAA databases, federal and state filings, municipal zoning codes, and
+            operator disclosures. Anyone with access to the same sources should arrive at the same
+            number.
           </p>
           <p>
-            As the industry matures and more granular data becomes available, individual factors
-            may transition from binary to gradient scoring (e.g., number of vertiports, not just
-            presence/absence). Any changes to the methodology will be versioned and documented here.
+            This is not an investment recommendation, demand forecast, or prediction of commercial
+            launch timelines. It measures structural readiness: the infrastructure, regulatory
+            framework, and operator engagement that must be in place before commercial operations
+            can begin.
           </p>
         </Section>
 
-        {/* Factor Breakdown */}
+        {/* Section 2: The Seven Factors */}
         <Section id="factors" title="The Seven Factors">
           <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
             {FACTORS.map((f, i) => (
@@ -221,7 +279,7 @@ export default function MethodologyPage() {
               >
                 {/* Factor header */}
                 <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 }}>
-                  <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span
                       style={{
                         fontFamily: "'Space Mono', monospace",
@@ -242,6 +300,21 @@ export default function MethodologyPage() {
                     >
                       {f.label}
                     </span>
+                    {"graduated" in f && f.graduated && (
+                      <span
+                        style={{
+                          fontFamily: "'Space Mono', monospace",
+                          fontSize: 9,
+                          letterSpacing: 1,
+                          color: "#f59e0b",
+                          border: "1px solid rgba(245, 158, 11, 0.3)",
+                          borderRadius: 3,
+                          padding: "2px 6px",
+                        }}
+                      >
+                        GRADUATED
+                      </span>
+                    )}
                   </div>
                   <div
                     style={{
@@ -276,37 +349,29 @@ export default function MethodologyPage() {
                 </div>
 
                 {/* Description */}
-                <p style={{ marginBottom: 12 }}>{f.description}</p>
+                <p style={{ marginBottom: 16 }}>{f.description}</p>
 
-                {/* Criteria */}
-                <div style={{ marginBottom: 8 }}>
-                  <span
-                    style={{
-                      fontFamily: "'Space Mono', monospace",
-                      fontSize: 9,
-                      letterSpacing: 1.5,
-                      color: "#555",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Scoring Criteria
-                  </span>
-                  <p style={{ color: "#999", fontSize: 13, marginTop: 4 }}>{f.criteria}</p>
+                {/* What qualifies */}
+                <div style={{ marginBottom: 12 }}>
+                  <MetaLabel>What Qualifies</MetaLabel>
+                  <p style={{ color: "#999", fontSize: 13, marginTop: 4 }}>{f.qualifies}</p>
+                </div>
+
+                {/* What does not qualify */}
+                <div style={{ marginBottom: 12 }}>
+                  <MetaLabel>What Does Not Qualify</MetaLabel>
+                  <p style={{ color: "#999", fontSize: 13, marginTop: 4 }}>{f.doesNotQualify}</p>
+                </div>
+
+                {/* How to improve */}
+                <div style={{ marginBottom: 12 }}>
+                  <MetaLabel>How to Improve This Score</MetaLabel>
+                  <p style={{ color: "#b0b0c0", fontSize: 13, marginTop: 4 }}>{f.actionable}</p>
                 </div>
 
                 {/* Sources */}
                 <div>
-                  <span
-                    style={{
-                      fontFamily: "'Space Mono', monospace",
-                      fontSize: 9,
-                      letterSpacing: 1.5,
-                      color: "#555",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Data Sources
-                  </span>
+                  <MetaLabel>Data Sources</MetaLabel>
                   <p style={{ color: "#999", fontSize: 13, marginTop: 4 }}>{f.sources}</p>
                 </div>
               </div>
@@ -314,14 +379,95 @@ export default function MethodologyPage() {
           </div>
         </Section>
 
-        {/* Weight distribution */}
-        <Section id="weights" title="Weight Distribution">
-          <p style={{ marginBottom: 20 }}>
-            Weights reflect the relative importance of each factor to commercial UAM readiness.
-            Infrastructure and operational factors (pilot programs, vertiports) carry the highest
-            weight. Regulatory enablers (legislation, LAANC) carry lower weight because they are
-            necessary but not sufficient conditions.
+        {/* Section 3: Scoring Methodology */}
+        <Section id="methodology" title="Scoring Methodology">
+          {/* Binary model */}
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#fff",
+              marginBottom: 12,
+            }}
+          >
+            Binary Model
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            Six of seven factors use binary scoring: a factor is either present or it isn&apos;t.
+            This is a deliberate design choice. Binary scoring eliminates subjective grading,
+            makes scores reproducible across analysts, and provides clear, actionable thresholds
+            for city planners and operators. A market either has an approved vertiport or it
+            doesn&apos;t &mdash; there is no partial credit for &ldquo;almost permitted.&rdquo;
           </p>
+          <p style={{ marginBottom: 24 }}>
+            The one exception is Regulatory Posture, which uses a three-level graduated scale
+            (Friendly / Neutral / Restrictive). This reflects the reality that regulatory
+            environments exist on a spectrum and a binary model would lose meaningful signal.
+            As reliable sub-indicators become available for other factors, the graduated model
+            may be extended &mdash; Regulatory Posture serves as the proof of concept.
+          </p>
+
+          {/* Differential weighting */}
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#fff",
+              marginBottom: 12,
+            }}
+          >
+            Differential Weighting
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            Factors are not equally weighted. The model uses a three-tier weight structure that
+            encodes a thesis about what drives commercial readiness:
+          </p>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 8,
+              padding: "20px 24px",
+              marginBottom: 16,
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                <span style={{ color: "#fff", fontSize: 13 }}>Infrastructure &amp; Operations</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", color: "#00d4ff", fontSize: 13, fontWeight: 700 }}>20 pts each</span>
+              </div>
+              <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
+                Pilot Program, Approved Vertiport &mdash; these are the hardest to achieve and closest to commercial readiness. They require real capital, real approvals, and real operations.
+              </p>
+              <div style={{ height: 1, background: "rgba(255,255,255,0.04)" }} />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                <span style={{ color: "#fff", fontSize: 13 }}>Market Commitment</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", color: "#00d4ff", fontSize: 13, fontWeight: 700 }}>15 pts each</span>
+              </div>
+              <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
+                Active Operator Presence, Vertiport Zoning &mdash; strong signals of intent that can be reversed or stalled. Operators can exit markets; zoning can be amended.
+              </p>
+              <div style={{ height: 1, background: "rgba(255,255,255,0.04)" }} />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                <span style={{ color: "#fff", fontSize: 13 }}>Regulatory Environment</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", color: "#00d4ff", fontSize: 13, fontWeight: 700 }}>10 pts each</span>
+              </div>
+              <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
+                Regulatory Posture, State Legislation, LAANC Coverage &mdash; necessary but not sufficient. A friendly regulatory environment without infrastructure or operators does not make a market ready.
+              </p>
+            </div>
+          </div>
+          <p style={{ marginBottom: 24 }}>
+            This hierarchy reflects a core observation: infrastructure and operational factors are
+            leading indicators of commercial readiness, while regulatory factors are lagging indicators
+            that tend to follow market demand. A state passes UAM legislation after operators
+            express interest, not before. A pilot program, by contrast, requires the full stack &mdash;
+            regulation, infrastructure, and operations &mdash; to exist simultaneously.
+          </p>
+
+          {/* Weight distribution visualization */}
           <div
             style={{
               display: "flex",
@@ -345,7 +491,7 @@ export default function MethodologyPage() {
               );
             })}
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px", marginBottom: 24 }}>
             {FACTORS.map((f, i) => {
               const colors = ["#00d4ff", "#00ff88", "#7c3aed", "#f59e0b", "#ff6b35", "#14b8a6", "#ff4444"];
               return (
@@ -356,15 +502,24 @@ export default function MethodologyPage() {
               );
             })}
           </div>
-        </Section>
 
-        {/* Tier definitions */}
-        <Section id="tiers" title="Readiness Tiers">
+          {/* Readiness Tiers */}
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#fff",
+              marginBottom: 12,
+            }}
+          >
+            Readiness Tiers
+          </h3>
           <p style={{ marginBottom: 20 }}>
-            Scores map to four readiness tiers. These labels provide at-a-glance context for
-            where a market stands in its UAM journey.
+            Scores map to four readiness tiers that provide at-a-glance context for where a
+            market stands in its UAM journey.
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
             {TIERS.map((t) => (
               <div
                 key={t.label}
@@ -398,25 +553,148 @@ export default function MethodologyPage() {
               </div>
             ))}
           </div>
+
+          {/* Update frequency */}
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#fff",
+              marginBottom: 12,
+            }}
+          >
+            Update Frequency
+          </h3>
+          <p>
+            Scores are updated continuously as new evidence is ingested and verified. Weekly
+            snapshots capture the state of all 20 markets for historical tracking. When underlying
+            data changes &mdash; a new vertiport permit is approved, legislation is signed, an
+            operator announces market entry &mdash; the affected market&apos;s score is recalculated
+            and the change is logged in the AirIndex activity feed with a link to the source record.
+          </p>
         </Section>
 
-        {/* Update cadence */}
-        <Section id="updates" title="Update Cadence & Versioning">
-          <p style={{ marginBottom: 12 }}>
-            Scores are reviewed and updated monthly. When underlying data changes — a new
-            vertiport permit is approved, legislation is signed, an operator announces market
-            entry — the affected market&apos;s score is recalculated and the change is logged in the
-            AirIndex activity feed.
+        {/* Section 4: Data Sources and Verification */}
+        <Section id="sources" title="Data Sources and Verification">
+          <p style={{ marginBottom: 16 }}>
+            Every score change is traceable to a specific source document. AirIndex draws from
+            five primary categories of public data:
           </p>
-          <p style={{ marginBottom: 12 }}>
-            This is <strong style={{ color: "#fff" }}>Methodology v1.0</strong> (February 2026).
-            Any material changes to factor definitions, weights, or scoring criteria will be
-            published as a new version with a changelog explaining what changed and why.
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
+            {[
+              { label: "FAA LAANC Database", desc: "Real-time facility maps, airspace authorization records, and UAS Data Exchange feeds for LAANC coverage verification." },
+              { label: "Federal Register", desc: "Proposed and final rulemaking, airspace designations, notices of availability, and FAA advisory circulars related to UAM and vertiport operations." },
+              { label: "SEC EDGAR", desc: "10-K/10-Q filings, 8-K disclosures, and S-1 registrations from publicly traded operators (Joby Aviation, Archer Aviation, Blade Air Mobility) for market commitments and partnership announcements." },
+              { label: "State Legislative Records", desc: "Bill tracking via LegiScan and state legislature databases for UAM/AAM enabling legislation, task force creation, and appropriations across all 50 states." },
+              { label: "Municipal Records", desc: "City council minutes, zoning board decisions, planning commission records, and building permit databases for vertiport approvals and zoning amendments." },
+            ].map((s) => (
+              <div
+                key={s.label}
+                style={{
+                  padding: "16px 20px",
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 8,
+                }}
+              >
+                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 14, color: "#fff", marginBottom: 4 }}>
+                  {s.label}
+                </div>
+                <p style={{ color: "#999", fontSize: 13, marginBottom: 0 }}>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#fff",
+              marginBottom: 12,
+            }}
+          >
+            Verification Process
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            New evidence enters the system through an ingestion pipeline that classifies source
+            documents against the seven scoring factors. High-confidence classifications
+            (unambiguous evidence matching a single factor and market) are applied automatically.
+            Ambiguous or multi-factor evidence is flagged for manual review before any score
+            change is made.
           </p>
           <p>
-            Source citations for each scored factor are displayed on individual market pages.
-            Every citation includes a verification date indicating when the underlying source
-            was last confirmed.
+            Source citations for each scored factor are displayed on individual market pages in
+            the AirIndex dashboard. Every citation includes a verification date indicating when
+            the underlying source was last confirmed. Markets are re-verified on a rolling basis,
+            with high-activity markets reviewed more frequently.
+          </p>
+        </Section>
+
+        {/* Section 5: Limitations */}
+        <Section id="limitations" title="Limitations and Future Development">
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#fff",
+              marginBottom: 12,
+            }}
+          >
+            What the Score Does Not Capture
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            The Readiness Score measures structural conditions, not market dynamics. It does not
+            account for consumer demand, operator financial health, airspace complexity, weather
+            patterns, noise sensitivity, community opposition, or competitive intensity between
+            markets. These factors matter for commercial success but are outside the scope of a
+            readiness assessment.
+          </p>
+
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#fff",
+              marginBottom: 12,
+            }}
+          >
+            Binary Model Tradeoffs
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            The binary model intentionally trades granularity for verifiability. Two markets at the
+            same score may differ in depth of readiness &mdash; a market with three committed
+            operators scores the same on the Operator Presence factor as a market with one. This
+            is a known limitation, and it is accepted because the alternative (graduated sub-scoring)
+            would require defining and defending sub-factor weights that don&apos;t yet have empirical
+            support.
+          </p>
+          <p style={{ marginBottom: 16 }}>
+            The Regulatory Posture factor already uses graduated scoring as a proof of concept.
+            As historical data accumulates and reliable sub-indicators emerge for other factors,
+            the graduated model will be extended. Any such changes will be published as a new
+            methodology version with a full changelog.
+          </p>
+
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#fff",
+              marginBottom: 12,
+            }}
+          >
+            Geographic Scope
+          </h3>
+          <p>
+            The current index covers 20 US metropolitan areas selected for existing UAM activity,
+            regulatory engagement, or operator commitments. International markets and smaller US
+            markets are not currently tracked. Coverage expansion will be based on evidence of
+            UAM activity rather than geographic completeness.
           </p>
         </Section>
 
@@ -439,7 +717,7 @@ export default function MethodologyPage() {
               marginBottom: 16,
             }}
           >
-            Source: AirIndex UAM Market Readiness Index (airindex.io)
+            Source: AirIndex UAM Market Readiness Index, v1.0 (airindex.io/methodology)
           </div>
           <p style={{ color: "#999", fontSize: 13 }}>
             For press inquiries, data partnerships, or API access, contact{" "}
