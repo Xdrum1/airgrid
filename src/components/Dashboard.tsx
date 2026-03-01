@@ -10,6 +10,7 @@ import { CITIES, CITIES_MAP, OPERATORS_MAP, CORRIDORS, getVertiportsForCity } fr
 import { getScoreColor, getPostureConfig } from "@/lib/scoring";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useWatchlist } from "@/hooks/useWatchlist";
+import { trackEvent } from "@/lib/track";
 import AuthGate from "./AuthGate";
 import type { FilterKey, TabKey, MobilePanel } from "./dashboard-types";
 
@@ -226,6 +227,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
               setSelected(city);
               setShowAllCorridors(false);
               if (isMobile) setMobilePanel("detail");
+              if (session?.user) trackEvent("city_detail", "city", city.id);
             }}
             animate={animate}
             isMobile={isMobile}
@@ -278,6 +280,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                 onClick={() => {
                   setTab(t);
                   if (isMobile) setMobilePanel("none");
+                  if (session?.user) trackEvent("tab_switch", "tab", t);
                 }}
                 style={{
                   background: "transparent",
@@ -353,6 +356,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
               onCitySelect={(city) => {
                 setSelected(city);
                 if (isMobile) setMobilePanel("detail");
+                if (session?.user) trackEvent("city_detail", "city", city.id);
               }}
               vertiports={cityVertiports}
               selectedVertiport={selectedVertiport}

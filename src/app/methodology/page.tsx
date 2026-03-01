@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import TrackPageView from "@/components/TrackPageView";
 
 export const metadata: Metadata = {
   title: "Scoring Methodology — AirIndex",
@@ -180,6 +181,8 @@ export default function MethodologyPage() {
         overflow: "auto",
       }}
     >
+      <TrackPageView page="/methodology" />
+
       {/* Nav */}
       <nav
         style={{

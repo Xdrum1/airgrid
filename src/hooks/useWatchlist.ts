@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
+import { trackEvent } from "@/lib/track";
 
 const STORAGE_KEY = "airindex-watchlist";
 
@@ -84,6 +85,7 @@ export function useWatchlist() {
           if (json?.cityIds) {
             setCityIds(json.cityIds);
             writeLocal(json.cityIds);
+            trackEvent(watched ? "watchlist_remove" : "watchlist_add", "city", cityId);
           }
         })
         .catch(() => {

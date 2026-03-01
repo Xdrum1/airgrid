@@ -12,6 +12,7 @@ import {
 } from "@/lib/dashboard-constants";
 import { useWatchlist } from "@/hooks/useWatchlist";
 import WatchlistStar from "./WatchlistStar";
+import TrackPageView from "./TrackPageView";
 import SubscribeForm from "./SubscribeForm";
 import ScoreTrend from "./ScoreTrend";
 import FactorSparklines from "./FactorSparklines";
@@ -119,6 +120,8 @@ export default function CityDetail({
         color: "#fff",
       }}
     >
+      <TrackPageView page={city.id} entityType="city" />
+
       {/* ---- a) Sticky Header/Nav ---- */}
       <div
         style={{

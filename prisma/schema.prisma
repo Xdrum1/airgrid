@@ -19,6 +19,7 @@ model User {
   sessions      Session[]
   subscriptions Subscription[]
   watchlist     Watchlist?
+  events        UserEvent[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -169,6 +170,22 @@ model CorridorStatusHistory {
   corridor    Corridor  @relation(fields: [corridorId], references: [id], onDelete: Cascade)
 
   @@index([corridorId, changedAt])
+}
+
+model UserEvent {
+  id         String   @id @default(cuid())
+  userId     String
+  event      String   // "page_view" | "city_detail" | "corridor_click" | "tab_switch" | "report_download" | "operator_click"
+  entityType String?  // "city" | "corridor" | "operator" | "page" | "tab" | "report"
+  entityId   String?  // e.g. "los_angeles", "cor_mia_fll", "/methodology"
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([event])
+  @@index([entityType, entityId])
 }
 
 model ScoringOverride {

@@ -9,6 +9,7 @@ import ScoreBar from "./ScoreBar";
 import BreakdownPanel from "./BreakdownPanel";
 import SubscribeForm from "./SubscribeForm";
 import WatchlistStar from "./WatchlistStar";
+import { trackEvent } from "@/lib/track";
 
 export default function CityDetailPanel({
   selected,
@@ -267,11 +268,13 @@ export default function CityDetailPanel({
             return op ? (
               <div
                 key={opId}
+                onClick={() => trackEvent("operator_click", "operator", opId)}
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
                   marginBottom: 7,
+                  cursor: "pointer",
                 }}
               >
                 <div
@@ -399,7 +402,10 @@ export default function CityDetailPanel({
             return (
               <div
                 key={c.id}
-                onClick={() => onCorridorSelect(isCorSelected ? null : c)}
+                onClick={() => {
+                  onCorridorSelect(isCorSelected ? null : c);
+                  if (!isCorSelected) trackEvent("corridor_click", "corridor", c.id);
+                }}
                 style={{
                   background: isCorSelected
                     ? "rgba(0,212,255,0.06)"
