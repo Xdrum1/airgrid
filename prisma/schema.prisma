@@ -87,6 +87,7 @@ model ScoreSnapshot {
   breakdown         Json
   tier              String?  // "HIGH" | "MODERATE" | "EARLY" | "NASCENT"
   triggeringEventId String?  // links to ChangelogEntry.id
+  filingIngestedAt  DateTime? // when the triggering filing was first ingested
   capturedAt        DateTime @default(now())
 
   @@index([cityId, capturedAt])

@@ -139,6 +139,7 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
             breakdown: (breakdown ?? {}) as unknown as Record<string, number>,
             tier: getScoreTier(change.newScore),
             triggeringEventId: cityToEntryId.get(change.cityId) ?? null,
+            filingIngestedAt: now,
             capturedAt: now,
           };
         }),

@@ -113,6 +113,7 @@ export async function approveOverride(
           breakdown: (breakdown ?? {}) as unknown as Record<string, number>,
           tier: getScoreTier(newScore),
           triggeringEventId: entries[0]?.id ?? null,
+          filingIngestedAt: override.createdAt,
           capturedAt: now,
         },
       });
