@@ -1,6 +1,7 @@
 "use client";
 
 import type { FederalFiling } from "@/lib/faa-api";
+import { trackEvent } from "@/lib/track";
 
 export default function FilingsTab({
   filings,
@@ -120,6 +121,7 @@ export default function FilingsTab({
             href={filing.html_url}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent("filing_click", "filing", filing.document_number, { type: filing.type })}
             style={{
               display: "block",
               background: "rgba(255,255,255,0.02)",

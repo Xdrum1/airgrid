@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Corridor, City, Operator, ChangelogEntry } from "@/types";
 import type { CorridorStatusHistoryEntry } from "@/lib/corridors";
 import CorridorSubscribeForm from "./CorridorSubscribeForm";
+import TrackPageView from "./TrackPageView";
 import { safeHref } from "@/lib/safe-url";
 
 // -------------------------------------------------------
@@ -66,6 +67,8 @@ export default function CorridorDetail({
         color: "#fff",
       }}
     >
+      <TrackPageView page={corridor.id} entityType="corridor" />
+
       {/* ---- Sticky Header ---- */}
       <div
         style={{
