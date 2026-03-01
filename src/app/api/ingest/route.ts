@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const rl = rateLimit("ingest", 4, 60 * 60 * 1000);
+  const rl = await rateLimit("ingest", 4, 60 * 60 * 1000);
   if (!rl.allowed) {
     return NextResponse.json(
       { success: false, error: "Rate limited — try again later" },

@@ -324,6 +324,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
           ) : tab === "analytics" ? (
             <AnalyticsTab
               cities={CITIES_RESOLVED}
+              corridors={fetchedCorridors}
               animate={animate}
               isMobile={isMobile}
             />

@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { CITIES } from "@/data/seed";
 import { safeHref } from "@/lib/safe-url";
 import { formatRelativeTime } from "@/lib/dashboard-constants";
+import AdminCorridors from "./AdminCorridors";
 
 // -------------------------------------------------------
 // Types
@@ -37,7 +38,7 @@ interface ClassificationResult {
   createdAt: string;
 }
 
-type TabKey = "overrides" | "classifications";
+type TabKey = "overrides" | "classifications" | "corridors";
 
 // -------------------------------------------------------
 // Helpers
@@ -464,35 +465,44 @@ export default function AdminReview({ adminEmail }: { adminEmail: string }) {
           padding: "0 24px",
         }}
       >
-        {(["overrides", "classifications"] as const).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            style={{
-              background: "none",
-              border: "none",
-              borderBottom:
-                tab === t
-                  ? "2px solid #7c3aed"
-                  : "2px solid transparent",
-              color: tab === t ? "#fff" : "#555",
-              fontSize: 10,
-              letterSpacing: 2,
-              padding: "14px 20px",
-              cursor: "pointer",
-              fontFamily: "'Space Mono', monospace",
-              fontWeight: tab === t ? 700 : 400,
-              transition: "all 0.15s",
-            }}
-          >
-            {t === "overrides" ? "PENDING OVERRIDES" : "CLASSIFICATIONS"}
-          </button>
-        ))}
+        {(["overrides", "classifications", "corridors"] as const).map((t) => {
+          const labels: Record<TabKey, string> = {
+            overrides: "PENDING OVERRIDES",
+            classifications: "CLASSIFICATIONS",
+            corridors: "CORRIDORS",
+          };
+          return (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              style={{
+                background: "none",
+                border: "none",
+                borderBottom:
+                  tab === t
+                    ? "2px solid #7c3aed"
+                    : "2px solid transparent",
+                color: tab === t ? "#fff" : "#555",
+                fontSize: 10,
+                letterSpacing: 2,
+                padding: "14px 20px",
+                cursor: "pointer",
+                fontFamily: "'Space Mono', monospace",
+                fontWeight: tab === t ? 700 : 400,
+                transition: "all 0.15s",
+              }}
+            >
+              {labels[t]}
+            </button>
+          );
+        })}
       </div>
 
       {/* Content */}
       <div style={{ padding: 24, maxWidth: 900, margin: "0 auto" }}>
-        {loading ? (
+        {tab === "corridors" ? (
+          <AdminCorridors showToast={showToast} />
+        ) : loading ? (
           <div
             style={{
               color: "#444",

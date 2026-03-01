@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Rate limit: 20 requests per 5 minutes per user
-  const rl = rateLimit(`filings:${session.user.id}`, 20, 5 * 60 * 1000);
+  const rl = await rateLimit(`filings:${session.user.id}`, 20, 5 * 60 * 1000);
   if (!rl.allowed) {
     return NextResponse.json(
       { error: "Rate limited — try again later", data: [], count: 0 },

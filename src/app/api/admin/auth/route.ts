@@ -3,6 +3,9 @@ import { getToken } from "next-auth/jwt";
 import crypto from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
 import { signAdminCookie, COOKIE_NAME } from "@/lib/admin-auth";
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("admin/auth");
 
 const ADMIN_EMAIL = process.env.ADMIN_NOTIFY_EMAIL;
 const ADMIN_PIN = process.env.ADMIN_PIN;
@@ -15,9 +18,9 @@ export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
 
   // Rate limit: 5 PIN attempts per 15 minutes
-  const rl = rateLimit(`admin-pin:${ip}`, 5, 15 * 60 * 1000);
+  const rl = await rateLimit(`admin-pin:${ip}`, 5, 15 * 60 * 1000);
   if (!rl.allowed) {
-    console.log(`[admin/auth] Rate limited PIN attempt from ${ip}`);
+    logger.info(`Rate limited PIN attempt from ${ip}`);
     return NextResponse.json(
       { error: "Too many attempts. Try again later." },
       { status: 429 }
@@ -32,7 +35,7 @@ export async function POST(request: NextRequest) {
 
   // Verify PIN
   if (!ADMIN_PIN) {
-    console.error("[admin/auth] ADMIN_PIN not configured");
+    logger.error("ADMIN_PIN not configured");
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
 
@@ -48,12 +51,12 @@ export async function POST(request: NextRequest) {
     body.pin.length === ADMIN_PIN.length &&
     crypto.timingSafeEqual(Buffer.from(body.pin), Buffer.from(ADMIN_PIN));
   if (!pinMatch) {
-    console.log(`[admin/auth] Wrong PIN attempt from ${token.email} (${ip}), ${rl.remaining} attempts remaining`);
+    logger.info(`Wrong PIN attempt from ${token.email} (${ip}), ${rl.remaining} attempts remaining`);
     return NextResponse.json({ error: "Invalid PIN" }, { status: 403 });
   }
 
   // Success — set signed cookie
-  console.log(`[admin/auth] PIN verified for ${token.email} (${ip})`);
+  logger.info(`PIN verified for ${token.email} (${ip})`);
   const cookieValue = signAdminCookie(token.email as string);
   const isProduction = process.env.NODE_ENV === "production";
 

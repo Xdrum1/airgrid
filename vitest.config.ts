@@ -18,6 +18,7 @@ export default defineConfig({
         "src/lib/safe-url.ts",
         "src/lib/dashboard-constants.ts",
         "src/lib/rate-limit.ts",
+        "src/lib/logger.ts",
         "src/data/seed.ts",
         "src/app/api/filings/route.ts",
         "src/app/api/corridors/route.ts",

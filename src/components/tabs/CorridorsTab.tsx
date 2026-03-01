@@ -1,8 +1,21 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { City, Corridor, Operator } from "@/types";
 import { CORRIDOR_STATUS_COLORS } from "@/lib/dashboard-constants";
+
+type SortKey = "name" | "distance" | "status";
+
+const STATUS_PRIORITY: Record<string, number> = {
+  active: 0,
+  authorized: 1,
+  proposed: 2,
+  suspended: 3,
+};
+
+const STATUS_FILTERS = ["all", "proposed", "authorized", "active", "suspended"] as const;
+type StatusFilter = typeof STATUS_FILTERS[number];
 
 export default function CorridorsTab({
   corridors,
@@ -19,6 +32,42 @@ export default function CorridorsTab({
   isMobile: boolean;
   onCorridorClick: (corridor: Corridor, city: City | undefined) => void;
 }) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [sortBy, setSortBy] = useState<SortKey>("name");
+
+  const filteredCorridors = useMemo(() => {
+    let result = corridors;
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((c) => {
+        const city = citiesMap[c.cityId];
+        const operator = c.operatorId ? operatorsMap[c.operatorId] : null;
+        return (
+          c.name.toLowerCase().includes(q) ||
+          (city && `${city.city} ${city.state}`.toLowerCase().includes(q)) ||
+          (operator && operator.name.toLowerCase().includes(q))
+        );
+      });
+    }
+
+    // Status filter
+    if (statusFilter !== "all") {
+      result = result.filter((c) => c.status === statusFilter);
+    }
+
+    // Sort
+    result = [...result].sort((a, b) => {
+      if (sortBy === "distance") return (b.distanceKm ?? 0) - (a.distanceKm ?? 0);
+      if (sortBy === "status") return (STATUS_PRIORITY[a.status] ?? 9) - (STATUS_PRIORITY[b.status] ?? 9);
+      return a.name.localeCompare(b.name);
+    });
+
+    return result;
+  }, [corridors, searchQuery, statusFilter, sortBy, citiesMap, operatorsMap]);
+
   return (
     <div style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px", paddingLeft: isMobile ? 12 : 292, paddingRight: isMobile ? 12 : 316 }}>
       {/* Header */}
@@ -67,8 +116,92 @@ export default function CorridorsTab({
         ))}
       </div>
 
+      {/* Search + Filter + Sort bar */}
+      <div style={{ marginBottom: 16 }}>
+        {/* Search input */}
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search corridors, cities, operators..."
+          style={{
+            width: "100%",
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 6,
+            color: "#ccc",
+            fontSize: 11,
+            padding: "10px 14px",
+            fontFamily: "'Space Mono', monospace",
+            outline: "none",
+            boxSizing: "border-box",
+            marginBottom: 12,
+          }}
+        />
+
+        {/* Status pills + Sort */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {STATUS_FILTERS.map((s) => {
+              const isActive = statusFilter === s;
+              return (
+                <button
+                  key={s}
+                  onClick={() => setStatusFilter(s)}
+                  style={{
+                    background: isActive ? "rgba(0,212,255,0.08)" : "transparent",
+                    border: isActive ? "1px solid rgba(0,212,255,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 4,
+                    padding: "5px 10px",
+                    color: isActive ? "#00d4ff" : "#555",
+                    fontSize: 8,
+                    letterSpacing: 1,
+                    cursor: "pointer",
+                    fontFamily: "'Space Mono', monospace",
+                    fontWeight: isActive ? 700 : 400,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {s === "all" ? "ALL" : s}
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ color: "#444", fontSize: 8, letterSpacing: 1 }}>SORT:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortKey)}
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 4,
+                color: "#888",
+                fontSize: 9,
+                padding: "4px 8px",
+                fontFamily: "'Space Mono', monospace",
+                cursor: "pointer",
+                outline: "none",
+              }}
+            >
+              <option value="name">Name</option>
+              <option value="distance">Distance</option>
+              <option value="status">Status</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Result count */}
+        {(searchQuery || statusFilter !== "all") && (
+          <div style={{ color: "#555", fontSize: 9, marginTop: 10, letterSpacing: 1 }}>
+            {filteredCorridors.length} of {corridors.length} corridors
+          </div>
+        )}
+      </div>
+
       {/* Corridor cards */}
-      {corridors.map((corridor, i) => {
+      {filteredCorridors.map((corridor, i) => {
         const statusColor = CORRIDOR_STATUS_COLORS[corridor.status] ?? "#888";
         const city = citiesMap[corridor.cityId];
         const operator = corridor.operatorId ? operatorsMap[corridor.operatorId] : null;

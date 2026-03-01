@@ -1,16 +1,19 @@
 "use client";
 
-import { City, Operator } from "@/types";
+import { useMemo } from "react";
+import { City, Corridor, Operator } from "@/types";
 import { getScoreColor } from "@/lib/scoring";
-import { SCORE_COMPONENT_COLORS, SCORE_COMPONENT_LABELS } from "@/lib/dashboard-constants";
-import { OPERATORS } from "@/data/seed";
+import { SCORE_COMPONENT_COLORS, SCORE_COMPONENT_LABELS, CORRIDOR_STATUS_COLORS } from "@/lib/dashboard-constants";
+import { OPERATORS, CITIES_MAP } from "@/data/seed";
 
 export default function AnalyticsTab({
   cities,
+  corridors,
   animate,
   isMobile,
 }: {
   cities: City[];
+  corridors: Corridor[];
   animate: boolean;
   isMobile: boolean;
 }) {
@@ -18,6 +21,36 @@ export default function AnalyticsTab({
   const avgScore = Math.round(cities.reduce((a, c) => a + (c.score ?? 0), 0) / cities.length);
   const vertiportCityCount = cities.filter((c) => c.vertiportCount > 0).length;
   const operatorCount = OPERATORS.length;
+
+  // Corridor analytics
+  const corridorStats = useMemo(() => {
+    const proposed = corridors.filter((c) => c.status === "proposed").length;
+    const authorized = corridors.filter((c) => c.status === "authorized").length;
+    const active = corridors.filter((c) => c.status === "active").length;
+    const suspended = corridors.filter((c) => c.status === "suspended").length;
+
+    const avgDistance = corridors.length > 0
+      ? Math.round(corridors.reduce((a, c) => a + (c.distanceKm ?? 0), 0) / corridors.length * 10) / 10
+      : 0;
+    const avgFlight = corridors.length > 0
+      ? Math.round(corridors.reduce((a, c) => a + (c.estimatedFlightMinutes ?? 0), 0) / corridors.length * 10) / 10
+      : 0;
+
+    // Corridors by city
+    const byCity: Record<string, number> = {};
+    for (const c of corridors) {
+      byCity[c.cityId] = (byCity[c.cityId] ?? 0) + 1;
+    }
+    const byCitySorted = Object.entries(byCity)
+      .map(([cityId, count]) => ({
+        cityId,
+        cityName: CITIES_MAP[cityId]?.city ?? cityId,
+        count,
+      }))
+      .sort((a, b) => b.count - a.count);
+
+    return { proposed, authorized, active, suspended, avgDistance, avgFlight, byCitySorted };
+  }, [corridors]);
 
   return (
     <div style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px", paddingLeft: isMobile ? 12 : 292, paddingRight: isMobile ? 12 : 316 }}>
@@ -133,7 +166,7 @@ export default function AnalyticsTab({
       </div>
 
       {/* Stacked Bar Chart — Score Breakdown by Component */}
-      <div>
+      <div style={{ marginBottom: 32 }}>
         <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 10 }}>
           SCORE BREAKDOWN BY COMPONENT
         </div>
@@ -233,6 +266,133 @@ export default function AnalyticsTab({
           })}
         </svg>
       </div>
+
+      {/* CORRIDOR INTELLIGENCE */}
+      {corridors.length > 0 && (
+        <>
+          <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
+            CORRIDOR INTELLIGENCE
+          </div>
+
+          {/* Corridor status stat cards */}
+          <div style={{
+            display: isMobile ? "grid" : "flex",
+            gridTemplateColumns: isMobile ? "1fr 1fr" : undefined,
+            gap: 12,
+            marginBottom: 24,
+          }}>
+            {[
+              { label: "TOTAL CORRIDORS", value: corridors.length, color: "#00d4ff" },
+              { label: "PROPOSED", value: corridorStats.proposed, color: CORRIDOR_STATUS_COLORS["proposed"] },
+              { label: "AUTHORIZED", value: corridorStats.authorized, color: CORRIDOR_STATUS_COLORS["authorized"] },
+              { label: "ACTIVE", value: corridorStats.active, color: CORRIDOR_STATUS_COLORS["active"] },
+            ].map((stat, i) => (
+              <div
+                key={stat.label}
+                style={{
+                  flex: 1,
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  borderRadius: 8,
+                  padding: "16px 14px",
+                  opacity: animate ? 1 : 0,
+                  transform: animate ? "translateY(0)" : "translateY(8px)",
+                  transition: `opacity 0.4s ease ${i * 0.08 + 0.2}s, transform 0.4s ease ${i * 0.08 + 0.2}s`,
+                }}
+              >
+                <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
+                  {stat.label}
+                </div>
+                <div style={{ color: stat.color, fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28 }}>
+                  {stat.value}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Average stats */}
+          <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
+            {[
+              { label: "AVG DISTANCE", value: `${corridorStats.avgDistance} km`, color: "#00d4ff" },
+              { label: "AVG FLIGHT TIME", value: `${corridorStats.avgFlight} min`, color: "#00ff88" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                style={{
+                  flex: 1,
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  borderRadius: 8,
+                  padding: "14px 14px",
+                }}
+              >
+                <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 6 }}>
+                  {stat.label}
+                </div>
+                <div style={{ color: stat.color, fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 18 }}>
+                  {stat.value}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Corridors by City bar chart */}
+          {corridorStats.byCitySorted.length > 0 && (
+            <div style={{ marginBottom: 32 }}>
+              <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
+                CORRIDORS BY CITY
+              </div>
+              <svg
+                viewBox={`0 0 600 ${corridorStats.byCitySorted.length * 30 + 10}`}
+                style={{ width: "100%", height: "auto" }}
+              >
+                {corridorStats.byCitySorted.map((entry, i) => {
+                  const maxCount = corridorStats.byCitySorted[0].count;
+                  const barWidth = maxCount > 0 ? (entry.count / maxCount) * 380 : 0;
+                  return (
+                    <g key={entry.cityId}>
+                      <text
+                        x={115}
+                        y={i * 30 + 18}
+                        fill="#888"
+                        fontSize={10}
+                        textAnchor="end"
+                        fontFamily="'Space Mono', monospace"
+                      >
+                        {entry.cityName}
+                      </text>
+                      <rect
+                        x={120}
+                        y={i * 30 + 6}
+                        width={animate ? barWidth : 0}
+                        height={20}
+                        rx={3}
+                        fill="#00d4ff"
+                        opacity={0.85}
+                        style={{ transition: `width 0.8s ease ${i * 0.05}s` }}
+                      />
+                      <text
+                        x={120 + barWidth + 8}
+                        y={i * 30 + 18}
+                        fill="#00d4ff"
+                        fontSize={10}
+                        fontFamily="'Space Mono', monospace"
+                        fontWeight={700}
+                        style={{
+                          opacity: animate ? 1 : 0,
+                          transition: `opacity 0.4s ease ${0.4 + i * 0.05}s`,
+                        }}
+                      >
+                        {entry.count}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
