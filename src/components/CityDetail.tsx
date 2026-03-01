@@ -4,49 +4,17 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { City, Operator, Vertiport, Corridor } from "@/types";
 import { getScoreColor, getScoreTier, getPostureConfig, SCORE_WEIGHTS } from "@/lib/scoring";
+import {
+  VERTIPORT_STATUS_COLORS,
+  CORRIDOR_STATUS_COLORS,
+  SCORE_COMPONENT_COLORS,
+  SCORE_COMPONENT_LABELS,
+} from "@/lib/dashboard-constants";
 import { useWatchlist } from "@/hooks/useWatchlist";
 import WatchlistStar from "./WatchlistStar";
 import SubscribeForm from "./SubscribeForm";
 import ScoreTrend from "./ScoreTrend";
 import { safeHref } from "@/lib/safe-url";
-
-// -------------------------------------------------------
-// Constants
-// -------------------------------------------------------
-
-const VERTIPORT_STATUS_COLORS: Record<string, string> = {
-  planned: "#f59e0b",
-  permitted: "#00d4ff",
-  under_construction: "#7c3aed",
-  operational: "#00ff88",
-};
-
-const CORRIDOR_STATUS_COLORS: Record<string, string> = {
-  proposed: "#f59e0b",
-  authorized: "#00d4ff",
-  active: "#00ff88",
-  suspended: "#ff4444",
-};
-
-const SCORE_COMPONENT_COLORS: Record<string, string> = {
-  activePilotProgram: "#00ff88",
-  approvedVertiport: "#00d4ff",
-  activeOperatorPresence: "#f59e0b",
-  vertiportZoning: "#7c3aed",
-  regulatoryPosture: "#ff6b35",
-  stateLegislation: "#ff4444",
-  laancCoverage: "#10b981",
-};
-
-const SCORE_COMPONENT_LABELS: Record<string, string> = {
-  activePilotProgram: "Pilot Program",
-  approvedVertiport: "Vertiport",
-  activeOperatorPresence: "Operators",
-  vertiportZoning: "Zoning",
-  regulatoryPosture: "Regulatory",
-  stateLegislation: "Legislation",
-  laancCoverage: "LAANC",
-};
 
 // -------------------------------------------------------
 // Helpers
