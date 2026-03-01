@@ -318,6 +318,7 @@ export const CORRIDORS: Corridor[] = [
     estimatedFlightMinutes: 20,
     maxAltitudeFt: 1500,
     notes: "Archer/United Airlines partnership corridor. Airport-to-airport route along the coast.",
+    sourceUrl: "https://news.archer.com/archer-reveals-plans-for-miami-air-taxi-network-featuring-partnerships-with-related-ross-and-magic-city-innovation-district",
     lastUpdated: "2026-03-01",
   },
   {
@@ -333,6 +334,7 @@ export const CORRIDORS: Corridor[] = [
     estimatedFlightMinutes: 12,
     maxAltitudeFt: 1500,
     notes: "Archer/United targeting O'Hare as a launch corridor. Routing via I-90 corridor.",
+    sourceUrl: "https://investors.archer.com/news/news-details/2023/United-Airlines-and-Archer-Announce-First-Commercial-Electric-Air-Taxi-Route-in-Chicago/default.aspx",
     lastUpdated: "2026-03-01",
   },
   {
