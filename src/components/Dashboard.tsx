@@ -71,27 +71,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
   const [changelogFetchedAt, setChangelogFetchedAt] = useState<string | null>(null);
 
   // Subscriptions — track which cities the user is subscribed to
-  const [subscribedCityIds, setSubscribedCityIds] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    if (!session?.user) return;
-    fetch("/api/subscribe")
-      .then((r) => r.json())
-      .then((json) => {
-        if (json.data) {
-          const ids = new Set<string>();
-          for (const sub of json.data) {
-            if (sub.cityIds?.length === 0) {
-              CITIES_RESOLVED.forEach((c) => ids.add(c.id));
-            } else {
-              sub.cityIds?.forEach((id: string) => ids.add(id));
-            }
-          }
-          setSubscribedCityIds(ids);
-        }
-      })
-      .catch(() => {});
-  }, [session?.user, CITIES_RESOLVED]);
 
   // Watchlist
   const { cityIds: watchedCityIds, isWatched, toggle: toggleWatch, isAuthenticated } = useWatchlist();
@@ -368,24 +348,6 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
               mobilePanel={mobilePanel}
               onOpenCityList={() => setMobilePanel("cityList")}
               onOpenDetail={() => setMobilePanel("detail")}
-              subscribedCityIds={subscribedCityIds}
-              onSubscribe={async () => {
-                try {
-                  const res = await fetch("/api/subscribe", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      cityIds: [selected.id],
-                      changeTypes: ["new_filing", "status_change", "new_law", "faa_update"],
-                    }),
-                  });
-                  if (res.ok || res.status === 409) {
-                    setSubscribedCityIds((prev) => new Set(prev).add(selected.id));
-                  }
-                } catch { /* silent */ }
-              }}
-              isLoggedIn={!!session?.user}
-              onSignIn={() => router.push("/login?callbackUrl=" + encodeURIComponent("/dashboard?tab=map"))}
               watchedCityIds={watchedCityIds}
               onToggleWatch={toggleWatch}
               isAuthenticated={isAuthenticated}
@@ -414,15 +376,6 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
             selectedCorridor={selectedCorridor}
             onVertiportSelect={setSelectedVertiport}
             onCorridorSelect={setSelectedCorridor}
-            subscribedCityIds={subscribedCityIds}
-            onSubscriptionChange={(cityId, subscribed) => {
-              setSubscribedCityIds((prev) => {
-                const next = new Set(prev);
-                if (subscribed) next.add(cityId);
-                else next.delete(cityId);
-                return next;
-              });
-            }}
             isMobile={isMobile}
             onClose={() => setMobilePanel("none")}
             isWatched={isWatched(selected.id)}
