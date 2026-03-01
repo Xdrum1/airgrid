@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/auth";
-import { OPERATORS, VERTIPORTS, CORRIDORS, getCitiesWithOverrides } from "@/data/seed";
+import { OPERATORS, CORRIDORS, getCitiesWithOverrides } from "@/data/seed";
 
 // -------------------------------------------------------
 // Pricing tier data
@@ -10,21 +10,17 @@ const TIERS = [
   {
     name: "Free",
     price: "$0",
-    period: "forever",
+    period: "Beta Access",
     accent: "linear-gradient(135deg, #00d4ff, #7c3aed)",
     badge: null,
     features: [
       "Interactive map & market rankings",
       "Readiness scores & 7-factor breakdown",
       "City detail pages",
-      "Federal Register filings feed",
-      "Activity & changelog tracking",
-      "Analytics dashboard",
-      "Corridor intelligence",
       "Watchlists & email alerts",
     ],
-    yearlyNote: "Core features free forever. Advanced features coming soon.",
-    cta: { label: "Get early access — it's free", href: "/login" },
+    yearlyNote: "Advanced features coming soon.",
+    cta: { label: "Get early access", href: "/login" },
   },
   {
     name: "Enterprise",
@@ -84,8 +80,8 @@ export default async function LandingPage() {
   const stats = [
     { value: CITIES.length, label: "Markets" },
     { value: OPERATORS.length, label: "Operators" },
-    { value: VERTIPORTS.length, label: "Vertiports" },
     { value: CORRIDORS.length, label: "Corridors" },
+    { value: 4, label: "Data sources" },
   ];
 
   return (
@@ -683,6 +679,153 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* ======== Monthly Market Report ======== */}
+      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "0 20px 80px" }}>
+        <div style={{
+          border: "1px solid rgba(0,212,255,0.15)",
+          borderRadius: 12,
+          overflow: "hidden",
+          background: "rgba(0,212,255,0.02)",
+        }}>
+          {/* Header bar */}
+          <div style={{
+            background: "rgba(0,212,255,0.06)",
+            borderBottom: "1px solid rgba(0,212,255,0.1)",
+            padding: "20px 32px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 12,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#00d4ff", textTransform: "uppercase" }}>
+                Monthly Market Report
+              </div>
+              <div style={{
+                background: "rgba(0,212,255,0.15)",
+                border: "1px solid rgba(0,212,255,0.3)",
+                borderRadius: 4,
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 8,
+                letterSpacing: 1,
+                color: "#00d4ff",
+                padding: "3px 8px",
+              }}>
+                ISSUE 001 — FEBRUARY 2026
+              </div>
+            </div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#444", letterSpacing: 1 }}>
+              FREE DOWNLOAD — NO SIGNUP REQUIRED
+            </div>
+          </div>
+
+          {/* Body */}
+          <div style={{
+            padding: "36px 32px",
+            display: "grid",
+            gridTemplateColumns: "1fr auto",
+            gap: 40,
+            alignItems: "center",
+          }}>
+            <div>
+              <h2 style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700,
+                fontSize: "clamp(20px, 2.5vw, 28px)",
+                color: "#fff",
+                margin: "0 0 12px",
+                lineHeight: 1.2,
+              }}>
+                The AirIndex UAM Market Report
+              </h2>
+              <p style={{
+                fontFamily: "'Inter', sans-serif",
+                color: "#666",
+                fontSize: 13,
+                lineHeight: 1.7,
+                margin: "0 0 24px",
+                maxWidth: 520,
+              }}>
+                Monthly intelligence covering UAM market readiness rankings, corridor authorizations,
+                vertiport construction status, operator timelines, and regulatory filings — all in one
+                place. Published the first week of every month.
+              </p>
+
+              {/* Tags */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }}>
+                {["Market Rankings", "Corridor Intelligence", "Operator Watch", "Regulatory Filings", "What to Watch"].map(tag => (
+                  <div key={tag} style={{
+                    border: "1px solid rgba(0,212,255,0.2)",
+                    borderRadius: 4,
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 8,
+                    letterSpacing: 1,
+                    color: "#00d4ff",
+                    padding: "4px 10px",
+                    background: "rgba(0,212,255,0.04)",
+                  }}>
+                    {tag.toUpperCase()}
+                  </div>
+                ))}
+              </div>
+
+              {/* Download button */}
+              <a
+                href="/reports/AirIndex-Market-Report-February-2026.pdf"
+                download
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "12px 24px",
+                  background: "#00d4ff",
+                  color: "#050508",
+                  fontFamily: "'Syne', sans-serif",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  textDecoration: "none",
+                  borderRadius: 6,
+                }}
+              >
+                ↓ DOWNLOAD FEBRUARY 2026 REPORT
+              </a>
+            </div>
+
+            {/* Mini preview thumbnail */}
+            <div style={{
+              width: 160,
+              flexShrink: 0,
+              background: "#0a0a1a",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 8,
+              padding: "16px 14px",
+              fontFamily: "'Space Mono', monospace",
+            }}>
+              <div style={{ fontSize: 7, color: "#00d4ff", letterSpacing: 1, marginBottom: 8 }}>AIRINDEX</div>
+              <div style={{ fontSize: 6, color: "#444", letterSpacing: 0.5, marginBottom: 12, borderBottom: "1px solid #1a1a2e", paddingBottom: 8 }}>
+                UAM MARKET REPORT · FEB 2026
+              </div>
+              {([["Los Angeles", 100], ["Dallas", 100], ["Orlando", 85], ["Las Vegas", 85], ["Miami", 80]] as [string, number][]).map(([city, score]) => (
+                <div key={city} style={{ marginBottom: 6 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
+                    <span style={{ fontSize: 6, color: "#888" }}>{city}</span>
+                    <span style={{ fontSize: 6, color: "#00ff88" }}>{score}</span>
+                  </div>
+                  <div style={{ height: 3, background: "#1a1a2e", borderRadius: 2, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${score}%`, background: score >= 75 ? "#00ff88" : "#00d4ff", borderRadius: 2 }} />
+                  </div>
+                </div>
+              ))}
+              <div style={{ marginTop: 10, paddingTop: 8, borderTop: "1px solid #1a1a2e", fontSize: 5.5, color: "#333", letterSpacing: 0.5 }}>
+                airindex.io
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ======== Who It's For ======== */}
       <section
         style={{
@@ -816,10 +959,10 @@ export default async function LandingPage() {
               margin: "0 0 12px",
             }}
           >
-            Free during beta. Free forever after.
+            Free access during beta.
           </h2>
           <p style={{ fontFamily: "'Inter', sans-serif", color: "#666", fontSize: 13, margin: 0 }}>
-            Everything you need to track the UAM market — free forever.
+            Core platform features available free while we validate with early users. Advanced tiers coming.
           </p>
         </div>
 
@@ -997,153 +1140,6 @@ export default async function LandingPage() {
               </div>
             );
           })}
-        </div>
-      </section>
-
-      {/* ======== Monthly Market Report ======== */}
-      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "0 20px 80px" }}>
-        <div style={{
-          border: "1px solid rgba(0,212,255,0.15)",
-          borderRadius: 12,
-          overflow: "hidden",
-          background: "rgba(0,212,255,0.02)",
-        }}>
-          {/* Header bar */}
-          <div style={{
-            background: "rgba(0,212,255,0.06)",
-            borderBottom: "1px solid rgba(0,212,255,0.1)",
-            padding: "20px 32px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 12,
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#00d4ff", textTransform: "uppercase" }}>
-                Monthly Market Report
-              </div>
-              <div style={{
-                background: "rgba(0,212,255,0.15)",
-                border: "1px solid rgba(0,212,255,0.3)",
-                borderRadius: 4,
-                fontFamily: "'Space Mono', monospace",
-                fontSize: 8,
-                letterSpacing: 1,
-                color: "#00d4ff",
-                padding: "3px 8px",
-              }}>
-                ISSUE 001 — FEBRUARY 2026
-              </div>
-            </div>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#444", letterSpacing: 1 }}>
-              FREE DOWNLOAD — NO SIGNUP REQUIRED
-            </div>
-          </div>
-
-          {/* Body */}
-          <div style={{
-            padding: "36px 32px",
-            display: "grid",
-            gridTemplateColumns: "1fr auto",
-            gap: 40,
-            alignItems: "center",
-          }}>
-            <div>
-              <h2 style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                fontSize: "clamp(20px, 2.5vw, 28px)",
-                color: "#fff",
-                margin: "0 0 12px",
-                lineHeight: 1.2,
-              }}>
-                The AirIndex UAM Market Report
-              </h2>
-              <p style={{
-                fontFamily: "'Inter', sans-serif",
-                color: "#666",
-                fontSize: 13,
-                lineHeight: 1.7,
-                margin: "0 0 24px",
-                maxWidth: 520,
-              }}>
-                Monthly intelligence covering UAM market readiness rankings, corridor authorizations,
-                vertiport construction status, operator timelines, and regulatory filings — all in one
-                place. Published the first week of every month.
-              </p>
-
-              {/* Tags */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }}>
-                {["Market Rankings", "Corridor Intelligence", "Operator Watch", "Regulatory Filings", "What to Watch"].map(tag => (
-                  <div key={tag} style={{
-                    border: "1px solid rgba(0,212,255,0.2)",
-                    borderRadius: 4,
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: 8,
-                    letterSpacing: 1,
-                    color: "#00d4ff",
-                    padding: "4px 10px",
-                    background: "rgba(0,212,255,0.04)",
-                  }}>
-                    {tag.toUpperCase()}
-                  </div>
-                ))}
-              </div>
-
-              {/* Download button */}
-              <a
-                href="/reports/AirIndex-Market-Report-February-2026.pdf"
-                download
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "12px 24px",
-                  background: "#00d4ff",
-                  color: "#050508",
-                  fontFamily: "'Syne', sans-serif",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  textDecoration: "none",
-                  borderRadius: 6,
-                }}
-              >
-                ↓ DOWNLOAD FEBRUARY 2026 REPORT
-              </a>
-            </div>
-
-            {/* Mini preview thumbnail */}
-            <div style={{
-              width: 160,
-              flexShrink: 0,
-              background: "#0a0a1a",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 8,
-              padding: "16px 14px",
-              fontFamily: "'Space Mono', monospace",
-            }}>
-              <div style={{ fontSize: 7, color: "#00d4ff", letterSpacing: 1, marginBottom: 8 }}>AIRINDEX</div>
-              <div style={{ fontSize: 6, color: "#444", letterSpacing: 0.5, marginBottom: 12, borderBottom: "1px solid #1a1a2e", paddingBottom: 8 }}>
-                UAM MARKET REPORT · FEB 2026
-              </div>
-              {([["Los Angeles", 100], ["Dallas", 100], ["Orlando", 85], ["Las Vegas", 85], ["Miami", 80]] as [string, number][]).map(([city, score]) => (
-                <div key={city} style={{ marginBottom: 6 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-                    <span style={{ fontSize: 6, color: "#888" }}>{city}</span>
-                    <span style={{ fontSize: 6, color: "#00ff88" }}>{score}</span>
-                  </div>
-                  <div style={{ height: 3, background: "#1a1a2e", borderRadius: 2, overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${score}%`, background: score >= 75 ? "#00ff88" : "#00d4ff", borderRadius: 2 }} />
-                  </div>
-                </div>
-              ))}
-              <div style={{ marginTop: 10, paddingTop: 8, borderTop: "1px solid #1a1a2e", fontSize: 5.5, color: "#333", letterSpacing: 0.5 }}>
-                airindex.io
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
