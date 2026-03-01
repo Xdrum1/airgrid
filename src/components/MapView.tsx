@@ -125,10 +125,14 @@ function CityMarker({
   city,
   isSelected,
   onClick,
+  onHover,
+  onHoverEnd,
 }: {
   city: City;
   isSelected: boolean;
   onClick: () => void;
+  onHover?: () => void;
+  onHoverEnd?: () => void;
 }) {
   const score = city.score ?? 0;
   const color = getScoreColor(score);
@@ -142,8 +146,9 @@ function CityMarker({
         e.stopPropagation();
         onClick();
       }}
+      onMouseEnter={onHover}
+      onMouseLeave={onHoverEnd}
       style={{ cursor: "pointer", position: "relative" }}
-      title={`${city.city} — Score: ${score}`}
     >
       <div
         style={{
@@ -437,8 +442,8 @@ function CityPopup({
             </div>
             {starNode}
           </div>
-          <div style={{ color: "#444", fontSize: 10, marginTop: 2 }}>
-            {city.state} · United States
+          <div style={{ color: "#777", fontSize: 9, marginTop: 2 }}>
+            {city.metro} · {city.state}
           </div>
         </div>
         <div style={{ textAlign: "right" }}>
@@ -453,7 +458,7 @@ function CityPopup({
           >
             {score}
           </div>
-          <div style={{ color: "#444", fontSize: 8, letterSpacing: 1 }}>
+          <div style={{ color: "#777", fontSize: 8, letterSpacing: 1 }}>
             {tier}
           </div>
         </div>
@@ -887,6 +892,12 @@ export default function MapView({
               city={city}
               isSelected={selected?.id === city.id}
               onClick={() => handleMarkerClick(city)}
+              onHover={!isMobile ? () => {
+                setPopup({ city, longitude: city.lng, latitude: city.lat });
+                setVertiportPopup(null);
+                setCorridorPopup(null);
+              } : undefined}
+              onHoverEnd={!isMobile ? () => setPopup(null) : undefined}
             />
           </Marker>
         ))}
@@ -1027,10 +1038,21 @@ export default function MapView({
           zIndex: 10,
         }}
       >
+        <div
+          style={{
+            color: "#999",
+            fontSize: 8,
+            lineHeight: 1.5,
+            marginBottom: 10,
+            fontFamily: "'Space Mono', monospace",
+          }}
+        >
+          US metro markets scored for UAM readiness.
+        </div>
         {/* Readiness Score legend */}
         <div
           style={{
-            color: "#333",
+            color: "#777",
             fontSize: 8,
             letterSpacing: 2,
             marginBottom: 8,
@@ -1081,7 +1103,7 @@ export default function MapView({
         {/* Vertiport legend */}
         <div
           style={{
-            color: "#333",
+            color: "#777",
             fontSize: 8,
             letterSpacing: 2,
             marginTop: 12,
@@ -1132,7 +1154,7 @@ export default function MapView({
         {/* Corridor legend */}
         <div
           style={{
-            color: "#333",
+            color: "#777",
             fontSize: 8,
             letterSpacing: 2,
             marginTop: 12,
