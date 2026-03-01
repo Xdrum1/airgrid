@@ -55,7 +55,7 @@ export default function WatchlistStar({
         height={px}
         viewBox="0 0 24 24"
         fill={isWatched ? "#f59e0b" : "none"}
-        stroke={isWatched ? "#f59e0b" : "#2a2a3a"}
+        stroke={isWatched ? "#f59e0b" : "#555"}
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"

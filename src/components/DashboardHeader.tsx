@@ -59,7 +59,7 @@ export default function DashboardHeader({
         />
         {!isMobile && (
           <span
-            style={{ color: "#444", fontSize: 9, letterSpacing: 2 }}
+            style={{ color: "#777", fontSize: 9, letterSpacing: 2 }}
           >
             UAM MARKET INTELLIGENCE
           </span>
@@ -78,11 +78,11 @@ export default function DashboardHeader({
           <Link
             href="/methodology"
             style={{
-              color: "#555",
+              color: "#999",
               fontSize: 9,
               letterSpacing: 1,
               textDecoration: "none",
-              opacity: 0.7,
+              opacity: 0.8,
               transition: "opacity 0.15s",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}

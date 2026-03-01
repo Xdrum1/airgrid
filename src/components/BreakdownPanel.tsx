@@ -26,7 +26,7 @@ function BreakdownRow({
       >
         <span
           style={{
-            color: "#555",
+            color: "#888",
             fontFamily: "'Space Mono', monospace",
             fontSize: 9,
           }}
@@ -35,7 +35,7 @@ function BreakdownRow({
         </span>
         <span
           style={{
-            color: value > 0 ? color : "#2a2a3a",
+            color: value > 0 ? color : "#666",
             fontFamily: "'Space Mono', monospace",
             fontSize: 9,
           }}
@@ -43,7 +43,7 @@ function BreakdownRow({
           {value}/{max}
         </span>
       </div>
-      <ScoreBar value={value} max={max} color={value > 0 ? color : "#1a1a28"} />
+      <ScoreBar value={value} max={max} color={value > 0 ? color : "#333"} />
     </div>
   );
 }
@@ -64,7 +64,7 @@ export default function BreakdownPanel({
     >
       <div
         style={{
-          color: "#444",
+          color: "#777",
           fontSize: 8,
           letterSpacing: 2,
           marginBottom: 12,

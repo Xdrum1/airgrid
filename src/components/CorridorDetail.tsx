@@ -109,7 +109,7 @@ export default function CorridorDetail({
           <Link
             href="/dashboard?tab=corridors"
             style={{
-              color: "#555",
+              color: "#888",
               fontSize: 10,
               letterSpacing: 1,
               textDecoration: "none",
@@ -229,7 +229,7 @@ export default function CorridorDetail({
             <div style={{ paddingTop: 28, paddingBottom: 28, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               <div
                 style={{
-                  color: "#2a2a3a",
+                  color: "#999",
                   fontSize: 9,
                   letterSpacing: 2,
                   marginBottom: 16,
@@ -247,7 +247,7 @@ export default function CorridorDetail({
               >
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16 }}>
                   <div>
-                    <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 1, marginBottom: 3 }}>
+                    <div style={{ color: "#999", fontSize: 8, letterSpacing: 1, marginBottom: 3 }}>
                       AUTH NUMBER
                     </div>
                     <div style={{ color: "#00d4ff", fontSize: 12, fontWeight: 700 }}>
@@ -256,7 +256,7 @@ export default function CorridorDetail({
                   </div>
                   {corridor.effectiveDate && (
                     <div>
-                      <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 1, marginBottom: 3 }}>
+                      <div style={{ color: "#999", fontSize: 8, letterSpacing: 1, marginBottom: 3 }}>
                         EFFECTIVE
                       </div>
                       <div style={{ color: "#999", fontSize: 11 }}>
@@ -266,7 +266,7 @@ export default function CorridorDetail({
                   )}
                   {corridor.expirationDate && (
                     <div>
-                      <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 1, marginBottom: 3 }}>
+                      <div style={{ color: "#999", fontSize: 8, letterSpacing: 1, marginBottom: 3 }}>
                         EXPIRES
                       </div>
                       <div style={{ color: "#999", fontSize: 11 }}>
@@ -278,7 +278,7 @@ export default function CorridorDetail({
 
                 {corridor.clearedOperators && corridor.clearedOperators.length > 0 && (
                   <div style={{ marginTop: 16 }}>
-                    <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 1, marginBottom: 8 }}>
+                    <div style={{ color: "#999", fontSize: 8, letterSpacing: 1, marginBottom: 8 }}>
                       CLEARED OPERATORS
                     </div>
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -307,7 +307,7 @@ export default function CorridorDetail({
         {/* ---- Notes ---- */}
         {corridor.notes && (
           <div style={{ paddingTop: 28, paddingBottom: 28, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 12 }}>
+            <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 12 }}>
               NOTES
             </div>
             <p style={{ color: "#888", fontSize: 12, lineHeight: 1.7, margin: 0 }}>
@@ -318,11 +318,11 @@ export default function CorridorDetail({
 
         {/* ---- Status Timeline ---- */}
         <div style={{ paddingTop: 28, paddingBottom: 28, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 16 }}>
+          <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 16 }}>
             STATUS HISTORY
           </div>
           {statusHistory.length === 0 ? (
-            <div style={{ color: "#333", fontSize: 11, padding: "20px 0", textAlign: "center" }}>
+            <div style={{ color: "#999", fontSize: 11, padding: "20px 0", textAlign: "center" }}>
               No status history recorded yet.
             </div>
           ) : (
@@ -368,7 +368,7 @@ export default function CorridorDetail({
                           >
                             {(entry.fromStatus).toUpperCase()}
                           </span>
-                          <span style={{ color: "#333", fontSize: 10 }}>→</span>
+                          <span style={{ color: "#999", fontSize: 10 }}>→</span>
                         </>
                       )}
                       <span
@@ -382,7 +382,7 @@ export default function CorridorDetail({
                         {entry.toStatus.toUpperCase()}
                       </span>
                     </div>
-                    <div style={{ color: "#555", fontSize: 10, marginBottom: entry.reason ? 4 : 0 }}>
+                    <div style={{ color: "#888", fontSize: 10, marginBottom: entry.reason ? 4 : 0 }}>
                       {new Date(entry.changedAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",
@@ -390,7 +390,7 @@ export default function CorridorDetail({
                       })}
                     </div>
                     {entry.reason && (
-                      <div style={{ color: "#666", fontSize: 10 }}>
+                      <div style={{ color: "#999", fontSize: 10 }}>
                         {entry.reason}
                       </div>
                     )}
@@ -414,7 +414,7 @@ export default function CorridorDetail({
         {/* ---- Related Changelog ---- */}
         {relatedChangelog.length > 0 && (
           <div style={{ paddingTop: 28, paddingBottom: 28, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 16 }}>
+            <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 16 }}>
               RELATED ACTIVITY
             </div>
             {relatedChangelog.map((entry) => (
@@ -439,7 +439,7 @@ export default function CorridorDetail({
                   >
                     {entry.changeType.replace("_", " ").toUpperCase()}
                   </span>
-                  <span style={{ color: "#444", fontSize: 9 }}>
+                  <span style={{ color: "#777", fontSize: 9 }}>
                     {new Date(entry.timestamp).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
@@ -465,7 +465,7 @@ export default function CorridorDetail({
 
         {/* ---- Subscribe ---- */}
         <div style={{ paddingTop: 28, paddingBottom: 48 }}>
-          <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 12 }}>
+          <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 12 }}>
             CORRIDOR TRACKING
           </div>
           <CorridorSubscribeForm
@@ -476,7 +476,7 @@ export default function CorridorDetail({
 
         {/* ---- Source Info ---- */}
         <div style={{ paddingBottom: 48 }}>
-          <div style={{ color: "#1a1a1f", fontSize: 9 }}>
+          <div style={{ color: "#999", fontSize: 9 }}>
             Last updated: {corridor.lastUpdated}
             {safeHref(corridor.sourceUrl) && (
               <>
@@ -485,7 +485,7 @@ export default function CorridorDetail({
                   href={safeHref(corridor.sourceUrl)!}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ color: "#333", textDecoration: "none" }}
+                  style={{ color: "#999", textDecoration: "none" }}
                 >
                   Source
                 </a>
@@ -520,12 +520,12 @@ function StatCard({
         padding: "12px 14px",
       }}
     >
-      <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 1, marginBottom: 4 }}>
+      <div style={{ color: "#999", fontSize: 8, letterSpacing: 1, marginBottom: 4 }}>
         {label}
       </div>
       <div style={{ color: "#ccc", fontSize: 14, fontWeight: 700 }}>{value}</div>
       {sub && (
-        <div style={{ color: "#333", fontSize: 9, marginTop: 2 }}>{sub}</div>
+        <div style={{ color: "#999", fontSize: 9, marginTop: 2 }}>{sub}</div>
       )}
     </div>
   );

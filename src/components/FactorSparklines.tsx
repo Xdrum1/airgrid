@@ -82,7 +82,7 @@ export default function FactorSparklines({ history }: FactorSparklinesProps) {
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 700,
                   fontSize: 14,
-                  color: current > 0 ? color : "#1a1a28",
+                  color: current > 0 ? color : "#666",
                 }}
               >
                 {current}/{max}

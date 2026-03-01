@@ -204,7 +204,7 @@ export default async function LandingPage() {
                 <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 16, color: "#00d4ff" }}>
                   {s.value}
                 </span>
-                <span style={{ fontSize: 10, color: "#555", letterSpacing: 1 }}>
+                <span style={{ fontSize: 10, color: "#888", letterSpacing: 1 }}>
                   {s.label.toUpperCase()}
                 </span>
               </span>
@@ -230,7 +230,7 @@ export default async function LandingPage() {
             fontFamily: "'Space Mono', monospace",
             fontSize: 10,
             letterSpacing: 2,
-            color: "#555",
+            color: "#888",
             textTransform: "uppercase",
             marginBottom: 20,
           }}
@@ -253,7 +253,7 @@ export default async function LandingPage() {
         <p
           style={{
             fontFamily: "'Inter', sans-serif",
-            color: "#777",
+            color: "#aaa",
             fontSize: "clamp(13px, 1.4vw, 16px)",
             lineHeight: 1.7,
             maxWidth: 600,
@@ -341,7 +341,7 @@ export default async function LandingPage() {
               >
                 {s.value}
               </div>
-              <div style={{ color: "#555", fontSize: 10, letterSpacing: 2 }}>
+              <div style={{ color: "#888", fontSize: 10, letterSpacing: 2 }}>
                 {s.label.toUpperCase()}
               </div>
             </div>
@@ -463,7 +463,7 @@ export default async function LandingPage() {
                   fontFamily: "'Inter', sans-serif",
                   fontSize: 12.5,
                   lineHeight: 1.65,
-                  color: "#666",
+                  color: "#999",
                 }}
               >
                 {card.description}
@@ -512,7 +512,7 @@ export default async function LandingPage() {
                 borderRadius: 4,
                 padding: "5px 12px",
                 fontSize: 10,
-                color: "#555",
+                color: "#888",
               }}
             >
               airindex.io/dashboard
@@ -551,7 +551,7 @@ export default async function LandingPage() {
           >
             Live regulatory intelligence
           </h2>
-          <p style={{ fontFamily: "'Inter', sans-serif", color: "#555", fontSize: 13, margin: 0 }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", color: "#888", fontSize: 13, margin: 0 }}>
             Every filing, authorization, and market change — surfaced automatically.
           </p>
         </div>
@@ -587,7 +587,7 @@ export default async function LandingPage() {
                   REGULATORY FILINGS
                 </span>
               </div>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#333", letterSpacing: 1 }}>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#999", letterSpacing: 1 }}>
                 FEDERAL REGISTER · FAA · LEGISCAN
               </span>
             </div>
@@ -604,9 +604,9 @@ export default async function LandingPage() {
                     {f.title}
                   </div>
                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#555", letterSpacing: 1 }}>{f.source.toUpperCase()}</span>
-                    <span style={{ color: "#333", fontSize: 8 }}>·</span>
-                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#444", letterSpacing: 1 }}>{f.date.toUpperCase()}</span>
+                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#888", letterSpacing: 1 }}>{f.source.toUpperCase()}</span>
+                    <span style={{ color: "#999", fontSize: 8 }}>·</span>
+                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#aaa", letterSpacing: 1 }}>{f.date.toUpperCase()}</span>
                   </div>
                 </div>
               ))}
@@ -642,7 +642,7 @@ export default async function LandingPage() {
                   ACTIVITY FEED
                 </span>
               </div>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#333", letterSpacing: 1 }}>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#999", letterSpacing: 1 }}>
                 REAL-TIME CHANGELOG
               </span>
             </div>
@@ -664,7 +664,7 @@ export default async function LandingPage() {
                       {a.summary}
                     </div>
                   </div>
-                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#444", letterSpacing: 1, flexShrink: 0 }}>
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#aaa", letterSpacing: 1, flexShrink: 0 }}>
                     {a.time.toUpperCase()}
                   </span>
                 </div>
@@ -715,7 +715,7 @@ export default async function LandingPage() {
                 ISSUE 001 — FEBRUARY 2026
               </div>
             </div>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#444", letterSpacing: 1 }}>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#aaa", letterSpacing: 1 }}>
               FREE DOWNLOAD — NO SIGNUP REQUIRED
             </div>
           </div>
@@ -741,7 +741,7 @@ export default async function LandingPage() {
               </h2>
               <p style={{
                 fontFamily: "'Inter', sans-serif",
-                color: "#666",
+                color: "#999",
                 fontSize: 13,
                 lineHeight: 1.7,
                 margin: "0 0 24px",
@@ -804,7 +804,7 @@ export default async function LandingPage() {
               fontFamily: "'Space Mono', monospace",
             }}>
               <div style={{ fontSize: 7, color: "#00d4ff", letterSpacing: 1, marginBottom: 8 }}>AIRINDEX</div>
-              <div style={{ fontSize: 6, color: "#444", letterSpacing: 0.5, marginBottom: 12, borderBottom: "1px solid #1a1a2e", paddingBottom: 8 }}>
+              <div style={{ fontSize: 6, color: "#aaa", letterSpacing: 0.5, marginBottom: 12, borderBottom: "1px solid #1a1a2e", paddingBottom: 8 }}>
                 UAM MARKET REPORT · FEB 2026
               </div>
               {([["Los Angeles", 100], ["Dallas", 100], ["Orlando", 85], ["Las Vegas", 85], ["Miami", 80]] as [string, number][]).map(([city, score]) => (
@@ -818,7 +818,7 @@ export default async function LandingPage() {
                   </div>
                 </div>
               ))}
-              <div style={{ marginTop: 10, paddingTop: 8, borderTop: "1px solid #1a1a2e", fontSize: 5.5, color: "#333", letterSpacing: 0.5 }}>
+              <div style={{ marginTop: 10, paddingTop: 8, borderTop: "1px solid #1a1a2e", fontSize: 5.5, color: "#999", letterSpacing: 0.5 }}>
                 airindex.io
               </div>
             </div>
@@ -846,7 +846,7 @@ export default async function LandingPage() {
           >
             Who it&apos;s for
           </h2>
-          <p style={{ fontFamily: "'Inter', sans-serif", color: "#555", fontSize: 13, margin: 0 }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", color: "#888", fontSize: 13, margin: 0 }}>
             One platform, three audiences.
           </p>
         </div>
@@ -921,7 +921,7 @@ export default async function LandingPage() {
                       fontFamily: "'Inter', sans-serif",
                       fontSize: 12.5,
                       lineHeight: 1.6,
-                      color: "#777",
+                      color: "#aaa",
                       marginBottom: 8,
                     }}
                   >
@@ -961,7 +961,7 @@ export default async function LandingPage() {
           >
             Free access during beta.
           </h2>
-          <p style={{ fontFamily: "'Inter', sans-serif", color: "#666", fontSize: 13, margin: 0 }}>
+          <p style={{ fontFamily: "'Inter', sans-serif", color: "#999", fontSize: 13, margin: 0 }}>
             Core platform features available free while we validate with early users. Advanced tiers coming.
           </p>
         </div>
@@ -1055,10 +1055,10 @@ export default async function LandingPage() {
                   >
                     {tier.price}
                   </span>
-                  <span style={{ color: "#555", fontSize: 13 }}>{tier.period}</span>
+                  <span style={{ color: "#888", fontSize: 13 }}>{tier.period}</span>
                 </div>
                 {"yearlyNote" in tier && tier.yearlyNote && (
-                  <div style={{ color: "#444", fontSize: 10, marginBottom: 20 }}>
+                  <div style={{ color: "#aaa", fontSize: 10, marginBottom: 20 }}>
                     {tier.yearlyNote}
                   </div>
                 )}
@@ -1172,7 +1172,7 @@ export default async function LandingPage() {
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              color: "#555",
+              color: "#888",
               fontSize: 13,
               margin: "0 0 32px",
             }}
@@ -1273,7 +1273,7 @@ export default async function LandingPage() {
               LINKEDIN
             </a>
           </div>
-          <div style={{ color: "#666", fontSize: 9, letterSpacing: 1 }}>
+          <div style={{ color: "#999", fontSize: 9, letterSpacing: 1 }}>
             &copy; {new Date().getFullYear()} AIRINDEX
           </div>
         </div>

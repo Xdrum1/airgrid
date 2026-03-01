@@ -26,7 +26,7 @@ import type { ScoreHistoryFull } from "@/lib/score-history";
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 1, marginBottom: 3 }}>
+      <div style={{ color: "#999", fontSize: 8, letterSpacing: 1, marginBottom: 3 }}>
         {label}
       </div>
       <div style={{ color: "#999", fontSize: 11 }}>{value}</div>
@@ -38,7 +38,7 @@ function EmptyState({ label }: { label: string }) {
   return (
     <div
       style={{
-        color: "#2a2a3a",
+        color: "#999",
         fontSize: 11,
         textAlign: "center",
         padding: "32px 0",
@@ -162,7 +162,7 @@ export default function CityDetail({
           <Link
             href="/dashboard"
             style={{
-              color: "#555",
+              color: "#888",
               fontSize: 10,
               letterSpacing: 1,
               textDecoration: "none",
@@ -210,13 +210,13 @@ export default function CityDetail({
                   size="md"
                 />
               </div>
-              <div style={{ color: "#555", fontSize: 13, marginTop: 6 }}>
+              <div style={{ color: "#888", fontSize: 13, marginTop: 6 }}>
                 {city.state}, {city.country}
               </div>
             </div>
             <div
               style={{
-                color: "#2a2a3a",
+                color: "#999",
                 fontSize: 10,
                 letterSpacing: 1,
                 border: "1px solid rgba(255,255,255,0.06)",
@@ -242,7 +242,7 @@ export default function CityDetail({
             >
               {city.score}
             </span>
-            <span style={{ color: "#444", fontSize: 12, letterSpacing: 2 }}>
+            <span style={{ color: "#aaa", fontSize: 12, letterSpacing: 2 }}>
               {tier}
             </span>
           </div>
@@ -327,7 +327,7 @@ export default function CityDetail({
 
         {/* ---- c) Score Breakdown ---- */}
         <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+          <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
             SCORE BREAKDOWN
           </div>
           <div
@@ -355,7 +355,7 @@ export default function CityDetail({
                     transition: `opacity 0.4s ease ${i * 0.06}s, transform 0.4s ease ${i * 0.06}s`,
                   }}
                 >
-                  <div style={{ color: "#555", fontSize: 9, letterSpacing: 1, marginBottom: 10 }}>
+                  <div style={{ color: "#888", fontSize: 9, letterSpacing: 1, marginBottom: 10 }}>
                     {label.toUpperCase()}
                   </div>
                   <div
@@ -363,7 +363,7 @@ export default function CityDetail({
                       fontFamily: "'Space Grotesk', sans-serif",
                       fontWeight: 700,
                       fontSize: 22,
-                      color: value > 0 ? color : "#1a1a28",
+                      color: value > 0 ? color : "#666",
                       marginBottom: 10,
                     }}
                   >
@@ -374,7 +374,7 @@ export default function CityDetail({
                       style={{
                         width: mounted ? `${(value / max) * 100}%` : "0%",
                         height: "100%",
-                        background: value > 0 ? color : "#1a1a28",
+                        background: value > 0 ? color : "#333",
                         transition: `width 0.8s ease ${0.2 + i * 0.06}s`,
                         borderRadius: 2,
                       }}
@@ -382,13 +382,13 @@ export default function CityDetail({
                   </div>
                   {source && (
                     <div style={{ marginTop: 2 }}>
-                      <div style={{ color: "#444", fontSize: 9, lineHeight: 1.5 }}>
+                      <div style={{ color: "#aaa", fontSize: 9, lineHeight: 1.5 }}>
                         {safeHref(source.url) ? (
                           <a
                             href={safeHref(source.url)!}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ color: "#444", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                            style={{ color: "#aaa", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
                           >
                             {source.citation}
                           </a>
@@ -396,7 +396,7 @@ export default function CityDetail({
                           source.citation
                         )}
                       </div>
-                      <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 1, marginTop: 3 }}>
+                      <div style={{ color: "#999", fontSize: 8, letterSpacing: 1, marginTop: 3 }}>
                         VERIFIED {source.date}
                       </div>
                     </div>
@@ -410,7 +410,7 @@ export default function CityDetail({
         {/* ---- c2) Factor Trends ---- */}
         {scoreHistory && scoreHistory.filter((h) => h.breakdown).length >= 2 && (
           <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+            <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
               FACTOR TRENDS
             </div>
             <FactorSparklines history={scoreHistory} />
@@ -420,7 +420,7 @@ export default function CityDetail({
         {/* ---- c3) Score History ---- */}
         {scoreHistory && scoreHistory.filter((h) => h.triggeringEventId).length > 0 && (
           <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+            <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
               SCORE HISTORY
             </div>
             <div style={{ position: "relative", paddingLeft: 20 }}>
@@ -496,7 +496,7 @@ export default function CityDetail({
                       />
 
                       <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
-                        <span style={{ color: "#555", fontSize: 10 }}>{dateStr}</span>
+                        <span style={{ color: "#888", fontSize: 10 }}>{dateStr}</span>
                         {deltaScore !== 0 && (
                           <span
                             style={{
@@ -525,7 +525,7 @@ export default function CityDetail({
                           >
                             {prevTier}
                           </span>
-                          <span style={{ color: "#333", fontSize: 10 }}>→</span>
+                          <span style={{ color: "#999", fontSize: 10 }}>→</span>
                           <span
                             style={{
                               fontSize: 8,
@@ -564,7 +564,7 @@ export default function CityDetail({
                             <span
                               key={f}
                               style={{
-                                color: "#555",
+                                color: "#888",
                                 fontSize: 8,
                                 letterSpacing: 0.5,
                                 border: "1px solid rgba(255,255,255,0.06)",
@@ -586,7 +586,7 @@ export default function CityDetail({
 
         {/* ---- d) Operator Presence ---- */}
         <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+          <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
             OPERATOR PRESENCE
           </div>
           {operators.length === 0 ? (
@@ -644,7 +644,7 @@ export default function CityDetail({
 
                   {op.aircraft.length > 0 && (
                     <div style={{ marginBottom: 12 }}>
-                      <div style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 1, marginBottom: 5 }}>
+                      <div style={{ color: "#999", fontSize: 8, letterSpacing: 1, marginBottom: 5 }}>
                         AIRCRAFT
                       </div>
                       <div style={{ color: "#888", fontSize: 11 }}>
@@ -659,7 +659,7 @@ export default function CityDetail({
                         <span
                           key={p}
                           style={{
-                            color: "#666",
+                            color: "#999",
                             fontSize: 8,
                             letterSpacing: 1,
                             border: "1px solid rgba(255,255,255,0.06)",
@@ -696,7 +696,7 @@ export default function CityDetail({
 
         {/* ---- e) Vertiport Infrastructure ---- */}
         <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+          <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
             VERTIPORT INFRASTRUCTURE
           </div>
           {vertiports.length === 0 ? (
@@ -748,7 +748,7 @@ export default function CityDetail({
                       {v.expectedOpenDate && <DetailItem label="EXPECTED OPEN" value={v.expectedOpenDate} />}
                     </div>
 
-                    <div style={{ color: "#333", fontSize: 9 }}>
+                    <div style={{ color: "#999", fontSize: 9 }}>
                       {v.lat.toFixed(4)}, {v.lng.toFixed(4)}
                     </div>
                   </div>
@@ -760,7 +760,7 @@ export default function CityDetail({
 
         {/* ---- f) Air Corridors ---- */}
         <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+          <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
             AIR CORRIDORS
           </div>
           {corridors.length === 0 ? (
@@ -822,7 +822,7 @@ export default function CityDetail({
                       </div>
 
                       {c.notes && (
-                        <div style={{ color: "#555", fontSize: 10, lineHeight: 1.6 }}>
+                        <div style={{ color: "#888", fontSize: 10, lineHeight: 1.6 }}>
                           {c.notes}
                         </div>
                       )}
@@ -841,7 +841,7 @@ export default function CityDetail({
         {/* ---- g) Key Milestones ---- */}
         {city.keyMilestones?.length > 0 && (
           <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+            <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
               KEY MILESTONES
             </div>
             {city.keyMilestones.map((m, i) => (
@@ -867,12 +867,12 @@ export default function CityDetail({
 
         {/* ---- h) Market Intelligence ---- */}
         <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 16 }}>
+          <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 16 }}>
             MARKET INTELLIGENCE
           </div>
           <p
             style={{
-              color: "#777",
+              color: "#aaa",
               fontSize: 13,
               lineHeight: 1.8,
               margin: 0,
@@ -898,13 +898,13 @@ export default function CityDetail({
             justifyContent: "space-between",
           }}
         >
-          <span style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 1 }}>
+          <span style={{ color: "#999", fontSize: 9, letterSpacing: 1 }}>
             LAST UPDATED {city.lastUpdated}
           </span>
           <Link
             href="/dashboard"
             style={{
-              color: "#555",
+              color: "#888",
               fontSize: 10,
               letterSpacing: 1,
               textDecoration: "none",

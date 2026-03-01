@@ -425,7 +425,7 @@ export default function AdminEvents({
                 {/* Timestamp */}
                 <span
                   style={{
-                    color: "#2a2a3a",
+                    color: "#666",
                     fontSize: 8,
                     letterSpacing: 0.5,
                     whiteSpace: "nowrap",

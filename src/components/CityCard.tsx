@@ -47,7 +47,7 @@ export default function CityCard({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ color: "#444", fontSize: 10 }}>#{rank}</span>
+          <span style={{ color: "#777", fontSize: 10 }}>#{rank}</span>
           <div>
             <span
               style={{
@@ -61,7 +61,7 @@ export default function CityCard({
             </span>
             <span
               style={{
-                color: "#444",
+                color: "#777",
                 fontFamily: "'Space Mono', monospace",
                 fontSize: 10,
                 marginLeft: 6,
@@ -100,7 +100,7 @@ export default function CityCard({
         onClick={(e) => e.stopPropagation()}
         style={{
           display: "block",
-          color: "#555",
+          color: "#888",
           fontSize: 8,
           letterSpacing: 1,
           textDecoration: "none",
@@ -109,7 +109,7 @@ export default function CityCard({
           transition: "color 0.15s",
         }}
         onMouseEnter={(e) => (e.currentTarget.style.color = "#00d4ff")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "#555")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
       >
         VIEW DETAILS →
       </Link>

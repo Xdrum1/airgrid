@@ -133,7 +133,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange }
       <div>
         <div
           style={{
-            color: "#2a2a3a",
+            color: "#777",
             fontSize: 8,
             letterSpacing: 2,
             marginBottom: 10,
@@ -187,7 +187,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange }
       <div style={{ animation: "fadeSlideIn 0.25s ease" }}>
         <div
           style={{
-            color: "#2a2a3a",
+            color: "#777",
             fontSize: 8,
             letterSpacing: 2,
             marginBottom: 10,
