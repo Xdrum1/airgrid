@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: "AirIndex — UAM Market Intelligence",
   description: "The intelligence layer for the Urban Air Mobility industry. Track vertiports, operators, regulatory filings, and market readiness scores across the US.",
   keywords: ["urban air mobility", "eVTOL", "vertiport", "air taxi", "UAM", "Joby", "Archer"],
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/images/logo/airindex-favicon.svg",
+    apple: "/images/logo/airindex-logo-300.png",
+  },
   openGraph: {
     title: "AirIndex — UAM Market Intelligence",
     description: "Track vertiports, operators, regulatory filings, and market readiness scores across 20 US urban air mobility markets.",
@@ -33,6 +38,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#050508" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
