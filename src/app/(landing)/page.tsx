@@ -46,12 +46,40 @@ const TIERS = [
 ] as const;
 
 // -------------------------------------------------------
+// Sample data for live feed teasers
+// -------------------------------------------------------
+const SAMPLE_FILINGS = [
+  { title: "FAA Notice: Part 135 Air Carrier Certificate Application — Joby Aviation", source: "Federal Register", date: "Feb 2026", accent: "#ff6b35" },
+  { title: "City of Orlando — Urban Air Mobility Integration Plan Public Comment Period", source: "Federal Register", date: "Feb 2026", accent: "#ff6b35" },
+  { title: "EASA Special Condition for VTOL — Reciprocal Recognition Request", source: "Federal Register", date: "Jan 2026", accent: "#ff6b35" },
+];
+
+const SAMPLE_ACTIVITY = [
+  { summary: "Dallas score updated: 95 → 100", type: "score_change", time: "2d ago", accent: "#00ff88" },
+  { summary: "New corridor authorized: LAX → Santa Monica", type: "new_corridor", time: "5d ago", accent: "#00d4ff" },
+  { summary: "Joby Aviation Part 135 certificate application filed", type: "new_filing", time: "1w ago", accent: "#ff6b35" },
+  { summary: "Orlando vertiport construction permit approved", type: "status_change", time: "1w ago", accent: "#7c3aed" },
+  { summary: "Nevada state UAM legislation signed into law", type: "new_law", time: "2w ago", accent: "#00ff88" },
+];
+
+// -------------------------------------------------------
 // Page
 // -------------------------------------------------------
 export default async function LandingPage() {
   const session = await auth();
   const isAuthed = !!session?.user;
   const CITIES = await getCitiesWithOverrides();
+
+  const highReadiness = CITIES.filter(c => (c.score ?? 0) >= 75).length;
+  const vertiportCities = CITIES.filter(c => c.vertiportCount > 0).length;
+  const avgScore = Math.round(CITIES.reduce((sum, c) => sum + (c.score ?? 0), 0) / CITIES.length);
+
+  const heroStats = [
+    { value: `${CITIES.length}`, label: "Markets tracked" },
+    { value: `${highReadiness}`, label: "High readiness" },
+    { value: `${vertiportCities}`, label: "Vertiport cities" },
+    { value: `${avgScore}`, label: "Avg score" },
+  ];
 
   const stats = [
     { value: CITIES.length, label: "Markets" },
@@ -155,12 +183,49 @@ export default async function LandingPage() {
         </div>
       </nav>
 
+      {/* ======== Data Platform Header ======== */}
+      <section
+        style={{
+          maxWidth: 1120,
+          margin: "0 auto",
+          padding: "20px 20px 0",
+        }}
+      >
+        <div
+          className="landing-stats-grid"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            flexWrap: "wrap",
+            padding: "14px 0",
+          }}
+        >
+          {heroStats.map((s, i) => (
+            <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
+                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 16, color: "#00d4ff" }}>
+                  {s.value}
+                </span>
+                <span style={{ fontSize: 10, color: "#555", letterSpacing: 1 }}>
+                  {s.label.toUpperCase()}
+                </span>
+              </span>
+              {i < heroStats.length - 1 && (
+                <span style={{ color: "#222", fontSize: 10 }}>·</span>
+              )}
+            </span>
+          ))}
+        </div>
+      </section>
+
       {/* ======== Hero ======== */}
       <section
         style={{
           maxWidth: 1120,
           margin: "0 auto",
-          padding: "clamp(60px, 10vw, 100px) 20px 40px",
+          padding: "clamp(48px, 8vw, 80px) 20px 40px",
           textAlign: "center",
         }}
       >
@@ -174,20 +239,20 @@ export default async function LandingPage() {
             marginBottom: 20,
           }}
         >
-          Tracking the build-out of urban air mobility in real time
+          Continuously updated · {CITIES.length} markets · {OPERATORS.length} operators · {CORRIDORS.length} corridors
         </div>
         <h1
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 700,
-            fontSize: "clamp(32px, 5vw, 56px)",
-            lineHeight: 1.1,
+            fontSize: "clamp(28px, 4.5vw, 50px)",
+            lineHeight: 1.12,
             margin: "0 auto 20px",
-            maxWidth: 720,
+            maxWidth: 780,
             color: "#fff",
           }}
         >
-          The intelligence layer for Urban Air Mobility
+          The only continuously updated dataset on UAM market readiness in the US
         </h1>
         <p
           style={{
@@ -195,12 +260,12 @@ export default async function LandingPage() {
             color: "#777",
             fontSize: "clamp(13px, 1.4vw, 16px)",
             lineHeight: 1.7,
-            maxWidth: 560,
+            maxWidth: 600,
             margin: "0 auto 40px",
           }}
         >
-          Track {CITIES.length} US markets, {OPERATORS.length} operators,
-          regulatory filings, and readiness scores — all in one place.
+          Readiness scores, regulatory filings, corridor authorizations, operator tracking,
+          and market intelligence — aggregated from FAA, Federal Register, LegiScan, and SEC EDGAR.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
@@ -219,10 +284,10 @@ export default async function LandingPage() {
               transition: "opacity 0.15s",
             }}
           >
-            Explore the map
+            Explore the dashboard
           </Link>
           <Link
-            href="#pricing"
+            href="#live-data"
             style={{
               display: "inline-block",
               padding: "14px 32px",
@@ -235,7 +300,7 @@ export default async function LandingPage() {
               transition: "all 0.15s",
             }}
           >
-            View pricing
+            See live data
           </Link>
         </div>
       </section>
@@ -465,6 +530,156 @@ export default async function LandingPage() {
             style={{ width: "100%", height: "auto", display: "block" }}
             priority
           />
+        </div>
+      </section>
+
+      {/* ======== Live Data Teaser ======== */}
+      <section
+        id="live-data"
+        style={{
+          maxWidth: 1120,
+          margin: "0 auto",
+          padding: "0 20px 64px",
+          scrollMarginTop: 80,
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <h2
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(22px, 2.5vw, 32px)",
+              margin: "0 0 10px",
+              color: "#fff",
+            }}
+          >
+            Live regulatory intelligence
+          </h2>
+          <p style={{ fontFamily: "'Inter', sans-serif", color: "#555", fontSize: 13, margin: 0 }}>
+            Every filing, authorization, and market change — surfaced automatically.
+          </p>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))",
+            gap: 20,
+          }}
+        >
+          {/* Filings Feed */}
+          <div
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 10,
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                padding: "16px 20px",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ color: "#ff6b35", fontSize: 14 }}>&#9673;</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#ff6b35" }}>
+                  REGULATORY FILINGS
+                </span>
+              </div>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#333", letterSpacing: 1 }}>
+                FEDERAL REGISTER · FAA · LEGISCAN
+              </span>
+            </div>
+            <div style={{ padding: "8px 0" }}>
+              {SAMPLE_FILINGS.map((f, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: "14px 20px",
+                    borderBottom: i < SAMPLE_FILINGS.length - 1 ? "1px solid rgba(255,255,255,0.03)" : "none",
+                  }}
+                >
+                  <div style={{ fontFamily: "'Inter', sans-serif", color: "#ccc", fontSize: 12, lineHeight: 1.5, marginBottom: 6 }}>
+                    {f.title}
+                  </div>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#555", letterSpacing: 1 }}>{f.source.toUpperCase()}</span>
+                    <span style={{ color: "#333", fontSize: 8 }}>·</span>
+                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#444", letterSpacing: 1 }}>{f.date.toUpperCase()}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ padding: "12px 20px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+              <Link href="/dashboard?tab=filings" style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: "#ff6b35", letterSpacing: 1, textDecoration: "none" }}>
+                VIEW ALL FILINGS &rarr;
+              </Link>
+            </div>
+          </div>
+
+          {/* Activity Feed */}
+          <div
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 10,
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                padding: "16px 20px",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ color: "#00d4ff", fontSize: 14 }}>&#9889;</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#00d4ff" }}>
+                  ACTIVITY FEED
+                </span>
+              </div>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#333", letterSpacing: 1 }}>
+                REAL-TIME CHANGELOG
+              </span>
+            </div>
+            <div style={{ padding: "8px 0" }}>
+              {SAMPLE_ACTIVITY.map((a, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: "12px 20px",
+                    borderBottom: i < SAMPLE_ACTIVITY.length - 1 ? "1px solid rgba(255,255,255,0.03)" : "none",
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 10,
+                  }}
+                >
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: a.accent, flexShrink: 0, marginTop: 5 }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", color: "#bbb", fontSize: 12, lineHeight: 1.5 }}>
+                      {a.summary}
+                    </div>
+                  </div>
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#444", letterSpacing: 1, flexShrink: 0 }}>
+                    {a.time.toUpperCase()}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div style={{ padding: "12px 20px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+              <Link href="/dashboard?tab=activity" style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: "#00d4ff", letterSpacing: 1, textDecoration: "none" }}>
+                VIEW FULL ACTIVITY LOG &rarr;
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
