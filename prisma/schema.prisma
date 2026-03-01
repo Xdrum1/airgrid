@@ -85,6 +85,7 @@ model ScoreSnapshot {
   cityId            String
   score             Int
   breakdown         Json
+  tier              String?  // "HIGH" | "MODERATE" | "EARLY" | "NASCENT"
   triggeringEventId String?  // links to ChangelogEntry.id
   capturedAt        DateTime @default(now())
 

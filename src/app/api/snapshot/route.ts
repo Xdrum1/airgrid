@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCitiesWithOverrides } from "@/data/seed";
+import { getScoreTier } from "@/lib/scoring";
 
-export async function POST(request: NextRequest) {
+function authorize(request: NextRequest): NextResponse | null {
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret) {
     return NextResponse.json(
@@ -19,6 +20,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  return null; // authorized
+}
+
+// Vercel crons send GET requests
+export async function GET(request: NextRequest) {
+  const denied = authorize(request);
+  if (denied) return denied;
+  return captureSnapshots();
+}
+
+// Keep POST for manual/external triggers
+export async function POST(request: NextRequest) {
+  const denied = authorize(request);
+  if (denied) return denied;
   return captureSnapshots();
 }
 
@@ -32,6 +47,8 @@ async function captureSnapshots() {
         cityId: city.id,
         score: city.score ?? 0,
         breakdown: (city.breakdown ?? {}) as Record<string, number>,
+        tier: getScoreTier(city.score ?? 0),
+        triggeringEventId: null,
         capturedAt: now,
       })),
     });

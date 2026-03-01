@@ -4,7 +4,7 @@
  */
 
 import { addChangelogEntries } from "@/lib/changelog";
-import { calculateReadinessScore } from "@/lib/scoring";
+import { calculateReadinessScore, getScoreTier } from "@/lib/scoring";
 import { CITIES_MAP, invalidateCitiesCache } from "@/data/seed";
 
 async function getPrisma() {
@@ -111,6 +111,7 @@ export async function approveOverride(
           cityId: resolvedCityId,
           score: newScore,
           breakdown: (breakdown ?? {}) as unknown as Record<string, number>,
+          tier: getScoreTier(newScore),
           triggeringEventId: entries[0]?.id ?? null,
           capturedAt: now,
         },

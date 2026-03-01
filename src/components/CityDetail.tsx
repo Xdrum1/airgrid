@@ -14,7 +14,9 @@ import { useWatchlist } from "@/hooks/useWatchlist";
 import WatchlistStar from "./WatchlistStar";
 import SubscribeForm from "./SubscribeForm";
 import ScoreTrend from "./ScoreTrend";
+import FactorSparklines from "./FactorSparklines";
 import { safeHref } from "@/lib/safe-url";
+import type { ScoreHistoryFull } from "@/lib/score-history";
 
 // -------------------------------------------------------
 // Helpers
@@ -80,7 +82,7 @@ interface CityDetailProps {
   operators: Operator[];
   vertiports: Vertiport[];
   corridors: Corridor[];
-  scoreHistory?: { score: number; capturedAt: string }[];
+  scoreHistory?: ScoreHistoryFull[];
 }
 
 // -------------------------------------------------------
@@ -401,6 +403,183 @@ export default function CityDetail({
             })}
           </div>
         </div>
+
+        {/* ---- c2) Factor Trends ---- */}
+        {scoreHistory && scoreHistory.filter((h) => h.breakdown).length >= 2 && (
+          <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+              FACTOR TRENDS
+            </div>
+            <FactorSparklines history={scoreHistory} />
+          </div>
+        )}
+
+        {/* ---- c3) Score History ---- */}
+        {scoreHistory && scoreHistory.filter((h) => h.triggeringEventId).length > 0 && (
+          <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <div style={{ color: "#2a2a3a", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+              SCORE HISTORY
+            </div>
+            <div style={{ position: "relative", paddingLeft: 20 }}>
+              {/* Vertical timeline line */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: 4,
+                  top: 4,
+                  bottom: 4,
+                  width: 1,
+                  background: "rgba(255,255,255,0.06)",
+                }}
+              />
+              {scoreHistory
+                .filter((h) => h.triggeringEventId)
+                .reverse()
+                .map((entry, i, arr) => {
+                  // Find previous snapshot to compute delta
+                  const allIdx = scoreHistory.findIndex(
+                    (h) => h.capturedAt === entry.capturedAt && h.triggeringEventId === entry.triggeringEventId
+                  );
+                  const prev = allIdx > 0 ? scoreHistory[allIdx - 1] : null;
+                  const prevScore = prev?.score ?? entry.score;
+                  const prevTier = prev?.tier ?? entry.tier;
+                  const tierChanged = prevTier && entry.tier && prevTier !== entry.tier;
+                  const deltaScore = entry.score - prevScore;
+                  const deltaColor = deltaScore > 0 ? "#00ff88" : deltaScore < 0 ? "#ff4444" : "#555";
+
+                  // Factor diff
+                  const changedFactors: string[] = [];
+                  if (prev?.breakdown && entry.breakdown) {
+                    for (const key of Object.keys(entry.breakdown)) {
+                      const oldVal = prev.breakdown[key] ?? 0;
+                      const newVal = entry.breakdown[key] ?? 0;
+                      if (oldVal !== newVal) {
+                        const label = SCORE_COMPONENT_LABELS[key] ?? key;
+                        changedFactors.push(`${label}: ${oldVal} → ${newVal}`);
+                      }
+                    }
+                  }
+
+                  const date = new Date(entry.capturedAt);
+                  const dateStr = date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  });
+
+                  return (
+                    <div
+                      key={`${entry.capturedAt}-${i}`}
+                      style={{
+                        position: "relative",
+                        marginBottom: i < arr.length - 1 ? 24 : 0,
+                        opacity: mounted ? 1 : 0,
+                        transform: mounted ? "translateY(0)" : "translateY(6px)",
+                        transition: `opacity 0.3s ease ${i * 0.06}s, transform 0.3s ease ${i * 0.06}s`,
+                      }}
+                    >
+                      {/* Timeline dot */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: -17,
+                          top: 5,
+                          width: 7,
+                          height: 7,
+                          borderRadius: "50%",
+                          background: deltaColor,
+                          boxShadow: `0 0 6px ${deltaColor}66`,
+                        }}
+                      />
+
+                      <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
+                        <span style={{ color: "#555", fontSize: 10 }}>{dateStr}</span>
+                        {deltaScore !== 0 && (
+                          <span
+                            style={{
+                              fontFamily: "'Space Grotesk', sans-serif",
+                              fontWeight: 700,
+                              fontSize: 13,
+                              color: deltaColor,
+                            }}
+                          >
+                            {prevScore} → {entry.score}
+                          </span>
+                        )}
+                      </div>
+
+                      {tierChanged && (
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 6 }}>
+                          <span
+                            style={{
+                              fontSize: 8,
+                              letterSpacing: 1,
+                              color: getScoreColor(prevScore),
+                              border: `1px solid ${getScoreColor(prevScore)}44`,
+                              borderRadius: 3,
+                              padding: "2px 6px",
+                            }}
+                          >
+                            {prevTier}
+                          </span>
+                          <span style={{ color: "#333", fontSize: 10 }}>→</span>
+                          <span
+                            style={{
+                              fontSize: 8,
+                              letterSpacing: 1,
+                              color: getScoreColor(entry.score),
+                              border: `1px solid ${getScoreColor(entry.score)}44`,
+                              borderRadius: 3,
+                              padding: "2px 6px",
+                            }}
+                          >
+                            {entry.tier}
+                          </span>
+                        </div>
+                      )}
+
+                      {entry.triggeringEvent && (
+                        <div style={{ color: "#aaa", fontSize: 11, lineHeight: 1.5, marginBottom: 4 }}>
+                          {entry.triggeringEvent.summary}
+                        </div>
+                      )}
+
+                      {entry.triggeringEvent?.sourceUrl && safeHref(entry.triggeringEvent.sourceUrl) && (
+                        <a
+                          href={safeHref(entry.triggeringEvent.sourceUrl)!}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: "#00d4ff", fontSize: 9, letterSpacing: 0.5 }}
+                        >
+                          View source →
+                        </a>
+                      )}
+
+                      {changedFactors.length > 0 && (
+                        <div style={{ marginTop: 6, display: "flex", gap: 6, flexWrap: "wrap" }}>
+                          {changedFactors.map((f) => (
+                            <span
+                              key={f}
+                              style={{
+                                color: "#555",
+                                fontSize: 8,
+                                letterSpacing: 0.5,
+                                border: "1px solid rgba(255,255,255,0.06)",
+                                borderRadius: 3,
+                                padding: "2px 6px",
+                              }}
+                            >
+                              {f}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        )}
 
         {/* ---- d) Operator Presence ---- */}
         <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>

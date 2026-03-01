@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ChangelogEntry } from "@/types";
 import { CHANGE_TYPE_COLORS, formatRelativeTime } from "@/lib/dashboard-constants";
 import { safeHref } from "@/lib/safe-url";
@@ -174,21 +175,35 @@ export default function ActivityTab({
             >
               {entry.summary}
             </div>
-            {safeHref(entry.sourceUrl) && (
-              <a
-                href={safeHref(entry.sourceUrl)!}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: "#00d4ff",
-                  fontSize: 9,
-                  marginTop: 6,
-                  display: "inline-block",
-                }}
-              >
-                View source →
-              </a>
-            )}
+            <div style={{ display: "flex", gap: 12, marginTop: 6 }}>
+              {safeHref(entry.sourceUrl) && (
+                <a
+                  href={safeHref(entry.sourceUrl)!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: "#00d4ff",
+                    fontSize: 9,
+                    display: "inline-block",
+                  }}
+                >
+                  View source →
+                </a>
+              )}
+              {entry.changeType === "score_change" &&
+                entry.relatedEntityType === "city" && (
+                  <Link
+                    href={`/city/${entry.relatedEntityId}`}
+                    style={{
+                      color: "#00ff88",
+                      fontSize: 9,
+                      display: "inline-block",
+                    }}
+                  >
+                    View market →
+                  </Link>
+                )}
+            </div>
           </div>
         );
       })}

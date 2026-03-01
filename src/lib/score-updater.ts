@@ -5,7 +5,7 @@
 
 import type { OverrideCandidate } from "@/lib/rules-engine";
 import { addChangelogEntries } from "@/lib/changelog";
-import { calculateReadinessScore } from "@/lib/scoring";
+import { calculateReadinessScore, getScoreTier } from "@/lib/scoring";
 import { CITIES_MAP } from "@/data/seed";
 
 // Dynamic import to prevent client bundle contamination
@@ -137,6 +137,7 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
             cityId: change.cityId,
             score: change.newScore,
             breakdown: (breakdown ?? {}) as unknown as Record<string, number>,
+            tier: getScoreTier(change.newScore),
             triggeringEventId: cityToEntryId.get(change.cityId) ?? null,
             capturedAt: now,
           };
