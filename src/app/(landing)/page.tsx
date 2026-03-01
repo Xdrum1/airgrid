@@ -1250,6 +1250,12 @@ export default async function LandingPage() {
             >
               PLATFORM
             </a>
+            <Link
+              href="/methodology"
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              METHODOLOGY
+            </Link>
             <a
               href="https://x.com/AirIndexHQ"
               target="_blank"
