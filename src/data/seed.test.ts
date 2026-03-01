@@ -92,8 +92,8 @@ describe("VERTIPORTS", () => {
 
 // ----- CORRIDORS -----
 describe("CORRIDORS", () => {
-  it("has 6 entries", () => {
-    expect(CORRIDORS).toHaveLength(6);
+  it("has 9 entries", () => {
+    expect(CORRIDORS).toHaveLength(9);
   });
 
   it("has unique IDs", () => {
