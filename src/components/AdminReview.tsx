@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { CITIES } from "@/data/seed";
 import { safeHref } from "@/lib/safe-url";
 import { formatRelativeTime } from "@/lib/dashboard-constants";
@@ -227,8 +226,7 @@ function PinPrompt({ onVerified }: { onVerified: () => void }) {
 // Component
 // -------------------------------------------------------
 
-export default function AdminReview({ adminEmail }: { adminEmail: string }) {
-  const { data: session, status } = useSession();
+export default function AdminReview() {
   const [tab, setTab] = useState<TabKey>("overrides");
   const [overrides, setOverrides] = useState<PendingOverride[]>([]);
   const [classifications, setClassifications] = useState<ClassificationResult[]>([]);
@@ -365,36 +363,6 @@ export default function AdminReview({ adminEmail }: { adminEmail: string }) {
       setActionInProgress(null);
     }
   };
-
-  // Auth gate — show nothing while loading, 404-style for non-admins
-  if (status === "loading") {
-    return (
-      <div style={{ minHeight: "100vh", background: "#050508" }} />
-    );
-  }
-
-  if (!session?.user?.email || session.user.email !== adminEmail) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "#050508",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "'Space Mono', monospace",
-          color: "#fff",
-        }}
-      >
-        <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 96, color: "#1a1a28", lineHeight: 1 }}>404</div>
-        <div style={{ color: "#555", fontSize: 14, marginTop: 12, marginBottom: 32, letterSpacing: 2 }}>MARKET NOT FOUND</div>
-        <Link href="/dashboard" style={{ color: "#00d4ff", fontSize: 11, letterSpacing: 1, textDecoration: "none", border: "1px solid rgba(0,212,255,0.3)", borderRadius: 6, padding: "10px 20px" }}>
-          BACK TO DASHBOARD
-        </Link>
-      </div>
-    );
-  }
 
   // PIN gate — show PIN prompt if cookie missing or expired
   if (needsPin && !pinVerified) {
