@@ -10,6 +10,7 @@ export interface ScoreHistoryFull {
   breakdown: Record<string, number>;
   tier: string | null;
   triggeringEventId: string | null;
+  filingIngestedAt: string | null;
   capturedAt: string;
   triggeringEvent?: {
     summary: string;
@@ -43,6 +44,7 @@ export async function getScoreHistoryFull(cityId: string): Promise<ScoreHistoryF
       breakdown: true,
       tier: true,
       triggeringEventId: true,
+      filingIngestedAt: true,
       capturedAt: true,
     },
   });
@@ -75,6 +77,7 @@ export async function getScoreHistoryFull(cityId: string): Promise<ScoreHistoryF
       breakdown: (s.breakdown ?? {}) as Record<string, number>,
       tier: s.tier,
       triggeringEventId: s.triggeringEventId,
+      filingIngestedAt: s.filingIngestedAt?.toISOString() ?? null,
       capturedAt: s.capturedAt.toISOString(),
       ...(entry && {
         triggeringEvent: {

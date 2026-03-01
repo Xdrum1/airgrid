@@ -49,6 +49,7 @@ async function captureSnapshots() {
         breakdown: (city.breakdown ?? {}) as Record<string, number>,
         tier: getScoreTier(city.score ?? 0),
         triggeringEventId: null,
+        filingIngestedAt: null,
         capturedAt: now,
       })),
     });
