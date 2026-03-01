@@ -7,7 +7,7 @@ import { VERTIPORT_STATUS_COLORS, CORRIDOR_STATUS_COLORS } from "@/lib/dashboard
 import { OPERATORS_MAP } from "@/data/seed";
 import ScoreBar from "./ScoreBar";
 import BreakdownPanel from "./BreakdownPanel";
-import SubscribeForm from "./SubscribeForm";
+
 import WatchlistStar from "./WatchlistStar";
 import { trackEvent } from "@/lib/track";
 
@@ -19,8 +19,6 @@ export default function CityDetailPanel({
   selectedCorridor,
   onVertiportSelect,
   onCorridorSelect,
-  subscribedCityIds,
-  onSubscriptionChange,
   isMobile,
   onClose,
   isWatched,
@@ -34,8 +32,6 @@ export default function CityDetailPanel({
   selectedCorridor: Corridor | null;
   onVertiportSelect: (v: Vertiport | null) => void;
   onCorridorSelect: (c: Corridor | null) => void;
-  subscribedCityIds: Set<string>;
-  onSubscriptionChange: (cityId: string, subscribed: boolean) => void;
   isMobile: boolean;
   onClose: () => void;
   isWatched: boolean;
@@ -229,21 +225,6 @@ export default function CityDetailPanel({
 
       {/* Score Breakdown */}
       <BreakdownPanel breakdown={selected.breakdown} scoreColor={scoreColor} />
-
-      {/* Alert Subscriptions — prominent placement */}
-      <div
-        style={{
-          padding: "14px 20px",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-          background: "rgba(0,255,136,0.02)",
-        }}
-      >
-        <SubscribeForm
-          cityId={selected.id}
-          cityName={selected.city}
-          onSubscriptionChange={onSubscriptionChange}
-        />
-      </div>
 
       {/* Active Operators */}
       {selected.activeOperators.length > 0 && (
