@@ -1,8 +1,15 @@
 /**
- * Lightweight in-memory rate limiter for serverless.
- * Tracks request counts per key in a sliding window.
- * Resets automatically — no external dependencies.
+ * Rate limiter with persistent Upstash Redis backend.
+ * Falls back to in-memory when Upstash env vars are missing or Redis is unreachable.
  */
+
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("rate-limit");
+
+// -------------------------------------------------------
+// In-memory fallback (same logic as original)
+// -------------------------------------------------------
 
 interface RateLimitEntry {
   count: number;
@@ -19,19 +26,7 @@ setInterval(() => {
   });
 }, 60_000);
 
-export interface RateLimitResult {
-  allowed: boolean;
-  remaining: number;
-  resetAt: number;
-}
-
-/**
- * Check if a request is allowed under the rate limit.
- * @param key - Unique identifier (e.g., IP address, email)
- * @param limit - Max requests per window
- * @param windowMs - Window duration in milliseconds
- */
-export function rateLimit(
+function inMemoryRateLimit(
   key: string,
   limit: number,
   windowMs: number
@@ -50,4 +45,87 @@ export function rateLimit(
   }
 
   return { allowed: true, remaining: limit - entry.count, resetAt: entry.resetAt };
+}
+
+// -------------------------------------------------------
+// Upstash rate limiter (lazy-initialized)
+// -------------------------------------------------------
+
+type UpstashRatelimit = import("@upstash/ratelimit").Ratelimit;
+
+const upstashInstances = new Map<string, UpstashRatelimit>();
+let upstashAvailable: boolean | null = null;
+
+async function getUpstashLimiter(limit: number, windowMs: number): Promise<UpstashRatelimit | null> {
+  if (upstashAvailable === false) return null;
+
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) {
+    upstashAvailable = false;
+    return null;
+  }
+
+  const cacheKey = `${limit}:${windowMs}`;
+  const cached = upstashInstances.get(cacheKey);
+  if (cached) return cached;
+
+  try {
+    const { Redis } = await import("@upstash/redis");
+    const { Ratelimit } = await import("@upstash/ratelimit");
+
+    const redis = new Redis({ url, token });
+    const windowSec = Math.max(1, Math.ceil(windowMs / 1000));
+
+    const instance = new Ratelimit({
+      redis,
+      limiter: Ratelimit.fixedWindow(limit, `${windowSec} s`),
+      prefix: "airgrid:rl",
+    });
+
+    upstashInstances.set(cacheKey, instance);
+    upstashAvailable = true;
+    return instance;
+  } catch (err) {
+    logger.error("Failed to initialize Upstash:", err);
+    upstashAvailable = false;
+    return null;
+  }
+}
+
+// -------------------------------------------------------
+// Public API
+// -------------------------------------------------------
+
+export interface RateLimitResult {
+  allowed: boolean;
+  remaining: number;
+  resetAt: number;
+}
+
+/**
+ * Check if a request is allowed under the rate limit.
+ * Uses Upstash Redis when available, falls back to in-memory.
+ */
+export async function rateLimit(
+  key: string,
+  limit: number,
+  windowMs: number
+): Promise<RateLimitResult> {
+  const limiter = await getUpstashLimiter(limit, windowMs);
+
+  if (limiter) {
+    try {
+      const result = await limiter.limit(key);
+      return {
+        allowed: result.success,
+        remaining: result.remaining,
+        resetAt: result.reset,
+      };
+    } catch (err) {
+      logger.error("Upstash request failed, falling back to in-memory:", err);
+    }
+  }
+
+  return inMemoryRateLimit(key, limit, windowMs);
 }

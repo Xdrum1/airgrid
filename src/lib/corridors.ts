@@ -1,5 +1,8 @@
 import type { Corridor } from "@/types";
 import { CORRIDORS, CORRIDORS_MAP } from "@/data/seed";
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("corridors");
 
 // Dynamic import to prevent client bundle contamination
 async function getPrisma() {
@@ -105,7 +108,7 @@ export async function getCorridors(): Promise<Corridor[]> {
     cacheTimestamp = now;
     return corridors;
   } catch (err) {
-    console.error("[corridors] DB read failed, falling back to seed:", err);
+    logger.error("DB read failed, falling back to seed:", err);
     return CORRIDORS;
   }
 }
@@ -117,7 +120,7 @@ export async function getCorridorById(id: string): Promise<Corridor | null> {
     if (!row) return CORRIDORS_MAP[id] ?? null;
     return dbRowToCorridor(row);
   } catch (err) {
-    console.error("[corridors] DB read failed, falling back to seed:", err);
+    logger.error("DB read failed, falling back to seed:", err);
     return CORRIDORS_MAP[id] ?? null;
   }
 }
@@ -135,7 +138,7 @@ export async function getCorridorsForCity(cityId: string): Promise<Corridor[]> {
     }
     return rows.map(dbRowToCorridor);
   } catch (err) {
-    console.error("[corridors] DB read failed, falling back to seed:", err);
+    logger.error("DB read failed, falling back to seed:", err);
     return CORRIDORS.filter((c) => c.cityId === cityId);
   }
 }
@@ -169,7 +172,7 @@ export async function getCorridorStatusHistory(
       changedAt: r.changedAt.toISOString(),
     }));
   } catch (err) {
-    console.error("[corridors] Failed to fetch status history:", err);
+    logger.error("Failed to fetch status history:", err);
     return [];
   }
 }
@@ -207,5 +210,103 @@ export async function updateCorridorStatus(
     }),
   ]);
 
+  invalidateCorridorsCache();
+}
+
+// -------------------------------------------------------
+// Admin CRUD
+// -------------------------------------------------------
+
+export interface CreateCorridorInput {
+  name: string;
+  status: string;
+  cityId: string;
+  operatorId?: string;
+  startPointLabel: string;
+  endPointLabel: string;
+  distanceKm?: number;
+  estimatedFlightMinutes?: number;
+  notes?: string;
+  sourceUrl?: string;
+}
+
+export async function createCorridor(data: CreateCorridorInput): Promise<Corridor> {
+  const prisma = await getPrisma();
+
+  const id = "cor_" + data.name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_|_$/g, "");
+
+  const row = await prisma.corridor.create({
+    data: {
+      id,
+      name: data.name,
+      status: data.status,
+      cityId: data.cityId,
+      operatorId: data.operatorId ?? null,
+      startPointLat: 0,
+      startPointLng: 0,
+      startPointLabel: data.startPointLabel,
+      endPointLat: 0,
+      endPointLng: 0,
+      endPointLabel: data.endPointLabel,
+      distanceKm: data.distanceKm ?? 0,
+      estimatedFlightMinutes: data.estimatedFlightMinutes ?? 0,
+      maxAltitudeFt: 1500,
+      clearedOperators: [],
+      notes: data.notes ?? null,
+      sourceUrl: data.sourceUrl ?? null,
+      lastUpdated: new Date(),
+    },
+  });
+
+  invalidateCorridorsCache();
+  return dbRowToCorridor(row);
+}
+
+export interface UpdateCorridorInput {
+  name?: string;
+  status?: string;
+  cityId?: string;
+  operatorId?: string | null;
+  startPointLabel?: string;
+  endPointLabel?: string;
+  distanceKm?: number;
+  estimatedFlightMinutes?: number;
+  notes?: string | null;
+  sourceUrl?: string | null;
+}
+
+export async function updateCorridorById(
+  id: string,
+  data: UpdateCorridorInput
+): Promise<Corridor> {
+  const prisma = await getPrisma();
+
+  const updateData: Record<string, unknown> = { lastUpdated: new Date() };
+  if (data.name !== undefined) updateData.name = data.name;
+  if (data.status !== undefined) updateData.status = data.status;
+  if (data.cityId !== undefined) updateData.cityId = data.cityId;
+  if (data.operatorId !== undefined) updateData.operatorId = data.operatorId;
+  if (data.startPointLabel !== undefined) updateData.startPointLabel = data.startPointLabel;
+  if (data.endPointLabel !== undefined) updateData.endPointLabel = data.endPointLabel;
+  if (data.distanceKm !== undefined) updateData.distanceKm = data.distanceKm;
+  if (data.estimatedFlightMinutes !== undefined) updateData.estimatedFlightMinutes = data.estimatedFlightMinutes;
+  if (data.notes !== undefined) updateData.notes = data.notes;
+  if (data.sourceUrl !== undefined) updateData.sourceUrl = data.sourceUrl;
+
+  const row = await prisma.corridor.update({
+    where: { id },
+    data: updateData,
+  });
+
+  invalidateCorridorsCache();
+  return dbRowToCorridor(row);
+}
+
+export async function deleteCorridor(id: string): Promise<void> {
+  const prisma = await getPrisma();
+  await prisma.corridor.delete({ where: { id } });
   invalidateCorridorsCache();
 }

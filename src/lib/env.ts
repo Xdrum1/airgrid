@@ -1,4 +1,7 @@
 // Environment variable validation — imported early to surface misconfig on startup
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("env");
 
 const required = ["AUTH_SECRET", "DATABASE_URL"] as const;
 
@@ -10,12 +13,15 @@ const recommended = [
   "SES_ACCESS_KEY_ID",
   "SES_SECRET_ACCESS_KEY",
   "ADMIN_NOTIFY_EMAIL",
+  "UPSTASH_REDIS_REST_URL",
+  "UPSTASH_REDIS_REST_TOKEN",
 ] as const;
 
 const optional = [
   "ANTHROPIC_API_KEY",
   "LEGISCAN_API_KEY",
   "NEXT_PUBLIC_MAPBOX_TOKEN",
+  "LOG_LEVEL",
 ] as const;
 
 for (const key of required) {
@@ -26,14 +32,14 @@ for (const key of required) {
 
 for (const key of recommended) {
   if (!process.env[key]) {
-    console.warn(`[env] WARNING: recommended variable not set: ${key}`);
+    logger.warn(`WARNING: recommended variable not set: ${key}`);
   }
 }
 
 if (process.env.NODE_ENV !== "production") {
   for (const key of optional) {
     if (!process.env[key]) {
-      console.info(`[env] Optional variable not set: ${key}`);
+      logger.info(`Optional variable not set: ${key}`);
     }
   }
 }

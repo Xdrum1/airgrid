@@ -5,6 +5,9 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { sendSesEmail } from "@/lib/ses";
 import { rateLimit } from "@/lib/rate-limit";
+import { createLogger } from "@/lib/logger";
+
+const logger = createLogger("auth");
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -25,7 +28,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return crypto.randomInt(100000, 999999).toString();
       },
       sendVerificationRequest: async ({ identifier: email, token }) => {
-        const rl = rateLimit(`magic-link:${email}`, 3, 15 * 60 * 1000);
+        const rl = await rateLimit(`magic-link:${email}`, 3, 15 * 60 * 1000);
         if (!rl.allowed) {
           throw new Error("Too many verification requests. Please wait a few minutes.");
         }
@@ -34,7 +37,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!process.env.SES_ACCESS_KEY_ID) {
           if (process.env.NODE_ENV === "development") {
-            console.log(`[auth] Dev mode — verification code: ${token}`);
+            logger.info(`Dev mode — verification code: ${token}`);
           }
           return;
         }
@@ -63,9 +66,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             subject: `${token} — Your AirIndex verification code`,
             html,
           });
-          console.log(`[auth] Verification code sent successfully to ${email}`);
+          logger.info(`Verification code sent successfully to ${email}`);
         } catch (err) {
-          console.error(`[auth] Failed to send verification code to ${email}:`, err);
+          logger.error(`Failed to send verification code to ${email}:`, err);
           throw err;
         }
       },
@@ -105,7 +108,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               </p>
             </div>
           `.trim(),
-        }).catch((err) => console.error("[auth] Welcome email failed:", err));
+        }).catch((err) => logger.error("Welcome email failed:", err));
       }
 
       // Admin notification
@@ -126,7 +129,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               <p style="color:#999;font-size:12px;margin:0;">${new Date().toUTCString()}</p>
             </div>
           `.trim(),
-        }).catch((err) => console.error("[auth] Admin notify failed:", err));
+        }).catch((err) => logger.error("Admin notify failed:", err));
       }
     },
   },

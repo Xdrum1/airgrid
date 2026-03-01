@@ -35,7 +35,7 @@ beforeEach(() => {
   vi.resetAllMocks();
   // Default: authenticated + allowed
   mockAuth.mockResolvedValue({ user: { id: "u1" } } as ReturnType<typeof auth> extends Promise<infer T> ? T : never);
-  mockRateLimit.mockReturnValue({ allowed: true, remaining: 19, resetAt: Date.now() + 300_000 });
+  mockRateLimit.mockResolvedValue({ allowed: true, remaining: 19, resetAt: Date.now() + 300_000 });
   mockFetch.mockResolvedValue([]);
 });
 
@@ -49,7 +49,7 @@ describe("GET /api/filings", () => {
   });
 
   it("returns 429 when rate limited", async () => {
-    mockRateLimit.mockReturnValue({ allowed: false, remaining: 0, resetAt: Date.now() + 60_000 });
+    mockRateLimit.mockResolvedValue({ allowed: false, remaining: 0, resetAt: Date.now() + 60_000 });
     const res = await GET(makeRequest());
     expect(res.status).toBe(429);
     const body = await res.json();
