@@ -278,7 +278,7 @@ export default async function LandingPage() {
             color: "#fff",
           }}
         >
-          The only continuously updated dataset on UAM market readiness in the US
+          The only continuously updated index for UAM market readiness in the US
         </h1>
         <p
           style={{
