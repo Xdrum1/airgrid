@@ -225,6 +225,36 @@ export default async function LandingPage() {
           textAlign: "center",
         }}
       >
+        <div style={{ marginBottom: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+          <img
+            src="/images/logo/airindex-icon.svg"
+            alt=""
+            style={{ width: 72, height: 72, opacity: 0.9 }}
+          />
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+            <span
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 800,
+                fontSize: 28,
+                letterSpacing: 6,
+                color: "#fff",
+              }}
+            >
+              AIRINDEX
+            </span>
+            <span
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 9,
+                letterSpacing: 3,
+                color: "#777",
+              }}
+            >
+              UAM MARKET INTELLIGENCE
+            </span>
+          </div>
+        </div>
         <div
           style={{
             fontFamily: "'Space Mono', monospace",
