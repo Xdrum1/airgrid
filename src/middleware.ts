@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+
+const ADMIN_EMAIL = process.env.ADMIN_NOTIFY_EMAIL;
 
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
@@ -29,6 +32,14 @@ function csrfCheck(request: NextRequest): NextResponse | null {
   return null;
 }
 
+function isAdminPath(pathname: string): boolean {
+  return pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
+}
+
+function isApiRoute(pathname: string): boolean {
+  return pathname.startsWith("/api/");
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -36,6 +47,29 @@ export async function middleware(request: NextRequest) {
   if (MUTATING_METHODS.has(request.method) && isCsrfProtected(pathname)) {
     const blocked = csrfCheck(request);
     if (blocked) return blocked;
+  }
+
+  // Admin routes: require JWT session with admin email.
+  // JWT persists ~30 days — magic link only needed once a month.
+  // PIN verification is handled at the API layer (admin-helpers.ts).
+  if (isAdminPath(pathname) && !pathname.startsWith("/api/auth")) {
+    const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
+
+    if (!token) {
+      if (isApiRoute(pathname)) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    if (token.email !== ADMIN_EMAIL) {
+      if (isApiRoute(pathname)) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+      return NextResponse.rewrite(new URL("/not-found", request.url));
+    }
   }
 
   return NextResponse.next();

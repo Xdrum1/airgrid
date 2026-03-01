@@ -1,5 +1,7 @@
 import AdminReview from "@/components/AdminReview";
 
 export default function AdminReviewPage() {
-  return <AdminReview />;
+  const adminEmail = process.env.ADMIN_NOTIFY_EMAIL ?? "";
+
+  return <AdminReview adminEmail={adminEmail} />;
 }
