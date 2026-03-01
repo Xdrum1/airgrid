@@ -47,6 +47,7 @@ export interface GetChangelogOptions {
   changeType?: ChangeType;
   entityType?: ChangelogEntry["relatedEntityType"];
   limit?: number;
+  since?: Date;
 }
 
 export async function getChangelogEntries(
@@ -59,6 +60,7 @@ export async function getChangelogEntries(
   const where: Record<string, unknown> = {};
   if (options?.changeType) where.changeType = options.changeType;
   if (options?.entityType) where.relatedEntityType = options.entityType;
+  if (options?.since) where.timestamp = { gte: options.since };
 
   const rows = await prisma.changelogEntry.findMany({
     where,
