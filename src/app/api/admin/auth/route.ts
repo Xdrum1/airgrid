@@ -27,8 +27,15 @@ export async function POST(request: NextRequest) {
   }
 
   if (!ADMIN_PIN || !ADMIN_EMAIL) {
-    logger.error("ADMIN_PIN or ADMIN_NOTIFY_EMAIL not configured");
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+    const missing = [
+      !ADMIN_EMAIL && "ADMIN_NOTIFY_EMAIL",
+      !ADMIN_PIN && "ADMIN_PIN",
+    ].filter(Boolean).join(", ");
+    logger.error(`Missing env vars: ${missing}`);
+    return NextResponse.json(
+      { error: `Server misconfigured — missing: ${missing}` },
+      { status: 500 }
+    );
   }
 
   let body: { email?: string; pin?: string };
