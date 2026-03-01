@@ -35,6 +35,15 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
   const affectedCityIds = new Set<string>();
 
   for (const candidate of candidates) {
+    // Dedup: skip if an override already exists for this source record
+    if (candidate.sourceRecordId) {
+      const existing = await prisma.scoringOverride.findFirst({
+        where: { sourceRecordId: candidate.sourceRecordId },
+        select: { id: true },
+      });
+      if (existing) continue;
+    }
+
     // Skip unresolved city placeholders for auto-apply (still persist them)
     const isResolvable = candidate.cityId !== "__unresolved__" && candidate.field !== "__review__";
 
