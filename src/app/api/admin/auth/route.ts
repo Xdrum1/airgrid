@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
 import crypto from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
 import { signAdminCookie, COOKIE_NAME } from "@/lib/admin-auth";
@@ -7,7 +6,6 @@ import { createLogger } from "@/lib/logger";
 
 const logger = createLogger("admin/auth");
 
-const ADMIN_EMAIL = process.env.ADMIN_NOTIFY_EMAIL;
 const ADMIN_PIN = process.env.ADMIN_PIN;
 
 function getClientIp(req: NextRequest): string {
@@ -25,12 +23,6 @@ export async function POST(request: NextRequest) {
       { error: "Too many attempts. Try again later." },
       { status: 429 }
     );
-  }
-
-  // Verify JWT — must be logged in as admin
-  const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
-  if (!token?.email || token.email !== ADMIN_EMAIL) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   // Verify PIN
@@ -51,13 +43,14 @@ export async function POST(request: NextRequest) {
     body.pin.length === ADMIN_PIN.length &&
     crypto.timingSafeEqual(Buffer.from(body.pin), Buffer.from(ADMIN_PIN));
   if (!pinMatch) {
-    logger.info(`Wrong PIN attempt from ${token.email} (${ip}), ${rl.remaining} attempts remaining`);
+    logger.info(`Wrong PIN attempt from ${ip}, ${rl.remaining} attempts remaining`);
     return NextResponse.json({ error: "Invalid PIN" }, { status: 403 });
   }
 
   // Success — set signed cookie
-  logger.info(`PIN verified for ${token.email} (${ip})`);
-  const cookieValue = signAdminCookie(token.email as string);
+  const adminEmail = process.env.ADMIN_NOTIFY_EMAIL ?? "admin";
+  logger.info(`PIN verified from ${ip}`);
+  const cookieValue = signAdminCookie(adminEmail);
   const isProduction = process.env.NODE_ENV === "production";
 
   const response = NextResponse.json({ ok: true });
