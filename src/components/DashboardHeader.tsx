@@ -74,6 +74,23 @@ export default function DashboardHeader({
             {s.label}
           </span>
         ))}
+        {!isMobile && (
+          <Link
+            href="/methodology"
+            style={{
+              color: "#555",
+              fontSize: 9,
+              letterSpacing: 1,
+              textDecoration: "none",
+              opacity: 0.7,
+              transition: "opacity 0.15s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}
+          >
+            METHODOLOGY
+          </Link>
+        )}
         {isAdmin && (
           <Link
             href="/admin/review"
