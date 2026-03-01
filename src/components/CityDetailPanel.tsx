@@ -159,7 +159,7 @@ export default function CityDetailPanel({
                 size="md"
               />
             </div>
-            <div style={{ color: "#444", fontSize: 10, marginTop: 3 }}>
+            <div style={{ color: "#777", fontSize: 10, marginTop: 3 }}>
               {selected.state} · United States
             </div>
           </div>
@@ -175,7 +175,7 @@ export default function CityDetailPanel({
             >
               {selected.score}
             </div>
-            <div style={{ color: "#333", fontSize: 8, letterSpacing: 1 }}>
+            <div style={{ color: "#999", fontSize: 8, letterSpacing: 1 }}>
               {getScoreTier(selected.score ?? 0)}
             </div>
           </div>
@@ -255,7 +255,7 @@ export default function CityDetailPanel({
         >
           <div
             style={{
-              color: "#444",
+              color: "#777",
               fontSize: 8,
               letterSpacing: 2,
               marginBottom: 10,
@@ -291,7 +291,7 @@ export default function CityDetailPanel({
                   <div style={{ color: "#ccc", fontSize: 11 }}>
                     {op.name}
                   </div>
-                  <div style={{ color: "#444", fontSize: 9 }}>
+                  <div style={{ color: "#777", fontSize: 9 }}>
                     {op.faaCertStatus === "operational"
                       ? "Operational"
                       : "FAA cert in progress"}{" "}
@@ -314,7 +314,7 @@ export default function CityDetailPanel({
         >
           <div
             style={{
-              color: "#444",
+              color: "#777",
               fontSize: 8,
               letterSpacing: 2,
               marginBottom: 10,
@@ -367,7 +367,7 @@ export default function CityDetailPanel({
                     {v.status.replace("_", " ").toUpperCase()}
                   </span>
                 </div>
-                <div style={{ display: "flex", gap: 10, color: "#555", fontSize: 9 }}>
+                <div style={{ display: "flex", gap: 10, color: "#888", fontSize: 9 }}>
                   <span>{v.siteType.replace("_", " ")}</span>
                   {v.padCount != null && <span>{v.padCount} pads</span>}
                   {v.expectedOpenDate && <span>Opens {v.expectedOpenDate}</span>}
@@ -388,7 +388,7 @@ export default function CityDetailPanel({
         >
           <div
             style={{
-              color: "#444",
+              color: "#777",
               fontSize: 8,
               letterSpacing: 2,
               marginBottom: 10,
@@ -445,7 +445,7 @@ export default function CityDetailPanel({
                   </span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <div style={{ display: "flex", gap: 10, color: "#555", fontSize: 9 }}>
+                  <div style={{ display: "flex", gap: 10, color: "#888", fontSize: 9 }}>
                     <span>{c.distanceKm} km</span>
                     <span>{c.estimatedFlightMinutes} min</span>
                     <span>{c.maxAltitudeFt} ft</span>
@@ -474,7 +474,7 @@ export default function CityDetailPanel({
         >
           <div
             style={{
-              color: "#444",
+              color: "#777",
               fontSize: 8,
               letterSpacing: 2,
               marginBottom: 10,
@@ -503,7 +503,7 @@ export default function CityDetailPanel({
                 ▶
               </span>
               <span
-                style={{ color: "#777", fontSize: 10, lineHeight: 1.6 }}
+                style={{ color: "#aaa", fontSize: 10, lineHeight: 1.6 }}
               >
                 {m}
               </span>
@@ -526,7 +526,7 @@ export default function CityDetailPanel({
         </div>
         <p
           style={{
-            color: "#666",
+            color: "#999",
             fontSize: 10,
             lineHeight: 1.7,
             margin: 0,
@@ -544,7 +544,7 @@ export default function CityDetailPanel({
           marginTop: "auto",
         }}
       >
-        <span style={{ color: "#444", fontSize: 8 }}>
+        <span style={{ color: "#777", fontSize: 8 }}>
           LAST UPDATED {selected.lastUpdated}
         </span>
       </div>

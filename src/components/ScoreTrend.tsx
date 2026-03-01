@@ -70,10 +70,10 @@ export default function ScoreTrend({ history, color }: ScoreTrendProps) {
             marginTop: 4,
           }}
         >
-          <span style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 0.5 }}>
+          <span style={{ color: "#666", fontSize: 8, letterSpacing: 0.5 }}>
             {formatMonth(history[0].capturedAt)}
           </span>
-          <span style={{ color: "#2a2a3a", fontSize: 8, letterSpacing: 0.5 }}>
+          <span style={{ color: "#666", fontSize: 8, letterSpacing: 0.5 }}>
             {formatMonth(history[history.length - 1].capturedAt)}
           </span>
         </div>

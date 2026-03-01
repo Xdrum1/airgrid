@@ -102,7 +102,7 @@ export default function CityListPanel({
       >
         <div
           style={{
-            color: "#444",
+            color: "#777",
             fontSize: 8,
             letterSpacing: 2,
             marginBottom: 8,
@@ -136,7 +136,7 @@ export default function CityListPanel({
                   border: isActive
                     ? `1px solid ${activeColor}59`
                     : "1px solid rgba(255,255,255,0.07)",
-                  color: isActive ? activeColor : "#555",
+                  color: isActive ? activeColor : "#888",
                   borderRadius: 4,
                   padding: isMobile ? "5px 10px" : "4px 8px",
                   fontSize: isMobile ? 9 : 8,
