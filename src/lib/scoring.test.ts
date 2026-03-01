@@ -13,6 +13,7 @@ function makeCity(overrides: Partial<City> = {}): City {
   return {
     id: "test",
     city: "Test City",
+    metro: "Test City Metro",
     state: "TX",
     country: "US",
     lat: 0,

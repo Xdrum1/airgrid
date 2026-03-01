@@ -365,7 +365,7 @@ export function getCorridorsForCity(cityId: string): Corridor[] {
 // ============================================================
 const RAW_CITIES: City[] = [
   {
-    id: "los_angeles", city: "Los Angeles", state: "CA", country: "US",
+    id: "los_angeles", city: "Los Angeles", metro: "Greater Los Angeles Metro", state: "CA", country: "US",
     lat: 34.0522, lng: -118.2437,
     hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 3,
     activeOperators: ["op_joby", "op_archer", "op_blade"],
@@ -384,7 +384,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2026-02-26",
   },
   {
-    id: "new_york", city: "New York", state: "NY", country: "US",
+    id: "new_york", city: "New York", metro: "New York Metro", state: "NY", country: "US",
     lat: 40.7128, lng: -74.0060,
     hasActivePilotProgram: true, hasVertiportZoning: false, vertiportCount: 1,
     activeOperators: ["op_joby", "op_archer", "op_blade"],
@@ -401,7 +401,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "dallas", city: "Dallas", state: "TX", country: "US",
+    id: "dallas", city: "Dallas", metro: "Dallas–Fort Worth Metro", state: "TX", country: "US",
     lat: 32.7767, lng: -96.7970,
     hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 2,
     activeOperators: ["op_wisk"],
@@ -420,7 +420,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2026-02-26",
   },
   {
-    id: "miami", city: "Miami", state: "FL", country: "US",
+    id: "miami", city: "Miami", metro: "Greater Miami Metro", state: "FL", country: "US",
     lat: 25.7617, lng: -80.1918,
     hasActivePilotProgram: false, hasVertiportZoning: true, vertiportCount: 1,
     activeOperators: ["op_blade", "op_archer"],
@@ -438,7 +438,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "orlando", city: "Orlando", state: "FL", country: "US",
+    id: "orlando", city: "Orlando", metro: "Greater Orlando Metro", state: "FL", country: "US",
     lat: 28.5383, lng: -81.3792,
     hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 1,
     activeOperators: [],
@@ -456,7 +456,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "las_vegas", city: "Las Vegas", state: "NV", country: "US",
+    id: "las_vegas", city: "Las Vegas", metro: "Las Vegas Metro", state: "NV", country: "US",
     lat: 36.1699, lng: -115.1398,
     hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 1,
     activeOperators: [],
@@ -474,7 +474,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "phoenix", city: "Phoenix", state: "AZ", country: "US",
+    id: "phoenix", city: "Phoenix", metro: "Phoenix Metro", state: "AZ", country: "US",
     lat: 33.4484, lng: -112.0740,
     hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 0,
     activeOperators: [],
@@ -484,7 +484,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "houston", city: "Houston", state: "TX", country: "US",
+    id: "houston", city: "Houston", metro: "Greater Houston Metro", state: "TX", country: "US",
     lat: 29.7604, lng: -95.3698,
     hasActivePilotProgram: false, hasVertiportZoning: true, vertiportCount: 0,
     activeOperators: [],
@@ -494,7 +494,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "austin", city: "Austin", state: "TX", country: "US",
+    id: "austin", city: "Austin", metro: "Austin Metro", state: "TX", country: "US",
     lat: 30.2672, lng: -97.7431,
     hasActivePilotProgram: false, hasVertiportZoning: true, vertiportCount: 0,
     activeOperators: [],
@@ -504,7 +504,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "san_diego", city: "San Diego", state: "CA", country: "US",
+    id: "san_diego", city: "San Diego", metro: "San Diego Metro", state: "CA", country: "US",
     lat: 32.7157, lng: -117.1611,
     hasActivePilotProgram: false, hasVertiportZoning: true, vertiportCount: 0,
     activeOperators: [],
@@ -514,7 +514,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "san_francisco", city: "San Francisco", state: "CA", country: "US",
+    id: "san_francisco", city: "San Francisco", metro: "SF Bay Area Metro", state: "CA", country: "US",
     lat: 37.7749, lng: -122.4194,
     hasActivePilotProgram: false, hasVertiportZoning: true, vertiportCount: 0,
     activeOperators: [],
@@ -524,7 +524,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "chicago", city: "Chicago", state: "IL", country: "US",
+    id: "chicago", city: "Chicago", metro: "Chicagoland Metro", state: "IL", country: "US",
     lat: 41.8781, lng: -87.6298,
     hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0,
     activeOperators: ["op_archer"],
@@ -534,7 +534,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "atlanta", city: "Atlanta", state: "GA", country: "US",
+    id: "atlanta", city: "Atlanta", metro: "Greater Atlanta Metro", state: "GA", country: "US",
     lat: 33.7490, lng: -84.3880,
     hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0,
     activeOperators: [],
@@ -544,7 +544,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "nashville", city: "Nashville", state: "TN", country: "US",
+    id: "nashville", city: "Nashville", metro: "Nashville Metro", state: "TN", country: "US",
     lat: 36.1627, lng: -86.7816,
     hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0,
     activeOperators: [],
@@ -554,7 +554,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "charlotte", city: "Charlotte", state: "NC", country: "US",
+    id: "charlotte", city: "Charlotte", metro: "Charlotte Metro", state: "NC", country: "US",
     lat: 35.2271, lng: -80.8431,
     hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0,
     activeOperators: [],
@@ -564,7 +564,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "denver", city: "Denver", state: "CO", country: "US",
+    id: "denver", city: "Denver", metro: "Denver Metro", state: "CO", country: "US",
     lat: 39.7392, lng: -104.9903,
     hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0,
     activeOperators: [],
@@ -574,7 +574,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "seattle", city: "Seattle", state: "WA", country: "US",
+    id: "seattle", city: "Seattle", metro: "Seattle–Tacoma Metro", state: "WA", country: "US",
     lat: 47.6062, lng: -122.3321,
     hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0,
     activeOperators: [],
@@ -584,7 +584,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "boston", city: "Boston", state: "MA", country: "US",
+    id: "boston", city: "Boston", metro: "Greater Boston Metro", state: "MA", country: "US",
     lat: 42.3601, lng: -71.0589,
     hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0,
     activeOperators: [],
@@ -594,7 +594,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "minneapolis", city: "Minneapolis", state: "MN", country: "US",
+    id: "minneapolis", city: "Minneapolis", metro: "Twin Cities Metro", state: "MN", country: "US",
     lat: 44.9778, lng: -93.2650,
     hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0,
     activeOperators: [],
@@ -604,7 +604,7 @@ const RAW_CITIES: City[] = [
     lastUpdated: "2025-02-01",
   },
   {
-    id: "washington_dc", city: "Washington D.C.", state: "DC", country: "US",
+    id: "washington_dc", city: "Washington D.C.", metro: "DC Metro", state: "DC", country: "US",
     lat: 38.9072, lng: -77.0369,
     hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0,
     activeOperators: [],

@@ -44,6 +44,7 @@ export interface ScoreBreakdown {
 export interface City {
   id: string;
   city: string;
+  metro: string;  // e.g. "Greater Los Angeles Metro"
   state: string;
   country: string;
   lat: number;
