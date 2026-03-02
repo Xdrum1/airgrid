@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { City } from "@/types";
 
 export default function DashboardHeader({
@@ -151,9 +152,7 @@ export default function DashboardHeader({
                 <div style={{ display: "flex", gap: 8 }}>
                   <button
                     onClick={() => {
-                      fetch("/api/signout", { method: "POST" }).then(() => {
-                        window.location.href = "/";
-                      });
+                      signOut({ callbackUrl: "/" });
                     }}
                     style={{
                       background: "rgba(255,68,68,0.1)",

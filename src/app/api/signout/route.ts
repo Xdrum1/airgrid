@@ -1,6 +1,7 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const ALL_COOKIES = [
+const AUTH_COOKIES = [
   "authjs.session-token",
   "authjs.csrf-token",
   "authjs.callback-url",
@@ -11,18 +12,11 @@ const ALL_COOKIES = [
 ];
 
 export async function POST() {
-  const res = NextResponse.json({ success: true });
+  const cookieStore = await cookies();
 
-  for (const name of ALL_COOKIES) {
-    res.headers.append(
-      "Set-Cookie",
-      `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax`
-    );
-    res.headers.append(
-      "Set-Cookie",
-      `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Lax`
-    );
+  for (const name of AUTH_COOKIES) {
+    cookieStore.delete(name);
   }
 
-  return res;
+  return NextResponse.json({ success: true });
 }
