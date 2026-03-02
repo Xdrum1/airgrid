@@ -10,34 +10,63 @@ const TIERS = [
   {
     name: "Free",
     price: "$0",
-    period: "Beta Access",
-    accent: "linear-gradient(135deg, #00d4ff, #7c3aed)",
+    period: "",
+    accent: "#00d4ff",
     badge: null,
     features: [
       "Interactive map & market rankings",
       "Readiness scores & 7-factor breakdown",
       "City detail pages",
-      "Watchlists & email alerts",
+      "Methodology & scoring sources",
     ],
-    yearlyNote: "Advanced features coming soon.",
-    cta: { label: "Get early access", href: "/login" },
+    yearlyNote: "Free access during beta.",
+    cta: { label: "Get started", href: "/login" },
+  },
+  {
+    name: "Pro",
+    price: "$99",
+    period: "/month",
+    accent: "#00ff88",
+    badge: "COMING SOON",
+    features: [
+      "Everything in Free, plus:",
+      "Corridor intelligence & filing access",
+      "Score history & operator tracker",
+      "Market & corridor alerts",
+    ],
+    yearlyNote: "$899/year (save 25%)",
+    cta: { label: "Join the waitlist", href: "/contact?tier=pro" },
+    highlight: true,
+  },
+  {
+    name: "Institutional",
+    price: "Custom",
+    period: "",
+    accent: "#7c3aed",
+    badge: null,
+    features: [
+      "Everything in Pro, plus:",
+      "Monthly report PDF delivered",
+      "API access & data export",
+      "Multi-seat team access",
+    ],
+    yearlyNote: "For teams and organizations",
+    cta: { label: "Learn more", href: "/contact?tier=institutional" },
   },
   {
     name: "Enterprise",
     price: "Custom",
     period: "",
-    yearlyNote: "For teams and organizations",
-    accent: "#7c3aed",
+    accent: "#f59e0b",
     badge: null,
     features: [
-      "Everything in Free, plus:",
-      "REST API access",
-      "Embeddable widgets",
-      "Team seats & permissions",
-      "Custom market reports",
-      "Dedicated account manager",
+      "Everything in Institutional, plus:",
+      "Unlimited API & data feeds",
+      "Custom market coverage",
+      "SLA & account manager",
     ],
-    cta: { label: "Contact us", href: "mailto:sales@airindex.io" },
+    yearlyNote: "For organizations embedding UAM data",
+    cta: { label: "Learn more", href: "/contact?tier=enterprise" },
   },
 ] as const;
 
@@ -123,6 +152,20 @@ export default async function LandingPage() {
             />
           </div>
           <div className="landing-nav-buttons" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <Link
+              href="/pricing"
+              className="nav-hide-mobile"
+              style={{
+                color: "#888",
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                textDecoration: "none",
+                padding: "8px 16px",
+                transition: "all 0.15s",
+              }}
+            >
+              Pricing
+            </Link>
             <Link
               href="/dashboard"
               className="nav-hide-mobile"
@@ -989,25 +1032,28 @@ export default async function LandingPage() {
               margin: "0 0 12px",
             }}
           >
-            Free access during beta.
+            Free access during beta. Paid plans launching soon.
           </h2>
           <p style={{ fontFamily: "'Inter', sans-serif", color: "#999", fontSize: 13, margin: 0 }}>
-            Core platform features available free while we validate with early users. Advanced tiers coming.
+            All features available free while we validate with early users.{" "}
+            <Link href="/pricing" style={{ color: "#00d4ff", textDecoration: "none" }}>
+              View full pricing →
+            </Link>
           </p>
         </div>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))",
-            gap: 24,
-            maxWidth: 720,
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))",
+            gap: 20,
+            maxWidth: 1120,
             margin: "0 auto",
             alignItems: "stretch",
           }}
         >
           {TIERS.map((tier) => {
-            const isFree = tier.name === "Free";
+            const isHighlight = "highlight" in tier && tier.highlight;
             return (
               <div
                 key={tier.name}
@@ -1015,12 +1061,12 @@ export default async function LandingPage() {
                   position: "relative",
                   display: "flex",
                   flexDirection: "column",
-                  background: "rgba(255,255,255,0.02)",
-                  border: isFree
-                    ? "1px solid rgba(0,212,255,0.3)"
+                  background: isHighlight ? "rgba(0,255,136,0.03)" : "rgba(255,255,255,0.02)",
+                  border: isHighlight
+                    ? `1px solid ${tier.accent}44`
                     : "1px solid rgba(255,255,255,0.06)",
                   borderRadius: 12,
-                  padding: "36px 28px 32px",
+                  padding: "36px 24px 28px",
                   transition: "border-color 0.2s",
                 }}
               >
@@ -1029,12 +1075,10 @@ export default async function LandingPage() {
                   style={{
                     position: "absolute",
                     top: -1,
-                    left: 32,
-                    right: 32,
+                    left: 28,
+                    right: 28,
                     height: 2,
-                    background: typeof tier.accent === "string" && tier.accent.startsWith("linear")
-                      ? tier.accent
-                      : tier.accent,
+                    background: tier.accent,
                     borderRadius: "2px 2px 0 0",
                   }}
                 />
@@ -1110,7 +1154,7 @@ export default async function LandingPage() {
                       }}
                     >
                       {f.endsWith(":") ? null : (
-                        <span style={{ color: "#00d4ff", fontSize: 10, marginTop: 3, flexShrink: 0 }}>
+                        <span style={{ color: tier.accent, fontSize: 10, marginTop: 3, flexShrink: 0 }}>
                           ✓
                         </span>
                       )}
@@ -1126,19 +1170,18 @@ export default async function LandingPage() {
                     style={{
                       display: "block",
                       textAlign: "center",
-                      padding: "12px 24px",
-                      background: isFree
-                        ? "#00d4ff"
-                        : "rgba(255,255,255,0.04)",
-                      border: isFree ? "none" : "1px solid rgba(255,255,255,0.1)",
+                      padding: "12px 0",
                       borderRadius: 6,
-                      color: isFree ? "#050508" : "#aaa",
                       fontSize: 11,
                       fontWeight: 700,
                       fontFamily: "'Syne', sans-serif",
                       letterSpacing: "0.06em",
                       textDecoration: "none",
                       transition: "opacity 0.15s",
+                      ...(isHighlight
+                        ? { background: tier.accent, color: "#050508" }
+                        : { background: `${tier.accent}15`, border: `1px solid ${tier.accent}44`, color: tier.accent }
+                      ),
                     }}
                   >
                     {tier.cta.label}
@@ -1149,19 +1192,18 @@ export default async function LandingPage() {
                     style={{
                       display: "block",
                       textAlign: "center",
-                      padding: "12px 24px",
-                      background: isFree
-                        ? "#00d4ff"
-                        : "rgba(255,255,255,0.04)",
-                      border: isFree ? "none" : "1px solid rgba(255,255,255,0.1)",
+                      padding: "12px 0",
                       borderRadius: 6,
-                      color: isFree ? "#050508" : "#aaa",
                       fontSize: 11,
                       fontWeight: 700,
                       fontFamily: "'Syne', sans-serif",
                       letterSpacing: "0.06em",
                       textDecoration: "none",
                       transition: "opacity 0.15s",
+                      ...(isHighlight
+                        ? { background: tier.accent, color: "#050508" }
+                        : { background: `${tier.accent}15`, border: `1px solid ${tier.accent}44`, color: tier.accent }
+                      ),
                     }}
                   >
                     {tier.cta.label}
