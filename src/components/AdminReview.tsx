@@ -7,6 +7,7 @@ import { safeHref } from "@/lib/safe-url";
 import { formatRelativeTime } from "@/lib/dashboard-constants";
 import AdminCorridors from "./AdminCorridors";
 import AdminEvents from "./AdminEvents";
+import AdminBilling from "./AdminBilling";
 
 // -------------------------------------------------------
 // Types
@@ -38,7 +39,7 @@ interface ClassificationResult {
   createdAt: string;
 }
 
-type TabKey = "overrides" | "classifications" | "corridors" | "events";
+type TabKey = "overrides" | "classifications" | "corridors" | "events" | "billing";
 
 // -------------------------------------------------------
 // Helpers
@@ -455,12 +456,13 @@ export default function AdminReview() {
           padding: "0 24px",
         }}
       >
-        {(["overrides", "classifications", "corridors", "events"] as const).map((t) => {
+        {(["overrides", "classifications", "corridors", "events", "billing"] as const).map((t) => {
           const labels: Record<TabKey, string> = {
             overrides: "PENDING OVERRIDES",
             classifications: "CLASSIFICATIONS",
             corridors: "CORRIDORS",
             events: "EVENTS",
+            billing: "BILLING",
           };
           return (
             <button
@@ -491,7 +493,9 @@ export default function AdminReview() {
 
       {/* Content */}
       <div style={{ padding: 24, maxWidth: 900, margin: "0 auto" }}>
-        {tab === "events" ? (
+        {tab === "billing" ? (
+          <AdminBilling showToast={showToast} />
+        ) : tab === "events" ? (
           <AdminEvents showToast={showToast} />
         ) : tab === "corridors" ? (
           <AdminCorridors showToast={showToast} />

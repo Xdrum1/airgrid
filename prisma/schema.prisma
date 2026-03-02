@@ -10,18 +10,21 @@ generator client {
 // ── Auth.js required models ─────────────────────────────────
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  subscriptions Subscription[]
-  watchlist     Watchlist?
-  events        UserEvent[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                    String    @id @default(cuid())
+  name                  String?
+  email                 String    @unique
+  emailVerified         DateTime?
+  image                 String?
+  stripeCustomerId      String?   @unique
+  tier                  String    @default("free") // free|pro|institutional|enterprise|grandfathered
+  accounts              Account[]
+  sessions              Session[]
+  subscriptions         Subscription[]
+  billingSubscriptions  BillingSubscription[]
+  watchlist             Watchlist?
+  events                UserEvent[]
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
 model Account {
@@ -216,4 +219,25 @@ model ContactInquiry {
 
   @@index([tier])
   @@index([email])
+}
+
+model BillingSubscription {
+  id                    String    @id @default(cuid())
+  userId                String
+  stripeCustomerId      String
+  stripeSubscriptionId  String    @unique
+  stripePriceId         String
+  tier                  String    // pro|institutional|enterprise
+  status                String    // active|past_due|canceled|trialing|unpaid
+  currentPeriodStart    DateTime
+  currentPeriodEnd      DateTime
+  cancelAtPeriodEnd     Boolean   @default(false)
+  canceledAt            DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([stripeCustomerId])
+  @@index([status])
 }

@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { sendSesEmail } from "@/lib/ses";
 import { rateLimit } from "@/lib/rate-limit";
 import { createLogger } from "@/lib/logger";
+import { getUserTier } from "@/lib/billing";
 
 const logger = createLogger("auth");
 
@@ -159,11 +160,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   callbacks: {
-    jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.sub = user.id;
         token.email = user.email;
         token.name = user.name;
+      }
+      // Refresh tier on sign-in or when session update is triggered
+      if ((user || trigger === "update") && token.sub) {
+        try {
+          token.tier = await getUserTier(token.sub);
+        } catch (err) {
+          logger.error("Failed to fetch user tier:", err);
+          token.tier = token.tier ?? "free";
+        }
       }
       return token;
     },
@@ -172,6 +182,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (token.sub) session.user.id = token.sub;
         if (token.email) session.user.email = token.email as string;
         if (token.name) session.user.name = token.name as string;
+        session.user.tier = (token.tier as string) ?? "free";
       }
       return session;
     },
