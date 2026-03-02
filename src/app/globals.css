@@ -28,7 +28,6 @@ body {
   background: var(--bg);
   color: #fff;
   font-family: "Space Mono", monospace;
-  overflow: hidden;
 }
 
 /* Scrollbar styling */
@@ -92,12 +91,6 @@ body {
   }
 }
 
-@media (max-width: 767px) {
-  html,
-  body {
-    overflow: auto;
-  }
-}
 
 /* Landing page responsive */
 @media (max-width: 640px) {
