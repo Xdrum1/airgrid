@@ -15,6 +15,11 @@ const recommended = [
   "ADMIN_NOTIFY_EMAIL",
   "UPSTASH_REDIS_REST_URL",
   "UPSTASH_REDIS_REST_TOKEN",
+  "STRIPE_SECRET_KEY",
+  "STRIPE_WEBHOOK_SECRET",
+  "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+  "STRIPE_PRO_MONTHLY_PRICE_ID",
+  "STRIPE_PRO_ANNUAL_PRICE_ID",
 ] as const;
 
 const optional = [
@@ -22,6 +27,8 @@ const optional = [
   "LEGISCAN_API_KEY",
   "NEXT_PUBLIC_MAPBOX_TOKEN",
   "LOG_LEVEL",
+  "PAYWALL_LAUNCH_DATE",
+  "GRANDFATHERED_EXPIRY",
 ] as const;
 
 for (const key of required) {
