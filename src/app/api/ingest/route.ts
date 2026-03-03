@@ -3,7 +3,7 @@ import { after } from "next/server";
 import { runIngestion } from "@/lib/ingestion";
 import { rateLimit } from "@/lib/rate-limit";
 
-export async function POST(request: NextRequest) {
+function authorize(request: NextRequest): NextResponse | null {
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret) {
     return NextResponse.json(
@@ -20,6 +20,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  return null;
+}
+
+async function startIngestion(): Promise<NextResponse> {
   const rl = await rateLimit("ingest", 4, 60 * 60 * 1000);
   if (!rl.allowed) {
     return NextResponse.json(
@@ -41,4 +45,18 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json({ success: true, message: "Ingestion started" });
+}
+
+// Crons send GET requests
+export async function GET(request: NextRequest) {
+  const denied = authorize(request);
+  if (denied) return denied;
+  return startIngestion();
+}
+
+// Keep POST for manual triggers
+export async function POST(request: NextRequest) {
+  const denied = authorize(request);
+  if (denied) return denied;
+  return startIngestion();
 }
