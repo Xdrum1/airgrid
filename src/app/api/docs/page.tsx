@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { getUserTier } from "@/lib/billing";
-import { hasInstitutionalAccess } from "@/lib/billing-shared";
+import { hasProAccess } from "@/lib/billing-shared";
 import TrackPageView from "@/components/TrackPageView";
 
 export const metadata: Metadata = {
@@ -216,7 +216,7 @@ export default async function ApiDocsPage() {
   }
 
   const tier = await getUserTier(session.user.id);
-  if (!hasInstitutionalAccess(tier)) {
+  if (!hasProAccess(tier)) {
     return <UpgradeWall />;
   }
 

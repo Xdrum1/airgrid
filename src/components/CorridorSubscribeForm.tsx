@@ -3,11 +3,14 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { plausible } from "@/lib/plausible";
+import { hasProAccess } from "@/lib/billing-shared";
 
 interface CorridorSubscribeFormProps {
   corridorId: string;
   corridorName: string;
+  userTier?: string;
 }
 
 const LS_COR_SUB_PREFIX = "airgrid_cor_sub_";
@@ -17,6 +20,7 @@ type FormState = "collapsed" | "submitting" | "success";
 export default function CorridorSubscribeForm({
   corridorId,
   corridorName,
+  userTier = "free",
 }: CorridorSubscribeFormProps) {
   const { data: session } = useSession();
   const router = useRouter();
@@ -161,6 +165,35 @@ export default function CorridorSubscribeForm({
   }
 
   const isSubmitting = state === "submitting";
+
+  // Show upgrade prompt for authenticated free users
+  if (session?.user && !hasProAccess(userTier)) {
+    return (
+      <div>
+        <Link
+          href="/pricing"
+          style={{
+            width: "100%",
+            background: "rgba(0,212,255,0.04)",
+            border: "1px solid rgba(0,212,255,0.15)",
+            borderRadius: 6,
+            padding: "10px 14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            fontFamily: "'Space Mono', monospace",
+            textDecoration: "none",
+            transition: "all 0.15s",
+          }}
+        >
+          <span style={{ color: "#00d4ff", fontSize: 9, letterSpacing: 1, fontWeight: 700 }}>
+            UPGRADE TO TRACK
+          </span>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div>

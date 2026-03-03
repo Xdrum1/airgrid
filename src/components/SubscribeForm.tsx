@@ -3,14 +3,17 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { ChangeType } from "@/types";
 import { trackEvent } from "@/lib/track";
 import { plausible } from "@/lib/plausible";
+import { hasProAccess } from "@/lib/billing-shared";
 
 interface SubscribeFormProps {
   cityId: string;
   cityName: string;
   onSubscriptionChange?: (cityId: string, subscribed: boolean) => void;
+  userTier?: string;
 }
 
 const CHANGE_TYPE_OPTIONS: { value: ChangeType; label: string }[] = [
@@ -24,7 +27,7 @@ const LS_SUB_PREFIX = "airgrid_sub_";
 
 type FormState = "collapsed" | "expanded" | "submitting" | "success";
 
-export default function SubscribeForm({ cityId, cityName, onSubscriptionChange }: SubscribeFormProps) {
+export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, userTier = "free" }: SubscribeFormProps) {
   const { data: session } = useSession();
   const router = useRouter();
   const [state, setState] = useState<FormState>("collapsed");
@@ -132,6 +135,54 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange }
 
   // --- Collapsed state ---
   if (state === "collapsed") {
+    // Show upgrade prompt for authenticated free users
+    if (session?.user && !hasProAccess(userTier)) {
+      return (
+        <div>
+          <div
+            style={{
+              color: "#777",
+              fontSize: 8,
+              letterSpacing: 2,
+              marginBottom: 10,
+            }}
+          >
+            ALERT SUBSCRIPTIONS
+          </div>
+          <Link
+            href="/pricing"
+            style={{
+              width: "100%",
+              background: "rgba(0,255,136,0.04)",
+              border: "1px solid rgba(0,255,136,0.15)",
+              borderRadius: 6,
+              padding: "10px 14px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              fontFamily: "'Space Mono', monospace",
+              textDecoration: "none",
+              transition: "all 0.15s",
+            }}
+          >
+            <span style={{ color: "#888", fontSize: 10 }}>
+              Upgrade to Pro for alerts
+            </span>
+            <span
+              style={{
+                color: "#00ff88",
+                fontSize: 8,
+                letterSpacing: 1,
+                fontFamily: "'Space Mono', monospace",
+              }}
+            >
+              VIEW PLANS
+            </span>
+          </Link>
+        </div>
+      );
+    }
+
     return (
       <div>
         <div

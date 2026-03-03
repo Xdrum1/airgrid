@@ -17,6 +17,7 @@ import SubscribeForm from "./SubscribeForm";
 import ScoreTrend from "./ScoreTrend";
 import FactorSparklines from "./FactorSparklines";
 import { safeHref } from "@/lib/safe-url";
+import { hasProAccess } from "@/lib/billing-shared";
 import type { ScoreHistoryFull } from "@/lib/score-history";
 
 // -------------------------------------------------------
@@ -84,6 +85,7 @@ interface CityDetailProps {
   vertiports: Vertiport[];
   corridors: Corridor[];
   scoreHistory?: ScoreHistoryFull[];
+  userTier?: string;
 }
 
 // -------------------------------------------------------
@@ -98,6 +100,7 @@ export default function CityDetail({
   vertiports,
   corridors,
   scoreHistory,
+  userTier = "free",
 }: CityDetailProps) {
   const [mounted, setMounted] = useState(false);
   const { isWatched, toggle: toggleWatch, isAuthenticated } = useWatchlist();
@@ -409,16 +412,50 @@ export default function CityDetail({
 
         {/* ---- c2) Factor Trends ---- */}
         {scoreHistory && scoreHistory.filter((h) => h.breakdown).length >= 2 && (
-          <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
-              FACTOR TRENDS
+          hasProAccess(userTier) ? (
+            <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+                FACTOR TRENDS
+              </div>
+              <FactorSparklines history={scoreHistory} />
             </div>
-            <FactorSparklines history={scoreHistory} />
-          </div>
+          ) : (
+            <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+                FACTOR TRENDS
+              </div>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "32px 20px",
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 8,
+                }}
+              >
+                <div style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>
+                  Factor trend analysis is available on Pro.
+                </div>
+                <Link
+                  href="/pricing"
+                  style={{
+                    color: "#00ff88",
+                    fontSize: 10,
+                    letterSpacing: 1,
+                    textDecoration: "none",
+                    fontFamily: "'Space Mono', monospace",
+                  }}
+                >
+                  VIEW PLANS →
+                </Link>
+              </div>
+            </div>
+          )
         )}
 
         {/* ---- c3) Score History ---- */}
         {scoreHistory && scoreHistory.filter((h) => h.triggeringEventId).length > 0 && (
+          hasProAccess(userTier) ? (
           <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
             <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
               SCORE HISTORY
@@ -582,6 +619,38 @@ export default function CityDetail({
                 })}
             </div>
           </div>
+          ) : (
+            <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ color: "#999", fontSize: 9, letterSpacing: 2, marginBottom: 20 }}>
+                SCORE HISTORY
+              </div>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "32px 20px",
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 8,
+                }}
+              >
+                <div style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>
+                  Score history timeline is available on Pro.
+                </div>
+                <Link
+                  href="/pricing"
+                  style={{
+                    color: "#00ff88",
+                    fontSize: 10,
+                    letterSpacing: 1,
+                    textDecoration: "none",
+                    fontFamily: "'Space Mono', monospace",
+                  }}
+                >
+                  VIEW PLANS →
+                </Link>
+              </div>
+            </div>
+          )
         )}
 
         {/* ---- d) Operator Presence ---- */}
@@ -885,7 +954,7 @@ export default function CityDetail({
 
         {/* ---- i) Subscribe ---- */}
         <div style={{ paddingTop: 36, paddingBottom: 36, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <SubscribeForm cityId={city.id} cityName={city.city} />
+          <SubscribeForm cityId={city.id} cityName={city.city} userTier={userTier} />
         </div>
 
         {/* ---- j) Footer ---- */}
