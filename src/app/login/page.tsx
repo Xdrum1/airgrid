@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
+import { plausible } from "@/lib/plausible";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -47,6 +48,7 @@ function LoginForm() {
           : "Something went wrong. Please try again.");
         setLoading(false);
       } else {
+        plausible("Sign In Attempt");
         setStep("code");
         setLoading(false);
       }

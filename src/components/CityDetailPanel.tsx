@@ -10,6 +10,7 @@ import BreakdownPanel from "./BreakdownPanel";
 
 import WatchlistStar from "./WatchlistStar";
 import { trackEvent } from "@/lib/track";
+import { plausible } from "@/lib/plausible";
 
 export default function CityDetailPanel({
   selected,
@@ -249,7 +250,7 @@ export default function CityDetailPanel({
             return op ? (
               <div
                 key={opId}
-                onClick={() => trackEvent("operator_click", "operator", opId)}
+                onClick={() => { trackEvent("operator_click", "operator", opId); plausible("Operator Click", { operator: opId }); }}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -385,7 +386,7 @@ export default function CityDetailPanel({
                 key={c.id}
                 onClick={() => {
                   onCorridorSelect(isCorSelected ? null : c);
-                  if (!isCorSelected) trackEvent("corridor_click", "corridor", c.id);
+                  if (!isCorSelected) { trackEvent("corridor_click", "corridor", c.id); plausible("Corridor Click", { corridor: c.id }); }
                 }}
                 style={{
                   background: isCorSelected

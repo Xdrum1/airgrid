@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { trackEvent } from "@/lib/track";
+import { plausible } from "@/lib/plausible";
 
 const STORAGE_KEY = "airindex-watchlist";
 
@@ -86,6 +87,7 @@ export function useWatchlist() {
             setCityIds(json.cityIds);
             writeLocal(json.cityIds);
             trackEvent(watched ? "watchlist_remove" : "watchlist_add", "city", cityId);
+            plausible(watched ? "Watchlist Remove" : "Watchlist Add", { city: cityId });
           }
         })
         .catch(() => {

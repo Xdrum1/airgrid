@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { plausible } from "@/lib/plausible";
 
 function ContactForm() {
   const searchParams = useSearchParams();
@@ -29,7 +30,12 @@ function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      setState(res.ok ? "success" : "error");
+      if (res.ok) {
+        setState("success");
+        plausible("Contact Submission", { tier: form.tier });
+      } else {
+        setState("error");
+      }
     } catch {
       setState("error");
     }
