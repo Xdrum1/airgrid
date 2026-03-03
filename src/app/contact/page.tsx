@@ -261,6 +261,17 @@ export default function ContactPage() {
               Pricing
             </Link>
             <Link
+              href="/api"
+              style={{
+                color: "#888",
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                textDecoration: "none",
+              }}
+            >
+              API
+            </Link>
+            <Link
               href="/dashboard"
               style={{
                 color: "#888",
@@ -311,7 +322,7 @@ export default function ContactPage() {
         }}
       >
         <span style={{ color: "#777", fontSize: 9, letterSpacing: 1 }}>
-          © 2026 AIRINDEX · <Link href="/" style={{ color: "#777", textDecoration: "none" }}>HOME</Link> · <Link href="/about" style={{ color: "#777", textDecoration: "none" }}>ABOUT</Link> · <Link href="/pricing" style={{ color: "#777", textDecoration: "none" }}>PRICING</Link> · <Link href="/dashboard" style={{ color: "#777", textDecoration: "none" }}>DASHBOARD</Link>
+          © 2026 AIRINDEX · <Link href="/" style={{ color: "#777", textDecoration: "none" }}>HOME</Link> · <Link href="/about" style={{ color: "#777", textDecoration: "none" }}>ABOUT</Link> · <Link href="/pricing" style={{ color: "#777", textDecoration: "none" }}>PRICING</Link> · <Link href="/api" style={{ color: "#777", textDecoration: "none" }}>API</Link> · <Link href="/dashboard" style={{ color: "#777", textDecoration: "none" }}>DASHBOARD</Link>
         </span>
       </footer>
     </div>

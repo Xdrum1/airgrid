@@ -23,6 +23,7 @@ export default function AboutPage() {
         </Link>
         <div className="flex items-center gap-6 text-sm text-white/60">
           <Link href="/methodology" className="hover:text-white transition-colors">Methodology</Link>
+          <Link href="/api" className="hover:text-white transition-colors">API</Link>
           <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
           <Link href="/login" className="hover:text-white transition-colors">Sign in</Link>
         </div>
