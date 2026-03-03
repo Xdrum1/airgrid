@@ -57,7 +57,7 @@ export function getScoreColor(score: number): string {
 }
 
 export function getScoreTier(score: number): string {
-  if (score >= 75) return "HIGH";
+  if (score >= 75) return "ADVANCED";
   if (score >= 50) return "MODERATE";
   if (score >= 30) return "EARLY";
   return "NASCENT";
