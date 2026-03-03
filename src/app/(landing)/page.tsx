@@ -153,6 +153,20 @@ export default async function LandingPage() {
           </div>
           <div className="landing-nav-buttons" style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Link
+              href="/about"
+              className="nav-hide-mobile"
+              style={{
+                color: "#888",
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                textDecoration: "none",
+                padding: "8px 16px",
+                transition: "all 0.15s",
+              }}
+            >
+              About
+            </Link>
+            <Link
               href="/pricing"
               className="nav-hide-mobile"
               style={{
@@ -1322,6 +1336,12 @@ export default async function LandingPage() {
             >
               PLATFORM
             </a>
+            <Link
+              href="/about"
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              ABOUT
+            </Link>
             <Link
               href="/methodology"
               style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
