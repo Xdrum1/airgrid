@@ -15,7 +15,7 @@ jobs:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           APP_URL: ${{ vars.APP_URL }}
         run: |
-          URL="${APP_URL:-https://airindex.io}"
+          URL="${APP_URL:-https://www.airindex.io}"
           RESPONSE=$(curl -s -w "\n%{http_code}" \
             -H "Authorization: Bearer $CRON_SECRET" \
             "$URL/api/digest")
