@@ -1,16 +1,17 @@
-name: Weekly auto-review cron
+name: Daily snapshot cron
 
 on:
   schedule:
-    # Run every Monday at 08:00 UTC (3am EST / 12am PST)
-    - cron: "0 8 * * 1"
+    # Run every day at 06:00 UTC (1am EST / 10pm PST)
+    # Digest cron runs 1 hour later at 07:00 UTC
+    - cron: "0 6 * * *"
   workflow_dispatch: # Allow manual trigger from GitHub UI
 
 jobs:
-  auto-review:
+  snapshot:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger auto-review endpoint
+      - name: Trigger snapshot endpoint
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           APP_URL: ${{ vars.APP_URL }}
@@ -18,7 +19,7 @@ jobs:
           URL="${APP_URL:-https://www.airindex.io}"
           RESPONSE=$(curl -s -w "\n%{http_code}" \
             -H "Authorization: Bearer $CRON_SECRET" \
-            "$URL/api/admin/overrides/auto-review")
+            "$URL/api/snapshot")
 
           HTTP_CODE=$(echo "$RESPONSE" | tail -1)
           BODY=$(echo "$RESPONSE" | sed '$d')
@@ -27,6 +28,6 @@ jobs:
           echo "Response: $BODY"
 
           if [ "$HTTP_CODE" != "200" ]; then
-            echo "::error::Auto-review failed with status $HTTP_CODE"
+            echo "::error::Snapshot failed with status $HTTP_CODE"
             exit 1
           fi

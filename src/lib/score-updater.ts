@@ -92,11 +92,20 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
       },
     });
 
-    // Group overrides by city
+    // Group overrides by city, translating override fields to City interface fields
     const overridesByCity = new Map<string, Record<string, unknown>>();
     for (const override of overrides) {
       const existing = overridesByCity.get(override.cityId) ?? {};
-      existing[override.field] = override.value;
+      // Translate override fields that don't directly match City interface
+      if (override.field === "approvedVertiport" && override.value === true) {
+        existing["vertiportCount"] = Math.max((existing["vertiportCount"] as number) ?? 0, 1);
+      } else if (override.field === "activeOperatorPresence" && override.value === true) {
+        const current = (existing["activeOperators"] as string[]) ?? [];
+        if (!current.includes("__override__")) current.push("__override__");
+        existing["activeOperators"] = current;
+      } else {
+        existing[override.field] = override.value;
+      }
       overridesByCity.set(override.cityId, existing);
     }
 
