@@ -26,10 +26,11 @@ import CorridorsTab from "./tabs/CorridorsTab";
 import FilingsTab from "./tabs/FilingsTab";
 import ActivityTab from "./tabs/ActivityTab";
 import AnalyticsTab from "./tabs/AnalyticsTab";
+import KeysTab from "./tabs/KeysTab";
 
 // -------------------------------------------------------
 
-const GATED_TABS: TabKey[] = ["filings", "activity", "analytics"];
+const GATED_TABS: TabKey[] = ["filings", "activity", "analytics", "keys"];
 
 interface DashboardProps {
   initialCities?: City[];
@@ -52,7 +53,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
   const [selected, setSelected] = useState<City>(CITIES_RESOLVED[0]);
   const [filter, setFilter] = useState<FilterKey>("all");
   const [tab, setTab] = useState<TabKey>(
-    ["map", "rank", "corridors", "filings", "activity", "analytics"].includes(initialTab) ? initialTab : "map"
+    ["map", "rank", "corridors", "filings", "activity", "analytics", "keys"].includes(initialTab) ? initialTab : "map"
   );
   const [animate, setAnimate] = useState(false);
   const [showSignOut, setShowSignOut] = useState(false);
@@ -245,6 +246,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                   ["filings", "FEED"],
                   ["activity", "ACTIVITY"],
                   ["analytics", "STATS"],
+                  ["keys", "API"],
                 ] as [TabKey, string][]
               : [
                   ["map", "MAP VIEW"],
@@ -253,6 +255,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                   ["filings", "FILINGS"],
                   ["activity", "ACTIVITY"],
                   ["analytics", "ANALYTICS"],
+                  ["keys", "API KEYS"],
                 ] as [TabKey, string][]
             ).map(([t, label]) => (
               <button
@@ -289,6 +292,12 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
           {/* Tab content */}
           {GATED_TABS.includes(tab) && !session?.user ? (
             <AuthGate tab={tab} />
+          ) : tab === "keys" ? (
+            <KeysTab
+              animate={animate}
+              isMobile={isMobile}
+              userTier={(session?.user as { tier?: string } | undefined)?.tier ?? "free"}
+            />
           ) : tab === "corridors" ? (
             <CorridorsTab
               corridors={fetchedCorridors}
