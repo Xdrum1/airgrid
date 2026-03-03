@@ -173,31 +173,33 @@ export async function runIngestion(): Promise<{
   return withLock(async () => {
     console.log("[ingestion] Starting ingestion run...");
 
-    // 1. Fetch Federal Register
-    const federalFilings = await fetchFederalRegisterUAM(90);
-    console.log(`[ingestion] Federal Register: ${federalFilings.length} filings`);
-
-    // 2. Fetch LegiScan for target states (graceful no-op without key)
-    const allBills: StateBill[] = [];
-    for (const state of TARGET_STATES) {
-      const bills = await fetchStateBills(state);
-      allBills.push(...bills);
-    }
-    console.log(`[ingestion] LegiScan: ${allBills.length} bills`);
-
-    // 3. Fetch SEC EDGAR filings for tracked operators (8-K, 10-K, 10-Q)
+    // 1-4. Fetch all sources in parallel
     const SEC_FORM_TYPES = ["8-K", "10-K", "10-Q"];
-    const allSecFilings: IngestedRecord[] = [];
-    for (const operatorId of Object.keys(OPERATOR_CIKS)) {
-      for (const formType of SEC_FORM_TYPES) {
-        const filings = await fetchOperatorFilings(operatorId, formType);
-        allSecFilings.push(...filings.map((f) => normalizeSecFiling(f, operatorId)));
-      }
-    }
-    console.log(`[ingestion] SEC EDGAR: ${allSecFilings.length} filings (${SEC_FORM_TYPES.join(", ")})`);
 
-    // 4. Fetch operator news via Google News RSS
-    const operatorNews = await fetchAllOperatorNews(30);
+    const [federalFilings, legiscanResults, secEdgarResults, operatorNews] = await Promise.all([
+      // 1. Federal Register
+      fetchFederalRegisterUAM(90),
+      // 2. LegiScan for all target states in parallel
+      Promise.all(TARGET_STATES.map((state) => fetchStateBills(state))),
+      // 3. SEC EDGAR for all operator × form type combos in parallel
+      Promise.all(
+        Object.keys(OPERATOR_CIKS).flatMap((operatorId) =>
+          SEC_FORM_TYPES.map(async (formType) => {
+            const filings = await fetchOperatorFilings(operatorId, formType);
+            return filings.map((f) => normalizeSecFiling(f, operatorId));
+          })
+        )
+      ),
+      // 4. Operator news via Google News RSS
+      fetchAllOperatorNews(30),
+    ]);
+
+    const allBills = legiscanResults.flat();
+    const allSecFilings = secEdgarResults.flat();
+
+    console.log(`[ingestion] Federal Register: ${federalFilings.length} filings`);
+    console.log(`[ingestion] LegiScan: ${allBills.length} bills`);
+    console.log(`[ingestion] SEC EDGAR: ${allSecFilings.length} filings (${SEC_FORM_TYPES.join(", ")})`);
 
     // 5. Normalize and merge all sources
     const incomingRecords: IngestedRecord[] = [
