@@ -6,7 +6,7 @@ import type { FederalFiling, StateBill, SecFiling } from "@/lib/faa-api";
 import { fetchAllOperatorNews } from "@/lib/operator-news";
 import { addChangelogEntries } from "@/lib/changelog";
 import { notifySubscribers } from "@/lib/notifications";
-import { evaluateRules, evaluateRulesV2 } from "@/lib/rules-engine";
+import { evaluateRulesV2 } from "@/lib/rules-engine";
 import { updateCorridorStatus } from "@/lib/corridors";
 import { classifyRecords } from "@/lib/classifier";
 import { applyOverrides } from "@/lib/score-updater";
@@ -160,7 +160,7 @@ function diffRecords(
 // -------------------------------------------------------
 // Target states for LegiScan
 // -------------------------------------------------------
-const TARGET_STATES = ["CA", "TX", "FL", "NY", "AZ", "NV", "IL", "GA"];
+const TARGET_STATES = ["CA", "TX", "FL", "NY", "AZ", "NV", "IL", "GA", "TN", "NC", "CO", "WA", "MA", "MN", "DC"];
 
 // -------------------------------------------------------
 // Orchestrator
@@ -269,13 +269,16 @@ export async function runIngestion(): Promise<{
     // 9. Classify new/updated records with NLP (falls back to regex rules)
     const changedRecords = [...diff.newRecords, ...diff.updatedRecords];
     if (changedRecords.length > 0) {
+      // Run rules engine once for both overrides (fallback) and corridor events
+      const { overrideCandidates: regexOverrides, corridorEvents } = evaluateRulesV2(changedRecords);
+
       let overrideCandidates;
       try {
         overrideCandidates = await classifyRecords(changedRecords);
         console.log(`[ingestion] NLP classifier: ${overrideCandidates.length} candidates`);
       } catch (err) {
         console.warn("[ingestion] NLP classifier failed, falling back to regex rules:", err);
-        overrideCandidates = evaluateRules(changedRecords);
+        overrideCandidates = regexOverrides;
       }
       if (overrideCandidates.length > 0) {
         const result = await applyOverrides(overrideCandidates);
@@ -285,7 +288,6 @@ export async function runIngestion(): Promise<{
       }
 
       // 10. Process corridor events
-      const { corridorEvents } = evaluateRulesV2(changedRecords);
       if (corridorEvents.length > 0) {
         console.log(`[ingestion] Processing ${corridorEvents.length} corridor events`);
         const corridorChangelogBatch: Omit<ChangelogEntry, "id" | "timestamp">[] = [];

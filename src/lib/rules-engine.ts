@@ -51,6 +51,13 @@ const STATE_TO_CITIES: Record<string, string[]> = {
   NV: ["las_vegas"],
   IL: ["chicago"],
   GA: ["atlanta"],
+  TN: ["nashville"],
+  NC: ["charlotte"],
+  CO: ["denver"],
+  WA: ["seattle"],
+  MA: ["boston"],
+  MN: ["minneapolis"],
+  DC: ["washington_dc"],
 };
 
 // -------------------------------------------------------
