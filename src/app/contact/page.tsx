@@ -311,7 +311,7 @@ export default function ContactPage() {
         }}
       >
         <span style={{ color: "#777", fontSize: 9, letterSpacing: 1 }}>
-          © 2026 AIRINDEX · <Link href="/" style={{ color: "#777", textDecoration: "none" }}>HOME</Link> · <Link href="/pricing" style={{ color: "#777", textDecoration: "none" }}>PRICING</Link> · <Link href="/dashboard" style={{ color: "#777", textDecoration: "none" }}>DASHBOARD</Link>
+          © 2026 AIRINDEX · <Link href="/" style={{ color: "#777", textDecoration: "none" }}>HOME</Link> · <Link href="/about" style={{ color: "#777", textDecoration: "none" }}>ABOUT</Link> · <Link href="/pricing" style={{ color: "#777", textDecoration: "none" }}>PRICING</Link> · <Link href="/dashboard" style={{ color: "#777", textDecoration: "none" }}>DASHBOARD</Link>
         </span>
       </footer>
     </div>
