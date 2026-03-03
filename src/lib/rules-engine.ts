@@ -1,12 +1,15 @@
 /**
  * Rules Engine — maps ingested records to scoring override candidates.
  *
- * 5 explicit rules:
+ * Rules:
  * 1. State bill signed → hasStateLegislation = true (high confidence)
  * 2. Vertiport zoning bill signed → hasVertiportZoning = true (medium)
  * 3. FAA corridor/cert filing → regulatoryPosture flag (needs_review)
- * 4. Operator 8-K filing → flag for manual review (needs_review)
- * 5. FAA cert milestone in 8-K → hasActivePilotProgram = true (medium)
+ * 4. SEC EDGAR operator filings:
+ *    4a. FAA cert milestone in 8-K → hasActivePilotProgram = true (medium)
+ *    4b. Operator market expansion → activeOperatorPresence = true (medium/needs_review)
+ *    4c. Infrastructure/vertiport keywords → approvedVertiport flag (needs_review)
+ *    Unmatched SEC filings produce no override (no __review__ placeholders).
  */
 
 import type { IngestedRecord } from "@/lib/ingestion";
@@ -60,6 +63,8 @@ const ZONING_KEYWORDS = /zoning|land.use|vertiport.sit|heliport.permit/i;
 const CORRIDOR_KEYWORDS = /corridor|airway|route.auth|airspace.design|powered.lift.operations/i;
 const CERT_KEYWORDS = /type.cert|airworthiness|part.135|part.21|sfar|special.condition/i;
 const FAA_CERT_8K_KEYWORDS = /faa.cert|type.certificate|airworthiness|part.135|powered.lift|milestone|approved/i;
+const EXPANSION_KEYWORDS = /market.expansion|new.market|commercial.launch|service.launch|operations.in|commence|begin.service/i;
+const INFRA_KEYWORDS = /vertiport|terminal|facility.acqui|airport.acqui|infrastructure|charging.station|ground.support/i;
 
 // -------------------------------------------------------
 // Operator → cities mapping (from seed data)
@@ -197,21 +202,11 @@ function evaluateRecord(record: IngestedRecord): OverrideCandidate[] {
     }
   }
 
-  // Rule 4: Operator 8-K filing → flag for manual review
+  // Rule 4: SEC EDGAR operator filings
   if (record.source === "sec_edgar") {
     const operatorId = (record.raw as Record<string, unknown>).operatorId as string | undefined;
 
-    candidates.push({
-      cityId: "__unresolved__",
-      field: "__review__",
-      value: null,
-      reason: `New ${record.status} filing from ${operatorId ?? "unknown operator"}: ${record.title}`,
-      sourceRecordId: record.id,
-      sourceUrl: record.url,
-      confidence: "needs_review",
-    });
-
-    // Rule 5: FAA cert milestone in 8-K → hasActivePilotProgram = true
+    // Rule 4a: FAA cert milestone in 8-K → hasActivePilotProgram = true
     if (operatorId && FAA_CERT_8K_KEYWORDS.test(text)) {
       const cities = getOperatorCities(operatorId);
       for (const cityId of cities) {
@@ -226,6 +221,37 @@ function evaluateRecord(record: IngestedRecord): OverrideCandidate[] {
         });
       }
     }
+
+    // Rule 4b: Operator market expansion keywords → activeOperatorPresence = true
+    if (operatorId && EXPANSION_KEYWORDS.test(text)) {
+      const cities = getOperatorCities(operatorId);
+      for (const cityId of cities.length > 0 ? cities : ["__unresolved__"]) {
+        candidates.push({
+          cityId,
+          field: "activeOperatorPresence",
+          value: true,
+          reason: `Operator expansion detected in ${operatorId} 8-K: ${record.title}`,
+          sourceRecordId: record.id,
+          sourceUrl: record.url,
+          confidence: cities.length > 0 ? "medium" : "needs_review",
+        });
+      }
+    }
+
+    // Rule 4c: Infrastructure/vertiport keywords → approvedVertiport flag
+    if (INFRA_KEYWORDS.test(text)) {
+      candidates.push({
+        cityId: "__unresolved__",
+        field: "approvedVertiport",
+        value: true,
+        reason: `Infrastructure development in ${operatorId ?? "unknown"} filing: ${record.title}`,
+        sourceRecordId: record.id,
+        sourceUrl: record.url,
+        confidence: "needs_review",
+      });
+    }
+
+    // No catch-all __review__ — unmatched SEC filings produce no override
   }
 
   return candidates;
