@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import type { ChangeType } from "@/types";
 import { trackEvent } from "@/lib/track";
+import { plausible } from "@/lib/plausible";
 
 interface SubscribeFormProps {
   cityId: string;
@@ -105,6 +106,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange }
       setState("success");
       onSubscriptionChange?.(cityId, true);
       trackEvent("alert_subscribe", "city", cityId, { allCities, changeTypes: selectedTypes });
+      plausible("Alert Subscribe", { city: cityId });
     } catch {
       setState("expanded");
       setError("Network error — try again");
@@ -121,6 +123,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange }
         setState("collapsed");
         onSubscriptionChange?.(cityId, false);
         trackEvent("alert_unsubscribe", "city", cityId);
+        plausible("Alert Unsubscribe", { city: cityId });
       }
     } catch {
       // silent fail — user can retry

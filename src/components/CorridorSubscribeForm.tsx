@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { plausible } from "@/lib/plausible";
 
 interface CorridorSubscribeFormProps {
   corridorId: string;
@@ -79,6 +80,7 @@ export default function CorridorSubscribeForm({
       );
       setSubId(json.data.id);
       setState("success");
+      plausible("Corridor Subscribe", { corridor: corridorId });
     } catch {
       setState("collapsed");
       setError("Network error — try again");
@@ -93,6 +95,7 @@ export default function CorridorSubscribeForm({
         localStorage.removeItem(LS_COR_SUB_PREFIX + corridorId);
         setSubId(null);
         setState("collapsed");
+        plausible("Corridor Unsubscribe", { corridor: corridorId });
       }
     } catch {
       // silent fail
