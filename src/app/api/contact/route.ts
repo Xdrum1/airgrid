@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
                 ${confirm.cta.label}
               </a>
               <p style="color:#bbb;font-size:11px;margin-top:32px;line-height:1.6;">
-                AirIndex — the intelligence layer for urban air mobility.
+                AirIndex — the independent readiness rating system for urban air mobility.
               </p>
             </div>
           `.trim(),

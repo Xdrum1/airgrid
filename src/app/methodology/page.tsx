@@ -3,9 +3,9 @@ import Link from "next/link";
 import TrackPageView from "@/components/TrackPageView";
 
 export const metadata: Metadata = {
-  title: "Scoring Methodology — AirIndex",
+  title: "Ratings Methodology — AirIndex",
   description:
-    "How the AirIndex UAM Market Readiness Score is calculated. A 7-factor, 0–100 scoring model tracking pilot programs, zoning, operators, regulation, and infrastructure across 20 US markets.",
+    "How the AirIndex UAM Market Readiness Rating is calculated. A proprietary 7-factor ratings methodology covering pilot programs, zoning, operators, regulation, and infrastructure across 20 US markets.",
 };
 
 // -------------------------------------------------------
