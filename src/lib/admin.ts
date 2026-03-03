@@ -177,21 +177,51 @@ export async function getPendingOverrides() {
     orderBy: { createdAt: "desc" },
   });
 
-  return overrides.map((o) => ({
-    id: o.id,
-    cityId: o.cityId,
-    cityName:
-      o.cityId === "__unresolved__"
-        ? null
-        : CITIES_MAP[o.cityId]?.city ?? o.cityId,
-    field: o.field,
-    value: o.value,
-    reason: o.reason,
-    sourceRecordId: o.sourceRecordId,
-    sourceUrl: o.sourceUrl,
-    confidence: o.confidence,
-    createdAt: o.createdAt.toISOString(),
-  }));
+  // Fetch latest AutoReviewResult for each override (if any)
+  const overrideIds = overrides.map((o) => o.id);
+  const reviewResults = overrideIds.length > 0
+    ? await prisma.autoReviewResult.findMany({
+        where: { overrideId: { in: overrideIds } },
+        orderBy: { createdAt: "desc" },
+      })
+    : [];
+
+  // Build map: overrideId → latest review result
+  const reviewMap = new Map<string, (typeof reviewResults)[number]>();
+  for (const r of reviewResults) {
+    // Only keep the most recent (first, since sorted desc)
+    if (!reviewMap.has(r.overrideId)) {
+      reviewMap.set(r.overrideId, r);
+    }
+  }
+
+  return overrides.map((o) => {
+    const review = reviewMap.get(o.id);
+    return {
+      id: o.id,
+      cityId: o.cityId,
+      cityName:
+        o.cityId === "__unresolved__"
+          ? null
+          : CITIES_MAP[o.cityId]?.city ?? o.cityId,
+      field: o.field,
+      value: o.value,
+      reason: o.reason,
+      sourceRecordId: o.sourceRecordId,
+      sourceUrl: o.sourceUrl,
+      confidence: o.confidence,
+      createdAt: o.createdAt.toISOString(),
+      recommendation: review
+        ? {
+            decision: review.decision,
+            aiConfidence: review.confidence,
+            reasoning: review.reasoning,
+            sourceContent: review.sourceContent,
+            reviewedAt: review.createdAt.toISOString(),
+          }
+        : null,
+    };
+  });
 }
 
 // -------------------------------------------------------

@@ -13,6 +13,14 @@ import AdminBilling from "./AdminBilling";
 // Types
 // -------------------------------------------------------
 
+interface AIRecommendation {
+  decision: string;
+  aiConfidence: number;
+  reasoning: string;
+  sourceContent: string | null;
+  reviewedAt: string;
+}
+
 interface PendingOverride {
   id: string;
   cityId: string;
@@ -24,6 +32,7 @@ interface PendingOverride {
   sourceUrl: string | null;
   confidence: string;
   createdAt: string;
+  recommendation: AIRecommendation | null;
 }
 
 interface ClassificationResult {
@@ -595,6 +604,12 @@ export default function AdminReview() {
 // Override Card
 // -------------------------------------------------------
 
+function getConfidenceColor(confidence: number): string {
+  if (confidence >= 0.8) return "#00ff88";
+  if (confidence >= 0.5) return "#f59e0b";
+  return "#ff4444";
+}
+
 function OverrideCard({
   override,
   isActing,
@@ -610,14 +625,19 @@ function OverrideCard({
   onApprove: () => void;
   onReject: () => void;
 }) {
+  const [sourceExpanded, setSourceExpanded] = useState(false);
   const confidenceColor = CONFIDENCE_COLORS[override.confidence] ?? "#555";
   const isUnresolved = override.cityId === "__unresolved__";
+  const rec = override.recommendation;
+  const isRecommendation = rec?.decision === "recommend";
 
   return (
     <div
       style={{
         background: "rgba(255,255,255,0.02)",
-        border: "1px solid rgba(255,255,255,0.06)",
+        border: isRecommendation
+          ? "1px solid rgba(0,212,255,0.2)"
+          : "1px solid rgba(255,255,255,0.06)",
         borderRadius: 8,
         padding: 16,
         opacity: isActing ? 0.5 : 1,
@@ -694,6 +714,145 @@ function OverrideCard({
       >
         {override.reason}
       </div>
+
+      {/* AI Recommendation panel */}
+      {isRecommendation && rec && (
+        <div
+          style={{
+            background: "rgba(0,212,255,0.04)",
+            border: "1px solid rgba(0,212,255,0.15)",
+            borderRadius: 6,
+            padding: 12,
+            marginBottom: 12,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              marginBottom: 8,
+            }}
+          >
+            <span
+              style={{
+                color: "#00d4ff",
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: 2,
+              }}
+            >
+              AI RECOMMENDATION
+            </span>
+            <span
+              style={{
+                color: "#333",
+                fontSize: 9,
+                letterSpacing: 1,
+              }}
+            >
+              {formatRelativeTime(rec.reviewedAt)}
+            </span>
+          </div>
+
+          {/* Confidence bar */}
+          <div style={{ marginBottom: 8 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                marginBottom: 4,
+              }}
+            >
+              <span style={{ color: "#555", fontSize: 9, letterSpacing: 1 }}>
+                CONFIDENCE
+              </span>
+              <span
+                style={{
+                  color: getConfidenceColor(rec.aiConfidence),
+                  fontSize: 11,
+                  fontWeight: 700,
+                }}
+              >
+                {Math.round(rec.aiConfidence * 100)}%
+              </span>
+            </div>
+            <div
+              style={{
+                height: 3,
+                background: "rgba(255,255,255,0.06)",
+                borderRadius: 2,
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  height: "100%",
+                  width: `${Math.round(rec.aiConfidence * 100)}%`,
+                  background: getConfidenceColor(rec.aiConfidence),
+                  borderRadius: 2,
+                  transition: "width 0.3s",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* AI Reasoning */}
+          <div
+            style={{
+              color: "#aaa",
+              fontSize: 11,
+              lineHeight: 1.5,
+              marginBottom: rec.sourceContent ? 8 : 0,
+            }}
+          >
+            {rec.reasoning}
+          </div>
+
+          {/* Expandable source content */}
+          {rec.sourceContent && (
+            <>
+              <button
+                onClick={() => setSourceExpanded(!sourceExpanded)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#555",
+                  fontSize: 9,
+                  letterSpacing: 1,
+                  cursor: "pointer",
+                  fontFamily: "'Space Mono', monospace",
+                  padding: 0,
+                }}
+              >
+                {sourceExpanded ? "▼ HIDE SOURCE" : "▶ VIEW SOURCE"}
+              </button>
+
+              {sourceExpanded && (
+                <pre
+                  style={{
+                    background: "#0a0a0f",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    borderRadius: 4,
+                    padding: 10,
+                    marginTop: 6,
+                    color: "#666",
+                    fontSize: 10,
+                    lineHeight: 1.5,
+                    overflow: "auto",
+                    maxHeight: 200,
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {rec.sourceContent}
+                </pre>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {/* Source URL + timestamp */}
       <div
