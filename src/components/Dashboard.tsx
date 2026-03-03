@@ -13,6 +13,8 @@ import { useWatchlist } from "@/hooks/useWatchlist";
 import { trackEvent } from "@/lib/track";
 import { plausible } from "@/lib/plausible";
 import AuthGate from "./AuthGate";
+import UpgradeGate from "./UpgradeGate";
+import { hasProAccess } from "@/lib/billing-shared";
 import type { FilterKey, TabKey, MobilePanel } from "./dashboard-types";
 
 // Panels & header
@@ -31,7 +33,8 @@ import KeysTab from "./tabs/KeysTab";
 
 // -------------------------------------------------------
 
-const GATED_TABS: TabKey[] = ["filings", "activity", "analytics", "keys"];
+const GATED_TABS: TabKey[] = ["corridors", "filings", "activity", "analytics", "keys"];
+const PRO_TABS: TabKey[] = ["corridors", "filings", "activity", "analytics"];
 
 interface DashboardProps {
   initialCities?: City[];
@@ -44,6 +47,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
   const router = useRouter();
   const initialTab = (searchParams.get("tab") as TabKey) || "map";
   const isMobile = useIsMobile();
+  const userTier = (session?.user as { tier?: string } | undefined)?.tier ?? "free";
 
   // Use dynamic cities from server if available, otherwise fall back to static
   const CITIES_RESOLVED = initialCities ?? CITIES;
@@ -295,6 +299,8 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
           {/* Tab content */}
           {GATED_TABS.includes(tab) && !session?.user ? (
             <AuthGate tab={tab} />
+          ) : PRO_TABS.includes(tab) && session?.user && !hasProAccess(userTier) ? (
+            <UpgradeGate feature={tab} />
           ) : tab === "keys" ? (
             <KeysTab
               animate={animate}
@@ -394,6 +400,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
             isWatched={isWatched(selected.id)}
             onToggleWatch={toggleWatch}
             isAuthenticated={isAuthenticated}
+            userTier={userTier}
           />
         )}
       </div>

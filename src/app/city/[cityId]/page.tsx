@@ -3,6 +3,8 @@ import { Metadata } from "next";
 import { CITIES, OPERATORS_MAP, getVertiportsForCity, getCitiesWithOverrides, getCitiesMapWithOverrides } from "@/data/seed";
 import { getCorridorsForCity } from "@/lib/corridors";
 import { getScoreHistoryFull } from "@/lib/score-history";
+import { auth } from "@/auth";
+import { getUserTier } from "@/lib/billing";
 import CityDetail from "@/components/CityDetail";
 
 interface Props {
@@ -36,10 +38,16 @@ export default async function CityPage({ params }: Props) {
     .map((id) => OPERATORS_MAP[id])
     .filter(Boolean);
   const vertiports = getVertiportsForCity(cityId);
-  const [corridors, scoreHistory] = await Promise.all([
+  const [corridors, scoreHistory, session] = await Promise.all([
     getCorridorsForCity(cityId),
     getScoreHistoryFull(cityId),
+    auth(),
   ]);
+
+  let userTier = "free";
+  if (session?.user?.id) {
+    userTier = await getUserTier(session.user.id);
+  }
 
   return (
     <CityDetail
@@ -50,6 +58,7 @@ export default async function CityPage({ params }: Props) {
       vertiports={vertiports}
       corridors={corridors}
       scoreHistory={scoreHistory}
+      userTier={userTier}
     />
   );
 }

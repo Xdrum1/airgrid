@@ -25,6 +25,7 @@ export default function CityDetailPanel({
   isWatched,
   onToggleWatch,
   isAuthenticated,
+  userTier = "free",
 }: {
   selected: City;
   vertiports: Vertiport[];
@@ -38,6 +39,7 @@ export default function CityDetailPanel({
   isWatched: boolean;
   onToggleWatch: (cityId: string) => void;
   isAuthenticated: boolean;
+  userTier?: string;
 }) {
   const scoreColor = getScoreColor(selected.score ?? 0);
   const posture = getPostureConfig(selected.regulatoryPosture);

@@ -1,80 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import PricingTiers from "@/components/PricingTiers";
 
 export const metadata: Metadata = {
   title: "Pricing — AirIndex",
-  description: "Free access during beta. Paid plans launching soon.",
+  description: "Choose the plan that fits your workflow. Free, Pro, Institutional, and Enterprise tiers.",
 };
-
-const TIERS = [
-  {
-    name: "Free",
-    price: "$0",
-    period: "",
-    note: "Free access during beta.",
-    accent: "#00d4ff",
-    highlight: false,
-    features: [
-      "Interactive map & market rankings",
-      "Readiness scores & 7-factor breakdown",
-      "City detail pages",
-      "Methodology & scoring sources",
-    ],
-    cta: { label: "Get started", href: "/login" },
-  },
-  {
-    name: "Pro",
-    price: "$99",
-    period: "/month",
-    note: "$899/year (save 25%)",
-    accent: "#00ff88",
-    highlight: true,
-    badge: "COMING SOON",
-    features: [
-      "Everything in Free, plus:",
-      "Corridor intelligence & detail pages",
-      "Federal Register filing access",
-      "Score history & factor trends",
-      "Operator tracker",
-      "Market & corridor alert subscriptions",
-    ],
-    cta: { label: "Join the waitlist", href: "/contact?tier=pro" },
-  },
-  {
-    name: "Institutional",
-    price: "Custom",
-    period: "",
-    note: "For teams and organizations",
-    accent: "#7c3aed",
-    highlight: false,
-    features: [
-      "Everything in Pro, plus:",
-      "Monthly market report PDF delivered",
-      "API access (rate limited)",
-      "Data export (CSV/JSON)",
-      "Multi-seat team access",
-      "Priority support",
-    ],
-    cta: { label: "Learn more", href: "/contact?tier=institutional" },
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    note: "For organizations embedding UAM data",
-    accent: "#f59e0b",
-    highlight: false,
-    features: [
-      "Everything in Institutional, plus:",
-      "Unlimited API access",
-      "White-label data feeds",
-      "Custom market coverage",
-      "SLA & dedicated account manager",
-      "Data licensing",
-    ],
-    cta: { label: "Learn more", href: "/contact?tier=enterprise" },
-  },
-];
 
 export default function PricingPage() {
   return (
@@ -175,164 +106,13 @@ export default function PricingPage() {
           Simple, transparent pricing
         </h1>
         <p style={{ fontFamily: "'Inter', sans-serif", color: "#999", fontSize: 14, margin: "0 0 8px", lineHeight: 1.6 }}>
-          Free access during beta. Paid plans launching soon.
+          Choose the plan that fits your workflow.
         </p>
-        <div
-          style={{
-            display: "inline-block",
-            background: "rgba(0,255,136,0.06)",
-            border: "1px solid rgba(0,255,136,0.2)",
-            borderRadius: 6,
-            padding: "8px 16px",
-            marginTop: 16,
-          }}
-        >
-          <span style={{ color: "#00ff88", fontSize: 11, letterSpacing: 1 }}>
-            ALL FEATURES FREE DURING BETA
-          </span>
-        </div>
       </section>
 
       {/* Tiers */}
       <section style={{ maxWidth: 1120, margin: "0 auto", padding: "48px 20px clamp(60px, 8vw, 100px)" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))",
-            gap: 20,
-            alignItems: "stretch",
-          }}
-        >
-          {TIERS.map((tier) => (
-            <div
-              key={tier.name}
-              style={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "column",
-                background: tier.highlight ? "rgba(0,255,136,0.03)" : "rgba(255,255,255,0.02)",
-                border: tier.highlight
-                  ? `1px solid ${tier.accent}44`
-                  : "1px solid rgba(255,255,255,0.06)",
-                borderRadius: 12,
-                padding: "36px 24px 28px",
-              }}
-            >
-              {/* Top accent line */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: -1,
-                  left: 28,
-                  right: 28,
-                  height: 2,
-                  background: tier.accent,
-                  borderRadius: "2px 2px 0 0",
-                }}
-              />
-
-              {/* Badge */}
-              {"badge" in tier && tier.badge && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: -11,
-                    right: 16,
-                    background: tier.accent,
-                    color: "#000",
-                    fontSize: 8,
-                    fontWeight: 700,
-                    fontFamily: "'Syne', sans-serif",
-                    letterSpacing: "0.1em",
-                    padding: "4px 10px",
-                    borderRadius: 4,
-                  }}
-                >
-                  {tier.badge}
-                </div>
-              )}
-
-              {/* Tier name */}
-              <div
-                style={{
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 700,
-                  fontSize: 16,
-                  color: "#ccc",
-                  marginBottom: 10,
-                }}
-              >
-                {tier.name}
-              </div>
-
-              {/* Price */}
-              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
-                <span
-                  style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    fontWeight: 700,
-                    fontSize: 36,
-                    color: "#fff",
-                  }}
-                >
-                  {tier.price}
-                </span>
-                <span style={{ color: "#888", fontSize: 13 }}>{tier.period}</span>
-              </div>
-              <div style={{ color: "#777", fontSize: 10, marginBottom: 24 }}>
-                {tier.note}
-              </div>
-
-              {/* Features */}
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px", flex: 1 }}>
-                {tier.features.map((f) => (
-                  <li
-                    key={f}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: 10,
-                      color: "#999",
-                      fontSize: 12,
-                      lineHeight: 1.6,
-                      marginBottom: 8,
-                    }}
-                  >
-                    {f.endsWith(":") ? null : (
-                      <span style={{ color: tier.accent, fontSize: 10, marginTop: 3, flexShrink: 0 }}>
-                        ✓
-                      </span>
-                    )}
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA */}
-              <Link
-                href={tier.cta.href}
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  padding: "12px 0",
-                  borderRadius: 6,
-                  fontSize: 11,
-                  fontWeight: 700,
-                  fontFamily: "'Syne', sans-serif",
-                  letterSpacing: "0.06em",
-                  textDecoration: "none",
-                  transition: "opacity 0.15s",
-                  ...(tier.highlight
-                    ? { background: tier.accent, color: "#050508" }
-                    : { background: `${tier.accent}15`, border: `1px solid ${tier.accent}44`, color: tier.accent }
-                  ),
-                }}
-              >
-                {tier.cta.label}
-              </Link>
-            </div>
-          ))}
-        </div>
+        <PricingTiers />
       </section>
 
       {/* FAQ */}
@@ -350,12 +130,12 @@ export default function PricingPage() {
         </h3>
         {[
           {
-            q: "Is the beta really free?",
-            a: "Yes. All platform features are available free during beta while we validate with early users. When paid plans launch, existing users will get advance notice and early pricing.",
+            q: "What do I get for free?",
+            a: "Free accounts include the dashboard map, current readiness scores, city rankings, and basic market overviews. The score is free — the intelligence behind the score is paid.",
           },
           {
-            q: "When will paid plans launch?",
-            a: "We're targeting Q2 2026 for Pro and Institutional tiers. Enterprise conversations are open now.",
+            q: "What happens to early signups?",
+            a: "Users who signed up before launch are grandfathered into Pro access through December 31, 2026 at no cost.",
           },
           {
             q: "What's included in the API?",
