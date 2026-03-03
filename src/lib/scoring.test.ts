@@ -160,9 +160,9 @@ describe("getScoreColor", () => {
 
 // ----- getScoreTier -----
 describe("getScoreTier", () => {
-  it("returns HIGH for score >= 75", () => {
-    expect(getScoreTier(75)).toBe("HIGH");
-    expect(getScoreTier(100)).toBe("HIGH");
+  it("returns ADVANCED for score >= 75", () => {
+    expect(getScoreTier(75)).toBe("ADVANCED");
+    expect(getScoreTier(100)).toBe("ADVANCED");
   });
 
   it("returns MODERATE for score 50-74", () => {
