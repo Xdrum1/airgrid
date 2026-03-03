@@ -4,8 +4,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.airindex.io"),
-  title: "AirIndex — UAM Market Intelligence",
-  description: "The intelligence layer for the Urban Air Mobility industry. Track vertiports, operators, regulatory filings, and market readiness scores across the US.",
+  title: "AirIndex — UAM Market Readiness Ratings",
+  description: "The independent market readiness rating system for Urban Air Mobility. We rate 20 U.S. cities across seven factors — from regulatory environment to operator presence — producing continuously updated readiness scores.",
   keywords: ["urban air mobility", "eVTOL", "vertiport", "air taxi", "UAM", "Joby", "Archer"],
   manifest: "/manifest.json",
   icons: {
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
     apple: "/images/logo/airindex-logo-300.png",
   },
   openGraph: {
-    title: "AirIndex — UAM Market Intelligence",
-    description: "Track vertiports, operators, regulatory filings, and market readiness scores across 20 US urban air mobility markets.",
+    title: "AirIndex — UAM Market Readiness Ratings",
+    description: "The independent readiness rating system for Urban Air Mobility. We rate 20 U.S. cities on regulatory environment, infrastructure, operator presence, and more.",
     siteName: "AirIndex",
     url: "https://www.airindex.io",
     images: [{ url: "/images/og-image.png", width: 1200, height: 630 }],
@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@AirIndexHQ",
-    title: "AirIndex — UAM Market Intelligence",
-    description: "Track vertiports, operators, regulatory filings, and market readiness scores across 20 US urban air mobility markets.",
+    title: "AirIndex — UAM Market Readiness Ratings",
+    description: "The independent readiness rating system for Urban Air Mobility. We rate 20 U.S. cities on regulatory environment, infrastructure, operator presence, and more.",
     images: ["/images/og-image.png"],
   },
 };

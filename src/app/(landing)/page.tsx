@@ -294,7 +294,7 @@ export default async function LandingPage() {
                 color: "#777",
               }}
             >
-              UAM MARKET INTELLIGENCE
+              UAM MARKET READINESS RATINGS
             </span>
           </div>
         </div>
@@ -333,8 +333,8 @@ export default async function LandingPage() {
             margin: "0 auto 40px",
           }}
         >
-          Readiness scores, regulatory filings, corridor authorizations, operator tracking,
-          and market intelligence — aggregated from FAA, Federal Register, LegiScan, and SEC EDGAR.
+          Readiness ratings, regulatory filings, corridor authorizations, operator tracking —
+          aggregated from FAA, Federal Register, LegiScan, and SEC EDGAR.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
@@ -440,7 +440,7 @@ export default async function LandingPage() {
               color: "#fff",
             }}
           >
-            Platform capabilities
+            Rating system capabilities
           </h2>
         </div>
         <div
@@ -622,7 +622,7 @@ export default async function LandingPage() {
               color: "#fff",
             }}
           >
-            Live regulatory intelligence
+            Live regulatory tracking
           </h2>
           <p style={{ fontFamily: "'Inter', sans-serif", color: "#888", fontSize: 13, margin: 0 }}>
             Every filing, authorization, and market change — surfaced automatically.
@@ -820,7 +820,7 @@ export default async function LandingPage() {
                 margin: "0 0 24px",
                 maxWidth: 520,
               }}>
-                Monthly intelligence covering UAM market readiness rankings, corridor authorizations,
+                Monthly report covering UAM market readiness ratings, corridor authorizations,
                 vertiport construction status, operator timelines, and regulatory filings — all in one
                 place. Published the first week of every month.
               </p>
@@ -920,7 +920,7 @@ export default async function LandingPage() {
             Who it&apos;s for
           </h2>
           <p style={{ fontFamily: "'Inter', sans-serif", color: "#888", fontSize: 13, margin: 0 }}>
-            One platform, three audiences.
+            One rating system, three audiences.
           </p>
         </div>
         <div
@@ -945,7 +945,7 @@ export default async function LandingPage() {
               title: "Operators & OEMs",
               accent: "#00ff88",
               items: [
-                "Competitive intelligence across markets",
+                "Competitive analysis across markets",
                 "Market entry strategy and prioritization",
                 "Corridor status and infrastructure gaps",
                 "Regulatory landscape comparison",
@@ -956,7 +956,7 @@ export default async function LandingPage() {
               accent: "#7c3aed",
               items: [
                 "Benchmarking against peer cities",
-                "Infrastructure planning intelligence",
+                "Infrastructure planning data",
                 "Regulatory comparison and best practices",
                 "Stakeholder reporting and public data",
               ],
