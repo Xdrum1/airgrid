@@ -181,6 +181,20 @@ export default async function LandingPage() {
               Pricing
             </Link>
             <Link
+              href="/api"
+              className="nav-hide-mobile"
+              style={{
+                color: "#888",
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                textDecoration: "none",
+                padding: "8px 16px",
+                transition: "all 0.15s",
+              }}
+            >
+              API
+            </Link>
+            <Link
               href="/dashboard"
               className="nav-hide-mobile"
               style={{
@@ -1347,6 +1361,12 @@ export default async function LandingPage() {
               style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
               METHODOLOGY
+            </Link>
+            <Link
+              href="/api"
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              API
             </Link>
             <a
               href="https://x.com/AirIndexHQ"

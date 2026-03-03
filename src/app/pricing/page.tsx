@@ -117,6 +117,18 @@ export default function PricingPage() {
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Link
+              href="/api"
+              style={{
+                color: "#888",
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                textDecoration: "none",
+                padding: "8px 16px",
+              }}
+            >
+              API
+            </Link>
+            <Link
               href="/dashboard"
               style={{
                 color: "#888",
@@ -380,7 +392,7 @@ export default function PricingPage() {
         }}
       >
         <span style={{ color: "#777", fontSize: 9, letterSpacing: 1 }}>
-          © 2026 AIRINDEX · <Link href="/" style={{ color: "#777", textDecoration: "none" }}>HOME</Link> · <Link href="/about" style={{ color: "#777", textDecoration: "none" }}>ABOUT</Link> · <Link href="/dashboard" style={{ color: "#777", textDecoration: "none" }}>DASHBOARD</Link> · <Link href="/methodology" style={{ color: "#777", textDecoration: "none" }}>METHODOLOGY</Link>
+          © 2026 AIRINDEX · <Link href="/" style={{ color: "#777", textDecoration: "none" }}>HOME</Link> · <Link href="/about" style={{ color: "#777", textDecoration: "none" }}>ABOUT</Link> · <Link href="/dashboard" style={{ color: "#777", textDecoration: "none" }}>DASHBOARD</Link> · <Link href="/methodology" style={{ color: "#777", textDecoration: "none" }}>METHODOLOGY</Link> · <Link href="/api" style={{ color: "#777", textDecoration: "none" }}>API</Link>
         </span>
       </footer>
     </div>
