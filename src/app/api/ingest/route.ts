@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { runIngestion } from "@/lib/ingestion";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -27,20 +28,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  try {
-    const { diff, meta } = await runIngestion();
-    return NextResponse.json({
-      success: true,
-      newCount: diff.newRecords.length,
-      updatedCount: diff.updatedRecords.length,
-      unchangedCount: diff.unchangedCount,
-      meta,
-    });
-  } catch (err) {
-    console.error("[API /ingest] Error:", err);
-    return NextResponse.json(
-      { success: false, error: "Ingestion failed" },
-      { status: 500 }
-    );
-  }
+  // Run ingestion after response is sent — avoids gateway timeout
+  after(async () => {
+    try {
+      const { diff, meta } = await runIngestion();
+      console.log(
+        `[API /ingest] Complete: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged, sources: ${meta.sources.join(", ")}`
+      );
+    } catch (err) {
+      console.error("[API /ingest] Ingestion error:", err);
+    }
+  });
+
+  return NextResponse.json({ success: true, message: "Ingestion started" });
 }
