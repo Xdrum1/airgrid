@@ -207,6 +207,24 @@ model ScoringOverride {
   @@index([cityId, field])
 }
 
+model AutoReviewResult {
+  id              String   @id @default(cuid())
+  overrideId      String
+  decision        String   // "approve" | "reject" | "skip"
+  confidence      Float
+  assignedCityId  String?  // city assigned for __unresolved__ overrides
+  reasoning       String
+  applied         Boolean  // whether the decision was actually applied
+  dryRun          Boolean  @default(false)
+  modelUsed       String
+  sourceContent   String?  // truncated source text if fetched
+  createdAt       DateTime @default(now())
+
+  @@index([overrideId])
+  @@index([decision])
+  @@index([createdAt])
+}
+
 model ContactInquiry {
   id        String   @id @default(cuid())
   name      String
