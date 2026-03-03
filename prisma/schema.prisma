@@ -23,6 +23,7 @@ model User {
   billingSubscriptions  BillingSubscription[]
   watchlist             Watchlist?
   events                UserEvent[]
+  apiKeys               ApiKey[]
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 }
@@ -237,6 +238,21 @@ model ContactInquiry {
 
   @@index([tier])
   @@index([email])
+}
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  name       String
+  keyHash    String    @unique
+  keyPrefix  String
+  tier       String
+  lastUsedAt DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model BillingSubscription {
