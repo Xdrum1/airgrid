@@ -90,3 +90,50 @@ export async function getScoreHistoryFull(cityId: string): Promise<ScoreHistoryF
     };
   });
 }
+
+// -------------------------------------------------------
+// Brief tier history (for market detail endpoint)
+// -------------------------------------------------------
+
+export interface ScoreHistoryBrief {
+  score: number;
+  tier: string | null;
+  capturedAt: string;
+}
+
+export async function getScoreHistoryBrief(cityId: string): Promise<ScoreHistoryBrief[]> {
+  const snapshots = await prisma.scoreSnapshot.findMany({
+    where: { cityId },
+    orderBy: { capturedAt: "asc" },
+    take: 52,
+    select: { score: true, tier: true, capturedAt: true },
+  });
+
+  return snapshots.map((s) => ({
+    score: s.score,
+    tier: s.tier,
+    capturedAt: s.capturedAt.toISOString(),
+  }));
+}
+
+// -------------------------------------------------------
+// Tier history for all cities (single query for export)
+// -------------------------------------------------------
+
+export async function getTierHistoryAllCities(): Promise<Record<string, ScoreHistoryBrief[]>> {
+  const snapshots = await prisma.scoreSnapshot.findMany({
+    orderBy: { capturedAt: "asc" },
+    select: { cityId: true, score: true, tier: true, capturedAt: true },
+  });
+
+  const result: Record<string, ScoreHistoryBrief[]> = {};
+  for (const s of snapshots) {
+    if (!result[s.cityId]) result[s.cityId] = [];
+    result[s.cityId].push({
+      score: s.score,
+      tier: s.tier,
+      capturedAt: s.capturedAt.toISOString(),
+    });
+  }
+  return result;
+}

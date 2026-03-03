@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
-const CSRF_PROTECTED_PREFIXES = ["/api/subscribe", "/api/watchlist", "/api/signout"];
+const CSRF_PROTECTED_PREFIXES = ["/api/subscribe", "/api/watchlist", "/api/signout", "/api/v1/keys"];
 
 function isCsrfProtected(pathname: string): boolean {
   return CSRF_PROTECTED_PREFIXES.some(
@@ -52,5 +52,6 @@ export const config = {
     "/api/subscribe/:path*",
     "/api/watchlist/:path*",
     "/api/signout/:path*",
+    "/api/v1/keys/:path*",
   ],
 };
