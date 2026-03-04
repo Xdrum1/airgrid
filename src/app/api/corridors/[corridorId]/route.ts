@@ -1,11 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getCorridorById, getCorridorStatusHistory } from "@/lib/corridors";
+import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/admin-helpers";
 
 interface Props {
   params: Promise<{ corridorId: string }>;
 }
 
-export async function GET(_request: Request, { params }: Props) {
+export async function GET(request: NextRequest, { params }: Props) {
+  const ip = getClientIp(request);
+  const rl = await rateLimit(`corridor-detail:${ip}`, 60, 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Rate limited" }, { status: 429 });
+  }
+
   try {
     const { corridorId } = await params;
     const corridor = await getCorridorById(corridorId);

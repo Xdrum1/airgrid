@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin, getClientIp } from "@/lib/admin-helpers";
+import { requireAdmin, getClientIp, authorizeCron } from "@/lib/admin-helpers";
 import { rateLimit } from "@/lib/rate-limit";
 import { runAutoReview } from "@/lib/auto-reviewer";
 
@@ -46,26 +46,6 @@ export async function POST(request: NextRequest) {
 // -------------------------------------------------------
 // GET — Cron-triggered auto-review
 // -------------------------------------------------------
-
-function authorizeCron(request: NextRequest): NextResponse | null {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json(
-      { success: false, error: "CRON_SECRET not configured" },
-      { status: 401 }
-    );
-  }
-
-  const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json(
-      { success: false, error: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  return null;
-}
 
 export async function GET(request: NextRequest) {
   const denied = authorizeCron(request);

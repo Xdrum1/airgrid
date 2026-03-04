@@ -1,33 +1,24 @@
 "use client";
 
-import { useState, useEffect, useRef, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import { signIn } from "next-auth/react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { plausible } from "@/lib/plausible";
 
+const ALLOWED_PREFIXES = ["/dashboard", "/admin", "/pricing", "/api/docs"];
+
 function LoginForm() {
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
-  const [step, setStep] = useState<"email" | "code">("email");
+  const [step, setStep] = useState<"email" | "sent">("email");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
-  const router = useRouter();
   const rawCallback = searchParams.get("callbackUrl") || "/dashboard";
-  const callbackUrl =
-    rawCallback.startsWith("/") && !rawCallback.startsWith("//")
-      ? rawCallback
-      : "/dashboard";
+  const callbackUrl = ALLOWED_PREFIXES.some((p) => rawCallback.startsWith(p))
+    ? rawCallback
+    : "/dashboard";
   const authError = searchParams.get("error");
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  // Auto-focus first code input when step changes
-  useEffect(() => {
-    if (step === "code") {
-      setTimeout(() => inputRefs.current[0]?.focus(), 50);
-    }
-  }, [step]);
 
   async function handleEmailSubmit(e: FormEvent) {
     e.preventDefault();
@@ -49,73 +40,12 @@ function LoginForm() {
         setLoading(false);
       } else {
         plausible("Sign In Attempt");
-        setStep("code");
+        setStep("sent");
         setLoading(false);
       }
     } catch {
       setError("Something went wrong. Please try again.");
       setLoading(false);
-    }
-  }
-
-  async function handleCodeSubmit(fullCode?: string) {
-    const codeStr = fullCode || code.join("");
-    if (codeStr.length !== 6) return;
-    setLoading(true);
-    setError("");
-
-    // Construct the NextAuth callback URL with the verification token
-    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || window.location.origin;
-    const params = new URLSearchParams({
-      callbackUrl,
-      token: codeStr,
-      email: email.trim(),
-    });
-
-    window.location.href = `${authUrl}/api/auth/callback/ses?${params.toString()}`;
-  }
-
-  function handleCodeInput(index: number, value: string) {
-    // Handle paste of full code
-    if (value.length > 1) {
-      const digits = value.replace(/\D/g, "").slice(0, 6).split("");
-      const newCode = [...code];
-      digits.forEach((d, i) => {
-        if (index + i < 6) newCode[index + i] = d;
-      });
-      setCode(newCode);
-      const nextIndex = Math.min(index + digits.length, 5);
-      inputRefs.current[nextIndex]?.focus();
-      if (newCode.every((d) => d !== "")) {
-        handleCodeSubmit(newCode.join(""));
-      }
-      return;
-    }
-
-    const digit = value.replace(/\D/g, "");
-    const newCode = [...code];
-    newCode[index] = digit;
-    setCode(newCode);
-
-    if (digit && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-
-    // Auto-submit when all 6 digits entered
-    if (digit && newCode.every((d) => d !== "")) {
-      handleCodeSubmit(newCode.join(""));
-    }
-  }
-
-  function handleCodeKeyDown(index: number, e: React.KeyboardEvent) {
-    if (e.key === "Backspace" && !code[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-      const newCode = [...code];
-      newCode[index - 1] = "";
-      setCode(newCode);
-    }
-    if (e.key === "Enter") {
-      handleCodeSubmit();
     }
   }
 
@@ -172,7 +102,7 @@ function LoginForm() {
             >
               Get alerts, track markets, access regulatory filings.
               <br />
-              Enter your email to receive a verification code.
+              Enter your email to receive a sign-in link.
             </p>
 
             {authError && (
@@ -188,7 +118,7 @@ function LoginForm() {
                 }}
               >
                 {authError === "Verification"
-                  ? "That code has expired or was already used. Please try again."
+                  ? "That link has expired or was already used. Please try again."
                   : "Something went wrong. Please try again."}
               </div>
             )}
@@ -233,7 +163,7 @@ function LoginForm() {
                   transition: "all 0.2s",
                 }}
               >
-                {loading ? "SENDING..." : "SEND VERIFICATION CODE"}
+                {loading ? "SENDING..." : "SEND SIGN-IN LINK"}
               </button>
             </form>
 
@@ -242,7 +172,7 @@ function LoginForm() {
             )}
 
             <p style={{ color: "#333", fontSize: 10, marginTop: 32 }}>
-              No password needed — we&apos;ll email you a 6-digit code.
+              No password needed — we&apos;ll email you a sign-in link.
             </p>
           </>
         ) : (
@@ -273,7 +203,7 @@ function LoginForm() {
                 marginBottom: 12,
               }}
             >
-              Enter verification code
+              Check your email
             </h1>
             <p
               style={{
@@ -284,73 +214,17 @@ function LoginForm() {
                 lineHeight: 1.6,
               }}
             >
-              We sent a 6-digit code to
+              We sent a sign-in link to
               <br />
               <span style={{ color: "#7c3aed", fontWeight: 700 }}>{email}</span>
+              <br />
+              <br />
+              Click the link in the email to sign in.
             </p>
-
-            {/* 6-digit code input */}
-            <div
-              style={{
-                display: "flex",
-                gap: 8,
-                justifyContent: "center",
-                marginBottom: 24,
-              }}
-            >
-              {code.map((digit, i) => (
-                <input
-                  key={i}
-                  ref={(el) => { inputRefs.current[i] = el; }}
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={6}
-                  value={digit}
-                  onChange={(e) => handleCodeInput(i, e.target.value)}
-                  onKeyDown={(e) => handleCodeKeyDown(i, e)}
-                  disabled={loading}
-                  style={{
-                    width: 44,
-                    height: 52,
-                    textAlign: "center",
-                    fontSize: 20,
-                    fontWeight: 700,
-                    fontFamily: "'Space Mono', monospace",
-                    background: "#0a0a12",
-                    border: digit
-                      ? "1px solid rgba(124,58,237,0.5)"
-                      : "1px solid #1a1a2e",
-                    borderRadius: 8,
-                    color: "#e0e0e8",
-                    outline: "none",
-                    transition: "border-color 0.15s",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "rgba(124,58,237,0.8)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = digit
-                      ? "rgba(124,58,237,0.5)"
-                      : "#1a1a2e";
-                  }}
-                />
-              ))}
-            </div>
-
-            {loading && (
-              <p style={{ color: "#7c3aed", fontSize: 12, marginBottom: 16 }}>
-                Verifying...
-              </p>
-            )}
-
-            {error && (
-              <p style={{ color: "#ff4444", fontSize: 12, marginBottom: 16 }}>{error}</p>
-            )}
 
             <button
               onClick={() => {
                 setStep("email");
-                setCode(["", "", "", "", "", ""]);
                 setError("");
               }}
               style={{
@@ -369,7 +243,7 @@ function LoginForm() {
             </button>
 
             <p style={{ color: "#333", fontSize: 10, marginTop: 32 }}>
-              Code expires in 10 minutes. Check spam if you don&apos;t see it.
+              Link expires in 10 minutes. Check spam if you don&apos;t see it.
             </p>
           </>
         )}
