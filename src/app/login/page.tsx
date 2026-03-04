@@ -19,6 +19,7 @@ function LoginForm() {
     ? rawCallback
     : "/dashboard";
   const authError = searchParams.get("error");
+  const isSignup = searchParams.get("mode") === "signup";
 
   async function handleEmailSubmit(e: FormEvent) {
     e.preventDefault();
@@ -89,7 +90,7 @@ function LoginForm() {
                 marginBottom: 12,
               }}
             >
-              Sign in to AirIndex
+              {isSignup ? "Create your free account" : "Sign in to AirIndex"}
             </h1>
             <p
               style={{
@@ -100,9 +101,10 @@ function LoginForm() {
                 lineHeight: 1.6,
               }}
             >
-              Get alerts, track markets, access regulatory filings.
-              <br />
-              Enter your email to receive a sign-in link.
+              {isSignup
+                ? <>Track 20 UAM markets, get alerts, access regulatory filings.<br />Enter your email to get started — no password needed.</>
+                : <>Get alerts, track markets, access regulatory filings.<br />Enter your email to receive a sign-in link.</>
+              }
             </p>
 
             {authError && (
@@ -163,7 +165,7 @@ function LoginForm() {
                   transition: "all 0.2s",
                 }}
               >
-                {loading ? "SENDING..." : "SEND SIGN-IN LINK"}
+                {loading ? "SENDING..." : isSignup ? "CREATE ACCOUNT" : "SEND SIGN-IN LINK"}
               </button>
             </form>
 
@@ -172,7 +174,9 @@ function LoginForm() {
             )}
 
             <p style={{ color: "#333", fontSize: 10, marginTop: 32 }}>
-              No password needed — we&apos;ll email you a sign-in link.
+              {isSignup
+                ? "No password needed — we\u2019ll email you a magic link to get started."
+                : "No password needed — we\u2019ll email you a sign-in link."}
             </p>
           </>
         ) : (
@@ -214,12 +218,12 @@ function LoginForm() {
                 lineHeight: 1.6,
               }}
             >
-              We sent a sign-in link to
+              {isSignup ? "We sent a verification link to" : "We sent a sign-in link to"}
               <br />
               <span style={{ color: "#7c3aed", fontWeight: 700 }}>{email}</span>
               <br />
               <br />
-              Click the link in the email to sign in.
+              {isSignup ? "Click the link in the email to activate your account." : "Click the link in the email to sign in."}
             </p>
 
             <button

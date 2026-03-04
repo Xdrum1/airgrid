@@ -74,7 +74,7 @@ export default function PricingPage() {
               Dashboard
             </Link>
             <Link
-              href="/login"
+              href="/login?mode=signup"
               style={{
                 fontSize: 11,
                 fontWeight: 700,
