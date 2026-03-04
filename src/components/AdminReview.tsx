@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { CITIES } from "@/data/seed";
+import { getScoreTier, getScoreColor } from "@/lib/scoring";
 import { safeHref } from "@/lib/safe-url";
 import { formatRelativeTime } from "@/lib/dashboard-constants";
 import AdminCorridors from "./AdminCorridors";
@@ -48,7 +49,7 @@ interface ClassificationResult {
   createdAt: string;
 }
 
-type TabKey = "overrides" | "classifications" | "corridors" | "events" | "billing";
+type TabKey = "overrides" | "classifications" | "corridors" | "events" | "billing" | "reports";
 
 // -------------------------------------------------------
 // Helpers
@@ -465,13 +466,14 @@ export default function AdminReview() {
           padding: "0 24px",
         }}
       >
-        {(["overrides", "classifications", "corridors", "events", "billing"] as const).map((t) => {
+        {(["overrides", "classifications", "corridors", "events", "billing", "reports"] as const).map((t) => {
           const labels: Record<TabKey, string> = {
             overrides: "PENDING OVERRIDES",
             classifications: "CLASSIFICATIONS",
             corridors: "CORRIDORS",
             events: "EVENTS",
             billing: "BILLING",
+            reports: "REPORTS",
           };
           return (
             <button
@@ -502,7 +504,9 @@ export default function AdminReview() {
 
       {/* Content */}
       <div style={{ padding: 24, maxWidth: 900, margin: "0 auto" }}>
-        {tab === "billing" ? (
+        {tab === "reports" ? (
+          <AdminReports />
+        ) : tab === "billing" ? (
           <AdminBilling showToast={showToast} />
         ) : tab === "events" ? (
           <AdminEvents showToast={showToast} />
@@ -596,6 +600,108 @@ export default function AdminReview() {
           {toast}
         </div>
       )}
+    </div>
+  );
+}
+
+// -------------------------------------------------------
+// Admin Reports — city list with gap report links
+// -------------------------------------------------------
+
+function AdminReports() {
+  const sorted = [...CITIES].sort((a, b) => (a.city < b.city ? -1 : 1));
+
+  return (
+    <div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 20,
+        }}
+      >
+        <div>
+          <div style={{ color: "#fff", fontSize: 14, fontWeight: 700, marginBottom: 4 }}>
+            Gap Reports
+          </div>
+          <div style={{ color: "#555", fontSize: 11 }}>
+            Generate per-city readiness gap reports. Opens in a new tab — use Cmd+P to print to PDF.
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {sorted.map((city) => {
+          const score = city.score ?? 0;
+          const tier = getScoreTier(score);
+          const tierColor = getScoreColor(score);
+
+          return (
+            <a
+              key={city.id}
+              href={`/reports/gap/${city.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 8,
+                padding: "12px 16px",
+                textDecoration: "none",
+                transition: "border-color 0.15s",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.borderColor = "rgba(124,58,237,0.4)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)")
+              }
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ color: "#fff", fontSize: 13, fontWeight: 600 }}>
+                  {city.city}
+                </span>
+                <span style={{ color: "#555", fontSize: 11 }}>
+                  {city.state}
+                </span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span
+                  style={{
+                    color: tierColor,
+                    fontSize: 11,
+                    fontWeight: 700,
+                  }}
+                >
+                  {score}
+                </span>
+                <span
+                  style={{
+                    background: `${tierColor}22`,
+                    color: tierColor,
+                    fontSize: 9,
+                    fontWeight: 700,
+                    letterSpacing: 1,
+                    padding: "3px 8px",
+                    borderRadius: 3,
+                    border: `1px solid ${tierColor}44`,
+                  }}
+                >
+                  {tier}
+                </span>
+                <span style={{ color: "#555", fontSize: 10 }}>
+                  OPEN →
+                </span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
     </div>
   );
 }
