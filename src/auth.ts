@@ -42,7 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const html = `
           <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
             <div style="margin-bottom:32px;">
-              <img src="https://www.airindex.io/images/logo/airindex-wordmark-light.png" alt="AirIndex" width="160" height="35" style="display:block;" />
+              <span style="font-family:'Courier New',monospace;font-weight:800;font-size:15px;color:#0a0a1a;letter-spacing:0.12em;">AIR</span><span style="font-family:'Courier New',monospace;font-weight:400;font-size:15px;color:#0077aa;letter-spacing:0.12em;">INDEX</span>
             </div>
             <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 24px;">
               Click the button below to sign in to AirIndex:
@@ -86,7 +86,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           html: `
             <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
               <div style="margin-bottom:32px;">
-                <img src="https://www.airindex.io/images/logo/airindex-wordmark-light.png" alt="AirIndex" width="160" height="35" style="display:block;" />
+                <span style="font-family:'Courier New',monospace;font-weight:800;font-size:15px;color:#0a0a1a;letter-spacing:0.12em;">AIR</span><span style="font-family:'Courier New',monospace;font-weight:400;font-size:15px;color:#0077aa;letter-spacing:0.12em;">INDEX</span>
               </div>
               <p style="color:#333;font-size:16px;font-weight:600;line-height:1.6;margin:0 0 16px;">
                 Welcome to AirIndex.

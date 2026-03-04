@@ -45,7 +45,7 @@ export async function sendAlertEmail({
   const html = `
     <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
       <div style="margin-bottom:32px;">
-        <img src="https://www.airindex.io/images/logo/airindex-wordmark-light.png" alt="AirIndex" width="160" height="35" style="display:block;" />
+        <span style="font-family:'Courier New',monospace;font-weight:800;font-size:15px;color:#0a0a1a;letter-spacing:0.12em;">AIR</span><span style="font-family:'Courier New',monospace;font-weight:400;font-size:15px;color:#0077aa;letter-spacing:0.12em;">INDEX</span>
       </div>
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:4px 12px;display:inline-block;margin-bottom:16px;">
         <span style="color:#15803d;font-size:11px;font-weight:700;letter-spacing:1px;">${changeType.toUpperCase().replace("_", " ")}</span>
@@ -140,7 +140,7 @@ export async function sendDigestEmail({
   const html = `
     <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:560px;margin:0 auto;">
       <div style="margin-bottom:32px;">
-        <img src="https://www.airindex.io/images/logo/airindex-wordmark-light.png" alt="AirIndex" width="160" height="35" style="display:block;" />
+        <span style="font-family:'Courier New',monospace;font-weight:800;font-size:15px;color:#0a0a1a;letter-spacing:0.12em;">AIR</span><span style="font-family:'Courier New',monospace;font-weight:400;font-size:15px;color:#0077aa;letter-spacing:0.12em;">INDEX</span>
       </div>
       <p style="color:#1a1a1a;font-size:20px;font-weight:700;margin:0 0 8px;">Weekly Intelligence Digest</p>
       <p style="color:#888;font-size:14px;margin:0 0 24px;">${weekStart} – ${weekEnd}</p>
