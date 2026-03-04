@@ -20,7 +20,7 @@ async function getPrisma() {
 // Constants
 // -------------------------------------------------------
 
-const PROMPT_VERSION = "v1";
+const PROMPT_VERSION = "v2";
 const MODEL = "claude-haiku-4-5-20251001";
 const BATCH_SIZE = 10;
 const MAX_TOKENS = 4096;
@@ -53,13 +53,13 @@ const SYSTEM_PROMPT = `You are a regulatory intelligence classifier for AirIndex
 ## Scoring Model (7 factors, 0–100 scale)
 
 Each market is scored on 7 binary factors:
-1. **activePilotProgram** (20 pts) — Active eVTOL testing or pilot program in the city
+1. **hasActivePilotProgram** (20 pts) — Active eVTOL testing or pilot program in the city
 2. **approvedVertiport** (20 pts) — At least one approved/built vertiport
 3. **activeOperatorPresence** (15 pts) — At least one eVTOL operator active in the market
-4. **vertiportZoning** (15 pts) — Local zoning ordinance allows vertiport construction
+4. **hasVertiportZoning** (15 pts) — Local zoning ordinance allows vertiport construction
 5. **regulatoryPosture** (10 pts) — City/state regulatory stance: "friendly" (10), "neutral" (5), "restrictive" (0)
-6. **stateLegislation** (10 pts) — State has signed UAM-enabling legislation
-7. **laancCoverage** (10 pts) — FAA LAANC low-altitude authorization coverage exists
+6. **hasStateLegislation** (10 pts) — State has signed UAM-enabling legislation
+7. **hasLaancCoverage** (10 pts) — FAA LAANC low-altitude authorization coverage exists
 
 ## Tracked Markets (20 US cities)
 
@@ -117,7 +117,7 @@ Return a JSON array. For each record, output one object:
   "eventType": "string — one of the event types above",
   "factorsAffected": [
     {
-      "field": "string — one of the 7 scoring factor keys",
+      "field": "string — one of: hasActivePilotProgram, approvedVertiport, activeOperatorPresence, hasVertiportZoning, regulatoryPosture, hasStateLegislation, hasLaancCoverage",
       "value": "the new value (true/false for booleans, 'friendly'/'neutral'/'restrictive' for regulatoryPosture)",
       "reason": "string — brief explanation of why this factor is affected"
     }

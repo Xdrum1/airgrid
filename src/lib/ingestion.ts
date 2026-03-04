@@ -131,6 +131,107 @@ function normalizeSecFiling(f: SecFiling, operatorId: string): IngestedRecord {
 }
 
 // -------------------------------------------------------
+// Content enrichment — fetch actual document text for sparse summaries
+// -------------------------------------------------------
+
+const ENRICH_TIMEOUT = 8000;
+const SEC_MAX_CHARS = 2000;
+const NEWS_MAX_CHARS = 1500;
+const ENRICH_BATCH_SIZE = 5;
+
+function stripHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function fetchDocumentText(
+  url: string,
+  maxChars: number
+): Promise<string | null> {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), ENRICH_TIMEOUT);
+
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        "User-Agent": "AirIndex/1.0 contact@airindex.io",
+        Accept: "text/html, application/xhtml+xml, text/plain",
+      },
+    });
+    clearTimeout(timeout);
+
+    if (!response.ok) return null;
+
+    const contentType = response.headers.get("content-type") ?? "";
+    if (
+      !contentType.includes("text/html") &&
+      !contentType.includes("text/plain") &&
+      !contentType.includes("application/xhtml+xml")
+    ) {
+      return null;
+    }
+
+    const html = await response.text();
+    const text = stripHtml(html);
+    return text.length > 0 ? text.slice(0, maxChars) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function enrichSecFilings(records: IngestedRecord[]): Promise<void> {
+  const secRecords = records.filter(
+    (r) => r.source === "sec_edgar" && (!r.summary || r.summary === r.status || r.summary.length < 20)
+  );
+  if (secRecords.length === 0) return;
+
+  console.log(`[ingestion] Enriching ${secRecords.length} SEC filings with source content`);
+
+  for (let i = 0; i < secRecords.length; i += ENRICH_BATCH_SIZE) {
+    const batch = secRecords.slice(i, i + ENRICH_BATCH_SIZE);
+    const results = await Promise.allSettled(
+      batch.map(async (record) => {
+        const text = await fetchDocumentText(record.url, SEC_MAX_CHARS);
+        if (text && text.length > record.summary.length) {
+          record.summary = text;
+        }
+      })
+    );
+
+    const enriched = results.filter((r) => r.status === "fulfilled").length;
+    console.log(
+      `[ingestion] SEC enrichment batch ${Math.floor(i / ENRICH_BATCH_SIZE) + 1}: ${enriched}/${batch.length} enriched`
+    );
+  }
+}
+
+async function enrichOperatorNews(records: IngestedRecord[]): Promise<void> {
+  const newsRecords = records.filter(
+    (r) => r.source === "operator_news" && r.summary.startsWith("[")
+  );
+  if (newsRecords.length === 0) return;
+
+  console.log(`[ingestion] Enriching ${newsRecords.length} operator news articles`);
+
+  for (let i = 0; i < newsRecords.length; i += ENRICH_BATCH_SIZE) {
+    const batch = newsRecords.slice(i, i + ENRICH_BATCH_SIZE);
+    await Promise.allSettled(
+      batch.map(async (record) => {
+        const text = await fetchDocumentText(record.url, NEWS_MAX_CHARS);
+        if (text && text.length > 50) {
+          record.summary = `${record.summary} | Content: ${text}`;
+        }
+      })
+    );
+  }
+}
+
+// -------------------------------------------------------
 // Diff engine
 // -------------------------------------------------------
 
@@ -266,9 +367,13 @@ export async function runIngestion(): Promise<{
       );
     }
 
-    // 9. Classify new/updated records with NLP (falls back to regex rules)
+    // 9. Enrich sparse summaries before classification
     const changedRecords = [...diff.newRecords, ...diff.updatedRecords];
     if (changedRecords.length > 0) {
+      await enrichSecFilings(changedRecords);
+      await enrichOperatorNews(changedRecords);
+
+      // 10. Classify new/updated records with NLP (falls back to regex rules)
       // Run rules engine once for both overrides (fallback) and corridor events
       const { overrideCandidates: regexOverrides, corridorEvents } = evaluateRulesV2(changedRecords);
 
@@ -287,7 +392,7 @@ export async function runIngestion(): Promise<{
         );
       }
 
-      // 10. Process corridor events
+      // 11. Process corridor events
       if (corridorEvents.length > 0) {
         console.log(`[ingestion] Processing ${corridorEvents.length} corridor events`);
         const corridorChangelogBatch: Omit<ChangelogEntry, "id" | "timestamp">[] = [];

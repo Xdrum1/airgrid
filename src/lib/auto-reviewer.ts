@@ -9,6 +9,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { getPendingOverrides, approveOverride, rejectOverride } from "@/lib/admin";
 import { CITIES_MAP } from "@/data/seed";
+import { calculateReadinessScore, getScoreTier } from "@/lib/scoring";
+import { addChangelogEntries } from "@/lib/changelog";
 import { createLogger } from "@/lib/logger";
 
 const logger = createLogger("auto-reviewer");
@@ -28,8 +30,11 @@ const MAX_TOKENS = 1024;
 const APPROVE_THRESHOLD = 0.85;
 const REJECT_THRESHOLD = 0.90;
 const SOURCE_FETCH_TIMEOUT = 5000;
-const SOURCE_MAX_CHARS = 4000;
+const SEC_FETCH_TIMEOUT = 10000;
+const SOURCE_MAX_CHARS = 6000;
 const DELAY_BETWEEN_CALLS_MS = 500;
+const AUTO_PROMOTE_THRESHOLD = 0.92;
+const MAX_AUTO_PROMOTIONS_PER_RUN = 3;
 
 // -------------------------------------------------------
 // Claude API client (lazy singleton — same pattern as classifier.ts)
@@ -91,6 +96,7 @@ export interface AutoReviewSummary {
   approved: number;
   rejected: number;
   recommended: number;
+  autoPromoted: number;
   skipped: number;
   errors: number;
   results: AutoReviewResultItem[];
@@ -131,6 +137,25 @@ const SCORING_FACTORS = [
 // Source document fetching
 // -------------------------------------------------------
 
+function isSecUrl(url: string): boolean {
+  try {
+    const host = new URL(url).hostname;
+    return host.endsWith("sec.gov");
+  } catch {
+    return false;
+  }
+}
+
+function extract8KItems(text: string): string | null {
+  // Try to extract Item sections from 8-K filings (e.g., "Item 1.01", "Item 8.01")
+  const itemRegex = /Item\s+\d+\.\d+[\s\S]*?(?=Item\s+\d+\.\d+|SIGNATURE|$)/gi;
+  const matches = text.match(itemRegex);
+  if (matches && matches.length > 0) {
+    return matches.join("\n\n").slice(0, SOURCE_MAX_CHARS);
+  }
+  return null;
+}
+
 async function fetchSourceContent(url: string): Promise<string | null> {
   try {
     const parsedUrl = new URL(url);
@@ -139,19 +164,31 @@ async function fetchSourceContent(url: string): Promise<string | null> {
     if (!parsedUrl.protocol.startsWith("http")) return null;
     if (parsedUrl.pathname.endsWith(".pdf")) return null;
 
+    const isSec = isSecUrl(url);
+    const timeoutMs = isSec ? SEC_FETCH_TIMEOUT : SOURCE_FETCH_TIMEOUT;
+
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), SOURCE_FETCH_TIMEOUT);
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
     const response = await fetch(url, {
       signal: controller.signal,
-      headers: { "User-Agent": "AirIndex-AutoReviewer/1.0" },
+      headers: {
+        "User-Agent": "AirIndex-AutoReviewer/1.0 contact@airindex.io",
+        Accept: "text/html, application/xhtml+xml, application/xml, text/plain",
+      },
     });
     clearTimeout(timeout);
 
     if (!response.ok) return null;
 
     const contentType = response.headers.get("content-type") ?? "";
-    if (!contentType.includes("text/html") && !contentType.includes("text/plain")) {
+    const validTypes = [
+      "text/html",
+      "text/plain",
+      "application/xhtml+xml",
+      "application/xml",
+    ];
+    if (!validTypes.some((t) => contentType.includes(t))) {
       return null;
     }
 
@@ -164,6 +201,12 @@ async function fetchSourceContent(url: string): Promise<string | null> {
       .replace(/<[^>]+>/g, " ")
       .replace(/\s+/g, " ")
       .trim();
+
+    // For SEC 8-K filings, try to extract Item sections for better signal
+    if (isSec) {
+      const items = extract8KItems(stripped);
+      if (items) return items;
+    }
 
     return stripped.slice(0, SOURCE_MAX_CHARS) || null;
   } catch {
@@ -409,52 +452,86 @@ async function applyRecommendations(
   },
   recommendations: FactorRecommendation[],
   sourceContent: string | null,
-  dryRun: boolean
-): Promise<AutoReviewResultItem[]> {
-  if (recommendations.length === 0) return [];
+  dryRun: boolean,
+  autoPromotionsRemaining: number
+): Promise<{ results: AutoReviewResultItem[]; autoPromoted: number }> {
+  if (recommendations.length === 0) return { results: [], autoPromoted: 0 };
   if (dryRun) {
-    return recommendations.map((rec) => ({
-      overrideId,
-      decision: "recommend",
-      confidence: rec.confidence,
-      assignedCityId: null,
-      reasoning: rec.reasoning,
-      applied: false,
-    }));
+    return {
+      results: recommendations.map((rec) => ({
+        overrideId,
+        decision: "recommend",
+        confidence: rec.confidence,
+        assignedCityId: null,
+        reasoning: rec.reasoning,
+        applied: false,
+      })),
+      autoPromoted: 0,
+    };
   }
 
   const prisma = await getPrisma();
   const results: AutoReviewResultItem[] = [];
+  let autoPromoted = 0;
+  const promotedCityIds = new Set<string>();
+  const now = new Date();
+
+  // Helper: determine if a recommendation should be auto-promoted
+  const shouldAutoPromote = (rec: FactorRecommendation): boolean =>
+    rec.confidence >= AUTO_PROMOTE_THRESHOLD &&
+    autoPromotionsRemaining - autoPromoted > 0 &&
+    override.cityId !== "__unresolved__";
 
   // First recommendation upgrades the existing __review__ override
   const first = recommendations[0];
+  const firstIsPromoted = shouldAutoPromote(first);
+  const firstConfidence = firstIsPromoted ? "high" : "needs_review";
+  const firstReason = firstIsPromoted
+    ? `[AI AUTO-PROMOTED] ${first.reasoning}${override.reason ? ` | Original: ${override.reason}` : ""}`
+    : `[AI RECOMMENDATION] ${first.reasoning}${override.reason ? ` | Original: ${override.reason}` : ""}`;
+
   await prisma.scoringOverride.update({
     where: { id: overrideId },
     data: {
       field: first.field,
       value: first.recommendedValue as never,
-      reason: `[AI RECOMMENDATION] ${first.reasoning}${override.reason ? ` | Original: ${override.reason}` : ""}`,
-      confidence: "needs_review",
+      reason: firstReason,
+      confidence: firstConfidence,
+      appliedAt: firstIsPromoted ? now : null,
     },
   });
 
-  // Persist audit trail for first recommendation
+  if (firstIsPromoted) {
+    // Supersede any existing active override for the same city+field
+    await prisma.scoringOverride.updateMany({
+      where: {
+        cityId: override.cityId,
+        field: first.field,
+        supersededAt: null,
+        id: { not: overrideId },
+      },
+      data: { supersededAt: now },
+    });
+    autoPromoted++;
+    promotedCityIds.add(override.cityId);
+  }
+
   await persistResult(
     overrideId,
     {
-      decision: "recommend",
+      decision: firstIsPromoted ? "auto-promote" : "recommend",
       confidence: first.confidence,
       assignedCityId: null,
       reasoning: first.reasoning,
     },
-    false, // not auto-applied — stays in queue for admin
+    firstIsPromoted,
     dryRun,
     sourceContent
   );
 
   results.push({
     overrideId,
-    decision: "recommend",
+    decision: firstIsPromoted ? "auto-promote" : "recommend",
     confidence: first.confidence,
     assignedCityId: null,
     reasoning: first.reasoning,
@@ -464,34 +541,58 @@ async function applyRecommendations(
   // Additional recommendations create new ScoringOverride records
   for (let i = 1; i < recommendations.length; i++) {
     const rec = recommendations[i];
+    const isPromoted = shouldAutoPromote(rec);
+    const confidence = isPromoted ? "high" : "needs_review";
+    const reason = isPromoted
+      ? `[AI AUTO-PROMOTED] ${rec.reasoning}${override.reason ? ` | Original: ${override.reason}` : ""}`
+      : `[AI RECOMMENDATION] ${rec.reasoning}${override.reason ? ` | Original: ${override.reason}` : ""}`;
+
+    // Supersede existing active override for same city+field before creating
+    if (isPromoted) {
+      await prisma.scoringOverride.updateMany({
+        where: {
+          cityId: override.cityId,
+          field: rec.field,
+          supersededAt: null,
+        },
+        data: { supersededAt: now },
+      });
+    }
+
     const newOverride = await prisma.scoringOverride.create({
       data: {
         cityId: override.cityId,
         field: rec.field,
         value: rec.recommendedValue as never,
-        reason: `[AI RECOMMENDATION] ${rec.reasoning}${override.reason ? ` | Original: ${override.reason}` : ""}`,
+        reason,
         sourceRecordId: override.sourceRecordId ?? undefined,
         sourceUrl: override.sourceUrl,
-        confidence: "needs_review",
+        confidence,
+        appliedAt: isPromoted ? now : null,
       },
     });
+
+    if (isPromoted) {
+      autoPromoted++;
+      promotedCityIds.add(override.cityId);
+    }
 
     await persistResult(
       newOverride.id,
       {
-        decision: "recommend",
+        decision: isPromoted ? "auto-promote" : "recommend",
         confidence: rec.confidence,
         assignedCityId: null,
         reasoning: rec.reasoning,
       },
-      false,
+      isPromoted,
       dryRun,
       sourceContent
     );
 
     results.push({
       overrideId: newOverride.id,
-      decision: "recommend",
+      decision: isPromoted ? "auto-promote" : "recommend",
       confidence: rec.confidence,
       assignedCityId: null,
       reasoning: rec.reasoning,
@@ -499,7 +600,105 @@ async function applyRecommendations(
     });
   }
 
-  return results;
+  // Recalculate scores for auto-promoted cities
+  if (promotedCityIds.size > 0) {
+    await recalculateScoresForCities(Array.from(promotedCityIds));
+  }
+
+  return { results, autoPromoted };
+}
+
+// -------------------------------------------------------
+// Score recalculation for auto-promoted overrides
+// -------------------------------------------------------
+
+async function recalculateScoresForCities(cityIds: string[]): Promise<void> {
+  const prisma = await getPrisma();
+  const now = new Date();
+
+  // Get all active high-confidence overrides for affected cities
+  const overrides = await prisma.scoringOverride.findMany({
+    where: {
+      cityId: { in: cityIds },
+      confidence: "high",
+      appliedAt: { not: null },
+      supersededAt: null,
+    },
+  });
+
+  // Group overrides by city
+  const overridesByCity = new Map<string, Record<string, unknown>>();
+  for (const override of overrides) {
+    const existing = overridesByCity.get(override.cityId) ?? {};
+    if (override.field === "approvedVertiport" && override.value === true) {
+      existing["vertiportCount"] = Math.max((existing["vertiportCount"] as number) ?? 0, 1);
+    } else if (override.field === "activeOperatorPresence" && override.value === true) {
+      const current = (existing["activeOperators"] as string[]) ?? [];
+      if (!current.includes("__override__")) current.push("__override__");
+      existing["activeOperators"] = current;
+    } else {
+      existing[override.field] = override.value;
+    }
+    overridesByCity.set(override.cityId, existing);
+  }
+
+  const scoreChanges: { cityId: string; oldScore: number; newScore: number }[] = [];
+
+  for (const cityId of cityIds) {
+    const baseCity = CITIES_MAP[cityId];
+    if (!baseCity) continue;
+
+    const oldScore = baseCity.score ?? 0;
+    const cityOverrides = overridesByCity.get(cityId) ?? {};
+    const mergedCity = { ...baseCity, ...cityOverrides };
+    const { score: newScore } = calculateReadinessScore(mergedCity);
+
+    if (newScore !== oldScore) {
+      scoreChanges.push({ cityId, oldScore, newScore });
+    }
+  }
+
+  if (scoreChanges.length > 0) {
+    const changelogBatch = scoreChanges.map((change) => ({
+      changeType: "score_change" as const,
+      relatedEntityType: "city" as const,
+      relatedEntityId: change.cityId,
+      summary: `[AI AUTO-PROMOTED] ${CITIES_MAP[change.cityId]?.city ?? change.cityId} readiness score updated: ${change.oldScore} → ${change.newScore}`,
+    }));
+
+    const changelogEntries = await addChangelogEntries(changelogBatch);
+    const cityToEntryId = new Map<string, string>();
+    for (const entry of changelogEntries) {
+      cityToEntryId.set(entry.relatedEntityId, entry.id);
+    }
+
+    await prisma.scoreSnapshot.createMany({
+      data: scoreChanges.map((change) => {
+        const baseCity = CITIES_MAP[change.cityId];
+        const cityOverrides = overridesByCity.get(change.cityId) ?? {};
+        const mergedCity = { ...baseCity, ...cityOverrides };
+        const { breakdown } = calculateReadinessScore(mergedCity);
+
+        return {
+          cityId: change.cityId,
+          score: change.newScore,
+          breakdown: (breakdown ?? {}) as unknown as Record<string, number>,
+          tier: getScoreTier(change.newScore),
+          triggeringEventId: cityToEntryId.get(change.cityId) ?? null,
+          filingIngestedAt: now,
+          capturedAt: now,
+        };
+      }),
+    });
+
+    // Invalidate cities cache
+    const { invalidateCitiesCache } = await import("@/data/seed");
+    invalidateCitiesCache();
+
+    logger.info(
+      `[auto-review] Auto-promotion recalculated ${scoreChanges.length} score changes: ${scoreChanges.map((c) => `${c.cityId} ${c.oldScore}→${c.newScore}`).join(", ")}`
+    );
+  }
 }
 
 // -------------------------------------------------------
@@ -642,6 +841,47 @@ export async function runAutoReview(
     fetchSource = true,
   } = options;
 
+  // Clean up dead __review__ overrides that already have a skip/reject AutoReviewResult
+  // These will never be actionable — clear the backlog
+  if (!dryRun) {
+    try {
+      const prisma = await getPrisma();
+
+      // Find __review__ overrides that have been reviewed and skipped/rejected
+      const reviewedSkips = await prisma.autoReviewResult.findMany({
+        where: { decision: { in: ["skip", "reject"] } },
+        select: { overrideId: true },
+        distinct: ["overrideId"],
+      });
+      const reviewedIds = new Set(reviewedSkips.map((r) => r.overrideId));
+
+      if (reviewedIds.size > 0) {
+        const deadOverrides = await prisma.scoringOverride.findMany({
+          where: {
+            field: "__review__",
+            appliedAt: null,
+            supersededAt: null,
+            id: { in: Array.from(reviewedIds) },
+          },
+          select: { id: true },
+        });
+
+        if (deadOverrides.length > 0) {
+          const now = new Date();
+          await prisma.scoringOverride.updateMany({
+            where: { id: { in: deadOverrides.map((o) => o.id) } },
+            data: { supersededAt: now },
+          });
+          logger.info(
+            `[auto-review] Cleaned up ${deadOverrides.length} dead __review__ overrides`
+          );
+        }
+      }
+    } catch (err) {
+      logger.error("[auto-review] Failed to clean up dead overrides:", err);
+    }
+  }
+
   const pending = await getPendingOverrides();
   const toProcess = pending.slice(0, maxOverrides);
 
@@ -654,6 +894,7 @@ export async function runAutoReview(
     approved: 0,
     rejected: 0,
     recommended: 0,
+    autoPromoted: 0,
     skipped: 0,
     errors: 0,
     results: [],
@@ -669,22 +910,67 @@ export async function runAutoReview(
           sourceContent = await fetchSourceContent(override.sourceUrl);
         }
 
+        // Short-circuit: if no source content and reason is just a generic filing title,
+        // skip the Claude call — there's nothing meaningful to analyze
+        const isGenericReason =
+          !sourceContent &&
+          (!override.reason ||
+            override.reason.length < 40 ||
+            /^\[NLP\].*\b(8-K|10-K|10-Q|Filing)\b/i.test(override.reason ?? ""));
+
+        if (isGenericReason) {
+          const skipReason = "Insufficient source content for analysis";
+          await persistResult(
+            override.id,
+            {
+              decision: "skip",
+              confidence: 0,
+              assignedCityId: null,
+              reasoning: skipReason,
+            },
+            false,
+            dryRun,
+            null
+          );
+
+          summary.skipped++;
+          summary.results.push({
+            overrideId: override.id,
+            decision: "skip",
+            confidence: 0,
+            assignedCityId: null,
+            reasoning: skipReason,
+            applied: false,
+          });
+          summary.processed++;
+
+          logger.info(
+            `[auto-review] Override ${override.id}: skipped (insufficient source content)`
+          );
+          continue;
+        }
+
         const { recommendations, noChangeReason } =
           await recommendFactorChanges(override, sourceContent);
 
         if (recommendations.length > 0) {
-          const recResults = await applyRecommendations(
-            override.id,
-            override,
-            recommendations,
-            sourceContent,
-            dryRun
-          );
+          const autoPromotionsRemaining =
+            MAX_AUTO_PROMOTIONS_PER_RUN - summary.autoPromoted;
+          const { results: recResults, autoPromoted: newPromotions } =
+            await applyRecommendations(
+              override.id,
+              override,
+              recommendations,
+              sourceContent,
+              dryRun,
+              autoPromotionsRemaining
+            );
           summary.recommended += recResults.length;
+          summary.autoPromoted += newPromotions;
           summary.results.push(...recResults);
 
           logger.info(
-            `[auto-review] Override ${override.id}: ${recommendations.length} recommendation(s) generated`
+            `[auto-review] Override ${override.id}: ${recommendations.length} recommendation(s) generated${newPromotions > 0 ? `, ${newPromotions} auto-promoted` : ""}`
           );
         } else {
           // No recommendations — persist a skip result
@@ -785,7 +1071,7 @@ export async function runAutoReview(
   }
 
   logger.info(
-    `[auto-review] Complete: ${summary.processed} processed, ${summary.approved} approved, ${summary.rejected} rejected, ${summary.recommended} recommended, ${summary.skipped} skipped, ${summary.errors} errors`
+    `[auto-review] Complete: ${summary.processed} processed, ${summary.approved} approved, ${summary.rejected} rejected, ${summary.recommended} recommended, ${summary.autoPromoted} auto-promoted, ${summary.skipped} skipped, ${summary.errors} errors`
   );
 
   return summary;
