@@ -20,7 +20,7 @@ const TIERS = [
       "Basic market overview per city",
     ],
     yearlyNote: "Free forever.",
-    cta: { label: "Sign up free", href: "/login" },
+    cta: { label: "Sign up free", href: "/login?mode=signup" },
   },
   {
     name: "Pro",
@@ -227,7 +227,7 @@ export default async function LandingPage() {
                   Sign in
                 </Link>
                 <Link
-                  href="/login"
+                  href="/login?mode=signup"
                   style={{
                     fontSize: 11,
                     fontWeight: 700,
@@ -1292,7 +1292,7 @@ export default async function LandingPage() {
             Free access to market scores, rankings, and the interactive map.
           </p>
           <Link
-            href="/login"
+            href="/login?mode=signup"
             style={{
               display: "inline-block",
               padding: "14px 36px",

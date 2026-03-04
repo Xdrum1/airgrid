@@ -135,7 +135,7 @@ export default function PricingTiers() {
 
   async function handleCheckout(tier: Tier) {
     if (!session?.user) {
-      router.push(`/login?callbackUrl=${encodeURIComponent("/pricing")}`);
+      router.push(`/login?mode=signup&callbackUrl=${encodeURIComponent("/pricing")}`);
       return;
     }
     if (!tier.stripeTier) return;
@@ -327,7 +327,7 @@ export default function PricingTiers() {
             {/* CTA */}
             {tier.checkout === "free" ? (
               <Link
-                href="/login"
+                href="/login?mode=signup"
                 style={{
                   display: "block",
                   textAlign: "center",

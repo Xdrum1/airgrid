@@ -77,7 +77,7 @@ export default function AuthGate({ tab }: AuthGateProps) {
         </p>
 
         <button
-          onClick={() => router.push(`/login?callbackUrl=${encodeURIComponent(`/dashboard?tab=${tab}`)}`)}
+          onClick={() => router.push(`/login?mode=signup&callbackUrl=${encodeURIComponent(`/dashboard?tab=${tab}`)}`)}
           style={{
             padding: "13px 32px",
             background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
