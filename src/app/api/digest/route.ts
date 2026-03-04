@@ -1,30 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendWeeklyDigests } from "@/lib/notifications";
-
-function authorize(request: NextRequest): NextResponse | null {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json(
-      { success: false, error: "CRON_SECRET not configured" },
-      { status: 401 }
-    );
-  }
-
-  const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json(
-      { success: false, error: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  return null; // authorized
-}
+import { authorizeCron } from "@/lib/admin-helpers";
+import { rateLimit } from "@/lib/rate-limit";
 
 // Vercel crons send GET requests
 export async function GET(request: NextRequest) {
-  const denied = authorize(request);
+  const denied = authorizeCron(request);
   if (denied) return denied;
+
+  const rl = await rateLimit("cron:digest", 2, 60 * 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json({ success: false, error: "Rate limited" }, { status: 429 });
+  }
 
   try {
     const result = await sendWeeklyDigests();

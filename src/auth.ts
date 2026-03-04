@@ -1,5 +1,4 @@
 import "@/lib/env";
-import crypto from "crypto";
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
@@ -13,7 +12,7 @@ const logger = createLogger("auth");
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 7 * 24 * 60 * 60 },
   pages: {
     signIn: "/login",
     verifyRequest: "/login/check-email",
@@ -25,10 +24,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       name: "Email",
       type: "email",
       maxAge: 10 * 60, // 10 minutes
-      generateVerificationToken: () => {
-        return crypto.randomInt(100000, 999999).toString();
-      },
-      sendVerificationRequest: async ({ identifier: email, token }) => {
+      sendVerificationRequest: async ({ identifier: email, token, url }) => {
         const rl = await rateLimit(`magic-link:${email}`, 3, 15 * 60 * 1000);
         if (!rl.allowed) {
           throw new Error("Too many verification requests. Please wait a few minutes.");
@@ -38,7 +34,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!process.env.SES_ACCESS_KEY_ID) {
           if (process.env.NODE_ENV === "development") {
-            logger.info(`Dev mode — verification code: ${token}`);
+            logger.info(`Dev mode — magic link: ${url}`);
           }
           return;
         }
@@ -49,13 +45,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               <img src="https://www.airindex.io/images/logo/airindex-wordmark-light.png" alt="AirIndex" width="160" height="35" style="display:block;" />
             </div>
             <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 24px;">
-              Your verification code for AirIndex:
+              Click the button below to sign in to AirIndex:
             </p>
-            <div style="background:#f5f3ff;border:2px solid #7c3aed;border-radius:8px;padding:20px;text-align:center;margin:0 0 24px;">
-              <span style="font-family:'Courier New',monospace;font-size:32px;font-weight:700;color:#7c3aed;letter-spacing:8px;">${token}</span>
-            </div>
+            <a href="${url}" style="display:inline-block;padding:14px 32px;background:#7c3aed;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;border-radius:8px;margin:0 0 24px;">
+              Sign in to AirIndex
+            </a>
             <p style="color:#999;font-size:12px;line-height:1.6;margin:0 0 0;">
-              This code expires in 10 minutes. If you didn't request this, you can safely ignore this email.
+              This link expires in 10 minutes. If you didn't request this, you can safely ignore this email.
             </p>
           </div>
         `.trim();
@@ -64,12 +60,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           await sendSesEmail({
             to: email,
             from,
-            subject: `${token} — Your AirIndex verification code`,
+            subject: "Sign in to AirIndex",
             html,
           });
-          logger.info(`Verification code sent successfully to ${email}`);
+          logger.info(`Magic link sent successfully to ${email}`);
         } catch (err) {
-          logger.error(`Failed to send verification code to ${email}:`, err);
+          logger.error(`Failed to send magic link to ${email}:`, err);
           throw err;
         }
       },

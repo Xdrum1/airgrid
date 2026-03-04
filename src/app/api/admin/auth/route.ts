@@ -2,16 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { rateLimit } from "@/lib/rate-limit";
 import { signAdminCookie, COOKIE_NAME } from "@/lib/admin-auth";
+import { getClientIp } from "@/lib/admin-helpers";
 import { createLogger } from "@/lib/logger";
 
 const logger = createLogger("admin/auth");
 
 const ADMIN_EMAIL = process.env.ADMIN_NOTIFY_EMAIL;
 const ADMIN_PIN = process.env.ADMIN_PIN;
-
-function getClientIp(req: NextRequest): string {
-  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-}
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
@@ -33,7 +30,7 @@ export async function POST(request: NextRequest) {
     ].filter(Boolean).join(", ");
     logger.error(`Missing env vars: ${missing}`);
     return NextResponse.json(
-      { error: `Server misconfigured — missing: ${missing}` },
+      { error: "Server configuration error" },
       { status: 500 }
     );
   }

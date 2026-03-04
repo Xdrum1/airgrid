@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getChangelogEntries } from "@/lib/changelog";
+import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/admin-helpers";
 import type { ChangeType } from "@/types";
 
 export async function GET(request: NextRequest) {
+  const ip = getClientIp(request);
+  const rl = await rateLimit(`changelog:${ip}`, 60, 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Rate limited" }, { status: 429 });
+  }
+
   const limit = Math.min(Math.max(Number(request.nextUrl.searchParams.get("limit") ?? 50), 1), 500);
   const type = request.nextUrl.searchParams.get("type") as ChangeType | null;
 

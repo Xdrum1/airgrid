@@ -4,6 +4,17 @@ import { getClientIp } from "@/lib/admin-helpers";
 import { sendSesEmail } from "@/lib/ses";
 import { prisma } from "@/lib/prisma";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
 
@@ -28,6 +39,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Name and email are required" }, { status: 400 });
     }
 
+    if (!EMAIL_RE.test(email.trim())) {
+      return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+    }
+
     // Persist to DB
     await prisma.contactInquiry.create({
       data: {
@@ -45,16 +60,23 @@ export async function POST(request: NextRequest) {
     const fromEmail = process.env.SES_FROM_EMAIL || "noreply@airindex.io";
 
     if (adminEmail) {
+      const safeName = escapeHtml(name);
+      const safeEmail = escapeHtml(email);
+      const safeCompany = company ? escapeHtml(company) : "";
+      const safeRole = role ? escapeHtml(role) : "";
+      const safeTier = escapeHtml(tier || "not specified");
+      const safeMessage = message ? escapeHtml(message) : "";
+
       const html = `
         <div style="font-family: monospace; max-width: 600px;">
           <h2 style="color: #00d4ff;">New AirIndex Inquiry</h2>
           <table style="border-collapse: collapse; width: 100%;">
-            <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Name</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${name}</td></tr>
-            <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Email</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;"><a href="mailto:${email}">${email}</a></td></tr>
-            ${company ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Company</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${company}</td></tr>` : ""}
-            ${role ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Role</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${role}</td></tr>` : ""}
-            <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Tier</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${tier || "not specified"}</td></tr>
-            ${message ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Message</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${message}</td></tr>` : ""}
+            <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Name</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeName}</td></tr>
+            <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Email</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;"><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>
+            ${safeCompany ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Company</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeCompany}</td></tr>` : ""}
+            ${safeRole ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Role</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeRole}</td></tr>` : ""}
+            <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Tier</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeTier}</td></tr>
+            ${safeMessage ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Message</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeMessage}</td></tr>` : ""}
           </table>
           <p style="color: #666; font-size: 11px; margin-top: 20px;">Sent from airindex.io/contact</p>
         </div>

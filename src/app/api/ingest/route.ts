@@ -2,26 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { runIngestion } from "@/lib/ingestion";
 import { rateLimit } from "@/lib/rate-limit";
-
-function authorize(request: NextRequest): NextResponse | null {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json(
-      { success: false, error: "CRON_SECRET not configured" },
-      { status: 401 }
-    );
-  }
-
-  const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json(
-      { success: false, error: "Unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  return null;
-}
+import { authorizeCron } from "@/lib/admin-helpers";
 
 async function startIngestion(): Promise<NextResponse> {
   const rl = await rateLimit("ingest", 4, 60 * 60 * 1000);
@@ -49,14 +30,14 @@ async function startIngestion(): Promise<NextResponse> {
 
 // Crons send GET requests
 export async function GET(request: NextRequest) {
-  const denied = authorize(request);
+  const denied = authorizeCron(request);
   if (denied) return denied;
   return startIngestion();
 }
 
 // Keep POST for manual triggers
 export async function POST(request: NextRequest) {
-  const denied = authorize(request);
+  const denied = authorizeCron(request);
   if (denied) return denied;
   return startIngestion();
 }

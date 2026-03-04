@@ -9,8 +9,7 @@ export function generateUnsubscribeToken(subscriptionId: string, email: string):
   if (!secret) throw new Error("AUTH_SECRET is required for unsubscribe tokens");
   return createHmac("sha256", secret)
     .update(`${subscriptionId}:${email}`)
-    .digest("hex")
-    .slice(0, 32);
+    .digest("hex");
 }
 
 export function verifyUnsubscribeToken(
