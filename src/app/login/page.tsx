@@ -173,7 +173,7 @@ function LoginForm() {
               <p style={{ color: "#ff4444", fontSize: 12, marginTop: 16 }}>{error}</p>
             )}
 
-            <p style={{ color: "#333", fontSize: 10, marginTop: 32 }}>
+            <p style={{ color: "#666", fontSize: 10, marginTop: 32 }}>
               {isSignup
                 ? "No password needed — we\u2019ll email you a magic link to get started."
                 : "No password needed — we\u2019ll email you a sign-in link."}
@@ -246,7 +246,7 @@ function LoginForm() {
               ← Use a different email
             </button>
 
-            <p style={{ color: "#333", fontSize: 10, marginTop: 32 }}>
+            <p style={{ color: "#666", fontSize: 10, marginTop: 32 }}>
               Link expires in 10 minutes. Check spam if you don&apos;t see it.
             </p>
           </>
