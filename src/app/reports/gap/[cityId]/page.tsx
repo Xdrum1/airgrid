@@ -35,12 +35,20 @@ export default async function GapReportPage({
   const gap = analyzeGaps(city);
   const peers = getPeerContext(city, allCities);
 
-  let history: Awaited<ReturnType<typeof getScoreHistoryFull>> = [];
+  let rawHistory: Awaited<ReturnType<typeof getScoreHistoryFull>> = [];
   try {
-    history = await getScoreHistoryFull(cityId);
+    rawHistory = await getScoreHistoryFull(cityId);
   } catch {
     // Graceful — history may be sparse or DB unavailable
   }
+
+  // Deduplicate: keep first entry, entries with score changes, and entries with triggering events
+  const history = rawHistory.filter((h, i) => {
+    if (i === 0) return true;
+    if (h.triggeringEvent) return true;
+    if (h.score !== rawHistory[i - 1].score) return true;
+    return false;
+  });
 
   let corridors: Awaited<ReturnType<typeof getCorridorsForCity>> = [];
   try {
@@ -608,15 +616,17 @@ export default async function GapReportPage({
 
           {/* Footer */}
           <div
-            className="screen-only"
             style={{ textAlign: "center", padding: "24px 0 40px", color: "#555", fontSize: 11 }}
           >
             <p style={{ margin: 0 }}>
+              Prepared for {city.city}, {city.state} &middot; {today}
+            </p>
+            <p style={{ margin: "6px 0 0" }}>
               <span style={{ fontFamily: "'Courier New', monospace", fontWeight: 800, letterSpacing: "0.1em" }}>AIR</span>
               <span className="neon-accent" style={{ fontFamily: "'Courier New', monospace", fontWeight: 400, color: "#00d4ff", letterSpacing: "0.1em" }}>INDEX</span>
-              {" "}&middot; Confidential &middot; {today}
+              {" "}&middot; Vertical Data Group LLC
             </p>
-            <p style={{ margin: "8px 0 0", color: "#444" }}>
+            <p className="screen-only" style={{ margin: "8px 0 0", color: "#444" }}>
               Print this page (Ctrl+P / Cmd+P) to generate a PDF.
             </p>
           </div>

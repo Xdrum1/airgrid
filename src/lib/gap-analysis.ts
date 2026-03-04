@@ -49,19 +49,19 @@ export interface PeerContext {
 
 const RECOMMENDATIONS: Record<keyof ScoreBreakdown, string> = {
   activePilotProgram:
-    "Launch a UAM pilot program in partnership with an eVTOL operator. Reference the Lake Nona (Orlando) smart city pilot or the Wisk Aero autonomous testing program in Dallas as models. Even a time-limited demonstration program qualifies.",
+    "Launch a UAM pilot program in partnership with an eVTOL operator. Dallas launched a pilot with Wisk Aero for autonomous flight testing near DFW — a time-limited demonstration partnership that immediately qualified the market. Orlando took a similar approach with the Lake Nona smart city pilot. A city-sponsored demo program, even small-scale, signals operator readiness and earns this factor.",
   approvedVertiport:
-    "Commission a vertiport feasibility study and identify at least one site for permitting. Airport-adjacent locations (like LAX Adjacent or DFW Vertiport Texas) face fewer zoning hurdles. FDOT and state DOTs increasingly offer AAM infrastructure grants.",
+    "Commission a vertiport feasibility study and identify at least one site for permitting. Dallas permitted the DFW Vertiport Texas as an airport-adjacent facility — a site type that faces fewer zoning hurdles and accelerates timelines. Airport authorities are natural partners: they control land, have FAA relationships, and benefit from last-mile connectivity. State DOTs increasingly offer AAM infrastructure grants to fund these studies.",
   activeOperatorPresence:
-    "Engage eVTOL operators (Joby, Archer, Wisk) through an RFI or memorandum of understanding. Operators are actively seeking launch markets — cities that signal readiness attract operator investment. Dallas secured Wisk through proactive engagement.",
+    "Engage eVTOL operators (Joby, Archer, Wisk) through an RFI or memorandum of understanding. Dallas secured Wisk Aero by creating a regulatory environment that made the city an obvious choice for autonomous testing — the operator came to them. Cities that pass UAM-friendly legislation, designate test corridors, and publicly signal readiness attract operator commitments. Issue a formal RFI to all three major operators and publicize it.",
   vertiportZoning:
-    "Adopt a vertiport zoning overlay or amend the zoning code to accommodate vertical takeoff and landing facilities. Reference the Dallas vertiport zoning code amendment (2024) or Clark County's overlay zone as templates.",
+    "Adopt a vertiport zoning overlay or amend the zoning code to accommodate vertical takeoff and landing facilities. Dallas adopted a vertiport zoning code amendment in 2024 that created a clear permitting pathway — before that, operators had no legal framework to site infrastructure. Clark County (Las Vegas) took a similar approach with an overlay zone. The amendment itself is straightforward municipal code — the key is doing it before operators arrive, not after.",
   regulatoryPosture:
-    "Signal regulatory openness by issuing an executive order, forming a UAM task force, or publishing a supportive policy statement. Moving from neutral to friendly posture adds 5 points. Arizona and Florida are models of friendly regulatory environments.",
+    "Signal regulatory openness by issuing an executive order, forming a UAM task force, or publishing a supportive policy statement. Moving from neutral to friendly posture adds 5 points. Texas and Arizona set the standard — their governors publicly endorsed AAM as economic development priority, which gave operators confidence to invest. A mayor's executive order or city council resolution costs nothing and immediately changes the market signal.",
   stateLegislation:
-    "Advocate for state-level UAM legislation. Texas HB 1735, California SB 944, and the Florida Advanced Air Mobility Act are templates. State legislation provides the legal framework operators need before committing to a market.",
+    "Advocate for state-level UAM legislation. Texas HB 1735 is the gold standard — it created a statewide legal framework that gave Dallas, Houston, Austin, and San Antonio all immediate credibility with operators. California followed with SB 944, Florida with the Advanced Air Mobility Act. State legislation provides the legal certainty operators need before committing capital to a market.",
   laancCoverage:
-    "Ensure FAA LAANC (Low Altitude Authorization and Notification Capability) authorization is active for the metro area's airspace. Most major metros already have LAANC coverage — verify with the FAA UAS Data Exchange.",
+    "Ensure FAA LAANC (Low Altitude Authorization and Notification Capability) authorization is active for the metro area's airspace. Most major metros already have LAANC coverage — verify with the FAA UAS Data Exchange. This is typically the easiest factor to confirm and resolve.",
 };
 
 // -------------------------------------------------------
