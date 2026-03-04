@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+
 
 // -------------------------------------------------------
 // Tier data
@@ -100,10 +99,7 @@ const TIERS: Tier[] = [
 // -------------------------------------------------------
 
 export default function PricingTiers() {
-  const { data: session } = useSession();
-  const router = useRouter();
   const [interval, setInterval] = useState<Interval>("monthly");
-  const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
   function getDisplayPrice(tier: Tier): string {
     if (tier.monthly === null) return "Custom";
@@ -131,31 +127,6 @@ export default function PricingTiers() {
       return `Billed $${tier.annual.toLocaleString()}/year`;
     }
     return tier.note;
-  }
-
-  async function handleCheckout(tier: Tier) {
-    if (!session?.user) {
-      router.push(`/login?mode=signup&callbackUrl=${encodeURIComponent("/pricing")}`);
-      return;
-    }
-    if (!tier.stripeTier) return;
-
-    setLoadingTier(tier.name);
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: tier.stripeTier, interval }),
-      });
-      const json = await res.json();
-      if (json.url) {
-        window.location.href = json.url;
-      } else {
-        setLoadingTier(null);
-      }
-    } catch {
-      setLoadingTier(null);
-    }
   }
 
   return (
@@ -347,75 +318,47 @@ export default function PricingTiers() {
                 Sign up free
               </Link>
             ) : tier.checkout === "contact" ? (
-              <div>
-                <Link
-                  href="/contact?tier=enterprise"
-                  style={{
-                    display: "block",
-                    textAlign: "center",
-                    padding: "12px 0",
-                    borderRadius: 6,
-                    fontSize: 11,
-                    fontWeight: 700,
-                    fontFamily: "'Syne', sans-serif",
-                    letterSpacing: "0.06em",
-                    textDecoration: "none",
-                    transition: "opacity 0.15s",
-                    background: `${tier.accent}15`,
-                    border: `1px solid ${tier.accent}44`,
-                    color: tier.accent,
-                  }}
-                >
-                  Contact us
-                </Link>
-                <div
-                  style={{
-                    textAlign: "center",
-                    marginTop: 8,
-                    fontSize: 9,
-                    color: "#555",
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  Coming soon
-                </div>
-              </div>
+              <Link
+                href="/contact?tier=enterprise"
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  padding: "12px 0",
+                  borderRadius: 6,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  fontFamily: "'Syne', sans-serif",
+                  letterSpacing: "0.06em",
+                  textDecoration: "none",
+                  transition: "opacity 0.15s",
+                  background: `${tier.accent}15`,
+                  border: `1px solid ${tier.accent}44`,
+                  color: tier.accent,
+                }}
+              >
+                Contact us
+              </Link>
             ) : (
-              <div>
-                <button
-                  onClick={() => handleCheckout(tier)}
-                  disabled={loadingTier === tier.name}
-                  style={{
-                    width: "100%",
-                    padding: "12px 0",
-                    borderRadius: 6,
-                    fontSize: 11,
-                    fontWeight: 700,
-                    fontFamily: "'Syne', sans-serif",
-                    letterSpacing: "0.06em",
-                    cursor: loadingTier === tier.name ? "default" : "pointer",
-                    transition: "opacity 0.15s",
-                    opacity: loadingTier === tier.name ? 0.6 : 1,
-                    ...(tier.highlight
-                      ? { background: tier.accent, color: "#050508", border: "none" }
-                      : { background: `${tier.accent}15`, border: `1px solid ${tier.accent}44`, color: tier.accent }
-                    ),
-                  }}
-                >
-                  {loadingTier === tier.name ? "Loading..." : "Subscribe"}
-                </button>
-                <div
-                  style={{
-                    textAlign: "center",
-                    marginTop: 8,
-                    fontSize: 9,
-                    color: "#555",
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  Coming soon
-                </div>
-              </div>
+              <Link
+                href="/contact?tier=pro"
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  padding: "12px 0",
+                  borderRadius: 6,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  fontFamily: "'Syne', sans-serif",
+                  letterSpacing: "0.06em",
+                  textDecoration: "none",
+                  transition: "opacity 0.15s",
+                  background: `${tier.accent}15`,
+                  border: `1px solid ${tier.accent}44`,
+                  color: tier.accent,
+                }}
+              >
+                Join waitlist
+              </Link>
             )}
           </div>
         ))}
