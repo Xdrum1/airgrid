@@ -2,6 +2,127 @@ import { sendSesEmail } from "@/lib/ses";
 import { generateUnsubscribeToken } from "@/lib/unsubscribe-token";
 
 // -------------------------------------------------------
+// City outreach email (one-time send to city officials)
+// -------------------------------------------------------
+
+interface CityOutreachParams {
+  to: string;
+  recipientName?: string;
+  cityName: string;
+  state: string;
+  score: number;
+  tier: string;
+  tierColor: string;
+  achievedCount: number;
+  topGaps: { label: string; weight: number }[];
+  peerCityNames: string[];
+  calendarUrl: string;
+}
+
+export async function sendCityOutreachEmail({
+  to,
+  recipientName,
+  cityName,
+  state,
+  score,
+  tier,
+  tierColor,
+  achievedCount,
+  topGaps,
+  peerCityNames,
+  calendarUrl,
+}: CityOutreachParams): Promise<boolean> {
+  if (!process.env.SES_ACCESS_KEY_ID) {
+    console.log(
+      `[email] AWS credentials not configured — skipping outreach email to ${to} for ${cityName}`
+    );
+    return false;
+  }
+
+  const from = process.env.ALERT_FROM_EMAIL || "AirIndex <alerts@airindex.io>";
+  const appUrl = process.env.APP_URL || "https://www.airindex.io";
+  const today = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const greeting = recipientName ? `Dear ${recipientName},` : `To whom it may concern,`;
+
+  const gapLines = topGaps
+    .map((g) => `${g.label} (${g.weight} pts)`)
+    .join(", ");
+
+  const peerLine =
+    peerCityNames.length > 0
+      ? `Other ${tier}-tier markets include ${peerCityNames.slice(0, 3).join(", ")}.`
+      : "";
+
+  const html = `
+    <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:560px;margin:0 auto;">
+      <div style="margin-bottom:32px;">
+        <span style="font-family:'Courier New',monospace;font-weight:800;font-size:15px;color:#0a0a1a;letter-spacing:0.12em;">AIR</span><span style="font-family:'Courier New',monospace;font-weight:400;font-size:15px;color:#0077aa;letter-spacing:0.12em;">INDEX</span>
+      </div>
+
+      <div style="background:${tierColor};color:#ffffff;display:inline-block;padding:8px 20px;border-radius:6px;margin-bottom:20px;">
+        <span style="font-family:'Courier New',monospace;font-size:18px;font-weight:700;">${score}/100</span>
+        <span style="font-size:13px;font-weight:600;margin-left:8px;">${tier}</span>
+      </div>
+
+      <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 16px;">${greeting}</p>
+
+      <p style="color:#1a1a1a;font-size:15px;line-height:1.7;margin:0 0 16px;">
+        ${cityName}, ${state} scores <strong>${score}/100</strong> on the AirIndex UAM Readiness Index, placing it in the <strong>${tier}</strong> tier.
+      </p>
+
+      <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 12px;">
+        <strong>${achievedCount} of 7</strong> readiness factors met.
+      </p>
+
+      ${topGaps.length > 0 ? `
+      <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 12px;">
+        Key areas for improvement: <strong>${gapLines}</strong>
+      </p>` : ""}
+
+      ${peerLine ? `
+      <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 24px;">
+        ${peerLine}
+      </p>` : ""}
+
+      <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 24px;">
+        We've prepared a detailed Readiness Gap Report for ${cityName} with specific recommendations for improving your score. We'd welcome 20 minutes to walk through the findings.
+      </p>
+
+      <div style="text-align:center;margin:28px 0;">
+        <a href="${calendarUrl}" style="display:inline-block;background:#0077aa;color:#ffffff;padding:14px 32px;border-radius:6px;font-size:14px;font-weight:600;text-decoration:none;">Schedule a 20-Minute Conversation</a>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #eee;margin:28px 0 16px;" />
+
+      <p style="color:#999;font-size:11px;line-height:1.6;margin:0;">
+        AirIndex tracks UAM readiness across 20 US markets. Data as of ${today}.
+        <br/>
+        <a href="${appUrl}" style="color:#999;text-decoration:underline;">airindex.io</a>
+      </p>
+    </div>
+  `.trim();
+
+  try {
+    await sendSesEmail({
+      to,
+      from,
+      subject: `AirIndex rated ${cityName} — here's what we found`,
+      html,
+    });
+    console.log(`[email] Outreach sent to ${to} for ${cityName}`);
+    return true;
+  } catch (err) {
+    console.error("[email] Failed to send outreach:", err);
+    return false;
+  }
+}
+
+// -------------------------------------------------------
 // Per-event alert email
 // -------------------------------------------------------
 
