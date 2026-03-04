@@ -35,7 +35,7 @@ const TIERS = [
       "SEC filings & email alerts",
     ],
     yearlyNote: "$899/year (save 25%)",
-    cta: { label: "Sign up free", href: "/login" },
+    cta: { label: "Join waitlist", href: "/contact?tier=pro" },
     highlight: true,
   },
   {
@@ -1235,6 +1235,19 @@ export default async function LandingPage() {
                   >
                     {tier.cta.label}
                   </Link>
+                )}
+                {tier.name !== "Free" && (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      marginTop: 8,
+                      fontSize: 9,
+                      color: "#555",
+                      letterSpacing: 0.5,
+                    }}
+                  >
+                    Coming soon
+                  </div>
                 )}
               </div>
             );
