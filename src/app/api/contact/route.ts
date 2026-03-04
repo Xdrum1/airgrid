@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
           html: `
             <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
               <div style="margin-bottom:32px;">
-                <img src="https://www.airindex.io/images/logo/airindex-wordmark-light.png" alt="AirIndex" width="160" height="35" style="display:block;" />
+                <span style="font-family:'Courier New',monospace;font-weight:800;font-size:15px;color:#0a0a1a;letter-spacing:0.12em;">AIR</span><span style="font-family:'Courier New',monospace;font-weight:400;font-size:15px;color:#0077aa;letter-spacing:0.12em;">INDEX</span>
               </div>
               <p style="color:#333;font-size:18px;font-weight:700;line-height:1.4;margin:0 0 16px;">
                 ${confirm.heading}
