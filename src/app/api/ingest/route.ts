@@ -3,6 +3,7 @@ import { after } from "next/server";
 import { runIngestion } from "@/lib/ingestion";
 import { rateLimit } from "@/lib/rate-limit";
 import { authorizeCron } from "@/lib/admin-helpers";
+import { alertCronFailure } from "@/lib/cron-alerts";
 
 async function startIngestion(): Promise<NextResponse> {
   const rl = await rateLimit("ingest", 4, 60 * 60 * 1000);
@@ -22,6 +23,7 @@ async function startIngestion(): Promise<NextResponse> {
       );
     } catch (err) {
       console.error("[API /ingest] Ingestion error:", err);
+      await alertCronFailure("ingest", err);
     }
   });
 

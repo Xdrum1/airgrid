@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendWeeklyDigests } from "@/lib/notifications";
 import { authorizeCron } from "@/lib/admin-helpers";
 import { rateLimit } from "@/lib/rate-limit";
+import { alertCronFailure } from "@/lib/cron-alerts";
 
 // Vercel crons send GET requests
 export async function GET(request: NextRequest) {
@@ -18,6 +19,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: true, ...result });
   } catch (err) {
     console.error("[API /digest] Error:", err);
+    await alertCronFailure("digest", err);
     return NextResponse.json(
       { success: false, error: "Digest send failed" },
       { status: 500 }
