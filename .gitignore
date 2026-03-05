@@ -45,3 +45,6 @@ test-results/
 coverage/
 
 # Unversioned assets (none currently)
+
+# Sentry Config File
+.env.sentry-build-plugin
