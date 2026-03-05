@@ -212,6 +212,19 @@ export default async function GapReportPage({
             <p style={{ color: "#666", fontSize: 12, margin: "4px 0 0" }}>
               Prepared by Vertical Data Group LLC &middot; {today}
             </p>
+            <p
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontStyle: "italic",
+                color: "#555",
+                fontSize: 13,
+                letterSpacing: "0.08em",
+                marginTop: 20,
+                marginBottom: 0,
+              }}
+            >
+              Rate the sky.
+            </p>
           </div>
 
           {/* ======== SECTION 2: EXECUTIVE SUMMARY ======== */}
@@ -624,7 +637,7 @@ export default async function GapReportPage({
             <p style={{ margin: "6px 0 0" }}>
               <span style={{ fontFamily: "'Courier New', monospace", fontWeight: 800, letterSpacing: "0.1em" }}>AIR</span>
               <span className="neon-accent" style={{ fontFamily: "'Courier New', monospace", fontWeight: 400, color: "#00d4ff", letterSpacing: "0.1em" }}>INDEX</span>
-              {" "}&middot; Vertical Data Group LLC
+              {" "}&middot; Rate the sky.
             </p>
             <p className="screen-only" style={{ margin: "8px 0 0", color: "#444" }}>
               Print this page (Ctrl+P / Cmd+P) to generate a PDF.

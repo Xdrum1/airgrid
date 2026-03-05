@@ -100,9 +100,9 @@ export async function sendCityOutreachEmail({
       <hr style="border:none;border-top:1px solid #eee;margin:28px 0 16px;" />
 
       <p style="color:#999;font-size:11px;line-height:1.6;margin:0;">
-        AirIndex tracks UAM readiness across 20 US markets. Data as of ${today}.
+        <a href="${appUrl}" style="color:#999;text-decoration:underline;">airindex.io</a> &middot; Rate the sky.
         <br/>
-        <a href="${appUrl}" style="color:#999;text-decoration:underline;">airindex.io</a>
+        Data as of ${today}. Tracking UAM readiness across 20 US markets.
       </p>
     </div>
   `.trim();
