@@ -313,8 +313,8 @@ export default async function LandingPage() {
             margin: "0 auto 40px",
           }}
         >
-          Readiness ratings, regulatory filings, corridor authorizations, operator tracking —
-          aggregated from FAA, Federal Register, LegiScan, and SEC EDGAR.
+          Readiness ratings, regulatory filings, corridor authorizations, and operator tracking —
+          aggregated from federal, state, and municipal sources.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
