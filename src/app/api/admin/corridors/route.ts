@@ -36,18 +36,24 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Validate sourceUrl if provided
+  const rawSourceUrl = body.sourceUrl as string | undefined;
+  const sourceUrl = rawSourceUrl && /^https?:\/\//i.test(rawSourceUrl)
+    ? rawSourceUrl.slice(0, 2048)
+    : undefined;
+
   try {
     const corridor = await createCorridor({
-      name,
-      status,
-      cityId,
-      operatorId: body.operatorId as string | undefined,
-      startPointLabel,
-      endPointLabel,
+      name: name.slice(0, 200),
+      status: status.slice(0, 50),
+      cityId: cityId.slice(0, 100),
+      operatorId: body.operatorId ? String(body.operatorId).slice(0, 100) : undefined,
+      startPointLabel: startPointLabel.slice(0, 200),
+      endPointLabel: endPointLabel.slice(0, 200),
       distanceKm: typeof body.distanceKm === "number" ? body.distanceKm : undefined,
       estimatedFlightMinutes: typeof body.estimatedFlightMinutes === "number" ? body.estimatedFlightMinutes : undefined,
-      notes: body.notes as string | undefined,
-      sourceUrl: body.sourceUrl as string | undefined,
+      notes: body.notes ? String(body.notes).slice(0, 2000) : undefined,
+      sourceUrl,
     });
     return NextResponse.json({ ok: true, data: corridor }, { status: 201 });
   } catch (err) {
