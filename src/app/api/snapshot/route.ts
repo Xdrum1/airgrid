@@ -4,6 +4,7 @@ import { getCitiesWithOverrides } from "@/data/seed";
 import { getScoreTier } from "@/lib/scoring";
 import { authorizeCron } from "@/lib/admin-helpers";
 import { rateLimit } from "@/lib/rate-limit";
+import { alertCronFailure } from "@/lib/cron-alerts";
 
 // Vercel crons send GET requests
 export async function GET(request: NextRequest) {
@@ -51,6 +52,7 @@ async function captureSnapshots() {
     });
   } catch (err) {
     console.error("[API /snapshot] Error:", err);
+    await alertCronFailure("snapshot", err);
     return NextResponse.json(
       { success: false, error: "Snapshot capture failed" },
       { status: 500 }

@@ -10,6 +10,17 @@ jobs:
   ingest:
     runs-on: ubuntu-latest
     steps:
+      - name: Health check
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/health")
+          echo "Health: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Health check returned $HTTP_CODE — app may be degraded"
+          fi
+
       - name: Trigger ingestion endpoint
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
