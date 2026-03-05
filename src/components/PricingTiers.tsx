@@ -246,11 +246,23 @@ export default function PricingTiers() {
                 fontWeight: 700,
                 fontSize: 16,
                 color: "#ccc",
-                marginBottom: 10,
+                marginBottom: tier.checkout === "free" ? 10 : 4,
               }}
             >
               {tier.name}
             </div>
+            {tier.checkout !== "free" && (
+              <div
+                style={{
+                  fontSize: 9,
+                  letterSpacing: 1,
+                  color: "#666",
+                  marginBottom: 6,
+                }}
+              >
+                COMING SOON
+              </div>
+            )}
 
             {/* Price */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
