@@ -94,17 +94,6 @@ export default async function LandingPage() {
   const isAuthed = !!session?.user;
   const CITIES = await getCitiesWithOverrides();
 
-  const highReadiness = CITIES.filter(c => (c.score ?? 0) >= 75).length;
-  const vertiportCities = CITIES.filter(c => c.vertiportCount > 0).length;
-  const avgScore = Math.round(CITIES.reduce((sum, c) => sum + (c.score ?? 0), 0) / CITIES.length);
-
-  const heroStats = [
-    { value: `${CITIES.length}`, label: "Markets tracked" },
-    { value: `${highReadiness}`, label: "High readiness" },
-    { value: `${vertiportCities}`, label: "Vertiport cities" },
-    { value: `${avgScore}`, label: "Avg score" },
-  ];
-
   const stats = [
     { value: CITIES.length, label: "Markets" },
     { value: OPERATORS.length, label: "Operators" },
@@ -249,43 +238,6 @@ export default async function LandingPage() {
         </div>
       </nav>
 
-      {/* ======== Data Platform Header ======== */}
-      <section
-        style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "20px 20px 0",
-        }}
-      >
-        <div
-          className="landing-stats-grid"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            flexWrap: "wrap",
-            padding: "14px 0",
-          }}
-        >
-          {heroStats.map((s, i) => (
-            <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
-                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 16, color: "#00d4ff" }}>
-                  {s.value}
-                </span>
-                <span style={{ fontSize: 10, color: "#888", letterSpacing: 1 }}>
-                  {s.label.toUpperCase()}
-                </span>
-              </span>
-              {i < heroStats.length - 1 && (
-                <span style={{ color: "#222", fontSize: 10 }}>·</span>
-              )}
-            </span>
-          ))}
-        </div>
-      </section>
-
       {/* ======== Hero ======== */}
       <section
         style={{
@@ -315,13 +267,14 @@ export default async function LandingPage() {
             </span>
             <span
               style={{
-                fontFamily: "'Space Mono', monospace",
-                fontSize: 9,
-                letterSpacing: 3,
+                fontFamily: "'Syne', sans-serif",
+                fontStyle: "italic",
+                fontSize: 13,
+                letterSpacing: 1,
                 color: "#777",
               }}
             >
-              UAM MARKET READINESS RATINGS
+              Rate the sky.
             </span>
           </div>
         </div>
@@ -1279,7 +1232,7 @@ export default async function LandingPage() {
               color: "#fff",
             }}
           >
-            The UAM industry moves fast. Stay ahead of it.
+            Rate the sky.
           </h2>
           <p
             style={{
