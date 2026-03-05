@@ -17,6 +17,7 @@ function ContactForm() {
     role: "",
     tier: tier || "pro",
     message: "",
+    website: "", // honeypot — bots fill this, humans don't see it
   });
   const [state, setState] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
@@ -184,6 +185,19 @@ function ContactForm() {
             resize: "vertical",
           }}
           placeholder="What are you looking to use AirIndex for?"
+        />
+      </div>
+      {/* Honeypot — hidden from humans, bots auto-fill it */}
+      <div aria-hidden="true" style={{ position: "absolute", left: "-9999px", top: "-9999px", height: 0, overflow: "hidden", tabIndex: -1 } as React.CSSProperties}>
+        <label htmlFor="website">Website</label>
+        <input
+          type="text"
+          id="website"
+          name="website"
+          autoComplete="off"
+          tabIndex={-1}
+          value={form.website}
+          onChange={(e) => setForm({ ...form, website: e.target.value })}
         />
       </div>
       <button

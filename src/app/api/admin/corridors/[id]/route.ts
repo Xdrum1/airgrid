@@ -25,6 +25,21 @@ export async function PUT(
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
+  // Sanitize sourceUrl if provided
+  if (body.sourceUrl !== undefined) {
+    const raw = String(body.sourceUrl);
+    body.sourceUrl = /^https?:\/\//i.test(raw) ? raw.slice(0, 2048) : null;
+  }
+
+  // Cap string field lengths
+  if (body.name) body.name = String(body.name).slice(0, 200);
+  if (body.status) body.status = String(body.status).slice(0, 50);
+  if (body.cityId) body.cityId = String(body.cityId).slice(0, 100);
+  if (body.operatorId) body.operatorId = String(body.operatorId).slice(0, 100);
+  if (body.startPointLabel) body.startPointLabel = String(body.startPointLabel).slice(0, 200);
+  if (body.endPointLabel) body.endPointLabel = String(body.endPointLabel).slice(0, 200);
+  if (body.notes) body.notes = String(body.notes).slice(0, 2000);
+
   try {
     const corridor = await updateCorridorById(id, body);
     return NextResponse.json({ ok: true, data: corridor });

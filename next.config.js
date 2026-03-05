@@ -26,7 +26,7 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
+              "script-src 'self' 'unsafe-inline' https://plausible.io",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https://*.mapbox.com https://*.tiles.mapbox.com",
               "connect-src 'self' https://*.mapbox.com https://*.tiles.mapbox.com https://events.mapbox.com https://plausible.io",

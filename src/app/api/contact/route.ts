@@ -26,14 +26,22 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, email, company, role, tier, message } = body as {
+    const { name, email, company, role, tier, message, website } = body as {
       name: string;
       email: string;
       company?: string;
       role?: string;
       tier?: string;
       message?: string;
+      website?: string;
     };
+
+    // Honeypot — hidden field that only bots fill in
+    if (website) {
+      // Return success to avoid revealing detection
+      console.log(`[contact] Bot detected (honeypot filled) from ${ip}`);
+      return NextResponse.json({ ok: true }, { status: 200 });
+    }
 
     if (!name?.trim() || !email?.trim()) {
       return NextResponse.json({ error: "Name and email are required" }, { status: 400 });
@@ -41,6 +49,12 @@ export async function POST(request: NextRequest) {
 
     if (!EMAIL_RE.test(email.trim())) {
       return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+    }
+
+    // Enforce field length limits
+    if (name.length > 200 || email.length > 320 || (company && company.length > 200) ||
+        (role && role.length > 200) || (message && message.length > 5000)) {
+      return NextResponse.json({ error: "Input too long" }, { status: 400 });
     }
 
     // Persist to DB
