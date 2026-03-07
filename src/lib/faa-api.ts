@@ -81,6 +81,9 @@ const UAM_SEARCH_TERMS = [
   '"advanced air mobility"',
   "vertiport",
   '"unmanned aircraft system"',
+  "eIPP",
+  '"integration pilot program"',
+  '"urban air mobility"',
 ];
 
 async function fetchFederalRegisterTerm(
@@ -178,7 +181,7 @@ export async function fetchStateBills(state: string): Promise<StateBill[]> {
   }
 
   try {
-    const url = `${LEGISCAN_BASE}/?key=${apiKey}&op=getSearch&state=${state}&query=drone+OR+evtol+OR+%22air+mobility%22+OR+vertiport`;
+    const url = `${LEGISCAN_BASE}/?key=${apiKey}&op=getSearch&state=${state}&query=drone+OR+evtol+OR+%22air+mobility%22+OR+%22urban+air+mobility%22+OR+vertiport`;
     const res = await fetch(url);
     const json = await res.json();
     const sr = json.searchresult;

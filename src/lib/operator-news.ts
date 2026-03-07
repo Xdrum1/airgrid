@@ -21,6 +21,8 @@ const OPERATOR_FEEDS: OperatorFeed[] = [
   { operatorId: "op_archer", query: '"archer aviation"' },
   { operatorId: "op_wisk", query: '"wisk aero"' },
   { operatorId: "op_blade", query: '"blade air mobility"' },
+  { operatorId: "op_volocopter", query: '"volocopter"' },
+  { operatorId: "industry", query: '"eVTOL" OR "vertiport" OR "advanced air mobility"' },
 ];
 
 // -------------------------------------------------------
@@ -81,7 +83,7 @@ function cleanCdata(text: string): string {
 // Keyword classifier
 // -------------------------------------------------------
 
-const MARKET_KEYWORDS = /los angeles|new york|dallas|miami|orlando|las vegas|phoenix|houston|austin|san diego|san francisco|chicago|atlanta|nashville|charlotte|denver|seattle|boston|minneapolis|washington/i;
+const MARKET_KEYWORDS = /los angeles|new york|dallas|miami|orlando|las vegas|phoenix|houston|austin|san diego|san francisco|chicago|atlanta|nashville|charlotte|denver|seattle|boston|minneapolis|washington|columbus.{0,5}ohio|cincinnati|cleveland|detroit|pittsburgh|portland|salt lake|tampa|jacksonville|san antonio|indianapolis|memphis|louisville|richmond|raleigh|sacramento|kansas city|st\.? louis|milwaukee|new orleans|oklahoma city|tucson|omaha|albuquerque|honolulu|anchorage/i;
 const CORRIDOR_KEYWORDS = /corridor|route|airspace|flight path|airway/i;
 const CERT_KEYWORDS = /type cert|airworthiness|faa cert|part 135|powered.lift|approval|certified/i;
 const TIMELINE_KEYWORDS = /launch|commercial ops|first flight|service begin|operations start|target date|timeline/i;
