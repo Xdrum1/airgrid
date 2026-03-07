@@ -1292,30 +1292,6 @@ export default async function LandingPage() {
           </div>
           <div className="landing-footer-links" style={{ display: "flex", gap: 24 }}>
             <Link
-              href="/dashboard"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              DASHBOARD
-            </Link>
-            <Link
-              href="/login"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              SIGN IN
-            </Link>
-            <a
-              href="mailto:sales@airindex.io"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              CONTACT
-            </a>
-            <a
-              href="/platform.html"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              PLATFORM
-            </a>
-            <Link
               href="/about"
               style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
@@ -1333,13 +1309,25 @@ export default async function LandingPage() {
             >
               API
             </Link>
+            <Link
+              href="/pricing"
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              PRICING
+            </Link>
+            <Link
+              href="/contact"
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              CONTACT
+            </Link>
             <a
               href="https://x.com/AirIndexHQ"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
-              @AIRINDEXHQ
+              X (TWITTER)
             </a>
             <a
               href="https://www.linkedin.com/company/AirIndexHQ"
