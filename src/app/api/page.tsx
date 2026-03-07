@@ -385,6 +385,9 @@ export default function ApiLandingPage() {
           <Link href="/" style={{ color: "#555", textDecoration: "none" }}>
             Home
           </Link>
+          <Link href="/privacy" style={{ color: "#555", textDecoration: "none" }}>
+            Privacy
+          </Link>
         </div>
       </main>
     </div>
