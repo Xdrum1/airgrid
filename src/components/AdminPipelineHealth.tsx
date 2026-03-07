@@ -3,15 +3,36 @@
 import { useState, useEffect } from "react";
 import { formatRelativeTime } from "@/lib/dashboard-constants";
 
+interface IngestionRunDetails {
+  newRecords: number;
+  updatedRecords: number;
+  unchangedCount: number;
+  totalRecords: number;
+  overridesCreated: number;
+  overridesApplied: number;
+  scoreChanges: number;
+  error: string | null;
+  alertSent: boolean;
+}
+
+interface RecentRun {
+  startedAt: string;
+  completedAt: string | null;
+  newRecords: number;
+  error: string | null;
+  alertSent: boolean;
+}
+
 interface PipelineHealth {
   pipelines: {
     snapshot: { lastRun: string | null; schedule: string; totalRuns: number };
-    ingestion: { lastRun: string | null; schedule: string };
+    ingestion: { lastRun: string | null; schedule: string; lastRunDetails: IngestionRunDetails | null };
     classification: { lastRun: string | null; model: string | null; totalClassified: number };
     autoReview: { lastRun: string | null; schedule: string };
   };
   dataVolume: Record<string, number>;
   pendingReviews: number;
+  recentRuns: RecentRun[];
   queriedAt: string;
 }
 
@@ -75,7 +96,9 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
       desc: "Federal Register, LegiScan, SEC EDGAR, Operator News",
       schedule: health.pipelines.ingestion.schedule,
       lastRun: health.pipelines.ingestion.lastRun,
-      stat: null,
+      stat: health.pipelines.ingestion.lastRunDetails
+        ? `${health.pipelines.ingestion.lastRunDetails.newRecords} new, ${health.pipelines.ingestion.lastRunDetails.overridesApplied} applied`
+        : null,
     },
     {
       label: "AI CLASSIFICATION",
@@ -280,6 +303,59 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
           </div>
         </div>
       </div>
+
+      {/* Recent ingestion runs */}
+      {health.recentRuns.length > 0 && (
+        <div style={{
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          borderRadius: 8,
+          padding: "16px 18px",
+        }}>
+          <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
+            RECENT INGESTION RUNS (LAST 7)
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {health.recentRuns.map((run, i) => {
+              const hasError = !!run.error;
+              const wasEmpty = run.alertSent;
+              const color = hasError ? "#ff4444" : wasEmpty ? "#f59e0b" : "#00ff88";
+              return (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "6px 10px",
+                    background: `${color}08`,
+                    borderRadius: 4,
+                    border: `1px solid ${color}15`,
+                  }}
+                >
+                  <div style={{ width: 5, height: 5, borderRadius: "50%", background: color, flexShrink: 0 }} />
+                  <span style={{ color: "#666", fontSize: 10, fontFamily: "'Space Mono', monospace", minWidth: 100 }}>
+                    {formatRelativeTime(run.startedAt)}
+                  </span>
+                  <span style={{ color: "#888", fontSize: 10, fontFamily: "'Space Mono', monospace" }}>
+                    {run.newRecords} new
+                  </span>
+                  {hasError && (
+                    <span style={{ color: "#ff4444", fontSize: 9, marginLeft: "auto" }}>
+                      ERROR
+                    </span>
+                  )}
+                  {wasEmpty && !hasError && (
+                    <span style={{ color: "#f59e0b", fontSize: 9, marginLeft: "auto" }}>
+                      ZERO RECORDS
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
