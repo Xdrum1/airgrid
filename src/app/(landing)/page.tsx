@@ -769,7 +769,7 @@ export default async function LandingPage() {
               </div>
             </div>
             <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#aaa", letterSpacing: 1 }}>
-              FREE DOWNLOAD — NO SIGNUP REQUIRED
+              FEBRUARY PREVIEW FREE · FULL REPORTS PRO
             </div>
           </div>
 
@@ -800,9 +800,9 @@ export default async function LandingPage() {
                 margin: "0 0 24px",
                 maxWidth: 520,
               }}>
-                Monthly report covering UAM market readiness ratings, corridor authorizations,
-                vertiport construction status, operator timelines, and regulatory filings — all in one
-                place. Published the first week of every month.
+                Get the free monthly summary — top market movers, biggest regulatory shifts, and one
+                headline insight. Want the full breakdown? All 21 markets, factor analysis, corridor
+                updates, and operator tracker are in the Pro report.
               </p>
 
               {/* Tags */}
@@ -823,27 +823,49 @@ export default async function LandingPage() {
                 ))}
               </div>
 
-              {/* Download button */}
-              <a
-                href="/reports/AirIndex-Market-Report-February-2026.pdf"
-                download
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "12px 24px",
-                  background: "#00d4ff",
-                  color: "#050508",
-                  fontFamily: "'Syne', sans-serif",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  textDecoration: "none",
-                  borderRadius: 6,
-                }}
-              >
-                ↓ DOWNLOAD FEBRUARY 2026 REPORT
-              </a>
+              {/* Download buttons */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                <a
+                  href="/reports/AirIndex-Market-Report-February-2026.pdf"
+                  download
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "12px 24px",
+                    background: "#00d4ff",
+                    color: "#050508",
+                    fontFamily: "'Syne', sans-serif",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: "0.06em",
+                    textDecoration: "none",
+                    borderRadius: 6,
+                  }}
+                >
+                  ↓ PREVIEW: FEBRUARY 2026
+                </a>
+                <a
+                  href="/pricing"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "12px 24px",
+                    background: "transparent",
+                    border: "1px solid rgba(0,255,136,0.4)",
+                    color: "#00ff88",
+                    fontFamily: "'Syne', sans-serif",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: "0.06em",
+                    textDecoration: "none",
+                    borderRadius: 6,
+                  }}
+                >
+                  FULL REPORT — PRO
+                </a>
+              </div>
             </div>
 
             {/* Mini preview thumbnail */}
