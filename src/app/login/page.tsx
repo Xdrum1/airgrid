@@ -180,6 +180,7 @@ function LoginForm() {
             </p>
             <p style={{ color: "#555", fontSize: 9, marginTop: 12 }}>
               By signing in, you agree to our{" "}
+              <a href="/terms" style={{ color: "#00d4ff", textDecoration: "none" }}>Terms of Service</a> and{" "}
               <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>.
             </p>
           </>

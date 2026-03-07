@@ -93,7 +93,7 @@ export default function AboutPage() {
 
         {/* Footer */}
         <div className="border-t border-white/10 pt-8 text-xs text-white/40">
-          <p>AirIndex &middot; The Readiness Standard for UAM &middot; airindex.io &middot; <Link href="/privacy" className="text-white/40 hover:text-white/60 transition-colors">Privacy</Link></p>
+          <p>AirIndex &middot; The Readiness Standard for UAM &middot; airindex.io &middot; <Link href="/terms" className="text-white/40 hover:text-white/60 transition-colors">Terms</Link> &middot; <Link href="/privacy" className="text-white/40 hover:text-white/60 transition-colors">Privacy</Link></p>
         </div>
       </div>
     </main>
