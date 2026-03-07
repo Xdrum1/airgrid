@@ -301,7 +301,7 @@ export default async function LandingPage() {
             color: "#fff",
           }}
         >
-          The only continuously updated index for UAM market readiness in the US
+          The eVTOL aircraft are ready. Which cities are?
         </h1>
         <p
           style={{
@@ -313,8 +313,8 @@ export default async function LandingPage() {
             margin: "0 auto 40px",
           }}
         >
-          Readiness ratings, regulatory filings, corridor authorizations, and operator tracking —
-          aggregated from federal, state, and municipal sources.
+          21 US cities scored for UAM market readiness — updated in real time.
+          Regulatory posture, infrastructure, operator presence, and corridor authorizations in one place.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
