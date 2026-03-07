@@ -9,6 +9,7 @@ import { formatRelativeTime } from "@/lib/dashboard-constants";
 import AdminCorridors from "./AdminCorridors";
 import AdminEvents from "./AdminEvents";
 import AdminBilling from "./AdminBilling";
+import AdminPipelineHealth from "./AdminPipelineHealth";
 
 // -------------------------------------------------------
 // Types
@@ -49,7 +50,7 @@ interface ClassificationResult {
   createdAt: string;
 }
 
-type TabKey = "overrides" | "classifications" | "corridors" | "events" | "billing" | "reports";
+type TabKey = "overrides" | "classifications" | "corridors" | "events" | "billing" | "pipeline" | "reports";
 
 // -------------------------------------------------------
 // Helpers
@@ -466,13 +467,14 @@ export default function AdminReview() {
           padding: "0 24px",
         }}
       >
-        {(["overrides", "classifications", "corridors", "events", "billing", "reports"] as const).map((t) => {
+        {(["overrides", "classifications", "corridors", "events", "billing", "pipeline", "reports"] as const).map((t) => {
           const labels: Record<TabKey, string> = {
             overrides: "PENDING OVERRIDES",
             classifications: "CLASSIFICATIONS",
             corridors: "CORRIDORS",
             events: "EVENTS",
             billing: "BILLING",
+            pipeline: "PIPELINE",
             reports: "REPORTS",
           };
           return (
@@ -506,6 +508,8 @@ export default function AdminReview() {
       <div style={{ padding: 24, maxWidth: 900, margin: "0 auto" }}>
         {tab === "reports" ? (
           <AdminReports />
+        ) : tab === "pipeline" ? (
+          <AdminPipelineHealth showToast={showToast} />
         ) : tab === "billing" ? (
           <AdminBilling showToast={showToast} />
         ) : tab === "events" ? (

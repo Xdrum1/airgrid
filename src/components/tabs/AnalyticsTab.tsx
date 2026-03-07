@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { City, Corridor, Operator } from "@/types";
+import { City, Corridor } from "@/types";
 import { getScoreColor } from "@/lib/scoring";
 import { SCORE_COMPONENT_COLORS, SCORE_COMPONENT_LABELS, CORRIDOR_STATUS_COLORS } from "@/lib/dashboard-constants";
 import { OPERATORS, CITIES_MAP } from "@/data/seed";
@@ -393,6 +393,7 @@ export default function AnalyticsTab({
           )}
         </>
       )}
+
     </div>
   );
 }
