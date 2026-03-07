@@ -8,23 +8,23 @@ export async function GET() {
   try {
     const [
       latestSnapshot,
-      latestChangelog,
+      latestIngestionRun,
       latestClassification,
       latestAutoReview,
       pendingReviewCount,
       snapshotCount,
       changelogCounts,
       classificationCount,
+      recentIngestionRuns,
     ] = await Promise.all([
       // Last snapshot run
       prisma.scoreSnapshot.findFirst({
         orderBy: { capturedAt: "desc" },
         select: { capturedAt: true },
       }),
-      // Last changelog entry (proxy for last ingestion that found new data)
-      prisma.changelogEntry.findFirst({
-        orderBy: { timestamp: "desc" },
-        select: { timestamp: true, changeType: true },
+      // Last ingestion run (from new IngestionRun table)
+      prisma.ingestionRun.findFirst({
+        orderBy: { startedAt: "desc" },
       }),
       // Last NLP classification
       prisma.classificationResult.findFirst({
@@ -40,7 +40,7 @@ export async function GET() {
       prisma.scoringOverride.count({
         where: { confidence: "needs_review", supersededAt: null },
       }),
-      // Total snapshots captured + distinct city count for run estimation
+      // Total snapshots captured
       prisma.scoreSnapshot.count(),
       // Changelog counts by type
       prisma.changelogEntry.groupBy({
@@ -49,6 +49,11 @@ export async function GET() {
       }),
       // Total classifications
       prisma.classificationResult.count(),
+      // Last 7 ingestion runs for trend
+      prisma.ingestionRun.findMany({
+        orderBy: { startedAt: "desc" },
+        take: 7,
+      }),
     ]);
 
     // Build source volume map from changelog
@@ -65,8 +70,21 @@ export async function GET() {
           totalRuns: Math.floor(snapshotCount / MARKET_COUNT),
         },
         ingestion: {
-          lastRun: latestChangelog?.timestamp ?? null,
+          lastRun: latestIngestionRun?.completedAt ?? latestIngestionRun?.startedAt ?? null,
           schedule: "Daily 06:00 UTC",
+          lastRunDetails: latestIngestionRun
+            ? {
+                newRecords: latestIngestionRun.newRecords,
+                updatedRecords: latestIngestionRun.updatedRecords,
+                unchangedCount: latestIngestionRun.unchangedCount,
+                totalRecords: latestIngestionRun.totalRecords,
+                overridesCreated: latestIngestionRun.overridesCreated,
+                overridesApplied: latestIngestionRun.overridesApplied,
+                scoreChanges: latestIngestionRun.scoreChanges,
+                error: latestIngestionRun.error,
+                alertSent: latestIngestionRun.alertSent,
+              }
+            : null,
         },
         classification: {
           lastRun: latestClassification?.createdAt ?? null,
@@ -75,11 +93,18 @@ export async function GET() {
         },
         autoReview: {
           lastRun: latestAutoReview?.createdAt ?? null,
-          schedule: "Weekly Mon 08:00 UTC",
+          schedule: "Daily 08:00 UTC",
         },
       },
       dataVolume: sourceVolume,
       pendingReviews: pendingReviewCount,
+      recentRuns: recentIngestionRuns.map((r) => ({
+        startedAt: r.startedAt,
+        completedAt: r.completedAt,
+        newRecords: r.newRecords,
+        error: r.error,
+        alertSent: r.alertSent,
+      })),
       queriedAt: new Date().toISOString(),
     });
   } catch (err) {

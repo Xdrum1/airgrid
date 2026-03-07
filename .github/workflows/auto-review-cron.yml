@@ -1,9 +1,9 @@
-name: Weekly auto-review cron
+name: Daily auto-review cron
 
 on:
   schedule:
-    # Run every Monday at 08:00 UTC (3am EST / 12am PST)
-    - cron: "0 8 * * 1"
+    # Run daily at 08:00 UTC (3am EST) — 2 hours after ingestion
+    - cron: "0 8 * * *"
   workflow_dispatch: # Allow manual trigger from GitHub UI
 
 jobs:

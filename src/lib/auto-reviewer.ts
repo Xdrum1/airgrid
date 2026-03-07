@@ -8,7 +8,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { getPendingOverrides, approveOverride, rejectOverride } from "@/lib/admin";
-import { CITIES_MAP } from "@/data/seed";
+import { CITIES_MAP, CITIES } from "@/data/seed";
 import { calculateReadinessScore, getScoreTier } from "@/lib/scoring";
 import { addChangelogEntries } from "@/lib/changelog";
 import { createLogger } from "@/lib/logger";
@@ -57,12 +57,8 @@ function getClient(): Anthropic {
 // Valid cities (mirrors classifier.ts)
 // -------------------------------------------------------
 
-const VALID_CITY_IDS = [
-  "los_angeles", "new_york", "dallas", "miami", "orlando",
-  "las_vegas", "phoenix", "houston", "austin", "san_diego",
-  "san_francisco", "chicago", "atlanta", "nashville", "charlotte",
-  "denver", "seattle", "boston", "minneapolis", "washington_dc",
-];
+// Dynamic — stays in sync with seed.ts automatically
+const VALID_CITY_IDS = CITIES.map((c) => c.id);
 
 // -------------------------------------------------------
 // Types

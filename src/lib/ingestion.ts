@@ -1,6 +1,3 @@
-import { promises as fs } from "fs";
-import path from "path";
-import crypto from "crypto";
 import { fetchFederalRegisterUAM, fetchStateBills, fetchOperatorFilings, OPERATOR_CIKS } from "@/lib/faa-api";
 import type { FederalFiling, StateBill, SecFiling } from "@/lib/faa-api";
 import { fetchAllOperatorNews } from "@/lib/operator-news";
@@ -10,7 +7,14 @@ import { evaluateRulesV2 } from "@/lib/rules-engine";
 import { updateCorridorStatus } from "@/lib/corridors";
 import { classifyRecords } from "@/lib/classifier";
 import { applyOverrides } from "@/lib/score-updater";
+import { alertCronFailure } from "@/lib/cron-alerts";
+import { STATE_TO_CITIES } from "@/data/seed";
 import type { ChangelogEntry } from "@/types";
+
+async function getPrisma() {
+  const { prisma } = await import("@/lib/prisma");
+  return prisma;
+}
 
 // -------------------------------------------------------
 // Types
@@ -43,14 +47,8 @@ export interface DiffResult {
 }
 
 // -------------------------------------------------------
-// File I/O
+// DB-backed ingestion state (replaces ephemeral /tmp files)
 // -------------------------------------------------------
-
-// Use /tmp on serverless (Lambda), process.cwd()/data locally
-const IS_LAMBDA = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
-const DATA_DIR = IS_LAMBDA ? "/tmp" : path.join(process.cwd(), "data");
-const INGESTED_FILE = path.join(DATA_DIR, "ingested.json");
-const META_FILE = path.join(DATA_DIR, "ingestion-meta.json");
 
 let writeLock: Promise<void> = Promise.resolve();
 
@@ -63,21 +61,58 @@ function withLock<T>(fn: () => Promise<T>): Promise<T> {
 
 async function readIngested(): Promise<IngestedRecord[]> {
   try {
-    const raw = await fs.readFile(INGESTED_FILE, "utf-8");
-    return JSON.parse(raw);
+    const prisma = await getPrisma();
+    const rows = await prisma.ingestedRecord.findMany();
+    return rows.map((r) => ({
+      id: r.id,
+      source: r.source as IngestedRecord["source"],
+      sourceId: r.sourceId,
+      title: r.title,
+      summary: r.summary,
+      status: r.status,
+      date: r.date,
+      url: r.url,
+      state: r.state ?? undefined,
+      raw: r.raw as Record<string, unknown>,
+      ingestedAt: r.ingestedAt.toISOString(),
+    }));
   } catch {
     return [];
   }
 }
 
 async function writeIngested(records: IngestedRecord[]): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(INGESTED_FILE, JSON.stringify(records, null, 2) + "\n", "utf-8");
-}
-
-async function writeMeta(meta: IngestionMeta): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(META_FILE, JSON.stringify(meta, null, 2) + "\n", "utf-8");
+  const prisma = await getPrisma();
+  // Upsert in batches of 100 to avoid overwhelming the DB
+  const BATCH_SIZE = 100;
+  for (let i = 0; i < records.length; i += BATCH_SIZE) {
+    const batch = records.slice(i, i + BATCH_SIZE);
+    await Promise.all(
+      batch.map((r) =>
+        prisma.ingestedRecord.upsert({
+          where: { id: r.id },
+          create: {
+            id: r.id,
+            source: r.source,
+            sourceId: r.sourceId,
+            title: r.title,
+            summary: r.summary,
+            status: r.status,
+            date: r.date,
+            url: r.url,
+            state: r.state ?? null,
+            raw: r.raw as unknown as Record<string, never>,
+            ingestedAt: new Date(r.ingestedAt),
+          },
+          update: {
+            summary: r.summary,
+            status: r.status,
+            raw: r.raw as unknown as Record<string, never>,
+          },
+        })
+      )
+    );
+  }
 }
 
 // -------------------------------------------------------
@@ -299,6 +334,8 @@ export async function runIngestion(): Promise<{
 }> {
   return withLock(async () => {
     console.log("[ingestion] Starting ingestion run...");
+    const prisma = await getPrisma();
+    const runStartedAt = new Date();
 
     // 1-4. Fetch all sources in parallel
     const SEC_FORM_TYPES = ["8-K", "10-K", "10-Q"];
@@ -343,24 +380,43 @@ export async function runIngestion(): Promise<{
       `[ingestion] Diff: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged`
     );
 
-    // 6. Merge and persist
+    // 6. Merge and persist to DB
     const existingMap = new Map(existing.map((r) => [r.id, r]));
     for (const r of diff.newRecords) existingMap.set(r.id, r);
     for (const r of diff.updatedRecords) existingMap.set(r.id, r);
     const merged = Array.from(existingMap.values());
 
-    await writeIngested(merged);
+    // Only write changed records to DB (not the full set every time)
+    const changedForDb = [...diff.newRecords, ...diff.updatedRecords];
+    if (changedForDb.length > 0) {
+      await writeIngested(changedForDb);
+    }
 
-    // 7. Write meta
+    // 7. Build meta
     const sources = Array.from(new Set(incomingRecords.map((r) => r.source)));
     const meta: IngestionMeta = {
       lastRunAt: new Date().toISOString(),
       recordCount: merged.length,
       sources,
     };
-    await writeMeta(meta);
 
-    // 8. Create changelog entries
+    // Track override/score stats for the run log
+    let runOverridesCreated = 0;
+    let runOverridesApplied = 0;
+    let runScoreChanges = 0;
+
+    // 8. Zero-record alert — if all 4 sources returned nothing, something is wrong
+    if (incomingRecords.length === 0) {
+      console.warn("[ingestion] ALERT: All sources returned 0 records — possible API failure");
+      await alertCronFailure(
+        "ingest-zero-records",
+        new Error(
+          `Ingestion returned 0 records across all sources. This likely means all external APIs are failing or returning empty results. Sources checked: ${sources.length > 0 ? sources.join(", ") : "none responded"}`
+        )
+      );
+    }
+
+    // 9. Create changelog entries
     const changelogBatch: Omit<ChangelogEntry, "id" | "timestamp">[] = [];
 
     for (const r of diff.newRecords) {
@@ -393,14 +449,13 @@ export async function runIngestion(): Promise<{
       );
     }
 
-    // 9. Enrich sparse summaries before classification
+    // 10. Enrich sparse summaries before classification
     const changedRecords = [...diff.newRecords, ...diff.updatedRecords];
     if (changedRecords.length > 0) {
       await enrichSecFilings(changedRecords);
       await enrichOperatorNews(changedRecords);
 
-      // 10. Classify new/updated records with NLP (falls back to regex rules)
-      // Run rules engine once for both overrides (fallback) and corridor events
+      // 11. Classify new/updated records with NLP (falls back to regex rules)
       const { overrideCandidates: regexOverrides, corridorEvents } = evaluateRulesV2(changedRecords);
 
       let overrideCandidates;
@@ -413,12 +468,15 @@ export async function runIngestion(): Promise<{
       }
       if (overrideCandidates.length > 0) {
         const result = await applyOverrides(overrideCandidates);
+        runOverridesCreated = result.persisted;
+        runOverridesApplied = result.applied;
+        runScoreChanges = result.scoreChanges.length;
         console.log(
           `[ingestion] Score updater: ${result.persisted} overrides persisted, ${result.applied} auto-applied, ${result.scoreChanges.length} score changes`
         );
       }
 
-      // 11. Process corridor events
+      // 12. Process corridor events
       if (corridorEvents.length > 0) {
         console.log(`[ingestion] Processing ${corridorEvents.length} corridor events`);
         const corridorChangelogBatch: Omit<ChangelogEntry, "id" | "timestamp">[] = [];
@@ -444,7 +502,6 @@ export async function runIngestion(): Promise<{
               console.error(`[ingestion] Failed to update corridor ${event.corridorId}:`, err);
             }
           } else {
-            // Unresolved corridor — log for admin review
             console.log(`[ingestion] Unresolved corridor event: ${event.reason}`);
           }
         }
@@ -456,9 +513,125 @@ export async function runIngestion(): Promise<{
           );
         }
       }
+
+      // 13. Auto-create market leads for cities not in our tracked markets
+      await autoCreateMarketLeads(changedRecords, overrideCandidates);
+    }
+
+    // 14. Log the ingestion run to DB
+    try {
+      await prisma.ingestionRun.create({
+        data: {
+          startedAt: runStartedAt,
+          completedAt: new Date(),
+          newRecords: diff.newRecords.length,
+          updatedRecords: diff.updatedRecords.length,
+          unchangedCount: diff.unchangedCount,
+          totalRecords: merged.length,
+          sources,
+          overridesCreated: runOverridesCreated,
+          overridesApplied: runOverridesApplied,
+          scoreChanges: runScoreChanges,
+          alertSent: incomingRecords.length === 0,
+        },
+      });
+    } catch (err) {
+      console.error("[ingestion] Failed to log ingestion run:", err);
     }
 
     console.log("[ingestion] Run complete.");
     return { diff, meta };
   });
+}
+
+// -------------------------------------------------------
+// Auto-create market leads from ingestion data
+// -------------------------------------------------------
+// When the classifier identifies a city/state NOT in our tracked markets,
+// auto-create a MarketLead so we don't miss emerging markets (the Ohio problem).
+
+async function autoCreateMarketLeads(
+  records: IngestedRecord[],
+  overrideCandidates: { cityId: string; field: string; reason: string; sourceUrl?: string; confidence: string }[]
+): Promise<void> {
+  try {
+    const prisma = await getPrisma();
+
+    // Collect state references from records that aren't in our tracked markets
+    const untrackedSignals = new Map<string, { source: string; signal: string; url: string }>();
+
+    // Check override candidates for unresolved cities — these are signals for unknown markets
+    for (const candidate of overrideCandidates) {
+      if (candidate.cityId === "__unresolved__" && candidate.confidence !== "needs_review") {
+        // This means the classifier found something relevant but couldn't map it to a tracked city
+        const key = `unresolved_${candidate.field}_${candidate.reason.slice(0, 50)}`;
+        if (!untrackedSignals.has(key)) {
+          untrackedSignals.set(key, {
+            source: "ingestion-pipeline",
+            signal: candidate.reason,
+            url: candidate.sourceUrl ?? "",
+          });
+        }
+      }
+    }
+
+    // Check LegiScan records from states that have NO tracked cities
+    for (const record of records) {
+      if (record.source === "legiscan" && record.state) {
+        const stateUpper = record.state.toUpperCase();
+        const trackedCities = STATE_TO_CITIES[stateUpper];
+        if (!trackedCities || trackedCities.length === 0) {
+          // This state has UAM legislation but we don't track any cities there
+          const key = `${stateUpper}_${record.sourceId}`;
+          if (!untrackedSignals.has(key)) {
+            untrackedSignals.set(key, {
+              source: `legiscan-${stateUpper}`,
+              signal: record.title,
+              url: record.url,
+            });
+          }
+        }
+      }
+    }
+
+    if (untrackedSignals.size === 0) return;
+
+    // Check for existing leads to avoid duplicates (by signal text similarity)
+    const existingLeads = await prisma.marketLead.findMany({
+      where: { status: { in: ["new", "researching"] } },
+      select: { signal: true, source: true },
+    });
+    const existingSignalSet = new Set(existingLeads.map((l) => l.signal.slice(0, 80)));
+
+    let created = 0;
+    for (const [, { source, signal, url }] of untrackedSignals) {
+      // Skip if we already have a lead with a similar signal
+      if (existingSignalSet.has(signal.slice(0, 80))) continue;
+
+      // Extract state from source if possible
+      const stateMatch = source.match(/legiscan-([A-Z]{2})/);
+      const state = stateMatch ? stateMatch[1] : "??";
+
+      await prisma.marketLead.create({
+        data: {
+          city: "Unknown",
+          state,
+          source: "auto-ingestion",
+          signal: signal.slice(0, 500),
+          status: "new",
+          priority: "normal",
+          researchNotes: `Auto-created from ingestion pipeline.\nSource: ${source}\nURL: ${url}`,
+        },
+      });
+      created++;
+      existingSignalSet.add(signal.slice(0, 80));
+    }
+
+    if (created > 0) {
+      console.log(`[ingestion] Auto-created ${created} market lead(s) from untracked signals`);
+    }
+  } catch (err) {
+    // Non-fatal — don't let lead creation failures break ingestion
+    console.error("[ingestion] Failed to auto-create market leads:", err);
+  }
 }

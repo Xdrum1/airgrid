@@ -276,6 +276,41 @@ model BillingSubscription {
   @@index([status])
 }
 
+model IngestedRecord {
+  id          String   @id // e.g. "federal_register_FR2023..."
+  source      String   // "federal_register" | "legiscan" | "sec_edgar" | "operator_news"
+  sourceId    String
+  title       String
+  summary     String
+  status      String
+  date        String
+  url         String
+  state       String?
+  raw         Json
+  ingestedAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([source])
+}
+
+model IngestionRun {
+  id              String   @id @default(cuid())
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+  newRecords      Int      @default(0)
+  updatedRecords  Int      @default(0)
+  unchangedCount  Int      @default(0)
+  totalRecords    Int      @default(0)
+  sources         String[] // ["federal_register", "legiscan", ...]
+  overridesCreated Int     @default(0)
+  overridesApplied Int     @default(0)
+  scoreChanges    Int      @default(0)
+  error           String?  // null = success, else error message
+  alertSent       Boolean  @default(false)
+
+  @@index([startedAt])
+}
+
 model MarketLead {
   id              String    @id @default(cuid())
   city            String    // e.g. "Columbus"
