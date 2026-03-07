@@ -724,8 +724,8 @@ export default function MethodologyPage() {
           </div>
           <p style={{ color: "#999", fontSize: 13 }}>
             For press inquiries, data partnerships, or API access, contact{" "}
-            <a href="mailto:alan@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>
-              alan@airindex.io
+            <a href="mailto:info@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>
+              info@airindex.io
             </a>
           </p>
         </Section>

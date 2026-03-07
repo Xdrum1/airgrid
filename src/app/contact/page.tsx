@@ -226,7 +226,7 @@ function ContactForm() {
       </p>
       {state === "error" && (
         <div style={{ color: "#ff4444", fontSize: 11, marginTop: 12, textAlign: "center" }}>
-          Something went wrong. Try emailing alan@airindex.io directly.
+          Something went wrong. Try emailing hello@airindex.io directly.
         </div>
       )}
     </form>
