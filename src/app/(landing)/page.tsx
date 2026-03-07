@@ -1350,6 +1350,12 @@ export default async function LandingPage() {
               LINKEDIN
             </a>
             <Link
+              href="/terms"
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              TERMS
+            </Link>
+            <Link
               href="/privacy"
               style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
