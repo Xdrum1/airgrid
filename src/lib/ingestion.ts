@@ -261,7 +261,33 @@ function diffRecords(
 // -------------------------------------------------------
 // Target states for LegiScan
 // -------------------------------------------------------
-const TARGET_STATES = ["CA", "TX", "FL", "NY", "AZ", "NV", "IL", "GA", "TN", "NC", "CO", "WA", "MA", "MN", "DC", "OH"];
+// Monitor all 50 states + DC for UAM legislation — the cost of missing
+// a state (Ohio/HB 251) is higher than the cost of extra API calls.
+const TARGET_STATES = [
+  "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+  "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+  "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+  "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+  "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
+  "DC",
+];
+
+// -------------------------------------------------------
+// LegiScan batched fetcher (10 states at a time)
+// -------------------------------------------------------
+
+async function batchFetchStates(): Promise<StateBill[]> {
+  const BATCH_SIZE = 10;
+  const allBills: StateBill[] = [];
+
+  for (let i = 0; i < TARGET_STATES.length; i += BATCH_SIZE) {
+    const batch = TARGET_STATES.slice(i, i + BATCH_SIZE);
+    const results = await Promise.all(batch.map((state) => fetchStateBills(state)));
+    allBills.push(...results.flat());
+  }
+
+  return allBills;
+}
 
 // -------------------------------------------------------
 // Orchestrator
@@ -280,8 +306,8 @@ export async function runIngestion(): Promise<{
     const [federalFilings, legiscanResults, secEdgarResults, operatorNews] = await Promise.all([
       // 1. Federal Register
       fetchFederalRegisterUAM(90),
-      // 2. LegiScan for all target states in parallel
-      Promise.all(TARGET_STATES.map((state) => fetchStateBills(state))),
+      // 2. LegiScan for all target states (batched to avoid rate limits)
+      batchFetchStates(),
       // 3. SEC EDGAR for all operator × form type combos in parallel
       Promise.all(
         Object.keys(OPERATOR_CIKS).flatMap((operatorId) =>
@@ -295,7 +321,7 @@ export async function runIngestion(): Promise<{
       fetchAllOperatorNews(30),
     ]);
 
-    const allBills = legiscanResults.flat();
+    const allBills = legiscanResults;
     const allSecFilings = secEdgarResults.flat();
 
     console.log(`[ingestion] Federal Register: ${federalFilings.length} filings`);
