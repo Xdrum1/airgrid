@@ -92,7 +92,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 Welcome to AirIndex.
               </p>
               <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 8px;">
-                You now have access to market readiness scores, regulatory filings, corridor tracking, and alert subscriptions across 20 US urban air mobility markets.
+                You now have access to market readiness scores, regulatory filings, corridor tracking, and alert subscriptions across 20+ US urban air mobility markets.
               </p>
               <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 24px;">
                 Subscribe to alerts on any city page to get notified when filings, legislation, or FAA updates drop.

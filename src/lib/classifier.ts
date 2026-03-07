@@ -9,6 +9,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { IngestedRecord } from "@/lib/ingestion";
 import type { OverrideCandidate } from "@/lib/rules-engine";
+import { CITIES, OPERATORS, STATE_TO_CITIES } from "@/data/seed";
 
 // Dynamic import to prevent client bundle contamination
 async function getPrisma() {
@@ -25,28 +26,15 @@ const MODEL = "claude-haiku-4-5-20251001";
 const BATCH_SIZE = 10;
 const MAX_TOKENS = 4096;
 
-// State → city ID mapping (mirrors rules-engine.ts)
-const STATE_TO_CITIES: Record<string, string[]> = {
-  CA: ["los_angeles", "san_diego", "san_francisco"],
-  TX: ["dallas", "houston", "austin"],
-  FL: ["miami", "orlando"],
-  NY: ["new_york"],
-  AZ: ["phoenix"],
-  NV: ["las_vegas"],
-  IL: ["chicago"],
-  GA: ["atlanta"],
-  TN: ["nashville"],
-  NC: ["charlotte"],
-  CO: ["denver"],
-  WA: ["seattle"],
-  MA: ["boston"],
-  MN: ["minneapolis"],
-  DC: ["washington_dc"],
-};
+// STATE_TO_CITIES is now imported from seed.ts (single source of truth)
 
 // -------------------------------------------------------
 // System prompt
 // -------------------------------------------------------
+
+// Generate city and operator tables dynamically from seed data
+const CITY_TABLE = CITIES.map((c) => `| ${c.id} | ${c.city} | ${c.state} |`).join("\n");
+const OPERATOR_TABLE = OPERATORS.map((o) => `| ${o.id} | ${o.name} |`).join("\n");
 
 const SYSTEM_PROMPT = `You are a regulatory intelligence classifier for AirIndex, a UAM (Urban Air Mobility) market readiness platform. Your job is to analyze ingested documents and determine whether they affect the readiness scores of tracked US markets.
 
@@ -61,40 +49,17 @@ Each market is scored on 7 binary factors:
 6. **hasStateLegislation** (10 pts) — State has signed UAM-enabling legislation
 7. **hasLaancCoverage** (10 pts) — FAA LAANC low-altitude authorization coverage exists
 
-## Tracked Markets (20 US cities)
+## Tracked Markets (${CITIES.length} US cities)
 
 | City ID | City | State |
 |---------|------|-------|
-| los_angeles | Los Angeles | CA |
-| new_york | New York | NY |
-| dallas | Dallas | TX |
-| miami | Miami | FL |
-| orlando | Orlando | FL |
-| las_vegas | Las Vegas | NV |
-| phoenix | Phoenix | AZ |
-| houston | Houston | TX |
-| austin | Austin | TX |
-| san_diego | San Diego | CA |
-| san_francisco | San Francisco | CA |
-| chicago | Chicago | IL |
-| atlanta | Atlanta | GA |
-| nashville | Nashville | TN |
-| charlotte | Charlotte | NC |
-| denver | Denver | CO |
-| seattle | Seattle | WA |
-| boston | Boston | MA |
-| minneapolis | Minneapolis | MN |
-| washington_dc | Washington D.C. | DC |
+${CITY_TABLE}
 
 ## Tracked Operators
 
 | Operator ID | Name |
 |-------------|------|
-| op_joby | Joby Aviation |
-| op_archer | Archer Aviation |
-| op_wisk | Wisk Aero |
-| op_blade | Blade Air Mobility |
-| op_volocopter | Volocopter |
+${OPERATOR_TABLE}
 
 ## Event Type Vocabulary
 

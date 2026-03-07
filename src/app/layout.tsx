@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.airindex.io"),
   title: "AirIndex — UAM Market Readiness Ratings",
-  description: "The independent market readiness rating system for Urban Air Mobility. We rate 20 U.S. cities across seven factors — from regulatory environment to operator presence — producing continuously updated readiness scores.",
+  description: "The independent market readiness rating system for Urban Air Mobility. We rate 20+ U.S. cities across seven factors — from regulatory environment to operator presence — producing continuously updated readiness scores.",
   keywords: ["urban air mobility", "eVTOL", "vertiport", "air taxi", "UAM", "Joby", "Archer"],
   manifest: "/manifest.json",
   icons: {
