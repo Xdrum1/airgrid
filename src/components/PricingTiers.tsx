@@ -40,8 +40,8 @@ const TIERS: Tier[] = [
   },
   {
     name: "Pro",
-    monthly: 99,
-    annual: 899,
+    monthly: 149,
+    annual: 1490,
     accent: "#00ff88",
     highlight: true,
     note: "",
@@ -61,7 +61,7 @@ const TIERS: Tier[] = [
   {
     name: "Institutional",
     monthly: 499,
-    annual: 4490,
+    annual: 4990,
     accent: "#7c3aed",
     highlight: false,
     note: "For teams and organizations",
@@ -69,7 +69,7 @@ const TIERS: Tier[] = [
       "Everything in Pro, plus:",
       "API access",
       "Data export (JSON/CSV)",
-      "Multi-seat team access",
+      "3 seats included (+$99/seat/mo)",
       "Custom alerts",
       "Priority support",
     ],
@@ -99,7 +99,7 @@ const TIERS: Tier[] = [
 // -------------------------------------------------------
 
 export default function PricingTiers() {
-  const [interval, setInterval] = useState<Interval>("monthly");
+  const [interval, setInterval] = useState<Interval>("annual");
 
   function getDisplayPrice(tier: Tier): string {
     if (tier.monthly === null) return "Custom";
@@ -197,7 +197,7 @@ export default function PricingTiers() {
               padding: "3px 8px",
             }}
           >
-            SAVE 25%
+            2 MONTHS FREE
           </span>
         )}
       </div>
