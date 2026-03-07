@@ -610,6 +610,28 @@ const RAW_CITIES: City[] = [
     keyMilestones: ["FAA studying SFRA exceptions for eVTOL", "DCA/IAD corridor study initiated"],
     lastUpdated: "2025-02-01",
   },
+  {
+    id: "columbus", city: "Columbus", metro: "Columbus Metro", state: "OH", country: "US",
+    lat: 39.9612, lng: -82.9988,
+    hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0,
+    activeOperators: [],
+    regulatoryPosture: "friendly", hasStateLegislation: false, hasLaancCoverage: true,
+    scoreSources: {
+      regulatoryPosture: { citation: "ODOT created dedicated AAM Division (Mar 2025); DriveOhio published nation's first state AAM framework", date: "2025-03", url: "https://www.urbanairmobilitynews.com/uam-infrastructure/ohio-publishes-advanced-air-mobility-framework/" },
+      laancCoverage: { citation: "FAA LAANC active for Columbus area airspace (CMH Class C, Rickenbacker LCK)", date: "2025-01" },
+    },
+    notes: "Ohio has arguably the most organized state-level AAM strategy in the US. DriveOhio published the nation's first AAM framework covering route planning, vertiport recommendations, and a strategic roadmap. ODOT created a dedicated AAM Division (Mar 2025) led by Robert Tanner, co-located with the National Advanced Air Mobility Center of Excellence in Springfield. Ohio submitted a multi-state eIPP proposal (Jan 2026) with BETA Technologies, Joby, and DHL for medical cargo between Indianapolis, Columbus, and Akron. Joby operates a propeller blade manufacturing facility in Dayton (opened Oct 2025) with plans for 700K+ sq ft expansion to support 500 aircraft/year production. HB 251 — defining vertiports as aviation infrastructure under Ohio law — passed the House and is in Senate committee. SkyVision FAA-designated UAS test site at Springfield-Beckley provides BVLOS testing capability. State estimates $13B AAM economic impact through 2045.",
+    keyMilestones: [
+      "DriveOhio publishes nation's first state AAM framework",
+      "ODOT creates dedicated AAM Division (Mar 2025)",
+      "Ohio submits multi-state eIPP proposal with BETA/Joby/DHL (Jan 2026)",
+      "Joby opens Dayton propeller manufacturing facility (Oct 2025)",
+      "Joby acquires second 700K sq ft Dayton facility (Jan 2026)",
+      "HB 251 (vertiport/heliport infrastructure) passes House, in Senate committee",
+      "SkyVision FAA-designated UAS test site operational in Springfield",
+    ],
+    lastUpdated: "2026-03-07",
+  },
 ];
 
 // Apply scoring to all cities and sort by score descending
