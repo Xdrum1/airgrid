@@ -178,6 +178,10 @@ function LoginForm() {
                 ? "No password needed — we\u2019ll email you a magic link to get started."
                 : "No password needed — we\u2019ll email you a sign-in link."}
             </p>
+            <p style={{ color: "#555", fontSize: 9, marginTop: 12 }}>
+              By signing in, you agree to our{" "}
+              <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>.
+            </p>
           </>
         ) : (
           <>

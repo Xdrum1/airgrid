@@ -220,6 +220,10 @@ function ContactForm() {
       >
         {state === "submitting" ? "SENDING..." : isPro ? "JOIN WAITLIST" : "GET IN TOUCH"}
       </button>
+      <p style={{ color: "#555", fontSize: 9, marginTop: 12, textAlign: "center" }}>
+        By submitting, you agree to our{" "}
+        <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>.
+      </p>
       {state === "error" && (
         <div style={{ color: "#ff4444", fontSize: 11, marginTop: 12, textAlign: "center" }}>
           Something went wrong. Try emailing alan@airindex.io directly.
@@ -342,7 +346,7 @@ export default function ContactPage() {
         }}
       >
         <span style={{ color: "#777", fontSize: 9, letterSpacing: 1 }}>
-          © 2026 AIRINDEX · <Link href="/" style={{ color: "#777", textDecoration: "none" }}>HOME</Link> · <Link href="/about" style={{ color: "#777", textDecoration: "none" }}>ABOUT</Link> · <Link href="/pricing" style={{ color: "#777", textDecoration: "none" }}>PRICING</Link> · <Link href="/api" style={{ color: "#777", textDecoration: "none" }}>API</Link> · <Link href="/dashboard" style={{ color: "#777", textDecoration: "none" }}>DASHBOARD</Link>
+          © 2026 AIRINDEX · <Link href="/" style={{ color: "#777", textDecoration: "none" }}>HOME</Link> · <Link href="/about" style={{ color: "#777", textDecoration: "none" }}>ABOUT</Link> · <Link href="/pricing" style={{ color: "#777", textDecoration: "none" }}>PRICING</Link> · <Link href="/api" style={{ color: "#777", textDecoration: "none" }}>API</Link> · <Link href="/dashboard" style={{ color: "#777", textDecoration: "none" }}>DASHBOARD</Link> · <Link href="/privacy" style={{ color: "#777", textDecoration: "none" }}>PRIVACY</Link>
         </span>
       </footer>
     </div>

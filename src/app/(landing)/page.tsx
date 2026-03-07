@@ -1349,6 +1349,12 @@ export default async function LandingPage() {
             >
               LINKEDIN
             </a>
+            <Link
+              href="/privacy"
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              PRIVACY
+            </Link>
           </div>
           <div style={{ color: "#999", fontSize: 9, letterSpacing: 1 }}>
             &copy; {new Date().getFullYear()} AIRINDEX
