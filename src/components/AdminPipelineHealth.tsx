@@ -65,7 +65,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
   const pipelines = [
     {
       label: "SNAPSHOT",
-      desc: "Score capture for all 20 markets",
+      desc: "Score capture for all rated markets",
       schedule: health.pipelines.snapshot.schedule,
       lastRun: health.pipelines.snapshot.lastRun,
       stat: `${health.pipelines.snapshot.totalRuns} total runs`,

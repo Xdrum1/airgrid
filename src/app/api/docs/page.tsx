@@ -377,7 +377,7 @@ export default async function ApiDocsPage() {
     "rated_by": "airindex_v1",
     "methodology_version": "1.0",
     "last_updated": "2026-03-03T06:00:00Z",
-    "market_count": 20
+    "market_count": 21
   },
   "data": [...]
 }`}</JsonBlock>
@@ -393,7 +393,7 @@ export default async function ApiDocsPage() {
             <span style={{ fontFamily: mono, fontSize: 10, letterSpacing: 1, color: "#00ff88", background: "rgba(0,255,136,0.08)", padding: "2px 8px", borderRadius: 3 }}>GET</span>
             <code style={{ fontFamily: mono, fontSize: 14, color: "#fff" }}>/api/v1/markets</code>
           </div>
-          <p style={{ marginBottom: 16 }}>Returns current readiness ratings for all 20 rated U.S. markets.</p>
+          <p style={{ marginBottom: 16 }}>Returns current readiness ratings for all rated U.S. markets.</p>
           <JsonBlock>{`{
   "meta": { "rated_by": "airindex_v1", "methodology_version": "1.0", ... },
   "data": [
@@ -588,7 +588,7 @@ export default async function ApiDocsPage() {
             <code style={{ fontFamily: mono, fontSize: 14, color: "#fff" }}>/api/v1/markets/export</code>
           </div>
           <p style={{ marginBottom: 16 }}>
-            Returns a full JSON dump of all 20 markets with complete detail. Same shape
+            Returns a full JSON dump of all rated markets with complete detail. Same shape
             as the single market endpoint. Optimized for data pipeline ingestion.
           </p>
           <p style={{ color: "#888", fontSize: 13 }}>

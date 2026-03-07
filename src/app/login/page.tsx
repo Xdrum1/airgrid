@@ -102,7 +102,7 @@ function LoginForm() {
               }}
             >
               {isSignup
-                ? <>Track 20 UAM markets, get alerts, access regulatory filings.<br />Enter your email to get started — no password needed.</>
+                ? <>Track 20+ UAM markets, get alerts, access regulatory filings.<br />Enter your email to get started — no password needed.</>
                 : <>Get alerts, track markets, access regulatory filings.<br />Enter your email to receive a sign-in link.</>
               }
             </p>

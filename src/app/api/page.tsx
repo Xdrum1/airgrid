@@ -12,7 +12,7 @@ const ENDPOINTS = [
   {
     method: "GET",
     path: "/api/v1/markets",
-    description: "Current readiness ratings for all 20 rated U.S. markets",
+    description: "Current readiness ratings for all rated U.S. markets",
   },
   {
     method: "GET",
@@ -30,7 +30,7 @@ const ENDPOINTS = [
     method: "GET",
     path: "/api/v1/markets/export",
     description:
-      "Bulk dump of all 20 markets at current ratings, optimized for data pipeline ingestion",
+      "Bulk dump of all rated markets at current ratings, optimized for data pipeline ingestion",
   },
 ];
 
@@ -128,7 +128,7 @@ export default function ApiLandingPage() {
             AirIndex API
           </h1>
           <p style={{ fontSize: 16, color: "#999", lineHeight: 1.7, maxWidth: 560 }}>
-            Programmatic access to UAM market readiness ratings across 20 U.S. cities.
+            Programmatic access to UAM market readiness ratings across 20+ U.S. cities.
             Every rating is independently scored using the AirIndex seven-factor methodology,
             built on primary data from the FAA, SEC EDGAR, Federal Register, and state
             legislative records.

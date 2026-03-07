@@ -13,7 +13,7 @@
  */
 
 import type { IngestedRecord } from "@/lib/ingestion";
-import { OPERATORS, CORRIDORS } from "@/data/seed";
+import { OPERATORS, CORRIDORS, STATE_TO_CITIES } from "@/data/seed";
 
 // -------------------------------------------------------
 // Types
@@ -38,27 +38,7 @@ export interface CorridorEventCandidate {
   sourceUrl: string;
 }
 
-// -------------------------------------------------------
-// State → city mapping
-// -------------------------------------------------------
-
-const STATE_TO_CITIES: Record<string, string[]> = {
-  CA: ["los_angeles", "san_diego", "san_francisco"],
-  TX: ["dallas", "houston", "austin"],
-  FL: ["miami", "orlando"],
-  NY: ["new_york"],
-  AZ: ["phoenix"],
-  NV: ["las_vegas"],
-  IL: ["chicago"],
-  GA: ["atlanta"],
-  TN: ["nashville"],
-  NC: ["charlotte"],
-  CO: ["denver"],
-  WA: ["seattle"],
-  MA: ["boston"],
-  MN: ["minneapolis"],
-  DC: ["washington_dc"],
-};
+// STATE_TO_CITIES is now imported from seed.ts (single source of truth)
 
 // -------------------------------------------------------
 // Keyword patterns

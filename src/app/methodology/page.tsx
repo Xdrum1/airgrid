@@ -5,7 +5,7 @@ import TrackPageView from "@/components/TrackPageView";
 export const metadata: Metadata = {
   title: "Ratings Methodology — AirIndex",
   description:
-    "How the AirIndex UAM Market Readiness Rating is calculated. A proprietary 7-factor ratings methodology covering pilot programs, zoning, operators, regulation, and infrastructure across 20 US markets.",
+    "How the AirIndex UAM Market Readiness Rating is calculated. A proprietary 7-factor ratings methodology covering pilot programs, zoning, operators, regulation, and infrastructure across 20+ US markets.",
 };
 
 // -------------------------------------------------------
@@ -571,7 +571,7 @@ export default function MethodologyPage() {
           </h3>
           <p>
             Scores are updated continuously as new evidence is ingested and verified. Weekly
-            snapshots capture the state of all 20 markets for historical tracking. When underlying
+            snapshots capture the state of all rated markets for historical tracking. When underlying
             data changes &mdash; a new vertiport permit is approved, legislation is signed, an
             operator announces market entry &mdash; the affected market&apos;s score is recalculated
             and the change is logged in the AirIndex activity feed with a link to the source record.
@@ -694,7 +694,7 @@ export default function MethodologyPage() {
             Geographic Scope
           </h3>
           <p>
-            The current index covers 20 US metropolitan areas selected for existing UAM activity,
+            The current index covers 20+ US metropolitan areas selected for existing UAM activity,
             regulatory engagement, or operator commitments. International markets and smaller US
             markets are not currently tracked. Coverage expansion will be based on evidence of
             UAM activity rather than geographic completeness.

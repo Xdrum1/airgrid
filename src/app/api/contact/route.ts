@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
         pro: {
           subject: "You're on the Pro waitlist — AirIndex",
           heading: `${firstName}, you're on the list.`,
-          body: "We'll notify you as soon as Pro launches. In the meantime, all platform features are available free during beta — market readiness scores, corridor tracking, regulatory filings, and more across 20 US markets.",
+          body: "We'll notify you as soon as Pro launches. In the meantime, all platform features are available free during beta — market readiness scores, corridor tracking, regulatory filings, and more across 20+ US markets.",
           cta: { label: "Explore the Dashboard", href: `${appUrl}/dashboard` },
         },
         institutional: {

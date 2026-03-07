@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { MARKET_COUNT } from "@/data/seed";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +40,7 @@ export async function GET() {
       prisma.scoringOverride.count({
         where: { confidence: "needs_review", supersededAt: null },
       }),
-      // Total snapshots captured
+      // Total snapshots captured + distinct city count for run estimation
       prisma.scoreSnapshot.count(),
       // Changelog counts by type
       prisma.changelogEntry.groupBy({
@@ -61,7 +62,7 @@ export async function GET() {
         snapshot: {
           lastRun: latestSnapshot?.capturedAt ?? null,
           schedule: "Daily 06:00 UTC",
-          totalRuns: Math.floor(snapshotCount / 20), // 20 cities per run
+          totalRuns: Math.floor(snapshotCount / MARKET_COUNT),
         },
         ingestion: {
           lastRun: latestChangelog?.timestamp ?? null,

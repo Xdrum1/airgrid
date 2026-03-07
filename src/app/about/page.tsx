@@ -5,7 +5,7 @@ import TrackPageView from "@/components/TrackPageView";
 export const metadata: Metadata = {
   title: "About — AirIndex",
   description:
-    "AirIndex is the independent market readiness rating system for Urban Air Mobility. We rate 20 U.S. cities across seven factors using primary regulatory and financial data.",
+    "AirIndex is the independent market readiness rating system for Urban Air Mobility. We rate 20+ U.S. cities across seven factors using primary regulatory and financial data.",
 };
 
 export default function AboutPage() {

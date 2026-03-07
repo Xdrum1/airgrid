@@ -644,6 +644,20 @@ export const CITIES_MAP: Record<string, City> = Object.fromEntries(
   CITIES.map((c) => [c.id, c])
 );
 
+// State abbreviation → city IDs (derived from CITIES, used by classifier + rules engine)
+export const STATE_TO_CITIES: Record<string, string[]> = CITIES.reduce(
+  (acc, city) => {
+    const state = city.state.toUpperCase();
+    if (!acc[state]) acc[state] = [];
+    acc[state].push(city.id);
+    return acc;
+  },
+  {} as Record<string, string[]>
+);
+
+// Market count for use in copy/prompts (avoids hardcoding "20")
+export const MARKET_COUNT = CITIES.length;
+
 // ============================================================
 // DYNAMIC CITIES (with DB overrides)
 // ============================================================
