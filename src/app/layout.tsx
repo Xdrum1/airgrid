@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.airindex.io"),
   title: "AirIndex — UAM Market Readiness Ratings",
-  description: "The independent market readiness rating system for Urban Air Mobility. We rate 20+ U.S. cities across seven factors — from regulatory environment to operator presence — producing continuously updated readiness scores.",
+  description: "Know exactly where urban air mobility launches first. AirIndex scores 21 US cities on UAM market readiness in real time — regulatory posture, infrastructure, operator presence, and corridor authorizations.",
   keywords: ["urban air mobility", "eVTOL", "vertiport", "air taxi", "UAM", "Joby", "Archer"],
   manifest: "/manifest.json",
   icons: {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "AirIndex — UAM Market Readiness Ratings",
-    description: "The independent readiness rating system for Urban Air Mobility. We rate 20 U.S. cities on regulatory environment, infrastructure, operator presence, and more.",
+    description: "Know exactly where urban air mobility launches first. AirIndex scores 21 US cities on UAM market readiness in real time.",
     siteName: "AirIndex",
     url: "https://www.airindex.io",
     images: [{ url: "/images/og-image.png", width: 1200, height: 630 }],
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@AirIndexHQ",
     title: "AirIndex — UAM Market Readiness Ratings",
-    description: "The independent readiness rating system for Urban Air Mobility. We rate 20 U.S. cities on regulatory environment, infrastructure, operator presence, and more.",
+    description: "Know exactly where urban air mobility launches first. AirIndex scores 21 US cities on UAM market readiness in real time.",
     images: ["/images/og-image.png"],
   },
 };
