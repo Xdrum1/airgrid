@@ -24,7 +24,7 @@ const TIERS = [
   },
   {
     name: "Pro",
-    price: "$99",
+    price: "$149",
     period: "/month",
     accent: "#00ff88",
     badge: null,
@@ -34,7 +34,7 @@ const TIERS = [
       "Corridor intelligence & operator tracker",
       "SEC filings & email alerts",
     ],
-    yearlyNote: "$899/year (save 25%)",
+    yearlyNote: "$1,490/year (2 months free)",
     cta: { label: "Join waitlist", href: "/contact?tier=pro" },
     highlight: true,
   },
@@ -47,10 +47,10 @@ const TIERS = [
     features: [
       "Everything in Pro, plus:",
       "API access & data export",
-      "Multi-seat team access",
+      "3 seats included (+$99/seat/mo)",
       "Custom alerts & priority support",
     ],
-    yearlyNote: "For teams and organizations",
+    yearlyNote: "$4,990/year (2 months free)",
     cta: { label: "Learn more", href: "/contact?tier=institutional" },
   },
   {

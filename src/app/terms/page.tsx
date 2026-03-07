@@ -149,12 +149,12 @@ export default function TermsPage() {
         </p>
         <ul style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, lineHeight: 1.8, paddingLeft: 20, marginBottom: 14 }}>
           <li style={{ marginBottom: 8 }}>
-            <strong style={S.strong}>Pro</strong> ($99/month or $899/year): includes all Free features plus score
+            <strong style={S.strong}>Pro</strong> ($149/month or $1,490/year): includes all Free features plus score
             history and trend lines, factor-level breakdowns with source citations, corridor intelligence, operator
             tracker, SEC filing summaries, email alerts on score changes, and monthly report PDF access.
           </li>
           <li style={{ marginBottom: 8 }}>
-            <strong style={S.strong}>Institutional</strong> ($499/month or $4,490/year): includes all Pro features
+            <strong style={S.strong}>Institutional</strong> ($499/month or $4,990/year): includes all Pro features
             plus API access (JSON/CSV), data export, multi-seat team access, custom alerts, and priority support.
           </li>
           <li style={{ marginBottom: 8 }}>
