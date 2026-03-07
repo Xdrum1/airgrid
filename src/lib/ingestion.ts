@@ -261,7 +261,7 @@ function diffRecords(
 // -------------------------------------------------------
 // Target states for LegiScan
 // -------------------------------------------------------
-const TARGET_STATES = ["CA", "TX", "FL", "NY", "AZ", "NV", "IL", "GA", "TN", "NC", "CO", "WA", "MA", "MN", "DC"];
+const TARGET_STATES = ["CA", "TX", "FL", "NY", "AZ", "NV", "IL", "GA", "TN", "NC", "CO", "WA", "MA", "MN", "DC", "OH"];
 
 // -------------------------------------------------------
 // Orchestrator
