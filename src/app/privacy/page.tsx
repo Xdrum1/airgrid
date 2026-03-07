@@ -186,7 +186,7 @@ export default function PrivacyPage() {
           <li><strong style={S.strong}>Account information</strong> — name and email address when you create an account</li>
           <li><strong style={S.strong}>Payment information</strong> — billing name, billing address, and last 4 digits of your payment card. Your full card number is entered directly into Stripe&apos;s secure form and is never transmitted to or stored on our servers</li>
           <li><strong style={S.strong}>Alert and subscription preferences</strong> — the markets and corridors you choose to monitor, and how you want to be notified</li>
-          <li><strong style={S.strong}>Communications</strong> — any messages you send to <a href="mailto:alan@airindex.io" style={S.link}>alan@airindex.io</a></li>
+          <li><strong style={S.strong}>Communications</strong> — any messages you send to <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a></li>
         </ul>
 
         <h3 style={S.h3}>1.2 Information Collected Automatically</h3>
@@ -220,7 +220,7 @@ export default function PrivacyPage() {
           <li><strong style={S.strong}>Provide and operate the Service</strong> — delivering readiness scores, corridor data, regulatory filings, operator tracking, alerts, and all features associated with your subscription tier</li>
           <li><strong style={S.strong}>Process transactions</strong> — subscription payments, renewals, upgrades, and cancellations via Stripe</li>
           <li><strong style={S.strong}>Send service communications</strong> — account confirmations, payment receipts, magic link sign-ins, score change alerts you have opted into, and the monthly market report for eligible subscribers</li>
-          <li><strong style={S.strong}>Send marketing communications</strong> — only with your explicit consent; unsubscribe at any time via the link in any marketing email or by emailing <a href="mailto:alan@airindex.io" style={S.link}>alan@airindex.io</a></li>
+          <li><strong style={S.strong}>Send marketing communications</strong> — only with your explicit consent; unsubscribe at any time via the link in any marketing email or by emailing <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a></li>
           <li><strong style={S.strong}>Improve the platform</strong> — using aggregated, anonymized Plausible Analytics data to understand which features are used most and where the experience can be improved</li>
           <li><strong style={S.strong}>Security and fraud prevention</strong> — monitoring for unauthorized access or abuse</li>
           <li><strong style={S.strong}>Legal compliance</strong> — responding to lawful requests from courts or regulators</li>
@@ -432,7 +432,7 @@ export default function PrivacyPage() {
         <h3 style={S.h3}>Access</h3>
         <p style={S.p}>
           Request a copy of the personal information we hold about you by emailing{" "}
-          <a href="mailto:alan@airindex.io" style={S.link}>alan@airindex.io</a> with the subject
+          <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a> with the subject
           &ldquo;Data Access Request.&rdquo;
         </p>
 
@@ -445,14 +445,14 @@ export default function PrivacyPage() {
         <p style={S.p}>
           Request deletion of your account and personal data. We honor deletion requests within 30 days,
           subject to legal retention requirements (e.g., billing records). Email{" "}
-          <a href="mailto:alan@airindex.io" style={S.link}>alan@airindex.io</a> with &ldquo;Data Deletion
+          <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a> with &ldquo;Data Deletion
           Request&rdquo; in the subject.
         </p>
 
         <h3 style={S.h3}>Opt-Out of Marketing</h3>
         <p style={S.p}>
           Click the unsubscribe link in any marketing email, or email{" "}
-          <a href="mailto:alan@airindex.io" style={S.link}>alan@airindex.io</a>. You will continue to receive
+          <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a>. You will continue to receive
           transactional service emails (receipts, score alerts you subscribed to) until you cancel your account.
         </p>
 
@@ -473,7 +473,7 @@ export default function PrivacyPage() {
         <p style={S.p}>
           You have the right to: (1) know what personal information we collect and how it is used; (2) request
           deletion; (3) opt out of sale (we do not sell data); and (4) non-discrimination for exercising rights.
-          To exercise these rights, email <a href="mailto:alan@airindex.io" style={S.link}>alan@airindex.io</a>.
+          To exercise these rights, email <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a>.
           We will respond within 45 days.
         </p>
 
@@ -482,7 +482,7 @@ export default function PrivacyPage() {
           You have rights to access, correct, erase, restrict, and port your data, and to object to processing.
           Our legal bases for processing are: contract performance (account and subscription), legitimate interests
           (security, analytics), and consent (marketing). You may lodge a complaint with your local supervisory
-          authority. Contact: <a href="mailto:alan@airindex.io" style={S.link}>alan@airindex.io</a>.
+          authority. Contact: <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a>.
         </p>
 
         {/* Section 9 */}
@@ -490,7 +490,7 @@ export default function PrivacyPage() {
         <p style={S.p}>
           The Service is not directed to individuals under 18. We do not knowingly collect personal information
           from minors. If you believe a minor has provided us data, contact{" "}
-          <a href="mailto:alan@airindex.io" style={S.link}>alan@airindex.io</a> and we will promptly delete it.
+          <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a> and we will promptly delete it.
         </p>
 
         {/* Section 10 */}
@@ -521,7 +521,7 @@ export default function PrivacyPage() {
             <tbody>
               <tr>
                 <td style={{ ...S.td, color: "#aaa", width: 160 }}>Email</td>
-                <td style={S.td}><a href="mailto:alan@airindex.io" style={S.link}>alan@airindex.io</a></td>
+                <td style={S.td}><a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a></td>
               </tr>
               <tr>
                 <td style={{ ...S.td, color: "#aaa" }}>Subject lines</td>
