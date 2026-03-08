@@ -92,6 +92,16 @@ body {
 }
 
 
+/* Landing feature card hover */
+.landing-feature-card {
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.landing-feature-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.12) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
 /* Landing page responsive */
 @media (max-width: 640px) {
   .landing-nav-buttons {
