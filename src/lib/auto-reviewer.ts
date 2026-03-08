@@ -885,6 +885,25 @@ export async function runAutoReview(
     `[auto-review] Starting review of ${toProcess.length}/${pending.length} pending overrides (dryRun=${dryRun})`
   );
 
+  // If nothing to process, create a sentinel record so pipeline health sees a recent run
+  if (toProcess.length === 0 && !dryRun) {
+    try {
+      const prisma = await getPrisma();
+      await prisma.autoReviewResult.create({
+        data: {
+          overrideId: "__heartbeat__",
+          decision: "no_pending",
+          confidence: 0,
+          reasoning: "No pending overrides to process",
+          applied: false,
+          modelUsed: MODEL,
+        },
+      });
+    } catch (err) {
+      logger.error("[auto-review] Failed to write heartbeat:", err);
+    }
+  }
+
   const summary: AutoReviewSummary = {
     processed: 0,
     approved: 0,
