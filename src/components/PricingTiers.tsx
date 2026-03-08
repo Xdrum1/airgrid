@@ -52,6 +52,7 @@ const TIERS: Tier[] = [
       "Factor-level breakdown behind each score",
       "Corridor intelligence",
       "Operator tracker",
+      "Market Watch status & analyst outlook notes",
       "SEC filing content & summaries",
       "Email alerts on score changes",
       "Full monthly market report (all markets + breakdowns)",
