@@ -243,6 +243,12 @@ export default function MethodologyPage() {
             commercial urban air mobility operations across seven independently verified factors.
             It is not a forecast &mdash; it reflects current, documented conditions.
           </p>
+          <p style={{ color: "#777", fontSize: 15, lineHeight: 1.7, maxWidth: 600, marginTop: 12 }}>
+            The Index is designed as a replicable decision-support framework for regulators,
+            municipal planners, operators, and researchers evaluating UAM market entry conditions.
+            The methodology is published in full to enable independent validation and to support
+            its adoption as an industry reference standard.
+          </p>
         </div>
 
         {/* Section 1: What the Score Measures */}
@@ -263,7 +269,8 @@ export default function MethodologyPage() {
             This is not an investment recommendation, demand forecast, or prediction of commercial
             launch timelines. It measures structural readiness: the infrastructure, regulatory
             framework, and operator engagement that must be in place before commercial operations
-            can begin.
+            can begin. It is designed for use by transportation planners, regulatory bodies, and
+            market participants requiring an objective, evidence-based readiness assessment.
           </p>
         </Section>
 
@@ -627,11 +634,16 @@ export default function MethodologyPage() {
             Ambiguous or multi-factor evidence is flagged for manual review before any score
             change is made.
           </p>
-          <p>
+          <p style={{ marginBottom: 16 }}>
             Source citations for each scored factor are displayed on individual market pages in
             the AirIndex dashboard. Every citation includes a verification date indicating when
             the underlying source was last confirmed. Markets are re-verified on a rolling basis,
             with high-activity markets reviewed more frequently.
+          </p>
+          <p>
+            This verification architecture is designed to meet the evidentiary standards required
+            for use in regulatory filings, academic publications, and government procurement
+            decisions. All source records are retained and available for audit upon request.
           </p>
         </Section>
 
@@ -697,7 +709,49 @@ export default function MethodologyPage() {
             The current index covers 20+ US metropolitan areas selected for existing UAM activity,
             regulatory engagement, or operator commitments. International markets and smaller US
             markets are not currently tracked. Coverage expansion will be based on evidence of
-            UAM activity rather than geographic completeness.
+            UAM activity rather than geographic completeness. A phased national expansion to all
+            50 metropolitan statistical areas is planned as part of Vertical Data Group&apos;s
+            ongoing research program.
+          </p>
+        </Section>
+
+        {/* Research & Policy Applications */}
+        <Section id="research" title="Research &amp; Policy Applications">
+          <p style={{ marginBottom: 16 }}>
+            The UAM Market Readiness Index is designed to support applied research and policy
+            analysis across the UAM ecosystem. Federal and state agencies, metropolitan planning
+            organizations, and academic researchers may use AirIndex data to:
+          </p>
+          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: 10 }}>
+            {[
+              "Benchmark municipal UAM readiness against a standardized, evidence-based framework",
+              "Identify regulatory and infrastructure gaps requiring targeted intervention",
+              "Monitor market development over time through the historical score archive",
+              "Support grant applications, transportation studies, and infrastructure investment decisions",
+            ].map((item) => (
+              <li
+                key={item}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 12,
+                  fontSize: 14,
+                  color: "#ccc",
+                  lineHeight: 1.6,
+                }}
+              >
+                <span style={{ color: "#00d4ff", flexShrink: 0, marginTop: 2 }}>&mdash;</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <p style={{ color: "#999", fontSize: 14, lineHeight: 1.7 }}>
+            Vertical Data Group actively supports research partnerships and data collaborations
+            with government agencies, universities, and policy institutions. For research access
+            or partnership inquiries, contact{" "}
+            <a href="mailto:info@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>
+              info@airindex.io
+            </a>
           </p>
         </Section>
 
@@ -722,6 +776,13 @@ export default function MethodologyPage() {
           >
             Source: AirIndex UAM Market Readiness Index, v1.0 (airindex.io/methodology)
           </div>
+          <p style={{ color: "#999", fontSize: 13, marginBottom: 16 }}>
+            A formal methodology paper with DOI assignment is forthcoming. Researchers requiring
+            a citable reference should contact{" "}
+            <a href="mailto:info@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>
+              info@airindex.io
+            </a>
+          </p>
           <p style={{ color: "#999", fontSize: 13 }}>
             For press inquiries, data partnerships, or API access, contact{" "}
             <a href="mailto:info@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>
