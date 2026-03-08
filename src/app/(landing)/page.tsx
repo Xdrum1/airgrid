@@ -2,6 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/auth";
 import { OPERATORS, CORRIDORS, getCitiesWithOverrides } from "@/data/seed";
+import CountUpStats from "@/components/landing/CountUpStats";
+import LiveActivityFeed from "@/components/landing/LiveActivityFeed";
+import CityScoreLookup from "@/components/landing/CityScoreLookup";
+import LiveTicker from "@/components/landing/LiveTicker";
 
 // -------------------------------------------------------
 // Pricing tier data
@@ -279,18 +283,12 @@ export default async function LandingPage() {
             </span>
           </div>
         </div>
-        <div
-          style={{
-            fontFamily: "'Space Mono', monospace",
-            fontSize: 10,
-            letterSpacing: 2,
-            color: "#888",
-            textTransform: "uppercase",
-            marginBottom: 20,
-          }}
-        >
-          Continuously updated · {CITIES.length} markets · {OPERATORS.length} operators · {CORRIDORS.length} corridors
-        </div>
+        <LiveTicker
+          fallbackText={`Continuously updated · ${CITIES.length} markets · ${OPERATORS.length} operators · ${CORRIDORS.length} corridors`}
+          marketCount={CITIES.length}
+          operatorCount={OPERATORS.length}
+          corridorCount={CORRIDORS.length}
+        />
         <h1
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
@@ -353,6 +351,19 @@ export default async function LandingPage() {
             See live data
           </Link>
         </div>
+
+        {/* City Score Lookup */}
+        <div style={{ marginTop: 32 }}>
+          <CityScoreLookup
+            cities={CITIES.map((c) => ({
+              id: c.id,
+              city: c.city,
+              state: c.state,
+              score: c.score ?? 0,
+              regulatoryPosture: c.regulatoryPosture,
+            }))}
+          />
+        </div>
       </section>
 
       {/* ======== Stats Bar ======== */}
@@ -363,44 +374,7 @@ export default async function LandingPage() {
           padding: "0 20px",
         }}
       >
-        <div
-          className="landing-stats-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 1,
-            background: "rgba(255,255,255,0.04)",
-            borderRadius: 10,
-            overflow: "hidden",
-          }}
-        >
-          {stats.map((s) => (
-            <div
-              key={s.label}
-              style={{
-                background: "#050508",
-                padding: "28px 24px",
-                textAlign: "center",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  fontWeight: 700,
-                  fontSize: 32,
-                  color: "#00d4ff",
-                  lineHeight: 1,
-                  marginBottom: 6,
-                }}
-              >
-                {s.value}
-              </div>
-              <div style={{ color: "#888", fontSize: 10, letterSpacing: 2 }}>
-                {s.label.toUpperCase()}
-              </div>
-            </div>
-          ))}
-        </div>
+        <CountUpStats stats={stats} />
       </section>
 
       {/* ======== Feature Explainer ======== */}
@@ -484,6 +458,7 @@ export default async function LandingPage() {
           ].map((card) => (
             <div
               key={card.title}
+              className="landing-feature-card"
               style={{
                 background: "rgba(255,255,255,0.02)",
                 border: "1px solid rgba(255,255,255,0.06)",
@@ -679,64 +654,8 @@ export default async function LandingPage() {
             </div>
           </div>
 
-          {/* Activity Feed */}
-          <div
-            style={{
-              background: "rgba(255,255,255,0.02)",
-              border: "1px solid rgba(255,255,255,0.06)",
-              borderRadius: 10,
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                padding: "16px 20px",
-                borderBottom: "1px solid rgba(255,255,255,0.06)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ color: "#00d4ff", fontSize: 14 }}>&#9889;</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#00d4ff" }}>
-                  ACTIVITY FEED
-                </span>
-              </div>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#999", letterSpacing: 1 }}>
-                REAL-TIME CHANGELOG
-              </span>
-            </div>
-            <div style={{ padding: "8px 0" }}>
-              {SAMPLE_ACTIVITY.map((a, i) => (
-                <div
-                  key={i}
-                  style={{
-                    padding: "12px 20px",
-                    borderBottom: i < SAMPLE_ACTIVITY.length - 1 ? "1px solid rgba(255,255,255,0.03)" : "none",
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 10,
-                  }}
-                >
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: a.accent, flexShrink: 0, marginTop: 5 }} />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "'Inter', sans-serif", color: "#bbb", fontSize: 12, lineHeight: 1.5 }}>
-                      {a.summary}
-                    </div>
-                  </div>
-                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#aaa", letterSpacing: 1, flexShrink: 0 }}>
-                    {a.time.toUpperCase()}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div style={{ padding: "12px 20px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-              <Link href="/dashboard?tab=activity" style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: "#00d4ff", letterSpacing: 1, textDecoration: "none" }}>
-                VIEW FULL ACTIVITY LOG &rarr;
-              </Link>
-            </div>
-          </div>
+          {/* Activity Feed — live from API */}
+          <LiveActivityFeed fallback={SAMPLE_ACTIVITY} />
         </div>
       </section>
 
