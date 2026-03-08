@@ -28,6 +28,7 @@ jobs:
         run: |
           URL="${APP_URL:-https://www.airindex.io}"
           RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 120 \
             -X POST \
             -H "Authorization: Bearer $CRON_SECRET" \
             "$URL/api/ingest")

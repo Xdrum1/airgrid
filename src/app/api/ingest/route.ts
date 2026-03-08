@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { after } from "next/server";
 import { runIngestion } from "@/lib/ingestion";
 import { rateLimit } from "@/lib/rate-limit";
 import { authorizeCron } from "@/lib/admin-helpers";
 import { alertCronFailure } from "@/lib/cron-alerts";
+
+// Max execution time for serverless — Amplify Lambda default is 60s
+export const maxDuration = 120;
 
 async function startIngestion(): Promise<NextResponse> {
   const rl = await rateLimit("ingest", 4, 60 * 60 * 1000);
@@ -14,20 +16,26 @@ async function startIngestion(): Promise<NextResponse> {
     );
   }
 
-  // Run ingestion after response is sent — avoids gateway timeout
-  after(async () => {
-    try {
-      const { diff, meta } = await runIngestion();
-      console.log(
-        `[API /ingest] Complete: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged, sources: ${meta.sources.join(", ")}`
-      );
-    } catch (err) {
-      console.error("[API /ingest] Ingestion error:", err);
-      await alertCronFailure("ingest", err);
-    }
-  });
-
-  return NextResponse.json({ success: true, message: "Ingestion started" });
+  try {
+    const { diff, meta } = await runIngestion();
+    console.log(
+      `[API /ingest] Complete: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged, sources: ${meta.sources.join(", ")}`
+    );
+    return NextResponse.json({
+      success: true,
+      newRecords: diff.newRecords.length,
+      updatedRecords: diff.updatedRecords.length,
+      unchangedCount: diff.unchangedCount,
+      sources: meta.sources,
+    });
+  } catch (err) {
+    console.error("[API /ingest] Ingestion error:", err);
+    await alertCronFailure("ingest", err);
+    return NextResponse.json(
+      { success: false, error: String(err) },
+      { status: 500 }
+    );
+  }
 }
 
 // Crons send GET requests
