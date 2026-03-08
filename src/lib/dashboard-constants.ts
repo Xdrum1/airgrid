@@ -21,6 +21,33 @@ export const CHANGE_TYPE_COLORS: Record<string, string> = {
   status_change: "#f59e0b",
   new_law: "#00ff88",
   faa_update: "#7c3aed",
+  watch_change: "#e879f9",
+};
+
+export const WATCH_STATUS_COLORS: Record<string, string> = {
+  STABLE: "#00ff88",
+  POSITIVE_WATCH: "#00d4ff",
+  NEGATIVE_WATCH: "#f59e0b",
+  DEVELOPING: "#7c3aed",
+};
+
+export const OUTLOOK_COLORS: Record<string, string> = {
+  IMPROVING: "#00ff88",
+  STABLE: "#888",
+  DETERIORATING: "#ff4444",
+};
+
+export const WATCH_STATUS_LABELS: Record<string, string> = {
+  STABLE: "Stable",
+  POSITIVE_WATCH: "Positive Watch",
+  NEGATIVE_WATCH: "Negative Watch",
+  DEVELOPING: "Developing",
+};
+
+export const OUTLOOK_LABELS: Record<string, string> = {
+  IMPROVING: "Improving",
+  STABLE: "Stable",
+  DETERIORATING: "Deteriorating",
 };
 
 export const SCORE_COMPONENT_COLORS: Record<string, string> = {

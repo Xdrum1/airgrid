@@ -311,6 +311,61 @@ model IngestionRun {
   @@index([startedAt])
 }
 
+// ── Market Watch (ratings agency layer) ─────────────────────
+
+model MarketWatch {
+  id          String    @id @default(cuid())
+  cityId      String    @unique
+  watchStatus String    @default("STABLE") // STABLE | POSITIVE_WATCH | NEGATIVE_WATCH | DEVELOPING
+  outlook     String    @default("STABLE") // IMPROVING | STABLE | DETERIORATING
+  analystNote String?
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+
+  history MarketWatchHistory[]
+
+  @@index([watchStatus])
+  @@index([published])
+}
+
+model MarketWatchHistory {
+  id              String    @id @default(cuid())
+  marketWatchId   String
+  cityId          String
+  fromWatchStatus String?
+  toWatchStatus   String
+  fromOutlook     String?
+  toOutlook       String
+  analystNote     String?
+  reason          String
+  source          String    @default("admin") // "admin" | "ai_suggested"
+  suggestedBy     String?
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+
+  marketWatch MarketWatch @relation(fields: [marketWatchId], references: [id], onDelete: Cascade)
+
+  @@index([cityId, createdAt])
+  @@index([marketWatchId])
+}
+
+model MarketWatchSuggestion {
+  id               String   @id @default(cuid())
+  cityId           String
+  suggestedStatus  String
+  suggestedOutlook String
+  reasoning        String
+  confidence       Float
+  signalCount      Int
+  status           String   @default("pending") // pending | accepted | dismissed
+  createdAt        DateTime @default(now())
+
+  @@index([cityId])
+  @@index([status])
+}
+
 model MarketLead {
   id              String    @id @default(cuid())
   city            String    // e.g. "Columbus"
