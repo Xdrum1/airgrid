@@ -27,7 +27,8 @@ export type ChangeType =
   | "status_change"
   | "new_law"
   | "faa_update"
-  | "score_change";
+  | "score_change"
+  | "watch_change";
 
 // --- Score Breakdown ---
 export interface ScoreBreakdown {
