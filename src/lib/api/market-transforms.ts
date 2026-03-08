@@ -12,7 +12,14 @@ import type { ScoreHistoryFull } from "@/lib/score-history";
 // Market summary (used in /markets list)
 // -------------------------------------------------------
 
-export function transformMarketSummary(city: City) {
+export interface WatchInfo {
+  watchStatus: string;
+  outlook: string;
+  analystNote?: string | null;
+  publishedAt?: string | null;
+}
+
+export function transformMarketSummary(city: City, watch?: WatchInfo | null) {
   const score = city.score ?? 0;
   const tier = getScoreTier(score);
   const posture = getPostureConfig(city.regulatoryPosture);
@@ -32,6 +39,8 @@ export function transformMarketSummary(city: City) {
     postureLabel: posture.label,
     operatorCount: city.activeOperators.length,
     vertiportCount: cityVertiports.length,
+    watchStatus: watch?.watchStatus ?? "STABLE",
+    outlook: watch?.outlook ?? "STABLE",
     lastUpdated: city.lastUpdated,
   });
 }
@@ -50,8 +59,9 @@ export function transformMarketDetail(
   city: City,
   corridors: Corridor[],
   tierHistory: TierHistoryEntry[],
+  watch?: WatchInfo | null,
 ) {
-  const summary = transformMarketSummary(city);
+  const summary = transformMarketSummary(city, watch);
 
   const operators = city.activeOperators
     .map((id) => OPERATORS_MAP[id])
@@ -94,6 +104,7 @@ export function transformMarketDetail(
 
   return {
     ...summary,
+    analyst_note: watch?.analystNote ?? null,
     operators,
     vertiports,
     corridors: corridorData,
