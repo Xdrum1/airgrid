@@ -1,60 +1,47 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Stat {
   value: number;
   label: string;
 }
 
-function useCountUp(target: number, duration = 1200) {
+// Staggered durations so counters finish at slightly different times
+const DURATIONS = [800, 600, 700, 500];
+const SETTLE_DELAY = 650;
+
+function useCountUp(target: number, duration: number, delay: number) {
   const [count, setCount] = useState(0);
-  const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    if (!started) return;
-    const start = performance.now();
-    let raf: number;
+    const timeout = setTimeout(() => {
+      const start = performance.now();
+      let raf: number;
 
-    function tick(now: number) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      // Ease-out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(eased * target));
-      if (progress < 1) raf = requestAnimationFrame(tick);
-    }
+      function tick(now: number) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setCount(Math.round(eased * target));
+        if (progress < 1) raf = requestAnimationFrame(tick);
+      }
 
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [started, target, duration]);
+      raf = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(raf);
+    }, delay);
 
-  return { count, start: () => setStarted(true) };
+    return () => clearTimeout(timeout);
+  }, [target, duration, delay]);
+
+  return count;
 }
 
-function StatItem({ value, label }: Stat) {
-  const { count, start } = useCountUp(value);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          start();
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [start]);
+function StatItem({ value, label, duration, delay }: Stat & { duration: number; delay: number }) {
+  const count = useCountUp(value, duration, delay);
 
   return (
     <div
-      ref={ref}
       style={{
         background: "#050508",
         padding: "28px 24px",
@@ -83,6 +70,7 @@ function StatItem({ value, label }: Stat) {
 export default function CountUpStats({ stats }: { stats: Stat[] }) {
   return (
     <div
+      className="landing-stats-grid"
       style={{
         display: "grid",
         gridTemplateColumns: `repeat(${stats.length}, 1fr)`,
@@ -92,8 +80,14 @@ export default function CountUpStats({ stats }: { stats: Stat[] }) {
         overflow: "hidden",
       }}
     >
-      {stats.map((s) => (
-        <StatItem key={s.label} value={s.value} label={s.label} />
+      {stats.map((s, i) => (
+        <StatItem
+          key={s.label}
+          value={s.value}
+          label={s.label}
+          duration={DURATIONS[i] ?? 700}
+          delay={SETTLE_DELAY}
+        />
       ))}
     </div>
   );
