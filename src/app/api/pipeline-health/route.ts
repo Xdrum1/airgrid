@@ -36,9 +36,9 @@ export async function GET() {
         orderBy: { createdAt: "desc" },
         select: { createdAt: true, decision: true },
       }),
-      // Pending overrides needing review
+      // Pending overrides needing review (must be unapplied + not superseded)
       prisma.scoringOverride.count({
-        where: { confidence: "needs_review", supersededAt: null },
+        where: { confidence: "needs_review", appliedAt: null, supersededAt: null },
       }),
       // Total snapshots captured
       prisma.scoreSnapshot.count(),
