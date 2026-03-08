@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { City } from "@/types";
 import { getScoreColor, getPostureConfig } from "@/lib/scoring";
+import { WATCH_STATUS_COLORS, WATCH_STATUS_LABELS } from "@/lib/dashboard-constants";
 import ScoreBar from "./ScoreBar";
 
 export default function CityCard({
@@ -11,12 +12,14 @@ export default function CityCard({
   onClick,
   rank,
   starNode,
+  watchStatus,
 }: {
   city: City;
   isSelected: boolean;
   onClick: () => void;
   rank: number;
   starNode?: React.ReactNode;
+  watchStatus?: string;
 }) {
   const color = getScoreColor(city.score ?? 0);
   const posture = getPostureConfig(city.regulatoryPosture);
@@ -73,6 +76,22 @@ export default function CityCard({
           {starNode}
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {watchStatus && watchStatus !== "STABLE" && (
+            <span
+              style={{
+                color: WATCH_STATUS_COLORS[watchStatus] ?? "#888",
+                fontSize: 7,
+                letterSpacing: 0.5,
+                background: `${WATCH_STATUS_COLORS[watchStatus] ?? "#888"}15`,
+                border: `1px solid ${WATCH_STATUS_COLORS[watchStatus] ?? "#888"}30`,
+                borderRadius: 3,
+                padding: "2px 5px",
+                fontWeight: 700,
+              }}
+            >
+              {WATCH_STATUS_LABELS[watchStatus] ?? watchStatus}
+            </span>
+          )}
           <span
             style={{
               color: posture.color,
