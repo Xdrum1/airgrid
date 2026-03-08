@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin, getClientIp, authorizeCron } from "@/lib/admin-helpers";
 import { rateLimit } from "@/lib/rate-limit";
 import { runAutoReview } from "@/lib/auto-reviewer";
+import { alertCronFailure } from "@/lib/cron-alerts";
+
+// Extend Lambda timeout for AI processing
+export const maxDuration = 120;
 
 // -------------------------------------------------------
-// POST — Admin-triggered auto-review
+// POST — Admin-triggered auto-review (streaming to avoid gateway timeout)
 // -------------------------------------------------------
 
 export async function POST(request: NextRequest) {
@@ -32,36 +36,80 @@ export async function POST(request: NextRequest) {
   const dryRun = body.dryRun ?? false;
   const fetchSource = body.fetchSource ?? true;
 
-  try {
-    const summary = await runAutoReview({ maxOverrides, dryRun, fetchSource });
-    return NextResponse.json({ success: true, ...summary });
-  } catch (err) {
-    return NextResponse.json(
-      { success: false, error: err instanceof Error ? err.message : String(err) },
-      { status: 500 }
-    );
-  }
+  return streamAutoReview({ maxOverrides, dryRun, fetchSource });
 }
 
 // -------------------------------------------------------
-// GET — Cron-triggered auto-review
+// GET — Cron-triggered auto-review (streaming to avoid gateway timeout)
 // -------------------------------------------------------
 
 export async function GET(request: NextRequest) {
   const denied = authorizeCron(request);
   if (denied) return denied;
 
-  try {
-    const summary = await runAutoReview({
-      maxOverrides: 20,
-      dryRun: false,
-      fetchSource: true,
-    });
-    return NextResponse.json({ success: true, ...summary });
-  } catch (err) {
-    return NextResponse.json(
-      { success: false, error: err instanceof Error ? err.message : String(err) },
-      { status: 500 }
-    );
-  }
+  return streamAutoReview({
+    maxOverrides: 20,
+    dryRun: false,
+    fetchSource: true,
+  });
+}
+
+// -------------------------------------------------------
+// Streaming wrapper — keeps Amplify gateway alive
+// -------------------------------------------------------
+
+function streamAutoReview(options: {
+  maxOverrides: number;
+  dryRun: boolean;
+  fetchSource: boolean;
+}): Response {
+  const encoder = new TextEncoder();
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      controller.enqueue(encoder.encode("data: {\"status\":\"started\"}\n\n"));
+
+      const keepalive = setInterval(() => {
+        try {
+          controller.enqueue(encoder.encode("data: {\"status\":\"running\"}\n\n"));
+        } catch {
+          clearInterval(keepalive);
+        }
+      }, 10_000);
+
+      try {
+        const summary = await runAutoReview(options);
+        clearInterval(keepalive);
+
+        const result = JSON.stringify({
+          status: "complete",
+          success: true,
+          ...summary,
+        });
+
+        controller.enqueue(encoder.encode(`data: ${result}\n\n`));
+        controller.close();
+      } catch (err) {
+        clearInterval(keepalive);
+        console.error("[API /auto-review] Error:", err);
+        await alertCronFailure("auto-review", err);
+
+        const error = JSON.stringify({
+          status: "error",
+          success: false,
+          error: err instanceof Error ? err.message : String(err),
+        });
+        controller.enqueue(encoder.encode(`data: ${error}\n\n`));
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    },
+  });
 }
