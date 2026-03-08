@@ -7,7 +7,6 @@ import { City, Corridor, Vertiport } from "@/types";
 import type { FederalFiling } from "@/lib/faa-api";
 import type { ChangelogEntry } from "@/types";
 import { CITIES, CITIES_MAP, OPERATORS_MAP, CORRIDORS, getVertiportsForCity } from "@/data/seed";
-import { getScoreColor, getPostureConfig } from "@/lib/scoring";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useWatchlist } from "@/hooks/useWatchlist";
 import { trackEvent } from "@/lib/track";
@@ -82,6 +81,22 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
   // Watchlist
   const { cityIds: watchedCityIds, isWatched, toggle: toggleWatch, isAuthenticated } = useWatchlist();
 
+  // Market Watch data
+  const [watchData, setWatchData] = useState<Record<string, { watchStatus: string; outlook: string; analystNote: string | null }>>({});
+
+  useEffect(() => {
+    fetch("/api/market-watch")
+      .then((r) => r.json())
+      .then((json) => {
+        const map: Record<string, { watchStatus: string; outlook: string; analystNote: string | null }> = {};
+        for (const w of json.data ?? []) {
+          map[w.cityId] = { watchStatus: w.watchStatus, outlook: w.outlook, analystNote: w.analystNote };
+        }
+        setWatchData(map);
+      })
+      .catch(() => {});
+  }, []);
+
   // Vertiport & Corridor state
   const [selectedVertiport, setSelectedVertiport] = useState<Vertiport | null>(null);
   const [selectedCorridor, setSelectedCorridor] = useState<Corridor | null>(null);
@@ -155,8 +170,6 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
     return true;
   });
 
-  const scoreColor = getScoreColor(selected.score ?? 0);
-
   // -------------------------------------------------------
   // Render
   // -------------------------------------------------------
@@ -223,6 +236,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
             onToggleWatch={toggleWatch}
             isAuthenticated={isAuthenticated}
             isWatched={isWatched}
+            watchData={watchData}
           />
         )}
 
@@ -401,6 +415,9 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
             onToggleWatch={toggleWatch}
             isAuthenticated={isAuthenticated}
             userTier={userTier}
+            watchStatus={watchData[selected.id]?.watchStatus}
+            outlook={watchData[selected.id]?.outlook}
+            analystNote={watchData[selected.id]?.analystNote}
           />
         )}
       </div>

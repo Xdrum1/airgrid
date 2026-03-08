@@ -19,6 +19,7 @@ export default function CityListPanel({
   onToggleWatch,
   isAuthenticated,
   isWatched,
+  watchData,
 }: {
   cities: City[];
   filtered: City[];
@@ -33,6 +34,7 @@ export default function CityListPanel({
   onToggleWatch: (cityId: string) => void;
   isAuthenticated: boolean;
   isWatched: (cityId: string) => boolean;
+  watchData?: Record<string, { watchStatus: string }>;
 }) {
   return (
     <div
@@ -172,6 +174,7 @@ export default function CityListPanel({
               rank={cities.indexOf(city) + 1}
               isSelected={selected?.id === city.id}
               onClick={() => onSelect(city)}
+              watchStatus={watchData?.[city.id]?.watchStatus}
               starNode={
                 <WatchlistStar
                   cityId={city.id}

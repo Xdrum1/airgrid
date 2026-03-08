@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { City, Vertiport, Corridor } from "@/types";
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
-import { VERTIPORT_STATUS_COLORS, CORRIDOR_STATUS_COLORS } from "@/lib/dashboard-constants";
+import { VERTIPORT_STATUS_COLORS, CORRIDOR_STATUS_COLORS, WATCH_STATUS_COLORS, WATCH_STATUS_LABELS, OUTLOOK_COLORS, OUTLOOK_LABELS } from "@/lib/dashboard-constants";
+import { hasProAccess } from "@/lib/billing-shared";
 import { OPERATORS_MAP } from "@/data/seed";
 import ScoreBar from "./ScoreBar";
 import BreakdownPanel from "./BreakdownPanel";
@@ -26,6 +27,9 @@ export default function CityDetailPanel({
   onToggleWatch,
   isAuthenticated,
   userTier = "free",
+  watchStatus,
+  outlook,
+  analystNote,
 }: {
   selected: City;
   vertiports: Vertiport[];
@@ -40,6 +44,9 @@ export default function CityDetailPanel({
   onToggleWatch: (cityId: string) => void;
   isAuthenticated: boolean;
   userTier?: string;
+  watchStatus?: string;
+  outlook?: string;
+  analystNote?: string | null;
 }) {
   const scoreColor = getScoreColor(selected.score ?? 0);
   const posture = getPostureConfig(selected.regulatoryPosture);
@@ -224,6 +231,60 @@ export default function CityDetailPanel({
             </span>
           )}
         </div>
+
+        {/* Watch Status + Outlook */}
+        {watchStatus && watchStatus !== "STABLE" && (
+          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{
+                color: WATCH_STATUS_COLORS[watchStatus] ?? "#888",
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: 1,
+                background: `${WATCH_STATUS_COLORS[watchStatus] ?? "#888"}12`,
+                border: `1px solid ${WATCH_STATUS_COLORS[watchStatus] ?? "#888"}30`,
+                borderRadius: 4,
+                padding: "4px 8px",
+              }}>
+                {WATCH_STATUS_LABELS[watchStatus] ?? watchStatus}
+              </span>
+              {outlook && outlook !== "STABLE" && (
+                <span style={{
+                  color: OUTLOOK_COLORS[outlook] ?? "#888",
+                  fontSize: 8,
+                  letterSpacing: 1,
+                  background: `${OUTLOOK_COLORS[outlook] ?? "#888"}12`,
+                  border: `1px solid ${OUTLOOK_COLORS[outlook] ?? "#888"}30`,
+                  borderRadius: 4,
+                  padding: "3px 7px",
+                }}>
+                  {OUTLOOK_LABELS[outlook] ?? outlook}
+                </span>
+              )}
+            </div>
+            {hasProAccess(userTier) && analystNote ? (
+              <div style={{
+                color: "#999",
+                fontSize: 10,
+                lineHeight: 1.6,
+                background: "rgba(255,255,255,0.02)",
+                borderRadius: 6,
+                padding: "10px 12px",
+                borderLeft: `2px solid ${WATCH_STATUS_COLORS[watchStatus] ?? "#888"}60`,
+              }}>
+                {analystNote}
+              </div>
+            ) : analystNote ? (
+              <div style={{
+                color: "#444",
+                fontSize: 9,
+                fontStyle: "italic",
+              }}>
+                Analyst note available with Pro
+              </div>
+            ) : null}
+          </div>
+        )}
       </div>
 
       {/* Score Breakdown */}
