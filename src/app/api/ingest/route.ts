@@ -7,7 +7,68 @@ import { alertCronFailure } from "@/lib/cron-alerts";
 // Max execution time for serverless — Amplify Lambda default is 60s
 export const maxDuration = 120;
 
-async function startIngestion(): Promise<NextResponse> {
+function streamIngestion(): Response {
+  const encoder = new TextEncoder();
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      // Send initial keepalive immediately
+      controller.enqueue(encoder.encode("data: {\"status\":\"started\"}\n\n"));
+
+      // Send keepalive pings every 10s to prevent gateway timeout
+      const keepalive = setInterval(() => {
+        try {
+          controller.enqueue(encoder.encode("data: {\"status\":\"running\"}\n\n"));
+        } catch {
+          clearInterval(keepalive);
+        }
+      }, 10_000);
+
+      try {
+        const { diff, meta } = await runIngestion();
+        clearInterval(keepalive);
+
+        const result = JSON.stringify({
+          status: "complete",
+          success: true,
+          newRecords: diff.newRecords.length,
+          updatedRecords: diff.updatedRecords.length,
+          unchangedCount: diff.unchangedCount,
+          sources: meta.sources,
+        });
+
+        console.log(
+          `[API /ingest] Complete: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged, sources: ${meta.sources.join(", ")}`
+        );
+
+        controller.enqueue(encoder.encode(`data: ${result}\n\n`));
+        controller.close();
+      } catch (err) {
+        clearInterval(keepalive);
+        console.error("[API /ingest] Ingestion error:", err);
+        await alertCronFailure("ingest", err);
+
+        const error = JSON.stringify({
+          status: "error",
+          success: false,
+          error: String(err),
+        });
+        controller.enqueue(encoder.encode(`data: ${error}\n\n`));
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    },
+  });
+}
+
+async function startIngestion(): Promise<Response> {
   const rl = await rateLimit("ingest", 4, 60 * 60 * 1000);
   if (!rl.allowed) {
     return NextResponse.json(
@@ -16,26 +77,7 @@ async function startIngestion(): Promise<NextResponse> {
     );
   }
 
-  try {
-    const { diff, meta } = await runIngestion();
-    console.log(
-      `[API /ingest] Complete: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged, sources: ${meta.sources.join(", ")}`
-    );
-    return NextResponse.json({
-      success: true,
-      newRecords: diff.newRecords.length,
-      updatedRecords: diff.updatedRecords.length,
-      unchangedCount: diff.unchangedCount,
-      sources: meta.sources,
-    });
-  } catch (err) {
-    console.error("[API /ingest] Ingestion error:", err);
-    await alertCronFailure("ingest", err);
-    return NextResponse.json(
-      { success: false, error: String(err) },
-      { status: 500 }
-    );
-  }
+  return streamIngestion();
 }
 
 // Crons send GET requests

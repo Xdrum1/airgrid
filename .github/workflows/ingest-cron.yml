@@ -27,6 +27,7 @@ jobs:
           APP_URL: ${{ vars.APP_URL }}
         run: |
           URL="${APP_URL:-https://www.airindex.io}"
+          # Streaming response — collect full output, check last event for result
           RESPONSE=$(curl -s -w "\n%{http_code}" \
             --max-time 120 \
             -X POST \
@@ -42,4 +43,19 @@ jobs:
           if [ "$HTTP_CODE" != "200" ]; then
             echo "::error::Ingestion failed with status $HTTP_CODE"
             exit 1
+          fi
+
+          # Check the final SSE event for success
+          LAST_EVENT=$(echo "$BODY" | grep "^data:" | tail -1 | sed 's/^data: //')
+          echo "Final event: $LAST_EVENT"
+
+          if echo "$LAST_EVENT" | grep -q '"status":"error"'; then
+            echo "::error::Ingestion completed with error"
+            exit 1
+          fi
+
+          if echo "$LAST_EVENT" | grep -q '"status":"complete"'; then
+            echo "Ingestion completed successfully"
+          else
+            echo "::warning::Unexpected final event status"
           fi
