@@ -1089,5 +1089,90 @@ export async function runAutoReview(
     `[auto-review] Complete: ${summary.processed} processed, ${summary.approved} approved, ${summary.rejected} rejected, ${summary.recommended} recommended, ${summary.autoPromoted} auto-promoted, ${summary.skipped} skipped, ${summary.errors} errors`
   );
 
+  // After processing overrides, check for signal momentum and generate watch suggestions
+  if (!dryRun) {
+    try {
+      await generateWatchSuggestions();
+    } catch (err) {
+      logger.error("[auto-review] Failed to generate watch suggestions:", err);
+    }
+  }
+
   return summary;
+}
+
+// -------------------------------------------------------
+// Watch suggestion generation — signal momentum analysis
+// -------------------------------------------------------
+
+const SIGNAL_WINDOW_DAYS = 30;
+const MIN_SIGNALS_FOR_SUGGESTION = 3;
+
+async function generateWatchSuggestions(): Promise<void> {
+  const prisma = await getPrisma();
+
+  const windowStart = new Date();
+  windowStart.setDate(windowStart.getDate() - SIGNAL_WINDOW_DAYS);
+
+  // Count recent classifications per city
+  const recentClassifications = await prisma.classificationResult.findMany({
+    where: { createdAt: { gte: windowStart } },
+    select: { affectedCities: true, eventType: true, confidence: true },
+  });
+
+  // Tally signals per city
+  const citySignals = new Map<string, { count: number; types: Set<string>; highConfidence: number }>();
+  for (const c of recentClassifications) {
+    for (const cityId of c.affectedCities) {
+      const existing = citySignals.get(cityId) ?? { count: 0, types: new Set(), highConfidence: 0 };
+      existing.count++;
+      existing.types.add(c.eventType);
+      if (c.confidence === "high") existing.highConfidence++;
+      citySignals.set(cityId, existing);
+    }
+  }
+
+  // Get existing pending suggestions to avoid duplicates
+  const existingSuggestions = await prisma.marketWatchSuggestion.findMany({
+    where: { status: "pending" },
+    select: { cityId: true },
+  });
+  const alreadySuggested = new Set(existingSuggestions.map((s) => s.cityId));
+
+  // Get current watch statuses
+  const currentWatches = await prisma.marketWatch.findMany({
+    select: { cityId: true, watchStatus: true },
+  });
+  const watchMap = new Map(currentWatches.map((w) => [w.cityId, w.watchStatus]));
+
+  // Generate suggestions for cities with signal clusters
+  let created = 0;
+  for (const [cityId, signals] of citySignals) {
+    if (signals.count < MIN_SIGNALS_FOR_SUGGESTION) continue;
+    if (alreadySuggested.has(cityId)) continue;
+
+    const currentStatus = watchMap.get(cityId) ?? "STABLE";
+    // Only suggest if currently STABLE — don't override existing analyst calls
+    if (currentStatus !== "STABLE") continue;
+
+    const confidence = Math.min(0.95, 0.5 + (signals.highConfidence / signals.count) * 0.3 + (signals.count / 10) * 0.2);
+    const typeList = Array.from(signals.types).slice(0, 5).join(", ");
+    const cityName = CITIES_MAP[cityId]?.city ?? cityId;
+
+    await prisma.marketWatchSuggestion.create({
+      data: {
+        cityId,
+        suggestedStatus: "DEVELOPING",
+        suggestedOutlook: "IMPROVING",
+        reasoning: `${signals.count} signals in ${SIGNAL_WINDOW_DAYS} days (${signals.highConfidence} high confidence). Event types: ${typeList}. ${cityName} may warrant analyst review.`,
+        confidence,
+        signalCount: signals.count,
+      },
+    });
+    created++;
+  }
+
+  if (created > 0) {
+    logger.info(`[auto-review] Generated ${created} watch suggestion(s)`);
+  }
 }
