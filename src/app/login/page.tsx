@@ -173,7 +173,12 @@ function LoginForm() {
               <p style={{ color: "#ff4444", fontSize: 12, marginTop: 16 }}>{error}</p>
             )}
 
-            <p style={{ color: "#666", fontSize: 10, marginTop: 32 }}>
+            {isSignup && callbackUrl === "/dashboard" && (
+              <p style={{ color: "#555", fontSize: 10, marginTop: 24, letterSpacing: 0.5 }}>
+                You&apos;ll land directly in the dashboard.
+              </p>
+            )}
+            <p style={{ color: "#666", fontSize: 10, marginTop: isSignup && callbackUrl === "/dashboard" ? 12 : 32 }}>
               {isSignup
                 ? "No password needed — we\u2019ll email you a magic link to get started."
                 : "No password needed — we\u2019ll email you a sign-in link."}
