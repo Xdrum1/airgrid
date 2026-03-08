@@ -1,10 +1,17 @@
 // src/app/dashboard/page.tsx
-// Dashboard route — renders the main interactive dashboard
+// Dashboard route — requires free account, renders the main interactive dashboard
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import { getCitiesWithOverrides } from "@/data/seed";
 import Dashboard from "@/components/Dashboard";
 
 export default async function DashboardPage() {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login?mode=signup&callbackUrl=/dashboard");
+  }
+
   const cities = await getCitiesWithOverrides();
   const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
 

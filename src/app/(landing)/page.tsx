@@ -187,23 +187,24 @@ export default async function LandingPage() {
             >
               API
             </Link>
-            <Link
-              href="/dashboard"
-              className="nav-hide-mobile"
-              style={{
-                color: "#888",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                padding: "8px 16px",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 6,
-                transition: "all 0.15s",
-              }}
-            >
-              {isAuthed ? "Go to Dashboard" : "View Dashboard"}
-            </Link>
-            {!isAuthed && (
+            {isAuthed ? (
+              <Link
+                href="/dashboard"
+                className="nav-hide-mobile"
+                style={{
+                  color: "#888",
+                  fontSize: 11,
+                  letterSpacing: "0.06em",
+                  textDecoration: "none",
+                  padding: "8px 16px",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 6,
+                  transition: "all 0.15s",
+                }}
+              >
+                Go to Dashboard
+              </Link>
+            ) : (
               <>
                 <Link
                   href="/login"
@@ -554,14 +555,42 @@ export default async function LandingPage() {
               airindex.io/dashboard
             </div>
           </div>
-          <Image
-            src="/images/dashboard-preview.png"
-            alt="AirIndex dashboard showing an interactive map of US UAM markets with readiness scores"
-            width={1920}
-            height={1080}
-            style={{ width: "100%", height: "auto", display: "block" }}
-            priority
-          />
+          <Link href="/dashboard" className="dashboard-preview-link" style={{ display: "block", position: "relative" }}>
+            <Image
+              src="/images/dashboard-preview.png"
+              alt="AirIndex dashboard showing an interactive map of US UAM markets with readiness scores"
+              width={1920}
+              height={1080}
+              style={{ width: "100%", height: "auto", display: "block" }}
+              priority
+            />
+            <div className="dashboard-preview-overlay">
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 8,
+              }}>
+                <span style={{
+                  fontFamily: "'Syne', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 14,
+                  letterSpacing: "0.06em",
+                  color: "#fff",
+                }}>
+                  Explore the dashboard &rarr;
+                </span>
+                <span style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 9,
+                  letterSpacing: 2,
+                  color: "#00d4ff",
+                }}>
+                  FREE WITH SIGNUP
+                </span>
+              </div>
+            </div>
+          </Link>
         </div>
       </section>
 
