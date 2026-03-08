@@ -32,6 +32,7 @@ const TIERS = [
       "Everything in Free, plus:",
       "Score history & factor breakdowns",
       "Corridor intelligence & operator tracker",
+      "Market Watch & analyst outlook notes",
       "SEC filings & email alerts",
     ],
     yearlyNote: "$1,490/year (2 months free)",
@@ -472,6 +473,13 @@ export default async function LandingPage() {
               title: "Alerts & Subscriptions",
               description:
                 "Market-level and corridor-level change notifications. Subscribe to the markets and corridors you care about — get notified when the data moves.",
+            },
+            {
+              icon: "◆",
+              accent: "#e879f9",
+              title: "Market Watch & Analyst Outlook",
+              description:
+                "Moody\u2019s-style watch status and 6-month outlook on every rated market. Know which cities are on the move before scores change \u2014 with analyst notes explaining the signal.",
             },
           ].map((card) => (
             <div
