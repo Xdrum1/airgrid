@@ -13,6 +13,8 @@ function LoginForm() {
   const [step, setStep] = useState<"email" | "sent">("email");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [loadedAt] = useState(() => Date.now());
   const searchParams = useSearchParams();
   const rawCallback = searchParams.get("callbackUrl") || "/dashboard";
   const callbackUrl = ALLOWED_PREFIXES.some((p) => rawCallback.startsWith(p))
@@ -24,6 +26,14 @@ function LoginForm() {
   async function handleEmailSubmit(e: FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
+
+    // Bot detection: honeypot filled or submitted in under 2 seconds
+    if (honeypot || Date.now() - loadedAt < 2000) {
+      // Fake success — don't reveal detection
+      setStep("sent");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -126,6 +136,17 @@ function LoginForm() {
             )}
 
             <form onSubmit={handleEmailSubmit}>
+              {/* Honeypot — hidden from humans, bots auto-fill it */}
+              <div style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, overflow: "hidden" }} aria-hidden="true">
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
+              </div>
               <input
                 type="email"
                 value={email}
