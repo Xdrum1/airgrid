@@ -297,7 +297,8 @@ export default function TermsPage() {
         </p>
         <p style={S.p}>
           If you have questions about these Terms, please contact us at{" "}
-          <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a>.
+          <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a> or by mail at
+          Vertical Data Group, LLC, PO Box 31172, Myrtle Beach, SC 29588.
         </p>
 
         {/* Footer */}
