@@ -6,6 +6,7 @@ import CountUpStats from "@/components/landing/CountUpStats";
 import LiveActivityFeed from "@/components/landing/LiveActivityFeed";
 import CityScoreLookup from "@/components/landing/CityScoreLookup";
 import LiveTicker from "@/components/landing/LiveTicker";
+import LiveFilingsFeed from "@/components/landing/LiveFilingsFeed";
 
 // -------------------------------------------------------
 // Pricing tier data
@@ -628,60 +629,8 @@ export default async function LandingPage() {
             gap: 20,
           }}
         >
-          {/* Filings Feed */}
-          <div
-            style={{
-              background: "rgba(255,255,255,0.02)",
-              border: "1px solid rgba(255,255,255,0.06)",
-              borderRadius: 10,
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                padding: "16px 20px",
-                borderBottom: "1px solid rgba(255,255,255,0.06)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ color: "#ff6b35", fontSize: 14 }}>&#9673;</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#ff6b35" }}>
-                  REGULATORY FILINGS
-                </span>
-              </div>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#999", letterSpacing: 1 }}>
-                FEDERAL REGISTER · FAA · LEGISCAN
-              </span>
-            </div>
-            <div style={{ padding: "8px 0" }}>
-              {SAMPLE_FILINGS.map((f, i) => (
-                <div
-                  key={i}
-                  style={{
-                    padding: "14px 20px",
-                    borderBottom: i < SAMPLE_FILINGS.length - 1 ? "1px solid rgba(255,255,255,0.03)" : "none",
-                  }}
-                >
-                  <div style={{ fontFamily: "'Inter', sans-serif", color: "#ccc", fontSize: 12, lineHeight: 1.5, marginBottom: 6 }}>
-                    {f.title}
-                  </div>
-                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#888", letterSpacing: 1 }}>{f.source.toUpperCase()}</span>
-                    <span style={{ color: "#999", fontSize: 8 }}>·</span>
-                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#aaa", letterSpacing: 1 }}>{f.date.toUpperCase()}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div style={{ padding: "12px 20px", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-              <Link href="/dashboard?tab=filings" style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: "#ff6b35", letterSpacing: 1, textDecoration: "none" }}>
-                VIEW ALL FILINGS &rarr;
-              </Link>
-            </div>
-          </div>
+          {/* Filings Feed — live from API */}
+          <LiveFilingsFeed fallback={SAMPLE_FILINGS} />
 
           {/* Activity Feed — live from API */}
           <LiveActivityFeed fallback={SAMPLE_ACTIVITY} />
