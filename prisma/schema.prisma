@@ -17,6 +17,7 @@ model User {
   image                 String?
   stripeCustomerId      String?   @unique
   tier                  String    @default("free") // free|pro|institutional|enterprise|grandfathered
+  role                  String?   // operator|investor|government|researcher|press|other
   accounts              Account[]
   sessions              Session[]
   subscriptions         Subscription[]

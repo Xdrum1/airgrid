@@ -123,7 +123,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               </div>
               <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 8px;">New user signed up:</p>
               <p style="color:#7c3aed;font-size:16px;font-weight:700;margin:0 0 8px;">${user.email}</p>
-              <p style="color:#999;font-size:12px;margin:0;">${new Date().toUTCString()}</p>
+              <p style="color:#999;font-size:12px;margin:0 0 4px;">${new Date().toUTCString()}</p>
+              <p style="color:#999;font-size:12px;margin:0;">Role will be captured on first dashboard visit.</p>
             </div>
           `.trim(),
         }).catch((err) => logger.error("Admin notify failed:", err));

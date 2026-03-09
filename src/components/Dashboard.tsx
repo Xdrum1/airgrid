@@ -13,6 +13,7 @@ import { trackEvent } from "@/lib/track";
 import { plausible } from "@/lib/plausible";
 import AuthGate from "./AuthGate";
 import UpgradeGate from "./UpgradeGate";
+import RolePicker from "./RolePicker";
 import { hasProAccess } from "@/lib/billing-shared";
 import type { FilterKey, TabKey, MobilePanel } from "./dashboard-types";
 
@@ -80,6 +81,17 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
 
   // Watchlist
   const { cityIds: watchedCityIds, isWatched, toggle: toggleWatch, isAuthenticated } = useWatchlist();
+
+  // Role picker — show once for new users without a role
+  const [showRolePicker, setShowRolePicker] = useState(false);
+
+  useEffect(() => {
+    if (!session?.user) return;
+    fetch("/api/user/role")
+      .then((r) => r.json())
+      .then((data) => { if (!data.role) setShowRolePicker(true); })
+      .catch(() => {});
+  }, [session?.user]);
 
   // Market Watch data
   const [watchData, setWatchData] = useState<Record<string, { watchStatus: string; outlook: string; analystNote: string | null }>>({});
@@ -175,6 +187,10 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
   // -------------------------------------------------------
 
   return (
+    <>
+    {showRolePicker && (
+      <RolePicker onComplete={() => setShowRolePicker(false)} />
+    )}
     <div
       style={{
         minHeight: "100vh",
@@ -422,5 +438,6 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
         )}
       </div>
     </div>
+    </>
   );
 }
