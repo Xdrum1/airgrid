@@ -528,6 +528,10 @@ export default function PrivacyPage() {
                 <td style={S.td}>&ldquo;Privacy Policy Inquiry&rdquo; / &ldquo;Data Access Request&rdquo; / &ldquo;Data Deletion Request&rdquo;</td>
               </tr>
               <tr>
+                <td style={{ ...S.td, color: "#aaa" }}>Mail</td>
+                <td style={S.td}>Vertical Data Group, LLC &middot; PO Box 31172 &middot; Myrtle Beach, SC 29588</td>
+              </tr>
+              <tr>
                 <td style={{ ...S.td, color: "#aaa" }}>Company</td>
                 <td style={S.td}>Vertical Data Group, LLC</td>
               </tr>
