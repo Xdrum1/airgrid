@@ -5,7 +5,6 @@ import { auth } from "@/auth";
 import { hasProAccess } from "@/lib/billing-shared";
 export { hasProAccess, hasInstitutionalAccess } from "@/lib/billing-shared";
 
-const PAYWALL_LAUNCH_DATE = process.env.PAYWALL_LAUNCH_DATE || "2026-04-15";
 const GRANDFATHERED_EXPIRY = process.env.GRANDFATHERED_EXPIRY || "2026-12-31";
 
 /** Resolve the effective tier for a user */
@@ -37,19 +36,6 @@ export async function getUserTier(userId: string): Promise<string> {
 
   // Grandfathered: user created before paywall launch, not expired
   if (user.tier === "grandfathered") {
-    const expiry = new Date(GRANDFATHERED_EXPIRY + "T23:59:59Z");
-    if (new Date() <= expiry) return "grandfathered";
-    return "free";
-  }
-
-  // Check if user should be grandfathered (created before launch)
-  const launchDate = new Date(PAYWALL_LAUNCH_DATE + "T00:00:00Z");
-  if (user.createdAt < launchDate && user.tier === "free") {
-    // Auto-mark as grandfathered
-    await prisma.user.update({
-      where: { id: userId },
-      data: { tier: "grandfathered" },
-    });
     const expiry = new Date(GRANDFATHERED_EXPIRY + "T23:59:59Z");
     if (new Date() <= expiry) return "grandfathered";
     return "free";
