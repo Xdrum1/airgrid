@@ -939,10 +939,10 @@ export default async function LandingPage() {
               margin: "0 0 12px",
             }}
           >
-            Free access during beta. Paid plans launching soon.
+            The index is live. Paid plans activate April 2026.
           </h2>
           <p style={{ fontFamily: "'Inter', sans-serif", color: "#999", fontSize: 13, margin: 0 }}>
-            All features available free while we validate with early users.{" "}
+            Full dashboard access is free through launch.{" "}
             <Link href="/pricing" style={{ color: "#00d4ff", textDecoration: "none" }}>
               View full pricing →
             </Link>
