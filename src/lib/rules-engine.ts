@@ -44,7 +44,10 @@ export interface CorridorEventCandidate {
 // Keyword patterns
 // -------------------------------------------------------
 
-const UAM_KEYWORDS = /evtol|vtol|powered.lift|vertiport|air.taxi|air.mobility|urban.air|advanced.air|aam\b|uas\b|unmanned.aircraft|drone/i;
+const UAM_KEYWORDS = /evtol|vtol|powered.lift|vertiport|air.taxi|air.mobility|urban.air|advanced.air|aam\b|uas\b|unmanned.aircraft|drone.(?:airspace|corridor|delivery|integration|operations)/i;
+
+// Pre-filter: reject ceremonial / proclamation bills before rules evaluation
+const NOISE_TITLE_PATTERNS = /commemorat|commend|honoring|anniversary|memorial|designat\w*\s+(?:a\s+)?(?:day|week|month)/i;
 const SIGNED_STATUS = /signed|enacted|passed|chaptered|approved by governor/i;
 const ZONING_KEYWORDS = /zoning|land.use|vertiport.sit|heliport.permit/i;
 const CORRIDOR_KEYWORDS = /corridor|airway|route.auth|airspace.design|powered.lift.operations/i;
@@ -125,6 +128,12 @@ function evaluateCorridorEvents(record: IngestedRecord): CorridorEventCandidate[
 
 function evaluateRecord(record: IngestedRecord): OverrideCandidate[] {
   const candidates: OverrideCandidate[] = [];
+
+  // Short-circuit: skip ceremonial / proclamation bills
+  if (record.source === "legiscan" && NOISE_TITLE_PATTERNS.test(record.title)) {
+    return candidates;
+  }
+
   const text = `${record.title} ${record.summary}`.toLowerCase();
 
   // Rule 1: State bill signed → hasStateLegislation = true

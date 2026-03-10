@@ -181,7 +181,7 @@ export async function fetchStateBills(state: string): Promise<StateBill[]> {
   }
 
   try {
-    const url = `${LEGISCAN_BASE}/?key=${apiKey}&op=getSearch&state=${state}&query=drone+OR+evtol+OR+%22air+mobility%22+OR+%22urban+air+mobility%22+OR+vertiport`;
+    const url = `${LEGISCAN_BASE}/?key=${apiKey}&op=getSearch&state=${state}&query=evtol+OR+%22powered+lift%22+OR+%22air+taxi%22+OR+%22advanced+air+mobility%22+OR+%22urban+air+mobility%22+OR+%22unmanned+aircraft+system%22+OR+vertiport+OR+%22drone+airspace%22+OR+%22drone+corridor%22+OR+%22drone+delivery%22`;
     const res = await fetch(url);
     const json = await res.json();
     const sr = json.searchresult;
