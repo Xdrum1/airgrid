@@ -5,7 +5,7 @@ import TrackPageView from "@/components/TrackPageView";
 export const metadata: Metadata = {
   title: "About — AirIndex",
   description:
-    "AirIndex is the independent market readiness rating system for Urban Air Mobility. We rate 20+ U.S. cities across seven factors using primary regulatory and financial data.",
+    "AirIndex is the independent market readiness rating system for Urban Air Mobility — the only platform that scores U.S. cities on the ground conditions that determine where commercial eVTOL operations launch.",
 };
 
 export default function AboutPage() {
@@ -42,24 +42,40 @@ export default function AboutPage() {
           className="text-3xl md:text-4xl font-bold leading-tight"
           style={{ fontFamily: "var(--font-syne), sans-serif" }}
         >
-          The independent market readiness rating system for Urban Air Mobility.
+          The eVTOL aircraft are ready. The question is where they&apos;ll fly first.
         </h1>
 
         {/* Body */}
         <div className="space-y-6 text-white/80 leading-relaxed">
           <p>
-            We rate U.S. cities across seven factors — regulatory environment,
-            infrastructure development, airspace integration, operator presence,
-            public acceptance, investment activity, and economic conditions —
-            producing a single, continuously updated readiness score for each market.
+            AirIndex is the independent market readiness rating system for Urban
+            Air Mobility — the only platform that scores U.S. cities on the ground
+            conditions that determine where commercial eVTOL operations actually
+            launch, and when.
           </p>
 
           <p>
-            Our ratings are built on primary data: FAA filings, SEC EDGAR, the
+            We track seven weighted factors across 21 markets: regulatory posture,
+            LAANC corridor coverage, operator presence, active pilot programs,
+            vertiport infrastructure, zoning policy, and state legislation. Every
+            market receives a live 0–100 readiness score — updated continuously as
+            conditions change. Not a forecast. Not a projection. A live index built
+            on what is actually happening.
+          </p>
+
+          <p>
+            Our data comes from primary sources: FAA filings, SEC EDGAR, the
             Federal Register, state legislative records, and operator activity.
             Every score change is sourced, timestamped, and traceable. We do not
-            rate cities based on press releases or projections. We rate them on
-            what is actually happening.
+            rate cities on press releases or announcements. We rate them on
+            verifiable facts.
+          </p>
+
+          <p>
+            Where others track the aircraft and the companies building them,
+            AirIndex tracks the geography — the regulatory, infrastructure, and
+            political conditions that determine which markets win the race to
+            commercial operations.
           </p>
 
           <p>
@@ -69,9 +85,9 @@ export default function AboutPage() {
           </p>
 
           <p>
-            For operators deciding where to launch, investors evaluating market
-            timing, and city planners building for UAM readiness — AirIndex is
-            the benchmark.
+            For operators deciding where to launch. For investors evaluating market
+            timing. For city planners building toward readiness. AirIndex is the
+            benchmark.
           </p>
         </div>
 
