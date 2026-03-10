@@ -380,9 +380,13 @@ model MarketLead {
   factorSnapshot  Json?     // partial scoring assessment: { hasStateLegislation: true, ... }
   addedAsCityId   String?   // set when graduated to live market (links to city id in seed)
   dismissedReason String?   // why it was dismissed
+  signalCount     Int       @default(1)      // number of distinct signals accumulated
+  lastSignalAt    DateTime? // when the most recent signal was detected
+  signalSources   Json?     // array of { source, url, date, summary } for audit trail
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
+  @@unique([city, state, country])
   @@index([status])
   @@index([priority])
 }
