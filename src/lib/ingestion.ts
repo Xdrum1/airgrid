@@ -8,7 +8,7 @@ import { updateCorridorStatus } from "@/lib/corridors";
 import { classifyRecords } from "@/lib/classifier";
 import { applyOverrides } from "@/lib/score-updater";
 import { alertCronFailure } from "@/lib/cron-alerts";
-import { STATE_TO_CITIES } from "@/data/seed";
+import { processMarketLeadSignals, type MarketLeadSignal } from "@/lib/market-leads";
 import type { ChangelogEntry } from "@/types";
 
 async function getPrisma() {
@@ -456,12 +456,17 @@ export async function runIngestion(): Promise<{
       await enrichOperatorNews(changedRecords);
 
       // 11. Classify new/updated records with NLP (falls back to regex rules)
-      const { overrideCandidates: regexOverrides, corridorEvents } = evaluateRulesV2(changedRecords);
+      const { overrideCandidates: regexOverrides, corridorEvents, marketLeadSignals: rulesSignals } = evaluateRulesV2(changedRecords);
+
+      // Collect market lead signals from all layers
+      const allMarketLeadSignals: MarketLeadSignal[] = [...rulesSignals];
 
       let overrideCandidates;
       try {
-        overrideCandidates = await classifyRecords(changedRecords);
-        console.log(`[ingestion] NLP classifier: ${overrideCandidates.length} candidates`);
+        const classifierResult = await classifyRecords(changedRecords);
+        overrideCandidates = classifierResult.overrideCandidates;
+        allMarketLeadSignals.push(...classifierResult.marketLeadSignals);
+        console.log(`[ingestion] NLP classifier: ${overrideCandidates.length} candidates, ${classifierResult.marketLeadSignals.length} lead signals`);
       } catch (err) {
         console.warn("[ingestion] NLP classifier failed, falling back to regex rules:", err);
         overrideCandidates = regexOverrides;
@@ -514,8 +519,15 @@ export async function runIngestion(): Promise<{
         }
       }
 
-      // 13. Auto-create market leads for cities not in our tracked markets
-      await autoCreateMarketLeads(changedRecords, overrideCandidates);
+      // 13. Auto-discover market leads from all signal layers
+      if (allMarketLeadSignals.length > 0) {
+        try {
+          const leadResult = await processMarketLeadSignals(allMarketLeadSignals);
+          console.log(`[ingestion] Market leads: ${leadResult.created} created, ${leadResult.updated} updated from ${allMarketLeadSignals.length} signals`);
+        } catch (err) {
+          console.error("[ingestion] Failed to process market lead signals:", err);
+        }
+      }
     }
 
     // 14. Log the ingestion run to DB
@@ -544,94 +556,3 @@ export async function runIngestion(): Promise<{
   });
 }
 
-// -------------------------------------------------------
-// Auto-create market leads from ingestion data
-// -------------------------------------------------------
-// When the classifier identifies a city/state NOT in our tracked markets,
-// auto-create a MarketLead so we don't miss emerging markets (the Ohio problem).
-
-async function autoCreateMarketLeads(
-  records: IngestedRecord[],
-  overrideCandidates: { cityId: string; field: string; reason: string; sourceUrl?: string; confidence: string }[]
-): Promise<void> {
-  try {
-    const prisma = await getPrisma();
-
-    // Collect state references from records that aren't in our tracked markets
-    const untrackedSignals = new Map<string, { source: string; signal: string; url: string }>();
-
-    // Check override candidates for unresolved cities — these are signals for unknown markets
-    for (const candidate of overrideCandidates) {
-      if (candidate.cityId === "__unresolved__" && candidate.confidence !== "needs_review") {
-        // This means the classifier found something relevant but couldn't map it to a tracked city
-        const key = `unresolved_${candidate.field}_${candidate.reason.slice(0, 50)}`;
-        if (!untrackedSignals.has(key)) {
-          untrackedSignals.set(key, {
-            source: "ingestion-pipeline",
-            signal: candidate.reason,
-            url: candidate.sourceUrl ?? "",
-          });
-        }
-      }
-    }
-
-    // Check LegiScan records from states that have NO tracked cities
-    for (const record of records) {
-      if (record.source === "legiscan" && record.state) {
-        const stateUpper = record.state.toUpperCase();
-        const trackedCities = STATE_TO_CITIES[stateUpper];
-        if (!trackedCities || trackedCities.length === 0) {
-          // This state has UAM legislation but we don't track any cities there
-          const key = `${stateUpper}_${record.sourceId}`;
-          if (!untrackedSignals.has(key)) {
-            untrackedSignals.set(key, {
-              source: `legiscan-${stateUpper}`,
-              signal: record.title,
-              url: record.url,
-            });
-          }
-        }
-      }
-    }
-
-    if (untrackedSignals.size === 0) return;
-
-    // Check for existing leads to avoid duplicates (by signal text similarity)
-    const existingLeads = await prisma.marketLead.findMany({
-      where: { status: { in: ["new", "researching"] } },
-      select: { signal: true, source: true },
-    });
-    const existingSignalSet = new Set(existingLeads.map((l) => l.signal.slice(0, 80)));
-
-    let created = 0;
-    for (const [, { source, signal, url }] of untrackedSignals) {
-      // Skip if we already have a lead with a similar signal
-      if (existingSignalSet.has(signal.slice(0, 80))) continue;
-
-      // Extract state from source if possible
-      const stateMatch = source.match(/legiscan-([A-Z]{2})/);
-      const state = stateMatch ? stateMatch[1] : "??";
-
-      await prisma.marketLead.create({
-        data: {
-          city: "Unknown",
-          state,
-          source: "auto-ingestion",
-          signal: signal.slice(0, 500),
-          status: "new",
-          priority: "normal",
-          researchNotes: `Auto-created from ingestion pipeline.\nSource: ${source}\nURL: ${url}`,
-        },
-      });
-      created++;
-      existingSignalSet.add(signal.slice(0, 80));
-    }
-
-    if (created > 0) {
-      console.log(`[ingestion] Auto-created ${created} market lead(s) from untracked signals`);
-    }
-  } catch (err) {
-    // Non-fatal — don't let lead creation failures break ingestion
-    console.error("[ingestion] Failed to auto-create market leads:", err);
-  }
-}

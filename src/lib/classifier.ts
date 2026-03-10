@@ -9,6 +9,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { IngestedRecord } from "@/lib/ingestion";
 import type { OverrideCandidate } from "@/lib/rules-engine";
+import type { MarketLeadSignal } from "@/lib/market-leads";
 import { CITIES, OPERATORS, STATE_TO_CITIES } from "@/data/seed";
 
 // Dynamic import to prevent client bundle contamination
@@ -88,6 +89,13 @@ Return a JSON array. For each record, output one object:
     }
   ],
   "affectedCityIds": ["string — city IDs from the table above"],
+  "untrackedCities": [
+    {
+      "city": "string — city name mentioned in the document that is NOT in the tracked markets table",
+      "state": "string — 2-letter state abbreviation",
+      "reason": "string — why this city appears relevant to UAM readiness"
+    }
+  ],
   "confidence": "high | medium | needs_review",
   "summary": "string — one-sentence summary of the classification"
 }
@@ -105,7 +113,7 @@ Return a JSON array. For each record, output one object:
 2. For state-level legislation, map to ALL cities in that state using the table above
 3. For federal filings, try to identify specific affected markets from the content; if you can't, use an empty \`affectedCityIds\` array
 4. For SEC/operator filings, try to identify which markets the operator is active in from the content
-5. Only output valid city IDs from the table above
+5. For \`affectedCityIds\`, only output valid city IDs from the table above. If the document mentions UAM activity in a city NOT in the table, add it to \`untrackedCities\` instead (with city name, state, and reason). Set \`untrackedCities\` to an empty array if no untracked cities are mentioned.
 6. Return ONLY the JSON array — no markdown, no explanation, no wrapping`;
 
 // -------------------------------------------------------
@@ -121,6 +129,11 @@ interface ClassificationItem {
     reason: string;
   }[];
   affectedCityIds: string[];
+  untrackedCities?: {
+    city: string;
+    state: string;
+    reason: string;
+  }[];
   confidence: "high" | "medium" | "needs_review";
   summary: string;
 }
@@ -207,12 +220,8 @@ async function classifyBatch(
 // Map classifications to OverrideCandidates
 // -------------------------------------------------------
 
-const VALID_CITY_IDS = new Set([
-  "los_angeles", "new_york", "dallas", "miami", "orlando",
-  "las_vegas", "phoenix", "houston", "austin", "san_diego",
-  "san_francisco", "chicago", "atlanta", "nashville", "charlotte",
-  "denver", "seattle", "boston", "minneapolis", "washington_dc",
-]);
+// Derived from seed data — stays in sync automatically when markets are added
+const VALID_CITY_IDS = new Set(CITIES.map((c) => c.id));
 
 const VALID_FIELDS = new Set([
   "hasActivePilotProgram", "hasVertiportZoning", "approvedVertiport",
@@ -305,10 +314,50 @@ async function persistClassifications(
 // Public API
 // -------------------------------------------------------
 
+// -------------------------------------------------------
+// Extract market lead signals from classifier output
+// -------------------------------------------------------
+
+function extractMarketLeadSignals(
+  classifications: ClassificationItem[],
+  recordsById: Map<string, IngestedRecord>
+): MarketLeadSignal[] {
+  const signals: MarketLeadSignal[] = [];
+
+  for (const item of classifications) {
+    if (item.eventType === "not_relevant") continue;
+    if (!item.untrackedCities || item.untrackedCities.length === 0) continue;
+
+    const record = recordsById.get(item.recordId);
+    if (!record) continue;
+
+    for (const uc of item.untrackedCities) {
+      if (!uc.city || !uc.state) continue;
+
+      signals.push({
+        city: uc.city,
+        state: uc.state.toUpperCase(),
+        source: "classifier",
+        sourceRecordId: record.id,
+        sourceUrl: record.url,
+        signalText: `${item.summary} — ${uc.reason}`,
+        signalType: "classifier_detection",
+        confidence: item.confidence === "high" ? "high" : item.confidence === "medium" ? "medium" : "low",
+      });
+    }
+  }
+
+  return signals;
+}
+
+// -------------------------------------------------------
+// Public API
+// -------------------------------------------------------
+
 export async function classifyRecords(
   records: IngestedRecord[]
-): Promise<OverrideCandidate[]> {
-  if (records.length === 0) return [];
+): Promise<{ overrideCandidates: OverrideCandidate[]; marketLeadSignals: MarketLeadSignal[] }> {
+  if (records.length === 0) return { overrideCandidates: [], marketLeadSignals: [] };
 
   const recordsById = new Map(records.map((r) => [r.id, r]));
   const allClassifications: ClassificationItem[] = [];
@@ -330,11 +379,14 @@ export async function classifyRecords(
   await persistClassifications(allClassifications, allRawResponses);
 
   // Map to OverrideCandidates
-  const candidates = mapToOverrideCandidates(allClassifications, recordsById);
+  const overrideCandidates = mapToOverrideCandidates(allClassifications, recordsById);
+
+  // Extract market lead signals from untracked cities
+  const marketLeadSignals = extractMarketLeadSignals(allClassifications, recordsById);
 
   console.log(
-    `[classifier] Classified ${records.length} records → ${allClassifications.length} classifications → ${candidates.length} override candidates`
+    `[classifier] Classified ${records.length} records → ${allClassifications.length} classifications → ${overrideCandidates.length} override candidates, ${marketLeadSignals.length} market lead signals`
   );
 
-  return candidates;
+  return { overrideCandidates, marketLeadSignals };
 }

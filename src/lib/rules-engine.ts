@@ -13,7 +13,9 @@
  */
 
 import type { IngestedRecord } from "@/lib/ingestion";
+import type { MarketLeadSignal } from "@/lib/market-leads";
 import { OPERATORS, CORRIDORS, STATE_TO_CITIES } from "@/data/seed";
+import { extractCityMentions, isUntrackedState } from "@/lib/us-cities-dictionary";
 
 // -------------------------------------------------------
 // Types
@@ -254,6 +256,109 @@ function evaluateRecord(record: IngestedRecord): OverrideCandidate[] {
 }
 
 // -------------------------------------------------------
+// Auto-discovery: detect signals for untracked markets
+// -------------------------------------------------------
+
+function detectMarketLeadSignals(record: IngestedRecord): MarketLeadSignal[] {
+  const signals: MarketLeadSignal[] = [];
+  const text = `${record.title} ${record.summary}`;
+
+  // Skip ceremonial bills
+  if (record.source === "legiscan" && NOISE_TITLE_PATTERNS.test(record.title)) {
+    return signals;
+  }
+
+  // Layer 2a: LegiScan bills from untracked states with UAM relevance
+  if (record.source === "legiscan" && record.state) {
+    const stateUpper = record.state.toUpperCase();
+    if (isUntrackedState(stateUpper) && UAM_KEYWORDS.test(text)) {
+      // Try to extract specific city from bill text
+      const cityMentions = extractCityMentions(text);
+      const stateCities = cityMentions.filter(
+        (m) => m.state === stateUpper
+      );
+
+      if (stateCities.length > 0) {
+        for (const mention of stateCities) {
+          signals.push({
+            city: mention.city,
+            state: mention.state,
+            source: `legiscan-${stateUpper}`,
+            sourceRecordId: record.id,
+            sourceUrl: record.url,
+            signalText: record.title,
+            signalType: SIGNED_STATUS.test(record.status)
+              ? "state_legislation"
+              : "news_mention",
+            confidence: SIGNED_STATUS.test(record.status) ? "high" : "medium",
+          });
+        }
+      } else {
+        // Can't resolve city — create a state-level lead
+        signals.push({
+          city: "Unknown",
+          state: stateUpper,
+          source: `legiscan-${stateUpper}`,
+          sourceRecordId: record.id,
+          sourceUrl: record.url,
+          signalText: record.title,
+          signalType: SIGNED_STATUS.test(record.status)
+            ? "state_legislation"
+            : "news_mention",
+          confidence: SIGNED_STATUS.test(record.status) ? "medium" : "low",
+        });
+      }
+    }
+  }
+
+  // Layer 2b: Federal Register filings mentioning untracked cities
+  if (record.source === "federal_register" && UAM_KEYWORDS.test(text)) {
+    const cityMentions = extractCityMentions(text);
+    for (const mention of cityMentions) {
+      if (isUntrackedState(mention.state)) {
+        signals.push({
+          city: mention.city,
+          state: mention.state,
+          source: "federal-register",
+          sourceRecordId: record.id,
+          sourceUrl: record.url,
+          signalText: record.title,
+          signalType: "federal_filing",
+          confidence: "medium",
+        });
+      }
+    }
+  }
+
+  // Layer 3: Operator news/SEC filings mentioning untracked cities
+  if (
+    (record.source === "operator_news" || record.source === "sec_edgar") &&
+    UAM_KEYWORDS.test(text)
+  ) {
+    const cityMentions = extractCityMentions(text);
+    for (const mention of cityMentions) {
+      signals.push({
+        city: mention.city,
+        state: mention.state,
+        source: `${record.source}`,
+        sourceRecordId: record.id,
+        sourceUrl: record.url,
+        signalText: record.title,
+        signalType:
+          EXPANSION_KEYWORDS.test(text)
+            ? "operator_expansion"
+            : INFRA_KEYWORDS.test(text)
+              ? "infrastructure"
+              : "news_mention",
+        confidence: "medium",
+      });
+    }
+  }
+
+  return signals;
+}
+
+// -------------------------------------------------------
 // Public API
 // -------------------------------------------------------
 
@@ -269,15 +374,18 @@ export function evaluateRules(records: IngestedRecord[]): OverrideCandidate[] {
 export function evaluateRulesV2(records: IngestedRecord[]): {
   overrideCandidates: OverrideCandidate[];
   corridorEvents: CorridorEventCandidate[];
+  marketLeadSignals: MarketLeadSignal[];
 } {
   const overrideCandidates: OverrideCandidate[] = [];
   const corridorEvents: CorridorEventCandidate[] = [];
+  const marketLeadSignals: MarketLeadSignal[] = [];
   for (const record of records) {
     overrideCandidates.push(...evaluateRecord(record));
     corridorEvents.push(...evaluateCorridorEvents(record));
+    marketLeadSignals.push(...detectMarketLeadSignals(record));
   }
   console.log(
-    `[rules-engine] Evaluated ${records.length} records → ${overrideCandidates.length} override candidates, ${corridorEvents.length} corridor events`
+    `[rules-engine] Evaluated ${records.length} records → ${overrideCandidates.length} override candidates, ${corridorEvents.length} corridor events, ${marketLeadSignals.length} market lead signals`
   );
-  return { overrideCandidates, corridorEvents };
+  return { overrideCandidates, corridorEvents, marketLeadSignals };
 }

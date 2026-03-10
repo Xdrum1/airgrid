@@ -3,6 +3,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { formatRelativeTime } from "@/lib/dashboard-constants";
 
+interface SignalSourceEntry {
+  source: string;
+  url: string;
+  date: string;
+  summary: string;
+  signalType?: string;
+  confidence?: string;
+}
+
 interface MarketLead {
   id: string;
   city: string;
@@ -16,6 +25,9 @@ interface MarketLead {
   factorSnapshot: Record<string, boolean> | null;
   addedAsCityId: string | null;
   dismissedReason: string | null;
+  signalCount: number;
+  lastSignalAt: string | null;
+  signalSources: SignalSourceEntry[] | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -261,9 +273,11 @@ function LeadCard({
   const [factors, setFactors] = useState<Record<string, boolean>>(lead.factorSnapshot ?? {});
   const [saving, setSaving] = useState(false);
   const [dismissReason, setDismissReason] = useState("");
+  const [showSignals, setShowSignals] = useState(false);
 
   const statusColor = STATUS_COLORS[lead.status] ?? "#555";
   const priorityColor = PRIORITY_COLORS[lead.priority] ?? "#888";
+  const isAutoDiscovered = lead.source === "auto-discovery" || lead.source === "auto-ingestion";
 
   const patchLead = async (data: Record<string, unknown>) => {
     setSaving(true);
@@ -321,11 +335,38 @@ function LeadCard({
               {lead.priority.toUpperCase()}
             </span>
           )}
+          {isAutoDiscovered && (
+            <span style={{
+              background: "rgba(0,212,255,0.1)",
+              color: "#00d4ff",
+              fontSize: 8,
+              fontWeight: 700,
+              letterSpacing: 1,
+              padding: "2px 6px",
+              borderRadius: 3,
+              border: "1px solid rgba(0,212,255,0.25)",
+            }}>
+              AUTO
+            </span>
+          )}
           <span style={{ color: "#fff", fontSize: 14, fontWeight: 700 }}>
             {lead.city}, {lead.state}
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {lead.signalCount > 1 && (
+            <span style={{
+              background: "rgba(245,158,11,0.1)",
+              color: "#f59e0b",
+              fontSize: 9,
+              fontWeight: 700,
+              padding: "2px 6px",
+              borderRadius: 3,
+              border: "1px solid rgba(245,158,11,0.25)",
+            }}>
+              {lead.signalCount} signals
+            </span>
+          )}
           {trueFactorCount > 0 && (
             <span style={{ color: "#444", fontSize: 9 }}>
               {trueFactorCount}/7 factors
@@ -394,6 +435,77 @@ function LeadCard({
 
       {expanded && (
         <div style={{ marginTop: 8 }}>
+          {/* Signal timeline */}
+          {lead.signalSources && lead.signalSources.length > 0 && (
+            <div style={{ marginBottom: 16 }}>
+              <button
+                onClick={() => setShowSignals(!showSignals)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#555",
+                  fontSize: 8,
+                  letterSpacing: 2,
+                  cursor: "pointer",
+                  fontFamily: "'Space Mono', monospace",
+                  padding: 0,
+                  marginBottom: showSignals ? 8 : 0,
+                }}
+              >
+                {showSignals ? "▼" : "▶"} SIGNAL TIMELINE ({lead.signalSources.length})
+              </button>
+              {showSignals && (
+                <div style={{
+                  background: "rgba(0,0,0,0.2)",
+                  borderRadius: 6,
+                  padding: 12,
+                  maxHeight: 200,
+                  overflowY: "auto",
+                }}>
+                  {lead.signalSources.map((s, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        borderBottom: i < lead.signalSources!.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+                        padding: "8px 0",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                        <span style={{ color: "#555", fontSize: 8, letterSpacing: 1 }}>
+                          {s.source.toUpperCase()}
+                        </span>
+                        {s.confidence && (
+                          <span style={{
+                            color: s.confidence === "high" ? "#00ff88" : s.confidence === "medium" ? "#f59e0b" : "#555",
+                            fontSize: 8,
+                          }}>
+                            {s.confidence}
+                          </span>
+                        )}
+                        <span style={{ color: "#333", fontSize: 8 }}>
+                          {new Date(s.date).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div style={{ color: "#888", fontSize: 10, lineHeight: 1.4 }}>
+                        {s.summary}
+                      </div>
+                      {s.url && (
+                        <a
+                          href={s.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: "#00d4ff", fontSize: 9, textDecoration: "none" }}
+                        >
+                          Source →
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Factor checklist */}
           <div style={{ marginBottom: 16 }}>
             <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
