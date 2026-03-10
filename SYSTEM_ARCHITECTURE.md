@@ -42,7 +42,7 @@ AirIndex is a UAM (Urban Air Mobility) market intelligence platform that scores 
 5. Snapshot scores daily for historical tracking
 6. Surface everything through a dashboard, admin panel, and API
 
-**Current scale:** 21 US markets, 5 operators, 9 vertiports, 9 corridors
+**Current scale:** 20+ US markets (see `MARKET_COUNT`), 5 operators, 9 vertiports, 9 corridors
 
 ---
 
@@ -115,7 +115,7 @@ src/data/seed.ts
 ```
 
 All cities, operators, vertiports, and corridors are defined as static arrays. Key exports:
-- `CITIES` -- 21 markets with scores pre-calculated via `calculateReadinessScore()`
+- `CITIES` -- all tracked markets with scores pre-calculated via `calculateReadinessScore()`
 - `OPERATORS` -- 5 eVTOL companies
 - `VERTIPORTS` -- 9 infrastructure sites
 - `CORRIDORS` -- 9 flight corridors (seed fallback for DB)
@@ -173,7 +173,7 @@ All crons are triggered by **GitHub Actions** calling authenticated API endpoint
 
 | Time (UTC) | Day | Pipeline | Endpoint | What It Does |
 |------------|-----|----------|----------|-------------|
-| 06:00 | Daily | **Snapshot** | `GET /api/snapshot` | Captures current score for all 21 markets |
+| 06:00 | Daily | **Snapshot** | `GET /api/snapshot` | Captures current score for all tracked markets |
 | 06:00 | Daily | **Ingestion** | `POST /api/ingest` | Fetches 4 data sources, classifies, generates overrides |
 | 07:00 | Monday | **Digest** | `GET /api/digest` | Sends weekly email summaries to subscribers |
 | 08:00 | Monday | **Auto-Review** | `GET /api/admin/overrides/auto-review` | AI reviews pending overrides, auto-promotes high-confidence |
@@ -200,7 +200,7 @@ src/app/api/snapshot/route.ts
 
 1. Authorize cron request
 2. Rate limit: 2 calls/hour
-3. `getCitiesWithOverrides()` -- get all 21 markets with applied overrides
+3. `getCitiesWithOverrides()` -- get all tracked markets with applied overrides
 4. For each city: create `ScoreSnapshot` record (score, breakdown JSON, tier, timestamp)
 5. On failure: `alertCronFailure("snapshot", err)` sends admin email
 
@@ -903,7 +903,7 @@ Any unhandled exception in a cron job triggers `alertCronFailure(cronName, error
 
 | Process | Schedule | Notes |
 |---------|----------|-------|
-| Score snapshots | Daily 06:00 UTC | Captures all 21 markets |
+| Score snapshots | Daily 06:00 UTC | Captures all tracked markets |
 | Data ingestion | Daily 06:00 UTC | 4 sources, classify, generate overrides |
 | High-confidence override application | During ingestion | Rules engine signed-legislation detection |
 | Subscriber digest emails | Weekly Mon 07:00 UTC | Filtered by subscription preferences |

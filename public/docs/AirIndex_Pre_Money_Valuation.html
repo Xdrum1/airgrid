@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AirIndex — Pre-Money Valuation Analysis</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #050508;
+    color: #ccc;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    line-height: 1.7;
+    padding: 60px 80px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  @media print {
+    body { background: #050508; padding: 40px 50px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page-break { page-break-before: always; }
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 38px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #00d4ff;
+    margin: 48px 0 20px;
+  }
+
+  h2 .num { color: #555; margin-right: 6px; }
+
+  h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    margin: 28px 0 12px;
+  }
+
+  p.note {
+    color: #888;
+    margin-bottom: 16px;
+    font-size: 11px;
+    line-height: 1.7;
+  }
+
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, #00d4ff, #7c3aed, transparent);
+    margin: 32px 0;
+    border: none;
+  }
+
+  .header-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+  .header-cell {
+    background: #0a0a12;
+    padding: 16px 24px;
+  }
+  .header-cell .label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .header-cell .value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .cyan { color: #00d4ff; }
+  .green { color: #00ff88; }
+  .purple { color: #7c3aed; }
+  .orange { color: #f59e0b; }
+  .red { color: #ff6b6b; }
+  .white { color: #fff; }
+  .dim { color: #666; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 11px;
+  }
+  thead th {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #666;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: #bbb;
+  }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  td.num { font-family: 'Space Mono', monospace; font-size: 11px; }
+  td strong, th strong { color: #fff; }
+
+  .callout {
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    background: rgba(255,255,255,0.02);
+    position: relative;
+  }
+  .callout::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 24px; right: 24px;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+  }
+  .callout.cyan-border::before { background: #00d4ff; }
+  .callout.green-border::before { background: #00ff88; }
+  .callout.purple-border::before { background: #7c3aed; }
+  .callout.orange-border::before { background: #f59e0b; }
+
+  .callout .callout-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .callout .callout-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+    line-height: 1.4;
+  }
+
+  .callout-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+
+  .callout-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  tr.highlight td { color: #fff; font-weight: 600; }
+  tr.highlight-green td { background: rgba(0,255,136,0.04); color: #00ff88; font-weight: 600; }
+  tr.highlight-cyan td { background: rgba(0,212,255,0.04); color: #00d4ff; font-weight: 600; }
+  tr.highlight-purple td { background: rgba(124,58,237,0.04); color: #7c3aed; font-weight: 600; }
+  tr.highlight-orange td { background: rgba(245,158,11,0.04); color: #f59e0b; font-weight: 600; }
+
+  .bar-container { background: rgba(255,255,255,0.06); border-radius: 4px; height: 8px; width: 100%; }
+  .bar-fill { height: 8px; border-radius: 4px; }
+
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: #444;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<h1>AIRINDEX</h1>
+<div class="subtitle">Pre-Money Valuation Analysis &middot; March 2026 &middot; Vertical Data Group, LLC</div>
+
+<div class="header-grid">
+  <div class="header-cell">
+    <div class="label">Company Stage</div>
+    <div class="value cyan">Pre-Revenue &middot; Product Complete</div>
+  </div>
+  <div class="header-cell">
+    <div class="label">Paywall Activation</div>
+    <div class="value green">Mid-April 2026</div>
+  </div>
+  <div class="header-cell">
+    <div class="label">Category</div>
+    <div class="value white">UAM Market Readiness Intelligence</div>
+  </div>
+  <div class="header-cell">
+    <div class="label">Competitive Position</div>
+    <div class="value orange">Only Product in Category</div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- Section 1 -->
+<h2><span class="num">1 &middot;</span> VALUATION INPUTS</h2>
+
+<p class="note">Key facts driving the valuation. AirIndex is a pre-revenue, product-complete B2B vertical SaaS platform operating in the only unoccupied category in a $29B market.</p>
+
+<table>
+  <thead><tr><th>Factor</th><th>Status</th><th>Valuation Impact</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Product</strong></td><td>V1 complete. Dashboard, API, billing, ingestion, admin &mdash; all shipped.</td><td class="green">Strong positive</td></tr>
+    <tr><td><strong>Revenue</strong></td><td>Pre-revenue. Paywall activates mid-April 2026.</td><td class="orange">Neutral / risk</td></tr>
+    <tr><td><strong>Market</strong></td><td>UAM/AAM: $11.6B (2025) &rarr; $29.7B by 2030 (20.7% CAGR)</td><td class="green">Strong positive</td></tr>
+    <tr><td><strong>Competition</strong></td><td>No direct competitor. Empty category (city-level UAM readiness scoring).</td><td class="green">Strong positive</td></tr>
+    <tr><td><strong>IP / Data Moat</strong></td><td>Proprietary 7-factor methodology, 21 scored markets, 4 data pipelines, AI classifier</td><td class="green">Strong positive</td></tr>
+    <tr><td><strong>Strategic Relationships</strong></td><td>VFS (Rex Alexander, Mike Hirschberg), industry validation pending</td><td class="cyan">Moderate positive</td></tr>
+    <tr><td><strong>Team</strong></td><td>Solo founder. Strong technical execution (30K LOC in 11 days).</td><td class="orange">Mixed &mdash; execution proven, scale risk</td></tr>
+    <tr><td><strong>Development Asset</strong></td><td>$332K&ndash;$881K replacement cost (see Cost Estimate doc)</td><td class="green">Strong positive</td></tr>
+    <tr><td><strong>Expansion Vectors</strong></td><td>6 identified: International, Cargo Drone, Infrastructure, Govt, Defense, Corridor</td><td class="cyan">Moderate positive</td></tr>
+    <tr><td><strong>Pricing Power</strong></td><td>Pro $149/mo, Institutional $499/mo. No price-sensitive buyers in niche.</td><td class="green">Strong positive</td></tr>
+  </tbody>
+</table>
+
+<hr class="divider" />
+
+<!-- Section 2 -->
+<h2><span class="num">2 &middot;</span> METHOD 1: COST-TO-RECREATE</h2>
+
+<p class="note">Floor valuation. What would it cost to rebuild AirIndex from scratch? This sets the absolute minimum &mdash; no rational buyer or investor would value the company below its replacement cost.</p>
+
+<table>
+  <thead><tr><th>Scenario</th><th>Replacement Cost</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>Engineering only (avg rate)</td><td class="num">$332,640</td><td>2,464 hours &times; $135/hr</td></tr>
+    <tr><td>Full team (Lean Startup)</td><td class="num">$482,328</td><td>1.45&times; multiplier on engineering</td></tr>
+    <tr><td>Full team (Growth Company)</td><td class="num">$731,808</td><td>2.2&times; multiplier on engineering</td></tr>
+  </tbody>
+</table>
+
+<p class="note">Add a <strong>knowledge premium</strong>: 11 days of iterating on map UX, auth flows, pipeline architecture, scoring methodology &mdash; that institutional knowledge doesn't transfer with the code. Industry standard is 1.5&ndash;2.0&times; the raw replacement cost.</p>
+
+<div class="callout cyan-border">
+  <div class="callout-label cyan">Cost-to-Recreate Valuation (with knowledge premium)</div>
+  <div class="callout-value">$500,000 &ndash; $1,500,000</div>
+</div>
+
+<hr class="divider" />
+
+<!-- Section 3 -->
+<h2><span class="num">3 &middot;</span> METHOD 2: BERKUS METHOD</h2>
+
+<p class="note">The Berkus Method values pre-revenue startups across 5 risk dimensions, assigning $0&ndash;$500K per factor. Maximum theoretical valuation: $2.5M. Updated for 2025&ndash;2026 benchmarks where some practitioners use $0&ndash;$750K per factor.</p>
+
+<table>
+  <thead><tr><th>Risk Factor</th><th>Assessment</th><th>Value Assigned</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong class="cyan">Sound Idea</strong><br/><span class="dim">Basic value / market need</span></td>
+      <td>Empty category in $29B market. "Which cities are ready for UAM?" is the unasked question every operator, investor, and city planner needs answered. Strong thesis validated by VFS interest.</td>
+      <td class="num green"><strong>$500,000</strong></td>
+    </tr>
+    <tr>
+      <td><strong class="cyan">Prototype / Technology</strong><br/><span class="dim">Reducing technology risk</span></td>
+      <td>Not a prototype &mdash; V1 is production-complete. 30K lines, 147 files, AI classification pipeline, REST API, Stripe billing, interactive map. Deployed on AWS.</td>
+      <td class="num green"><strong>$500,000</strong></td>
+    </tr>
+    <tr>
+      <td><strong class="cyan">Quality Management</strong><br/><span class="dim">Reducing execution risk</span></td>
+      <td>Solo founder. Proven execution velocity (207 commits in 11 days). Domain expertise building. No co-founder, no team yet. Execution proven, but scale risk is real.</td>
+      <td class="num orange"><strong>$300,000</strong></td>
+    </tr>
+    <tr>
+      <td><strong class="cyan">Strategic Relationships</strong><br/><span class="dim">Reducing market risk</span></td>
+      <td>VFS Infrastructure Advisor (Rex Alexander) reviewing methodology. Mike Hirschberg (VFS ED) engaged. Ken Swartz covering. ODOT as government target. No signed contracts yet.</td>
+      <td class="num cyan"><strong>$400,000</strong></td>
+    </tr>
+    <tr>
+      <td><strong class="cyan">Product Rollout / Sales</strong><br/><span class="dim">Reducing production risk</span></td>
+      <td>Pre-revenue. Paywall not yet active (mid-April). No paying customers. Contact inquiries and access requests flowing but zero revenue to date.</td>
+      <td class="num orange"><strong>$200,000</strong></td>
+    </tr>
+    <tr class="highlight-green">
+      <td><strong>BERKUS VALUATION</strong></td>
+      <td></td>
+      <td class="num"><strong>$1,900,000</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr class="divider" />
+
+<!-- Section 4 -->
+<h2><span class="num">4 &middot;</span> METHOD 3: SCORECARD METHOD</h2>
+
+<p class="note">Compares AirIndex to the median seed-stage SaaS startup and adjusts based on weighted factors. Median pre-money seed valuation for traditional B2B SaaS: <strong>$10M</strong> (Flowjam 2025 data). Sub-$1M ARR companies typically land at $8&ndash;12M.</p>
+
+<table>
+  <thead><tr><th>Factor</th><th>Weight</th><th>vs. Median</th><th>Weighted Score</th><th>Rationale</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Team</strong></td>
+      <td class="num">30%</td>
+      <td class="num orange">80%</td>
+      <td class="num">24.0%</td>
+      <td>Solo founder &mdash; exceptional execution speed but no team. -20% for scale risk.</td>
+    </tr>
+    <tr>
+      <td><strong>Market Size</strong></td>
+      <td class="num">25%</td>
+      <td class="num green">130%</td>
+      <td class="num">32.5%</td>
+      <td>$29B AAM market by 2030. Niche now but expanding rapidly. +30% for growth trajectory.</td>
+    </tr>
+    <tr>
+      <td><strong>Product / Technology</strong></td>
+      <td class="num">15%</td>
+      <td class="num green">140%</td>
+      <td class="num">21.0%</td>
+      <td>Production-complete V1 (most seed startups have MVP at best). AI pipeline, 4 data sources, API. +40%.</td>
+    </tr>
+    <tr>
+      <td><strong>Competitive Environment</strong></td>
+      <td class="num">10%</td>
+      <td class="num green">150%</td>
+      <td class="num">15.0%</td>
+      <td>No direct competitor. Literally the only product in the category. +50%.</td>
+    </tr>
+    <tr>
+      <td><strong>Marketing / Sales</strong></td>
+      <td class="num">10%</td>
+      <td class="num red">60%</td>
+      <td class="num">6.0%</td>
+      <td>Pre-revenue. No proven distribution. VFS relationship is a channel but unproven. -40%.</td>
+    </tr>
+    <tr>
+      <td><strong>Need for Additional Investment</strong></td>
+      <td class="num">5%</td>
+      <td class="num cyan">110%</td>
+      <td class="num">5.5%</td>
+      <td>Extremely lean &mdash; built for ~$200 in Claude subscription. Low burn. +10%.</td>
+    </tr>
+    <tr>
+      <td><strong>Other (IP, Data Moat, Timing)</strong></td>
+      <td class="num">5%</td>
+      <td class="num green">130%</td>
+      <td class="num">6.5%</td>
+      <td>Proprietary methodology, public credibility play, eIPP selection in 2026. +30%.</td>
+    </tr>
+    <tr class="highlight">
+      <td><strong>TOTAL</strong></td>
+      <td class="num"><strong>100%</strong></td>
+      <td></td>
+      <td class="num"><strong>110.5%</strong></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout cyan-border">
+  <div class="callout-label cyan">Scorecard Valuation</div>
+  <div class="callout-value">$10M median &times; 110.5% = <span class="green">$11,050,000</span></div>
+  <p style="color:#888; margin-top:8px; font-size:10px;">Note: This reflects the seed-stage venture valuation for companies raising institutional capital. Discounted below for solo-founder, pre-revenue context.</p>
+</div>
+
+<hr class="divider" />
+
+<div class="page-break"></div>
+
+<!-- Section 5 -->
+<h2><span class="num">5 &middot;</span> METHOD 4: PROJECTED REVENUE MULTIPLE</h2>
+
+<p class="note">Projects first-year ARR based on pricing and realistic conversion assumptions, then applies early-stage SaaS revenue multiples.</p>
+
+<h3>Revenue Projections (Year 1: Apr 2026 &ndash; Mar 2027)</h3>
+
+<table>
+  <thead><tr><th>Scenario</th><th>Pro Subs</th><th>Institutional</th><th>Monthly Rev</th><th>Year 1 ARR</th></tr></thead>
+  <tbody>
+    <tr>
+      <td class="orange"><strong>Conservative</strong></td>
+      <td class="num">15 Pro</td>
+      <td class="num">1 Institutional</td>
+      <td class="num">$2,734</td>
+      <td class="num">$32,808</td>
+    </tr>
+    <tr>
+      <td class="cyan"><strong>Base Case</strong></td>
+      <td class="num">25 Pro</td>
+      <td class="num">3 Institutional</td>
+      <td class="num">$5,222</td>
+      <td class="num">$62,664</td>
+    </tr>
+    <tr>
+      <td class="green"><strong>Optimistic</strong></td>
+      <td class="num">40 Pro</td>
+      <td class="num">5 Institutional</td>
+      <td class="num">$8,455</td>
+      <td class="num">$101,460</td>
+    </tr>
+    <tr>
+      <td class="purple"><strong>Upside (+ Govt/Enterprise)</strong></td>
+      <td class="num">50 Pro</td>
+      <td class="num">8 Inst + 1 Enterprise</td>
+      <td class="num">$14,392</td>
+      <td class="num">$172,704</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>ARR Multiples (Early-Stage B2B SaaS, 2026)</h3>
+<p class="note">Sub-$1M ARR B2B SaaS typically trades at 8&ndash;15&times; ARR for seed-stage. Vertical SaaS with category ownership and AI components trades at a premium. Data intelligence platforms with proprietary datasets can command 15&ndash;25&times;.</p>
+
+<table>
+  <thead><tr><th>Revenue Scenario</th><th>ARR</th><th>8&times; Multiple</th><th>15&times; Multiple</th><th>20&times; Multiple</th></tr></thead>
+  <tbody>
+    <tr><td class="orange">Conservative</td><td class="num">$33K</td><td class="num">$264K</td><td class="num">$495K</td><td class="num">$660K</td></tr>
+    <tr class="highlight-cyan"><td><strong>Base Case</strong></td><td class="num"><strong>$63K</strong></td><td class="num"><strong>$504K</strong></td><td class="num"><strong>$945K</strong></td><td class="num"><strong>$1.26M</strong></td></tr>
+    <tr><td class="green">Optimistic</td><td class="num">$101K</td><td class="num">$808K</td><td class="num">$1.52M</td><td class="num">$2.02M</td></tr>
+    <tr><td class="purple">Upside</td><td class="num">$173K</td><td class="num">$1.38M</td><td class="num">$2.60M</td><td class="num">$3.46M</td></tr>
+  </tbody>
+</table>
+
+<h3>Year 2 Forward Look (Apr 2027 &ndash; Mar 2028)</h3>
+<p class="note">With corridor platform (Phase 2), government packaging, and 12 months of compounding data moat:</p>
+
+<table>
+  <thead><tr><th>Scenario</th><th>Year 2 ARR</th><th>12&times; Multiple</th><th>20&times; Multiple</th></tr></thead>
+  <tbody>
+    <tr><td class="orange">Conservative</td><td class="num">$150K</td><td class="num">$1.8M</td><td class="num">$3.0M</td></tr>
+    <tr class="highlight-cyan"><td><strong>Base Case</strong></td><td class="num"><strong>$350K</strong></td><td class="num"><strong>$4.2M</strong></td><td class="num"><strong>$7.0M</strong></td></tr>
+    <tr><td class="green">Optimistic</td><td class="num">$600K</td><td class="num">$7.2M</td><td class="num">$12.0M</td></tr>
+  </tbody>
+</table>
+
+<hr class="divider" />
+
+<!-- Section 6 -->
+<h2><span class="num">6 &middot;</span> METHOD 5: MARKET OPPORTUNITY (TAM-BASED)</h2>
+
+<p class="note">Values the company based on its addressable market capture potential. Sources from the TAM Expansion Strategy doc.</p>
+
+<table>
+  <thead><tr><th>Market Layer</th><th>Size</th><th>1% Capture (3yr)</th><th>5% Capture (3yr)</th></tr></thead>
+  <tbody>
+    <tr><td><strong>US UAM Intelligence</strong> (current)</td><td class="num">$180M TAM / $40M SAM</td><td class="num">$400K</td><td class="num">$2.0M</td></tr>
+    <tr><td><strong>+ Adjacent Aviation</strong> (cargo drone)</td><td class="num">$120M TAM / $35M SAM</td><td class="num">$350K</td><td class="num">$1.75M</td></tr>
+    <tr><td><strong>+ Corridor Platform</strong></td><td class="num">$200M TAM / $45M SAM</td><td class="num">$450K</td><td class="num">$2.25M</td></tr>
+    <tr><td><strong>+ Government</strong></td><td class="num">$80M TAM / $25M SAM</td><td class="num">$250K</td><td class="num">$1.25M</td></tr>
+    <tr class="highlight"><td><strong>Combined SAM</strong></td><td class="num"><strong>$145M</strong></td><td class="num"><strong>$1.45M</strong></td><td class="num"><strong>$7.25M</strong></td></tr>
+  </tbody>
+</table>
+
+<p class="note">At 10&times; multiple on 3-year projected revenue:</p>
+
+<div class="callout-row-2">
+  <div class="callout cyan-border">
+    <div class="callout-label cyan">Conservative (1% SAM capture)</div>
+    <div class="callout-value">$1.45M &times; 10 = <span class="cyan">$14.5M</span></div>
+    <p style="color:#666; margin-top:4px; font-size:9px;">Theoretical ceiling &mdash; discounted heavily for execution risk</p>
+  </div>
+  <div class="callout green-border">
+    <div class="callout-label green">Moderate (5% SAM capture)</div>
+    <div class="callout-value">$7.25M &times; 10 = <span class="green">$72.5M</span></div>
+    <p style="color:#666; margin-top:4px; font-size:9px;">Only relevant at Series A+ with proven revenue</p>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<div class="page-break"></div>
+
+<!-- Section 7 -->
+<h2><span class="num">7 &middot;</span> VALUATION SYNTHESIS</h2>
+
+<p class="note">Each method captures a different dimension of value. The final valuation triangulates across all five methods, weighted by relevance to AirIndex's current stage.</p>
+
+<table>
+  <thead><tr><th>Method</th><th>Valuation Range</th><th>Weight</th><th>Rationale</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Cost-to-Recreate</strong></td>
+      <td class="num">$500K &ndash; $1.5M</td>
+      <td class="num">20%</td>
+      <td>Floor value. No rational valuation below this.</td>
+    </tr>
+    <tr>
+      <td><strong>Berkus Method</strong></td>
+      <td class="num">$1.9M</td>
+      <td class="num">25%</td>
+      <td>Best method for pre-revenue. Strong on idea + technology, weaker on team + sales.</td>
+    </tr>
+    <tr>
+      <td><strong>Scorecard Method</strong></td>
+      <td class="num">$11.1M</td>
+      <td class="num">10%</td>
+      <td>Assumes institutional seed context. Discounted for solo-founder, pre-revenue.</td>
+    </tr>
+    <tr>
+      <td><strong>Revenue Multiple (Y1)</strong></td>
+      <td class="num">$500K &ndash; $2.0M</td>
+      <td class="num">30%</td>
+      <td>Most grounded. Based on realistic Y1 ARR projections at 8&ndash;20&times;.</td>
+    </tr>
+    <tr>
+      <td><strong>TAM-Based</strong></td>
+      <td class="num">$14.5M &ndash; $72.5M</td>
+      <td class="num">15%</td>
+      <td>Ceiling. Only relevant for growth-stage. Heavily discounted for pre-revenue.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Weighted Valuation Calculation</h3>
+
+<table>
+  <thead><tr><th>Method</th><th>Midpoint</th><th>Weight</th><th>Contribution</th></tr></thead>
+  <tbody>
+    <tr><td>Cost-to-Recreate</td><td class="num">$1.0M</td><td class="num">20%</td><td class="num">$200K</td></tr>
+    <tr><td>Berkus</td><td class="num">$1.9M</td><td class="num">25%</td><td class="num">$475K</td></tr>
+    <tr><td>Scorecard (50% discount)</td><td class="num">$5.5M</td><td class="num">10%</td><td class="num">$550K</td></tr>
+    <tr><td>Revenue Multiple (Y1 base)</td><td class="num">$1.1M</td><td class="num">30%</td><td class="num">$330K</td></tr>
+    <tr><td>TAM-Based (80% discount)</td><td class="num">$8.7M</td><td class="num">15%</td><td class="num">$1,305K</td></tr>
+    <tr class="highlight-green"><td><strong>WEIGHTED VALUATION</strong></td><td></td><td class="num"><strong>100%</strong></td><td class="num"><strong>$2,860,000</strong></td></tr>
+  </tbody>
+</table>
+
+<hr class="divider" />
+
+<!-- Section 8 -->
+<h2><span class="num">8 &middot;</span> RECOMMENDED PRE-MONEY VALUATION</h2>
+
+<div class="callout-row">
+  <div class="callout orange-border">
+    <div class="callout-label orange">Conservative</div>
+    <div class="callout-value" style="font-size:28px;">$1.5M</div>
+    <p style="color:#888; margin-top:6px; font-size:9px;">Pre-revenue discount applied. Solo founder risk. No proven distribution. Floor = replacement cost + IP premium.</p>
+  </div>
+  <div class="callout green-border">
+    <div class="callout-label green">Recommended</div>
+    <div class="callout-value" style="font-size:28px;">$3M &ndash; $4M</div>
+    <p style="color:#888; margin-top:6px; font-size:9px;">Weighted synthesis. Empty category + complete product + strategic relationships + strong market tailwinds.</p>
+  </div>
+  <div class="callout purple-border">
+    <div class="callout-label purple">Aggressive</div>
+    <div class="callout-value" style="font-size:28px;">$5M &ndash; $8M</div>
+    <p style="color:#888; margin-top:6px; font-size:9px;">Requires: post-paywall revenue traction, VFS endorsement, or inbound investor interest from UAM sector.</p>
+  </div>
+</div>
+
+<h3>What Moves the Needle Up</h3>
+<table>
+  <thead><tr><th>Catalyst</th><th>Impact on Valuation</th><th>Timeline</th></tr></thead>
+  <tbody>
+    <tr><td class="green"><strong>First $50K ARR</strong></td><td>+$1&ndash;3M (proves conversion, unlocks expansion)</td><td>Q3&ndash;Q4 2026</td></tr>
+    <tr><td class="green"><strong>Rex Alexander / VFS endorsement</strong></td><td>+$500K&ndash;$1M (closes credibility gap)</td><td>Q2 2026</td></tr>
+    <tr><td class="cyan"><strong>First Enterprise contract</strong></td><td>+$1&ndash;2M (validates WTP at $2,500+/mo)</td><td>2026&ndash;2027</td></tr>
+    <tr><td class="cyan"><strong>State DOT subscriber (ODOT)</strong></td><td>+$500K&ndash;$1M (opens government vector)</td><td>Q4 2026</td></tr>
+    <tr><td class="purple"><strong>Co-founder / key hire</strong></td><td>+$500K&ndash;$1M (de-risks execution)</td><td>When capital allows</td></tr>
+    <tr><td class="purple"><strong>Press citation (Aviation Week)</strong></td><td>+$250K&ndash;$500K (category credibility)</td><td>2026</td></tr>
+  </tbody>
+</table>
+
+<h3>What Pulls the Valuation Down</h3>
+<table>
+  <thead><tr><th>Risk Factor</th><th>Impact</th><th>Mitigation</th></tr></thead>
+  <tbody>
+    <tr><td class="red"><strong>Zero revenue by Q4 2026</strong></td><td>Valuation drops to cost-to-recreate ($500K&ndash;$1M)</td><td>Paywall + outreach + VFS channel</td></tr>
+    <tr><td class="red"><strong>Well-funded competitor enters</strong></td><td>Category premium erodes (-30&ndash;50%)</td><td>Speed + methodology publication + relationships</td></tr>
+    <tr><td class="orange"><strong>UAM timelines slip materially</strong></td><td>Market urgency fades (-20&ndash;30%)</td><td>Data product has value regardless of flight ops timing</td></tr>
+    <tr><td class="orange"><strong>Solo founder burns out / pivots</strong></td><td>Asset value only ($332K&ndash;$730K)</td><td>Hit revenue milestones to justify hiring</td></tr>
+  </tbody>
+</table>
+
+<hr class="divider" />
+
+<!-- Section 9 -->
+<h2><span class="num">9 &middot;</span> FUNDRAISING IMPLICATIONS</h2>
+
+<p class="note">If AirIndex were to raise external capital, here's what the math looks like at the recommended valuation range.</p>
+
+<table>
+  <thead><tr><th>Raise Amount</th><th>Pre-Money</th><th>Post-Money</th><th>Dilution</th><th>Use of Funds</th></tr></thead>
+  <tbody>
+    <tr>
+      <td class="num">$250K</td>
+      <td class="num">$3.0M</td>
+      <td class="num">$3.25M</td>
+      <td class="num green">7.7%</td>
+      <td>12 months runway. Prove conversion. Hire 1 contractor for corridor platform.</td>
+    </tr>
+    <tr>
+      <td class="num">$500K</td>
+      <td class="num">$3.5M</td>
+      <td class="num">$4.0M</td>
+      <td class="num cyan">12.5%</td>
+      <td>18 months runway. Hire 1 FTE + 1 contractor. Build corridor platform + govt packaging.</td>
+    </tr>
+    <tr>
+      <td class="num">$1.0M</td>
+      <td class="num">$4.0M</td>
+      <td class="num">$5.0M</td>
+      <td class="num orange">20.0%</td>
+      <td>24 months. 3-person team. Full Phase 2 build. Adjacent aviation exploration.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="note" style="margin-top:16px;"><strong>Recommendation:</strong> Don't raise until post-paywall revenue validates the model. A SAFE note at $3&ndash;4M cap with $250&ndash;500K raise after hitting $50K ARR is the strongest position. Pre-revenue raises at this stage give away too much equity for too little leverage.</p>
+
+<hr class="divider" />
+
+<!-- Section 10 -->
+<h2><span class="num">10 &middot;</span> SUMMARY</h2>
+
+<div class="callout green-border" style="margin-top:20px;">
+  <div class="callout-label green">Pre-Money Valuation &mdash; Recommended Range</div>
+  <div class="callout-value" style="font-size:28px; margin-bottom:12px;">$3,000,000 &ndash; $4,000,000</div>
+  <p style="color:#aaa; font-size:11px; line-height:1.7;">
+    AirIndex is a production-complete B2B vertical SaaS platform that is the <strong style="color:#fff;">only product in an empty category</strong> within a $29B market growing at 20%+ CAGR.
+    The proprietary scoring methodology, 4-source data pipeline, AI classification layer, and strategic VFS relationships create defensible IP that cannot be replicated quickly.
+    The primary risk is pre-revenue status &mdash; which resolves in weeks, not years, given that the paywall activates mid-April 2026.
+    At the recommended valuation, an investor deploying $250&ndash;500K gets 8&ndash;13% of a category-defining data intelligence platform positioned at the intersection of
+    aviation, infrastructure, and government decision-making.
+  </p>
+</div>
+
+<table style="margin-top:24px;">
+  <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>Valuation floor (cost-to-recreate)</td><td class="num">$500K &ndash; $1.5M</td></tr>
+    <tr><td>Berkus Method</td><td class="num">$1.9M</td></tr>
+    <tr><td>Weighted synthesis</td><td class="num">$2.86M</td></tr>
+    <tr class="highlight-green"><td><strong>Recommended pre-money</strong></td><td class="num"><strong>$3.0M &ndash; $4.0M</strong></td></tr>
+    <tr><td>Aggressive (post-traction)</td><td class="num">$5.0M &ndash; $8.0M</td></tr>
+    <tr><td>Scorecard ceiling (institutional seed)</td><td class="num">$11.1M</td></tr>
+  </tbody>
+</table>
+
+<hr class="divider" />
+
+<h3>Assumptions &amp; Disclaimers</h3>
+<table>
+  <tbody>
+    <tr><td style="color:#666;">1.</td><td>This analysis is for internal planning purposes and does not constitute a formal 409A valuation or investment offering.</td></tr>
+    <tr><td style="color:#666;">2.</td><td>Market data sourced from ZipRecruiter, Glassdoor, Flowjam, SaaS Capital, GlobeNewsWire (March 2026).</td></tr>
+    <tr><td style="color:#666;">3.</td><td>Revenue projections assume paywall activation mid-April 2026 with no paid marketing spend.</td></tr>
+    <tr><td style="color:#666;">4.</td><td>TAM/SAM figures from AirIndex TAM Expansion Strategy doc (March 2026).</td></tr>
+    <tr><td style="color:#666;">5.</td><td>Valuation is pre-money and pre-revenue. Post-revenue traction would likely move the valuation materially upward.</td></tr>
+    <tr><td style="color:#666;">6.</td><td>All methods assume no external debt, no existing investors, and 100% founder ownership.</td></tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  <span>AirIndex / Vertical Data Group, LLC &mdash; Confidential</span>
+  <span>Pre-Money Valuation Analysis &middot; March 2026</span>
+</div>
+
+</body>
+</html>

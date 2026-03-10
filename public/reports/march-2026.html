@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AirIndex — March 2026 Market Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050508;
+  --bg-card: #0a0a12;
+  --border: #1a1a2e;
+  --text: #c8c8d4;
+  --text-muted: #777788;
+  --text-heading: #ffffff;
+  --accent-cyan: #00d4ff;
+  --accent-green: #00ff88;
+  --accent-purple: #7c3aed;
+  --accent-amber: #f59e0b;
+  --accent-red: #ff4444;
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+}
+
+@media print {
+  :root {
+    --bg: #ffffff;
+    --bg-card: #f5f5f8;
+    --border: #e0e0e8;
+    --text: #333;
+    --text-muted: #666;
+    --text-heading: #111;
+    --accent-cyan: #0088aa;
+    --accent-green: #00884d;
+    --accent-purple: #5b2ea0;
+    --accent-amber: #b87a00;
+    --accent-red: #cc2222;
+  }
+  body { font-size: 11px; }
+  .container { max-width: 100%; padding: 0 16px; }
+  section { padding: 24px 0; }
+  .no-print { display: none; }
+  .page-break { page-break-before: always; }
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 840px; margin: 0 auto; padding: 0 32px; }
+section { padding: 48px 0; border-bottom: 1px solid var(--border); }
+section:last-of-type { border-bottom: none; }
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  color: var(--text-heading);
+  letter-spacing: -0.02em;
+}
+h2 { font-size: 22px; font-weight: 800; margin-bottom: 20px; }
+h3 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.pill-cyan { background: rgba(0,212,255,0.1); color: var(--accent-cyan); border: 1px solid rgba(0,212,255,0.2); }
+.pill-green { background: rgba(0,255,136,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,136,0.2); }
+.pill-amber { background: rgba(245,158,11,0.1); color: var(--accent-amber); border: 1px solid rgba(245,158,11,0.2); }
+.pill-red { background: rgba(255,68,68,0.1); color: var(--accent-red); border: 1px solid rgba(255,68,68,0.2); }
+.pill-purple { background: rgba(124,58,237,0.1); color: var(--accent-purple); border: 1px solid rgba(124,58,237,0.2); }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 12px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-heading);
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text);
+}
+tr:last-child td { border-bottom: none; }
+
+.score-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.score-bar-fill {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  border-radius: 3px;
+}
+
+.changelog-item {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.changelog-item:last-child { border-bottom: none; }
+.changelog-type {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+a { color: var(--accent-cyan); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.footer {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ═══════════════════════════════════════════════════════
+       COVER
+       ═══════════════════════════════════════════════════════ -->
+  <section style="padding: 80px 0 48px; text-align: center; border-bottom: none;">
+    <div class="label" style="margin-bottom: 16px;">MONTHLY MARKET REPORT</div>
+    <h1 style="font-size: clamp(28px, 5vw, 42px); font-weight: 800; margin-bottom: 12px; line-height: 1.2;">
+      March 2026
+    </h1>
+    <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 32px;">
+      UAM Market Readiness Intelligence &mdash; 21 US Markets Tracked
+    </div>
+    <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
+      <div><span style="color: var(--accent-cyan); font-weight: 700; font-size: 18px;">21</span><br><span class="label">MARKETS</span></div>
+      <div><span style="color: var(--accent-green); font-weight: 700; font-size: 18px;">857</span><br><span class="label">RECORDS</span></div>
+      <div><span style="color: var(--accent-amber); font-weight: 700; font-size: 18px;">9</span><br><span class="label">CORRIDORS</span></div>
+      <div><span style="color: var(--accent-purple); font-weight: 700; font-size: 18px;">5</span><br><span class="label">OPERATORS</span></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       EXECUTIVE SUMMARY
+       ═══════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Executive Summary</h2>
+    <p style="margin-bottom: 16px;">
+      March 2026 marks a pivotal month for the US eVTOL industry. <strong>The White House announced a federal eVTOL pilot program selecting Florida, New York, and Texas</strong> as the first three states for commercial powered-lift integration &mdash; with both Joby and Archer accepted into the FAA's Enterprise Integration Pilot Program (eIPP). Joby simultaneously announced its <strong>Uber Air Taxi booking integration</strong>, enabling ride-hail style eVTOL booking directly through the Uber app &mdash; the first consumer-facing air taxi marketplace at scale.
+    </p>
+    <p style="margin-bottom: 16px;">
+      Meanwhile, the <strong>Archer vs. Joby legal battle escalated</strong> with Archer filing a countersuit alleging Joby's undisclosed China supply chain dependencies. While the litigation introduces uncertainty around individual operators, it paradoxically validates the competitive intensity of the market &mdash; both companies are racing to be first.
+    </p>
+    <p style="margin-bottom: 16px;">
+      On the data integrity front, AirIndex completed a <strong>comprehensive scoring audit on March 7</strong>, correcting four markets (Las Vegas, Phoenix, Austin, Houston) where scoring factors were not supported by verifiable public records. This reflects our commitment to treating readiness scores as a ratings product &mdash; precision over promotion.
+    </p>
+    <p>
+      The platform now tracks <strong>857 total ingested records</strong> across Federal Register, LegiScan (50 states + DC), SEC EDGAR, and operator news. Our new <strong>auto-discovery pipeline</strong> automatically identifies UAM signals for cities outside our tracked 21 markets, with Cincinnati, OH as the first auto-detected lead.
+    </p>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       KEY METRICS
+       ═══════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Key Metrics</h2>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-value" style="color: var(--accent-green);">4</div>
+        <div class="stat-label">ADVANCED MARKETS</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: var(--accent-cyan);">1</div>
+        <div class="stat-label">MODERATE MARKETS</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: var(--accent-amber);">7</div>
+        <div class="stat-label">EARLY MARKETS</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: var(--accent-red);">9</div>
+        <div class="stat-label">NASCENT MARKETS</div>
+      </div>
+    </div>
+
+    <div class="card" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; text-align: center;">
+      <div>
+        <div style="color: var(--accent-cyan); font-size: 20px; font-weight: 700;">27</div>
+        <div class="label">NEW RECORDS (MARCH)</div>
+      </div>
+      <div>
+        <div style="color: var(--accent-purple); font-size: 20px; font-weight: 700;">6</div>
+        <div class="label">TOTAL USERS</div>
+      </div>
+      <div>
+        <div style="color: var(--accent-amber); font-size: 20px; font-weight: 700;">4</div>
+        <div class="label">SCORE CORRECTIONS</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SCORE CHANGES
+       ═══════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Score Movements</h2>
+    <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 13px;">
+      Four markets were corrected on March 7 following a data audit that removed scoring factors not supported by verifiable public records.
+    </p>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>MARKET</th>
+            <th>PREVIOUS</th>
+            <th>CURRENT</th>
+            <th>CHANGE</th>
+            <th>REASON</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Las Vegas, NV</td>
+            <td>85</td>
+            <td>35</td>
+            <td style="color: var(--accent-red);">-50</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Removed unverified pilot program, zoning, legislation, and regulatory posture claims</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Phoenix, AZ</td>
+            <td>65</td>
+            <td>35</td>
+            <td style="color: var(--accent-red);">-30</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Removed unverified zoning, legislation, and regulatory posture claims</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Austin, TX</td>
+            <td>45</td>
+            <td>30</td>
+            <td style="color: var(--accent-red);">-15</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Removed unverified operator presence</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Houston, TX</td>
+            <td>45</td>
+            <td>30</td>
+            <td style="color: var(--accent-red);">-15</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Removed unverified operator presence</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FULL RANKINGS
+       ═══════════════════════════════════════════════════════ -->
+  <section class="page-break">
+    <h2>Full Market Rankings</h2>
+    <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 13px;">
+      All 21 tracked US markets, ranked by AirIndex Readiness Score (0&ndash;100).
+    </p>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 30px;">#</th>
+            <th>MARKET</th>
+            <th style="width: 60px;">SCORE</th>
+            <th style="width: 100px;">TIER</th>
+            <th style="width: 200px;">READINESS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color: var(--text-muted);">1</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Los Angeles, CA</td>
+            <td style="font-weight: 700; color: var(--accent-green);">100</td>
+            <td><span class="pill pill-green">ADVANCED</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 100%; background: var(--accent-green);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">2</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Dallas, TX</td>
+            <td style="font-weight: 700; color: var(--accent-green);">100</td>
+            <td><span class="pill pill-green">ADVANCED</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 100%; background: var(--accent-green);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">3</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Orlando, FL</td>
+            <td style="font-weight: 700; color: var(--accent-green);">85</td>
+            <td><span class="pill pill-green">ADVANCED</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 85%; background: var(--accent-green);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">4</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Miami, FL</td>
+            <td style="font-weight: 700; color: var(--accent-green);">80</td>
+            <td><span class="pill pill-green">ADVANCED</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 80%; background: var(--accent-green);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">5</td>
+            <td style="font-weight: 600; color: var(--text-heading);">New York, NY</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">70</td>
+            <td><span class="pill pill-cyan">MODERATE</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 70%; background: var(--accent-cyan);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">6</td>
+            <td style="font-weight: 600; color: var(--text-heading);">San Diego, CA</td>
+            <td style="font-weight: 700; color: var(--accent-amber);">45</td>
+            <td><span class="pill pill-amber">EARLY</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 45%; background: var(--accent-amber);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">7</td>
+            <td style="font-weight: 600; color: var(--text-heading);">San Francisco, CA</td>
+            <td style="font-weight: 700; color: var(--accent-amber);">40</td>
+            <td><span class="pill pill-amber">EARLY</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 40%; background: var(--accent-amber);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">8</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Las Vegas, NV</td>
+            <td style="font-weight: 700; color: var(--accent-amber);">35</td>
+            <td><span class="pill pill-amber">EARLY</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 35%; background: var(--accent-amber);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">9</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Phoenix, AZ</td>
+            <td style="font-weight: 700; color: var(--accent-amber);">35</td>
+            <td><span class="pill pill-amber">EARLY</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 35%; background: var(--accent-amber);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">10</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Houston, TX</td>
+            <td style="font-weight: 700; color: var(--accent-amber);">30</td>
+            <td><span class="pill pill-amber">EARLY</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 30%; background: var(--accent-amber);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">11</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Austin, TX</td>
+            <td style="font-weight: 700; color: var(--accent-amber);">30</td>
+            <td><span class="pill pill-amber">EARLY</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 30%; background: var(--accent-amber);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">12</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Chicago, IL</td>
+            <td style="font-weight: 700; color: var(--accent-amber);">30</td>
+            <td><span class="pill pill-amber">EARLY</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 30%; background: var(--accent-amber);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">13</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Columbus, OH</td>
+            <td style="font-weight: 700; color: var(--accent-red);">20</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 20%; background: var(--accent-red);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">14</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Atlanta, GA</td>
+            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">14</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Nashville, TN</td>
+            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">14</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Charlotte, NC</td>
+            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">14</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Denver, CO</td>
+            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">14</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Seattle, WA</td>
+            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">14</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Boston, MA</td>
+            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">14</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Minneapolis, MN</td>
+            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">21</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Washington D.C.</td>
+            <td style="font-weight: 700; color: var(--accent-red);">0</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 0%; background: var(--accent-red);"></div></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       TOP STORIES
+       ═══════════════════════════════════════════════════════ -->
+  <section class="page-break">
+    <h2>Top Stories &mdash; March 2026</h2>
+
+    <div class="card" style="border-left: 3px solid var(--accent-green); margin-bottom: 16px;">
+      <h3 style="color: var(--accent-green);">White House eVTOL Pilot Program &mdash; FL, NY, TX Selected</h3>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        The White House announced a federal eVTOL integration pilot program selecting Florida, New York, and Texas as the first three states for commercial powered-lift operations. Both Joby Aviation and Archer Aviation were accepted into the FAA's Enterprise Integration Pilot Program (eIPP), replacing the original UAS Integration Pilot Program. This is the strongest federal signal yet that eVTOL commercial service is moving from testing to deployment &mdash; and it directly validates three of AirIndex's top-5 scoring states. Joby's selection covers multi-state operations, while Archer's application includes corridors in all three states.
+      </p>
+      <div class="label">IMPACT: FLORIDA &bull; NEW YORK &bull; TEXAS &bull; FEDERAL MILESTONE</div>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-cyan); margin-bottom: 16px;">
+      <h3 style="color: var(--accent-cyan);">Uber Air Taxi Booking Platform Revealed</h3>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        Joby and Uber unveiled the consumer-facing air taxi booking platform, allowing riders to book eVTOL flights directly through the Uber app. This is the first time a major ride-hail platform has integrated air taxi service at a product level. While initially launching in markets where Joby has commercial authorization, the Uber integration represents the most significant consumer distribution channel for eVTOL services globally.
+      </p>
+      <div class="label">IMPACT: LOS ANGELES &bull; NEW YORK &bull; MIAMI</div>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-amber); margin-bottom: 16px;">
+      <h3 style="color: var(--accent-amber);">Archer vs. Joby Legal Escalation</h3>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        Archer Aviation filed a countersuit against Joby Aviation, alleging that Joby defrauded the U.S. government by concealing its reliance on Chinese supply chain components. Joby's response is pending. While this introduces operator-level risk, it also signals the competitive intensity of the market &mdash; both companies are fighting over first-mover advantage in a market they believe is imminent.
+      </p>
+      <div class="label">IMPACT: OPERATOR RISK &bull; REGULATORY UNCERTAINTY</div>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-purple); margin-bottom: 16px;">
+      <h3 style="color: var(--accent-purple);">AirIndex Data Audit &mdash; 4 Markets Corrected</h3>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        AirIndex completed a comprehensive data audit on March 7, correcting Las Vegas (-50 pts), Phoenix (-30 pts), Austin (-15 pts), and Houston (-15 pts). Scoring factors that could not be verified against primary public records were removed. This is consistent with our ratings agency model &mdash; we err on the side of under-scoring rather than over-promoting markets.
+      </p>
+      <div class="label">IMPACT: LAS VEGAS &bull; PHOENIX &bull; AUSTIN &bull; HOUSTON</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CORRIDOR STATUS
+       ═══════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Corridor Intelligence</h2>
+    <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 13px;">
+      9 corridors tracked across 6 metro areas. No corridor status changes in March.
+    </p>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>CORRIDOR</th>
+            <th>METRO</th>
+            <th>STATUS</th>
+            <th style="width: 60px;">DIST</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">DFW &ndash; Downtown Dallas</td>
+            <td>Dallas, TX</td>
+            <td><span class="pill pill-green">AUTHORIZED</span></td>
+            <td>28 km</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">LAX &ndash; DTLA</td>
+            <td>Los Angeles, CA</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>25 km</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">LAX &ndash; Santa Monica</td>
+            <td>Los Angeles, CA</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>14 km</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">JFK &ndash; Manhattan</td>
+            <td>New York, NY</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>22 km</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">MIA &ndash; Fort Lauderdale</td>
+            <td>Miami, FL</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>43 km</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">MCO &ndash; Lake Nona</td>
+            <td>Orlando, FL</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>15 km</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">LAS &ndash; Convention Center</td>
+            <td>Las Vegas, NV</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>8 km</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">O'Hare &ndash; Downtown Chicago</td>
+            <td>Chicago, IL</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>24 km</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">ATL &ndash; Midtown Atlanta</td>
+            <td>Atlanta, GA</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>12 km</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MARKET WATCH
+       ═══════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Markets to Watch</h2>
+
+    <div class="card" style="border-left: 3px solid var(--accent-cyan);">
+      <h3>Columbus, OH <span class="pill pill-cyan" style="margin-left: 8px;">NEW MARKET</span></h3>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        Added as AirIndex's 21st tracked market in March. Ohio has arguably the most organized state-level AAM strategy in the US &mdash; ODOT created a dedicated AAM Division, DriveOhio published the nation's first state AAM framework, and Ohio submitted a multi-state eIPP proposal with BETA Technologies, Joby, and DHL. Joby operates a propeller blade manufacturing facility in Dayton with plans for 700K+ sq ft expansion. HB 251 (vertiport infrastructure definition) has passed the Ohio House. Current score: 20 (NASCENT).
+      </p>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-amber); margin-top: 12px;">
+      <h3>Cincinnati, OH <span class="pill pill-purple" style="margin-left: 8px;">AUTO-DISCOVERED</span></h3>
+      <p style="font-size: 13px;">
+        First market automatically detected by the new auto-discovery pipeline. Currently under research. Ohio's statewide AAM framework and eIPP proposal cover multiple Ohio metros, making Cincinnati a natural candidate for future tracking.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PLATFORM UPDATES
+       ═══════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Platform Updates</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div class="card">
+        <h3>Auto-Discovery Pipeline</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+          3-layer detection system automatically identifies UAM signals for cities outside our tracked markets. Uses NLP classifier, rules engine state-gap detection, and operator news scanning with UAM keyword co-occurrence.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Data Quality Improvements</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+          Tightened LegiScan filters to require aviation context. Added ceremonial bill pre-filter. Backfilled 90 days of historical snapshots. Cleaned override queue of unactionable entries.
+        </p>
+      </div>
+      <div class="card">
+        <h3>90-Day Score History</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+          Backfilled 1,728 daily snapshots across all 21 markets, enabling score trajectory visualization and trend analysis dating back to December 2025.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Stripe Integration</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">
+          Vertical Data Group LLC Stripe account connected to Mercury banking. Pro and Institutional products configured and ready for April activation.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       OUTLOOK
+       ═══════════════════════════════════════════════════════ -->
+  <section>
+    <h2>April Outlook</h2>
+    <ul style="padding-left: 20px; font-size: 13px; line-height: 2;">
+      <li>Monitor eIPP program developments &mdash; both Joby and Archer will begin formal integration testing</li>
+      <li>Track Uber Air Taxi booking platform expansion to additional markets</li>
+      <li>Watch for Archer vs. Joby litigation outcomes and potential regulatory implications</li>
+      <li>Ohio HB 251 (vertiport infrastructure) expected Senate vote &mdash; could elevate Columbus score</li>
+      <li>Paid tier activation (Pro at $149/mo, Institutional at $499/mo) targeted for mid-April</li>
+      <li>Continue monitoring auto-discovered market leads for potential 22nd+ market additions</li>
+    </ul>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════ -->
+  <!-- CTA -->
+  <section style="text-align: center; padding: 48px 0; border-bottom: none;">
+    <div class="card" style="background: linear-gradient(135deg, rgba(0,212,255,0.06) 0%, rgba(124,58,237,0.06) 100%); border: 1px solid rgba(0,212,255,0.15); padding: 32px;">
+      <p style="font-size: 14px; color: var(--text-heading); margin-bottom: 8px; font-weight: 600;">
+        Full factor-level breakdowns, score history, and corridor intelligence for all 21 markets.
+      </p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+        Pro access opens April 2026. Free dashboard available now.
+      </p>
+      <a href="https://www.airindex.io/dashboard" style="
+        display: inline-block;
+        padding: 12px 32px;
+        background: var(--accent-cyan);
+        color: #050508;
+        font-family: var(--font-display);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-decoration: none;
+        border-radius: 6px;
+      ">EXPLORE THE DASHBOARD</a>
+    </div>
+  </section>
+
+  <div class="footer">
+    <div style="margin-bottom: 8px;">
+      <strong>AIRINDEX</strong> &mdash; UAM Market Readiness Intelligence
+    </div>
+    <div>
+      &copy; 2026 Vertical Data Group, LLC &bull; <a href="https://www.airindex.io">airindex.io</a> &bull; <a href="mailto:hello@airindex.io">hello@airindex.io</a>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
