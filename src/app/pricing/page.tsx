@@ -106,7 +106,7 @@ export default function PricingPage() {
           Simple, transparent pricing
         </h1>
         <p style={{ fontFamily: "'Inter', sans-serif", color: "#999", fontSize: 14, margin: "0 0 8px", lineHeight: 1.6 }}>
-          Choose the plan that fits your workflow.
+          Full dashboard access is free through launch. Paid plans activate April 2026.
         </p>
       </section>
 
@@ -135,15 +135,15 @@ export default function PricingPage() {
           },
           {
             q: "What happens to early signups?",
-            a: "Users who signed up before launch are grandfathered into Pro access through December 31, 2026 at no cost.",
+            a: "Free accounts retain full dashboard access through launch. When paid plans activate, free users keep the map, scores, and rankings. Pro features require an upgrade.",
           },
           {
             q: "What's included in the API?",
-            a: "RESTful access to readiness scores, factor breakdowns, corridor data, and historical snapshots. Rate limits vary by tier. Full documentation will be available at launch.",
+            a: "RESTful access to readiness scores, factor breakdowns, corridor data, and historical snapshots. Rate limits vary by tier. See the full documentation at airindex.io/api/docs.",
           },
           {
             q: "Can I cancel anytime?",
-            a: "Yes. All subscriptions will be month-to-month with no lock-in. Annual plans offer a discount.",
+            a: "Yes. All subscriptions are month-to-month with no lock-in. Annual plans offer a discount.",
           },
         ].map((faq) => (
           <div
