@@ -10,8 +10,9 @@ jobs:
   ingest:
     runs-on: ubuntu-latest
     steps:
-      - name: Health check
+      - name: Health check + warmup
         env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
           APP_URL: ${{ vars.APP_URL }}
         run: |
           URL="${APP_URL:-https://www.airindex.io}"
@@ -20,6 +21,12 @@ jobs:
           if [ "$HTTP_CODE" != "200" ]; then
             echo "::warning::Health check returned $HTTP_CODE — app may be degraded"
           fi
+          # Warm up the ingest Lambda to avoid cold start timeout
+          echo "Warming up ingest Lambda..."
+          curl -s -o /dev/null --max-time 15 \
+            -H "Authorization: invalid-warmup" \
+            "$URL/api/ingest" || true
+          sleep 3
 
       - name: Trigger ingestion endpoint
         env:
@@ -30,7 +37,6 @@ jobs:
           # Streaming response — collect full output, check last event for result
           RESPONSE=$(curl -s -w "\n%{http_code}" \
             --max-time 120 \
-            -X POST \
             -H "Authorization: Bearer $CRON_SECRET" \
             "$URL/api/ingest")
 
