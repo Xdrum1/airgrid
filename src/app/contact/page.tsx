@@ -61,7 +61,7 @@ function ContactForm() {
         </h2>
         <p style={{ color: "#999", fontSize: 13, lineHeight: 1.7, marginBottom: 24 }}>
           {isPro
-            ? "We'll notify you when Pro launches. In the meantime, all features are free during beta."
+            ? "We'll notify you when Pro launches. Full dashboard access is free through launch."
             : "We'll reach out within 48 hours."}
         </p>
         <Link
