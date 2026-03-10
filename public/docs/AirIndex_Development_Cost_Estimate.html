@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AirIndex — Development Cost Estimate</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #050508;
+    color: #ccc;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    line-height: 1.7;
+    padding: 60px 80px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  @media print {
+    body { background: #050508; padding: 40px 50px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page-break { page-break-before: always; }
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 38px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #00d4ff;
+    margin: 48px 0 20px;
+  }
+
+  h2 .num {
+    color: #555;
+    margin-right: 6px;
+  }
+
+  h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    margin: 28px 0 12px;
+  }
+
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, #00d4ff, #7c3aed, transparent);
+    margin: 32px 0;
+    border: none;
+  }
+
+  /* Header cards */
+  .header-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+  .header-cell {
+    background: #0a0a12;
+    padding: 16px 24px;
+  }
+  .header-cell .label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .header-cell .value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .cyan { color: #00d4ff; }
+  .green { color: #00ff88; }
+  .purple { color: #7c3aed; }
+  .orange { color: #f59e0b; }
+  .red { color: #ff6b6b; }
+  .white { color: #fff; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 11px;
+  }
+  thead th {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #666;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: #bbb;
+  }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  td.num { font-family: 'Space Mono', monospace; font-size: 11px; }
+  td strong, th strong { color: #fff; }
+
+  /* Callout boxes */
+  .callout {
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    background: rgba(255,255,255,0.02);
+    position: relative;
+  }
+  .callout::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 24px; right: 24px;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+  }
+  .callout.cyan-border::before { background: #00d4ff; }
+  .callout.green-border::before { background: #00ff88; }
+  .callout.purple-border::before { background: #7c3aed; }
+  .callout.orange-border::before { background: #f59e0b; }
+
+  .callout .callout-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .callout .callout-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+    line-height: 1.4;
+  }
+
+  .callout-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* Highlight row in tables */
+  tr.highlight td { color: #fff; font-weight: 600; }
+  tr.highlight-green td { background: rgba(0,255,136,0.04); color: #00ff88; font-weight: 600; }
+  tr.highlight-cyan td { background: rgba(0,212,255,0.04); color: #00d4ff; font-weight: 600; }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: #444;
+    letter-spacing: 0.5px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-left: 8px;
+  }
+  .badge-cyan { background: rgba(0,212,255,0.15); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; }
+  .badge-green { background: rgba(0,255,136,0.15); border: 1px solid rgba(0,255,136,0.3); color: #00ff88; }
+</style>
+</head>
+<body>
+
+<h1>AIRINDEX</h1>
+<div class="subtitle">Development Cost Estimate &middot; March 2026 &middot; Vertical Data Group, LLC</div>
+
+<div class="header-grid">
+  <div class="header-cell">
+    <div class="label">Analysis Date</div>
+    <div class="value cyan">March 7, 2026</div>
+  </div>
+  <div class="header-cell">
+    <div class="label">Codebase Version</div>
+    <div class="value green">V1 Complete, V2 In Progress</div>
+  </div>
+  <div class="header-cell">
+    <div class="label">Total Lines of Code</div>
+    <div class="value white">30,600 lines &middot; 160 files</div>
+  </div>
+  <div class="header-cell">
+    <div class="label">Project Timeline</div>
+    <div class="value orange">11 Days &middot; 207 Commits</div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- Section 1 -->
+<h2><span class="num">1 &middot;</span> CODEBASE METRICS</h2>
+
+<table>
+  <thead><tr><th>Category</th><th>Files</th><th>Lines</th><th>% of Total</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Pages / Routes</strong> <span style="color:#555">(src/app/)</span></td><td class="num">~40</td><td class="num">8,577</td><td class="num">28%</td></tr>
+    <tr><td><strong>Components</strong> <span style="color:#555">(src/components/)</span></td><td class="num">~45</td><td class="num">11,397</td><td class="num">37%</td></tr>
+    <tr><td><strong>Business Logic</strong> <span style="color:#555">(src/lib/)</span></td><td class="num">~35</td><td class="num">6,296</td><td class="num">21%</td></tr>
+    <tr><td><strong>Data Layer</strong> <span style="color:#555">(seed, schema, hooks)</span></td><td class="num">~7</td><td class="num">1,440</td><td class="num">5%</td></tr>
+    <tr><td><strong>Scripts &amp; Config</strong></td><td class="num">~11</td><td class="num">1,569</td><td class="num">5%</td></tr>
+    <tr><td><strong>Overview HTML</strong></td><td class="num">1</td><td class="num">1,344</td><td class="num">4%</td></tr>
+    <tr class="highlight"><td><strong>TOTAL</strong></td><td class="num"><strong>~160</strong></td><td class="num"><strong>30,600</strong></td><td class="num"><strong>100%</strong></td></tr>
+  </tbody>
+</table>
+
+<h3>Complexity Factors</h3>
+<table>
+  <thead><tr><th>Category</th><th>Technologies</th></tr></thead>
+  <tbody>
+    <tr><td class="cyan">Framework</td><td>Next.js 15 App Router, React 19, TypeScript, SSR/SSG/Dynamic</td></tr>
+    <tr><td class="cyan">Database</td><td>PostgreSQL + Prisma ORM (12+ models)</td></tr>
+    <tr><td class="cyan">Auth</td><td>next-auth v5 (magic link, JWT, invite flow, admin PIN 2FA)</td></tr>
+    <tr><td class="cyan">Billing</td><td>Stripe (checkout, webhooks, portal, tier gating, grandfathering)</td></tr>
+    <tr><td class="cyan">Email</td><td>AWS SES (transactional, digest, welcome, invite, outreach)</td></tr>
+    <tr><td class="cyan">Map</td><td>Mapbox GL (interactive map, corridors, markers, popups)</td></tr>
+    <tr><td class="cyan">Data Pipelines</td><td>FAA LAANC, Federal Register, LegiScan, SEC EDGAR</td></tr>
+    <tr><td class="cyan">AI/NLP</td><td>Claude API (filing classification, scoring recommendations)</td></tr>
+    <tr><td class="cyan">API</td><td>REST v1 (Bearer auth, tier rate limiting, snake_case transforms)</td></tr>
+    <tr><td class="cyan">Monitoring</td><td>Sentry, Upstash Redis, Plausible, health checks, cron alerts</td></tr>
+  </tbody>
+</table>
+
+<hr class="divider" />
+
+<!-- Section 2 -->
+<h2><span class="num">2 &middot;</span> DEVELOPMENT TIME ESTIMATE</h2>
+
+<h3>Base Coding Hours (by complexity)</h3>
+<table>
+  <thead><tr><th>Code Category</th><th>Lines</th><th>Productivity</th><th>Base Hours</th></tr></thead>
+  <tbody>
+    <tr><td>UI / Components (dashboard, tabs, landing, pricing)</td><td class="num">12,500</td><td class="num">35 lines/hr</td><td class="num">357 hrs</td></tr>
+    <tr><td>Business logic (scoring, billing, ingestion, API)</td><td class="num">6,300</td><td class="num">22 lines/hr</td><td class="num">286 hrs</td></tr>
+    <tr><td>Auth / Security (next-auth, CSRF, admin, rate limiting)</td><td class="num">2,200</td><td class="num">18 lines/hr</td><td class="num">122 hrs</td></tr>
+    <tr><td>Data pipelines (FAA, EDGAR, LegiScan, classifier)</td><td class="num">3,000</td><td class="num">15 lines/hr</td><td class="num">200 hrs</td></tr>
+    <tr><td>API v1 (routes, middleware, transforms, keys)</td><td class="num">1,800</td><td class="num">25 lines/hr</td><td class="num">72 hrs</td></tr>
+    <tr><td>Schema / Data / Config</td><td class="num">2,500</td><td class="num">30 lines/hr</td><td class="num">83 hrs</td></tr>
+    <tr><td>Email system (SES, templates, digest)</td><td class="num">1,500</td><td class="num">25 lines/hr</td><td class="num">60 hrs</td></tr>
+    <tr><td>Tests &amp; Scripts</td><td class="num">1,400</td><td class="num">35 lines/hr</td><td class="num">40 hrs</td></tr>
+    <tr class="highlight"><td><strong>BASE TOTAL</strong></td><td class="num"><strong>30,600</strong></td><td></td><td class="num"><strong>1,220 hrs</strong></td></tr>
+  </tbody>
+</table>
+
+<h3>Overhead Multipliers</h3>
+<table>
+  <thead><tr><th>Factor</th><th>Multiplier</th><th>Hours Added</th></tr></thead>
+  <tbody>
+    <tr><td>Architecture &amp; Design</td><td class="num">+18%</td><td class="num">220 hrs</td></tr>
+    <tr><td>Debugging &amp; Troubleshooting</td><td class="num">+28%</td><td class="num">342 hrs</td></tr>
+    <tr><td>Code Review &amp; Refactoring</td><td class="num">+12%</td><td class="num">146 hrs</td></tr>
+    <tr><td>Documentation (methodology, terms, privacy)</td><td class="num">+10%</td><td class="num">122 hrs</td></tr>
+    <tr><td>Integration &amp; Testing</td><td class="num">+22%</td><td class="num">268 hrs</td></tr>
+    <tr><td>Learning Curve (Stripe, SES, Mapbox, EDGAR)</td><td class="num">+12%</td><td class="num">146 hrs</td></tr>
+    <tr class="highlight"><td><strong>TOTAL OVERHEAD</strong></td><td class="num"><strong>+102%</strong></td><td class="num"><strong>1,244 hrs</strong></td></tr>
+  </tbody>
+</table>
+
+<div class="callout cyan-border">
+  <div class="callout-label cyan">Total Estimated Human Development Hours</div>
+  <div class="callout-value">2,464 hours</div>
+</div>
+
+<hr class="divider" />
+
+<!-- Section 3 -->
+<h2><span class="num">3 &middot;</span> REALISTIC CALENDAR TIME</h2>
+<p style="color:#888; margin-bottom:16px;">Real developers don't code 40 hours/week. Accounting for standups, code reviews, Slack, meetings, context switching, and admin overhead:</p>
+
+<table>
+  <thead><tr><th>Company Type</th><th>Coding Efficiency</th><th>Coding Hrs/Week</th><th>Calendar Weeks</th><th>Calendar Time</th></tr></thead>
+  <tbody>
+    <tr><td class="green"><strong>Solo / Founder (lean)</strong></td><td class="num">70%</td><td class="num">28 hrs</td><td class="num">88 weeks</td><td class="num">~20 months</td></tr>
+    <tr><td class="cyan"><strong>Lean Startup</strong></td><td class="num">60%</td><td class="num">24 hrs</td><td class="num">103 weeks</td><td class="num">~24 months</td></tr>
+    <tr><td class="purple"><strong>Growth Company</strong></td><td class="num">50%</td><td class="num">20 hrs</td><td class="num">123 weeks</td><td class="num">~2.4 years</td></tr>
+    <tr><td class="orange"><strong>Enterprise</strong></td><td class="num">40%</td><td class="num">16 hrs</td><td class="num">154 weeks</td><td class="num">~3.0 years</td></tr>
+  </tbody>
+</table>
+
+<hr class="divider" />
+
+<!-- Section 4 -->
+<h2><span class="num">4 &middot;</span> MARKET RATE RESEARCH</h2>
+<p style="color:#888; margin-bottom:16px;">Based on 2026 US market data (ZipRecruiter, Glassdoor, Arc, Index.dev):</p>
+
+<table>
+  <thead><tr><th>Rate Tier</th><th>Hourly Rate</th><th>Basis</th></tr></thead>
+  <tbody>
+    <tr><td>Mid-market remote</td><td class="num">$100/hr</td><td>Solid senior full-stack, US-based</td></tr>
+    <tr class="highlight-cyan"><td><strong>Standard US market</strong></td><td class="num"><strong>$135/hr</strong></td><td><strong>Senior Next.js + AWS + integrations</strong></td></tr>
+    <tr><td>Premium (specialized)</td><td class="num">$175/hr</td><td>Stripe, auth, data pipeline expertise</td></tr>
+  </tbody>
+</table>
+
+<div class="callout green-border">
+  <div class="callout-label green">Recommended Rate</div>
+  <div class="callout-value">$135/hour</div>
+  <p style="color:#888; margin-top:8px; font-size:10px;">This project requires a senior developer comfortable with Next.js App Router, Prisma, Stripe billing, AWS SES, Mapbox, REST API design, and multiple third-party data integrations. That's not a $100/hr generalist.</p>
+</div>
+
+<hr class="divider" />
+
+<!-- Section 5 -->
+<h2><span class="num">5 &middot;</span> TOTAL COST ESTIMATE</h2>
+
+<h3>Engineering Only</h3>
+<table>
+  <thead><tr><th>Scenario</th><th>Hourly Rate</th><th>Total Hours</th><th>Total Cost</th></tr></thead>
+  <tbody>
+    <tr><td>Low-end</td><td class="num">$100/hr</td><td class="num">2,464</td><td class="num">$246,400</td></tr>
+    <tr class="highlight-cyan"><td><strong>Average</strong></td><td class="num"><strong>$135/hr</strong></td><td class="num"><strong>2,464</strong></td><td class="num"><strong>$332,640</strong></td></tr>
+    <tr><td>High-end</td><td class="num">$175/hr</td><td class="num">2,464</td><td class="num">$430,200</td></tr>
+  </tbody>
+</table>
+
+<h3>Full Team Cost (All Roles)</h3>
+<table>
+  <thead><tr><th>Company Stage</th><th>Team Multiplier</th><th>Eng Cost</th><th>Full Team Cost</th></tr></thead>
+  <tbody>
+    <tr><td class="green"><strong>Solo / Founder</strong></td><td class="num">1.0&times;</td><td class="num">$332,640</td><td class="num"><strong>$332,640</strong></td></tr>
+    <tr><td class="cyan"><strong>Lean Startup</strong></td><td class="num">1.45&times;</td><td class="num">$332,640</td><td class="num"><strong>$482,328</strong></td></tr>
+    <tr><td class="purple"><strong>Growth Company</strong></td><td class="num">2.2&times;</td><td class="num">$332,640</td><td class="num"><strong>$731,808</strong></td></tr>
+    <tr><td class="orange"><strong>Enterprise</strong></td><td class="num">2.65&times;</td><td class="num">$332,640</td><td class="num"><strong>$881,496</strong></td></tr>
+  </tbody>
+</table>
+
+<h3>Role Breakdown (Growth Company)</h3>
+<table>
+  <thead><tr><th>Role</th><th>Hours</th><th>Rate</th><th>Cost</th></tr></thead>
+  <tbody>
+    <tr><td>Engineering</td><td class="num">2,464 hrs</td><td class="num">$135/hr</td><td class="num">$332,640</td></tr>
+    <tr><td>Product Management</td><td class="num">739 hrs</td><td class="num">$150/hr</td><td class="num">$110,850</td></tr>
+    <tr><td>UX / UI Design</td><td class="num">616 hrs</td><td class="num">$125/hr</td><td class="num">$77,000</td></tr>
+    <tr><td>Engineering Management</td><td class="num">370 hrs</td><td class="num">$175/hr</td><td class="num">$64,750</td></tr>
+    <tr><td>QA / Testing</td><td class="num">493 hrs</td><td class="num">$100/hr</td><td class="num">$49,300</td></tr>
+    <tr><td>Project Management</td><td class="num">247 hrs</td><td class="num">$125/hr</td><td class="num">$30,875</td></tr>
+    <tr><td>Technical Writing</td><td class="num">123 hrs</td><td class="num">$100/hr</td><td class="num">$12,300</td></tr>
+    <tr><td>DevOps / Platform</td><td class="num">370 hrs</td><td class="num">$150/hr</td><td class="num">$55,500</td></tr>
+    <tr class="highlight-green"><td><strong>TOTAL</strong></td><td class="num"><strong>5,422 hrs</strong></td><td></td><td class="num"><strong>$733,215</strong></td></tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<hr class="divider" />
+
+<!-- Section 6 -->
+<h2><span class="num">6 &middot;</span> CLAUDE ROI ANALYSIS</h2>
+
+<h3>Project Timeline</h3>
+<table>
+  <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>First commit</td><td class="num">February 24, 2026</td></tr>
+    <tr><td>Latest commit</td><td class="num">March 7, 2026</td></tr>
+    <tr><td>Total calendar time</td><td class="num cyan"><strong>11 days</strong></td></tr>
+    <tr><td>Total commits</td><td class="num">207</td></tr>
+  </tbody>
+</table>
+
+<h3>Claude Active Hours (Git Session Clustering)</h3>
+<table>
+  <thead><tr><th>Date</th><th>Commits</th><th>Est. Session Hours</th></tr></thead>
+  <tbody>
+    <tr><td>Feb 24</td><td class="num">29</td><td class="num">8 hrs</td></tr>
+    <tr><td>Feb 25</td><td class="num">19</td><td class="num">6 hrs</td></tr>
+    <tr><td>Feb 26</td><td class="num">11</td><td class="num">6 hrs</td></tr>
+    <tr><td>Feb 27</td><td class="num">22</td><td class="num">10 hrs</td></tr>
+    <tr><td>Feb 28</td><td class="num">15</td><td class="num">8 hrs</td></tr>
+    <tr><td>Mar 1</td><td class="num">18</td><td class="num">10 hrs</td></tr>
+    <tr><td>Mar 2</td><td class="num">11</td><td class="num">8 hrs</td></tr>
+    <tr><td>Mar 3</td><td class="num">8</td><td class="num">6 hrs</td></tr>
+    <tr><td>Mar 4</td><td class="num">7</td><td class="num">5 hrs</td></tr>
+    <tr><td>Mar 5</td><td class="num">4</td><td class="num">3 hrs</td></tr>
+    <tr><td>Mar 6</td><td class="num">5</td><td class="num">4 hrs</td></tr>
+    <tr><td>Mar 7</td><td class="num">9</td><td class="num">5 hrs</td></tr>
+    <tr class="highlight"><td><strong>TOTAL</strong></td><td class="num"><strong>207</strong></td><td class="num"><strong>~79 hrs</strong></td></tr>
+  </tbody>
+</table>
+
+<h3>Value per Claude Hour</h3>
+<table>
+  <thead><tr><th>Value Basis</th><th>Total Value</th><th>Claude Hours</th><th>$ / Claude Hour</th></tr></thead>
+  <tbody>
+    <tr class="highlight-green"><td><strong>Engineering only (avg)</strong></td><td class="num">$332,640</td><td class="num">79 hrs</td><td class="num"><strong>$4,211/hr</strong></td></tr>
+    <tr class="highlight-cyan"><td><strong>Full team (Growth Co)</strong></td><td class="num">$731,808</td><td class="num">79 hrs</td><td class="num"><strong>$9,263/hr</strong></td></tr>
+    <tr><td><strong>Full team (Enterprise)</strong></td><td class="num">$881,496</td><td class="num">79 hrs</td><td class="num"><strong>$11,158/hr</strong></td></tr>
+  </tbody>
+</table>
+
+<h3>Speed vs. Human Developer</h3>
+
+<div class="callout-row">
+  <div class="callout green-border">
+    <div class="callout-label green">Speed Multiplier</div>
+    <div class="callout-value" style="font-size:28px;">31&times;</div>
+    <p style="color:#888; margin-top:6px; font-size:9px;">Human: 2,464 hrs &rarr; Claude: 79 hrs</p>
+  </div>
+  <div class="callout cyan-border">
+    <div class="callout-label cyan">Net Savings</div>
+    <div class="callout-value" style="font-size:28px;">$332,440</div>
+    <p style="color:#888; margin-top:6px; font-size:9px;">Human cost minus Claude subscription</p>
+  </div>
+  <div class="callout purple-border">
+    <div class="callout-label purple">ROI</div>
+    <div class="callout-value" style="font-size:28px;">1,662&times;</div>
+    <p style="color:#888; margin-top:6px; font-size:9px;">Every $1 on Claude &rarr; $1,662 in value</p>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- Section 7 -->
+<h2><span class="num">7 &middot;</span> GRAND TOTAL SUMMARY</h2>
+
+<table>
+  <thead><tr><th>Metric</th><th>Solo / Founder</th><th>Lean Startup</th><th>Growth Co</th><th>Enterprise</th></tr></thead>
+  <tbody>
+    <tr><td>Calendar Time (human)</td><td class="num">~20 months</td><td class="num">~24 months</td><td class="num">~2.4 years</td><td class="num">~3.0 years</td></tr>
+    <tr><td>Total Human Hours</td><td class="num">2,464</td><td class="num">3,573</td><td class="num">5,422</td><td class="num">6,530</td></tr>
+    <tr class="highlight-green"><td><strong>Total Cost</strong></td><td class="num"><strong>$332,640</strong></td><td class="num"><strong>$482,328</strong></td><td class="num"><strong>$731,808</strong></td><td class="num"><strong>$881,496</strong></td></tr>
+    <tr class="highlight-cyan"><td><strong>Actual Time (Claude)</strong></td><td class="num" colspan="4" style="text-align:center;"><strong>11 days &middot; ~79 active hours &middot; ~$200 subscription cost</strong></td></tr>
+  </tbody>
+</table>
+
+<div class="callout green-border" style="margin-top:32px;">
+  <div class="callout-label green">The Headline Number</div>
+  <div class="callout-value" style="font-size:14px; line-height:1.6;">
+    Claude worked for approximately <span class="cyan">79 hours</span> across <span class="cyan">11 days</span> and produced the equivalent of
+    <span class="green">$332,640</span> in professional engineering value &mdash; roughly <span class="green">$4,211 per Claude hour</span>.
+    At a Growth Company fully-loaded cost, that&rsquo;s <span class="green">$9,263 per Claude hour</span>.
+  </div>
+</div>
+
+<hr class="divider" />
+
+<h3>Assumptions</h3>
+<table>
+  <tbody>
+    <tr><td style="color:#666;">1.</td><td>Rates based on US market averages (March 2026) from ZipRecruiter, Glassdoor, Arc, Index.dev</td></tr>
+    <tr><td style="color:#666;">2.</td><td>Full-time equivalent allocation for all roles</td></tr>
+    <tr><td style="color:#666;">3.</td><td>Includes complete V1 implementation + V2 progress (pre-paywall)</td></tr>
+    <tr><td style="color:#666;">4.</td><td>Does not include: marketing &amp; sales, legal &amp; compliance, office/equipment, hosting/infrastructure, ongoing maintenance</td></tr>
+    <tr><td style="color:#666;">5.</td><td>Claude hours estimated via git commit session clustering (commits within same day grouped as sessions)</td></tr>
+    <tr><td style="color:#666;">6.</td><td>Organizational overhead percentages based on industry benchmarks for SaaS development teams</td></tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  <span>AirIndex / Vertical Data Group, LLC &mdash; Confidential</span>
+  <span>Development Cost Estimate &middot; March 2026</span>
+</div>
+
+</body>
+</html>

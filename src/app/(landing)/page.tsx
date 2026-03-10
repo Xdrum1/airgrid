@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/auth";
-import { OPERATORS, CORRIDORS, getCitiesWithOverrides } from "@/data/seed";
+import { OPERATORS, CORRIDORS, getCitiesWithOverrides, MARKET_COUNT } from "@/data/seed";
 import CountUpStats from "@/components/landing/CountUpStats";
 import LiveActivityFeed from "@/components/landing/LiveActivityFeed";
 import CityScoreLookup from "@/components/landing/CityScoreLookup";
@@ -314,7 +314,7 @@ export default async function LandingPage() {
             margin: "0 auto 40px",
           }}
         >
-          21 US cities scored for UAM market readiness — updated in real time.
+          {MARKET_COUNT} US cities scored for UAM market readiness — updated in real time.
           Regulatory posture, infrastructure, operator presence, and corridor authorizations in one place.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
@@ -706,7 +706,7 @@ export default async function LandingPage() {
                 maxWidth: 520,
               }}>
                 Get the free monthly summary — top market movers, biggest regulatory shifts, and one
-                headline insight. Want the full breakdown? All 21 markets, factor analysis, corridor
+                headline insight. Want the full breakdown? All {MARKET_COUNT} markets, factor analysis, corridor
                 updates, and operator tracker are in the Pro report.
               </p>
 

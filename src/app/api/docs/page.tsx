@@ -377,7 +377,7 @@ export default async function ApiDocsPage() {
     "rated_by": "airindex_v1",
     "methodology_version": "1.0",
     "last_updated": "2026-03-03T06:00:00Z",
-    "market_count": 21
+    "market_count": 21  // dynamic — reflects current tracked markets
   },
   "data": [...]
 }`}</JsonBlock>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import TrackPageView from "@/components/TrackPageView";
+import { MARKET_COUNT } from "@/data/seed";
 
 export const metadata: Metadata = {
   title: "About — AirIndex",
@@ -55,7 +56,7 @@ export default function AboutPage() {
           </p>
 
           <p>
-            We track seven weighted factors across 21 markets: regulatory posture,
+            We track seven weighted factors across {MARKET_COUNT} markets: regulatory posture,
             LAANC corridor coverage, operator presence, active pilot programs,
             vertiport infrastructure, zoning policy, and state legislation. Every
             market receives a live 0–100 readiness score — updated continuously as
