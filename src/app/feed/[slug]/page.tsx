@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getFeedItemBySlug, getRelatedFeedItems } from "@/lib/feed";
 import { FEED_CATEGORY_COLORS, formatRelativeTime } from "@/lib/dashboard-constants";
 import { safeHref } from "@/lib/safe-url";
+import { auth } from "@/auth";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import TrackPageView from "@/components/TrackPageView";
@@ -38,7 +39,11 @@ export default async function FeedItemPage({ params }: Props) {
   const item = await getFeedItemBySlug(slug);
   if (!item) notFound();
 
-  const related = await getRelatedFeedItems(item.id, item.category, item.cityIds, 3);
+  const [related, session] = await Promise.all([
+    getRelatedFeedItems(item.id, item.category, item.cityIds, 3),
+    auth(),
+  ]);
+  const isAuthed = !!session?.user;
   const categoryColor = FEED_CATEGORY_COLORS[item.category] ?? "#555";
 
   return (
@@ -56,7 +61,7 @@ export default async function FeedItemPage({ params }: Props) {
       {/* Back link */}
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "20px 24px 0" }}>
         <Link
-          href="/feed"
+          href={isAuthed ? "/dashboard?tab=intel" : "/feed"}
           style={{
             color: "#555",
             textDecoration: "none",
@@ -65,7 +70,7 @@ export default async function FeedItemPage({ params }: Props) {
             transition: "color 0.15s",
           }}
         >
-          &larr; INTEL FEED
+          &larr; {isAuthed ? "BACK TO DASHBOARD" : "INTEL FEED"}
         </Link>
       </div>
 
