@@ -152,6 +152,47 @@ export async function getFeedItemById(id: string): Promise<FeedItemAdmin | null>
   return row ? toAdmin(row) : null;
 }
 
+export async function getRelatedFeedItems(
+  excludeId: string,
+  category: string,
+  cityIds: string[],
+  limit = 3,
+): Promise<FeedItemPublic[]> {
+  try {
+    const prisma = await getPrisma();
+    const rows = await prisma.feedItem.findMany({
+      where: {
+        id: { not: excludeId },
+        status: "published",
+        publishedAt: { not: null },
+        OR: [
+          { category },
+          ...(cityIds.length > 0 ? [{ cityIds: { hasSome: cityIds } }] : []),
+        ],
+      },
+      orderBy: { publishedAt: "desc" },
+      take: limit,
+    });
+    return rows.map((r) => ({
+      id: r.id,
+      slug: r.slug ?? r.id,
+      title: r.title,
+      summary: r.summary,
+      sourceUrl: r.sourceUrl,
+      category: r.category,
+      cityIds: r.cityIds,
+      cities: r.cityIds
+        .map((id) => ({ id, name: CITIES_MAP[id]?.city ?? id }))
+        .filter((c) => c.name !== c.id || CITIES_MAP[c.id]),
+      scoreImpact: r.scoreImpact,
+      publishedAt: (r.publishedAt ?? r.createdAt).toISOString(),
+    }));
+  } catch (err) {
+    logger.error("Failed to fetch related feed items:", err);
+    return [];
+  }
+}
+
 export async function getFeedItemBySlug(slug: string): Promise<FeedItemPublic | null> {
   const prisma = await getPrisma();
   const row = await prisma.feedItem.findFirst({

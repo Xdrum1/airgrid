@@ -34,23 +34,55 @@ export default function NotFound() {
           letterSpacing: 2,
         }}
       >
-        MARKET NOT FOUND
+        PAGE NOT FOUND
       </div>
-      <Link
-        href="/dashboard"
-        style={{
-          color: "#00d4ff",
-          fontSize: 11,
-          letterSpacing: 1,
-          textDecoration: "none",
-          border: "1px solid rgba(0,212,255,0.3)",
-          borderRadius: 6,
-          padding: "10px 20px",
-          transition: "background 0.15s",
-        }}
-      >
-        BACK TO DASHBOARD
-      </Link>
+      <div style={{ display: "flex", gap: 12 }}>
+        <Link
+          href="/"
+          style={{
+            color: "#888",
+            fontSize: 11,
+            letterSpacing: 1,
+            textDecoration: "none",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 6,
+            padding: "10px 20px",
+            transition: "border-color 0.15s",
+          }}
+        >
+          HOME
+        </Link>
+        <Link
+          href="/feed"
+          style={{
+            color: "#888",
+            fontSize: 11,
+            letterSpacing: 1,
+            textDecoration: "none",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 6,
+            padding: "10px 20px",
+            transition: "border-color 0.15s",
+          }}
+        >
+          INTEL FEED
+        </Link>
+        <Link
+          href="/dashboard"
+          style={{
+            color: "#00d4ff",
+            fontSize: 11,
+            letterSpacing: 1,
+            textDecoration: "none",
+            border: "1px solid rgba(0,212,255,0.3)",
+            borderRadius: 6,
+            padding: "10px 20px",
+            transition: "background 0.15s",
+          }}
+        >
+          DASHBOARD
+        </Link>
+      </div>
     </div>
   );
 }
