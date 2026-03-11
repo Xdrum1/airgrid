@@ -90,7 +90,7 @@ export default function AdminLeads({ showToast }: { showToast: (msg: string) => 
           <div style={{ color: "#fff", fontSize: 14, fontWeight: 700, marginBottom: 4 }}>
             Market Watchlist
           </div>
-          <div style={{ color: "#555", fontSize: 11 }}>
+          <div style={{ color: "#888", fontSize: 11 }}>
             Track tips and leads on potential new markets before they&apos;re scored publicly.
           </div>
         </div>
@@ -147,11 +147,11 @@ export default function AdminLeads({ showToast }: { showToast: (msg: string) => 
 
       {/* List */}
       {loading ? (
-        <div style={{ color: "#444", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
+        <div style={{ color: "#777", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
           LOADING...
         </div>
       ) : filteredLeads.length === 0 ? (
-        <div style={{ color: "#333", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 80 }}>
+        <div style={{ color: "#666", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 80 }}>
           NO LEADS {filter !== "all" ? `WITH STATUS "${filter.toUpperCase()}"` : ""}
         </div>
       ) : (
@@ -239,7 +239,7 @@ function NewLeadForm({ onCreated, onCancel }: { onCreated: () => void; onCancel:
         <div style={{ flex: 1 }} />
         <button type="button" onClick={onCancel} style={{
           background: "none", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4,
-          padding: "8px 16px", color: "#555", fontSize: 10, letterSpacing: 1, cursor: "pointer",
+          padding: "8px 16px", color: "#888", fontSize: 10, letterSpacing: 1, cursor: "pointer",
           fontFamily: "'Space Mono', monospace",
         }}>
           CANCEL
@@ -368,11 +368,11 @@ function LeadCard({
             </span>
           )}
           {trueFactorCount > 0 && (
-            <span style={{ color: "#444", fontSize: 9 }}>
+            <span style={{ color: "#777", fontSize: 9 }}>
               {trueFactorCount}/7 factors
             </span>
           )}
-          <span style={{ color: "#333", fontSize: 9, letterSpacing: 1 }}>
+          <span style={{ color: "#666", fontSize: 9, letterSpacing: 1 }}>
             {formatRelativeTime(lead.updatedAt)}
           </span>
         </div>
@@ -380,7 +380,7 @@ function LeadCard({
 
       {/* Source & signal */}
       <div style={{ marginBottom: 8 }}>
-        <span style={{ color: "#555", fontSize: 9, letterSpacing: 1 }}>SOURCE: </span>
+        <span style={{ color: "#888", fontSize: 9, letterSpacing: 1 }}>SOURCE: </span>
         <span style={{ color: "#888", fontSize: 11 }}>{lead.source}</span>
       </div>
       <div style={{ color: "#999", fontSize: 11, lineHeight: 1.5, marginBottom: 12 }}>
@@ -408,7 +408,7 @@ function LeadCard({
           borderRadius: 4,
           padding: "8px 12px",
           marginBottom: 12,
-          color: "#555",
+          color: "#888",
           fontSize: 10,
         }}>
           Dismissed: {lead.dismissedReason}
@@ -421,7 +421,7 @@ function LeadCard({
         style={{
           background: "none",
           border: "none",
-          color: "#555",
+          color: "#888",
           fontSize: 9,
           letterSpacing: 1,
           cursor: "pointer",
@@ -443,7 +443,7 @@ function LeadCard({
                 style={{
                   background: "none",
                   border: "none",
-                  color: "#555",
+                  color: "#888",
                   fontSize: 8,
                   letterSpacing: 2,
                   cursor: "pointer",
@@ -471,7 +471,7 @@ function LeadCard({
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                        <span style={{ color: "#555", fontSize: 8, letterSpacing: 1 }}>
+                        <span style={{ color: "#888", fontSize: 8, letterSpacing: 1 }}>
                           {s.source.toUpperCase()}
                         </span>
                         {s.confidence && (
@@ -482,7 +482,7 @@ function LeadCard({
                             {s.confidence}
                           </span>
                         )}
-                        <span style={{ color: "#333", fontSize: 8 }}>
+                        <span style={{ color: "#666", fontSize: 8 }}>
                           {new Date(s.date).toLocaleDateString()}
                         </span>
                       </div>
@@ -508,7 +508,7 @@ function LeadCard({
 
           {/* Factor checklist */}
           <div style={{ marginBottom: 16 }}>
-            <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
+            <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
               7-FACTOR ASSESSMENT
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
@@ -545,7 +545,7 @@ function LeadCard({
 
           {/* Research notes */}
           <div style={{ marginBottom: 16 }}>
-            <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
+            <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
               RESEARCH NOTES
             </div>
             <textarea
@@ -593,7 +593,7 @@ function LeadCard({
           </div>
 
           {/* Status transitions */}
-          <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
+          <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
             STATUS ACTIONS
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

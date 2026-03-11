@@ -114,7 +114,7 @@ export default async function FeedItemPage({ params }: Props) {
             </span>
           )}
 
-          <span style={{ fontSize: 9, color: "#444" }}>
+          <span style={{ fontSize: 9, color: "#777" }}>
             {formatRelativeTime(item.publishedAt)}
           </span>
         </div>
@@ -283,7 +283,7 @@ export default async function FeedItemPage({ params }: Props) {
                       >
                         {r.category.toUpperCase()}
                       </span>
-                      <span style={{ fontSize: 9, color: "#333" }}>
+                      <span style={{ fontSize: 9, color: "#666" }}>
                         {formatRelativeTime(r.publishedAt)}
                       </span>
                     </div>

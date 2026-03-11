@@ -276,7 +276,7 @@ export default function CityDetailPanel({
               </div>
             ) : analystNote ? (
               <div style={{
-                color: "#444",
+                color: "#777",
                 fontSize: 9,
                 fontStyle: "italic",
               }}>
@@ -561,7 +561,7 @@ export default function CityDetailPanel({
       <div style={{ padding: "14px 20px" }}>
         <div
           style={{
-            color: "#444",
+            color: "#777",
             fontSize: 8,
             letterSpacing: 2,
             marginBottom: 8,

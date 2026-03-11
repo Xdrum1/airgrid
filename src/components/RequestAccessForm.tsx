@@ -83,7 +83,7 @@ export default function RequestAccessForm() {
           style={{
             fontSize: 9,
             letterSpacing: 2,
-            color: "#555",
+            color: "#888",
             marginBottom: 6,
             display: "block",
           }}
@@ -105,7 +105,7 @@ export default function RequestAccessForm() {
           style={{
             fontSize: 9,
             letterSpacing: 2,
-            color: "#555",
+            color: "#888",
             marginBottom: 6,
             display: "block",
           }}
@@ -128,7 +128,7 @@ export default function RequestAccessForm() {
           style={{
             fontSize: 9,
             letterSpacing: 2,
-            color: "#555",
+            color: "#888",
             marginBottom: 6,
             display: "block",
           }}
@@ -185,7 +185,7 @@ export default function RequestAccessForm() {
         </p>
       )}
 
-      <p style={{ fontSize: 10, color: "#444", textAlign: "center", margin: 0, lineHeight: 1.6 }}>
+      <p style={{ fontSize: 10, color: "#777", textAlign: "center", margin: 0, lineHeight: 1.6 }}>
         Free during early access. No credit card required.
       </p>
     </form>

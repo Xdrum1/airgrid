@@ -114,7 +114,7 @@ export default function FeedPage() {
             </button>
           );
         })}
-        <span style={{ fontSize: 9, color: "#333", alignSelf: "center", marginLeft: 8 }}>
+        <span style={{ fontSize: 9, color: "#666", alignSelf: "center", marginLeft: 8 }}>
           {total} item{total !== 1 ? "s" : ""}
         </span>
       </div>
@@ -124,7 +124,7 @@ export default function FeedPage() {
         {loading ? (
           <div
             style={{
-              color: "#333",
+              color: "#666",
               fontSize: 10,
               letterSpacing: 2,
               textAlign: "center",
@@ -148,7 +148,7 @@ export default function FeedPage() {
         ) : items.length === 0 ? (
           <div
             style={{
-              color: "#333",
+              color: "#666",
               fontSize: 11,
               letterSpacing: 2,
               textAlign: "center",
@@ -210,7 +210,7 @@ export default function FeedPage() {
                       </span>
                     )}
 
-                    <span style={{ fontSize: 9, color: "#333", marginLeft: "auto" }}>
+                    <span style={{ fontSize: 9, color: "#666", marginLeft: "auto" }}>
                       {formatRelativeTime(item.publishedAt)}
                     </span>
                   </div>
@@ -281,7 +281,7 @@ export default function FeedPage() {
                         rel="noopener noreferrer"
                         style={{
                           fontSize: 9,
-                          color: "#444",
+                          color: "#777",
                           textDecoration: "none",
                           marginLeft: "auto",
                         }}

@@ -112,7 +112,7 @@ export default function UpgradeGate({ feature }: UpgradeGateProps) {
           VIEW PLANS
         </Link>
 
-        <p style={{ color: "#333", fontSize: 9, marginTop: 20 }}>
+        <p style={{ color: "#666", fontSize: 9, marginTop: 20 }}>
           Pro includes full access to all platform intelligence.
         </p>
       </div>

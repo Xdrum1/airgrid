@@ -147,7 +147,7 @@ function AdminLogin({ onVerified }: { onVerified: () => void }) {
         </div>
         <div
           style={{
-            color: "#555",
+            color: "#888",
             fontSize: 11,
             marginBottom: 28,
             lineHeight: 1.5,
@@ -246,7 +246,7 @@ function AdminLogin({ onVerified }: { onVerified: () => void }) {
           style={{
             display: "inline-block",
             marginTop: 24,
-            color: "#333",
+            color: "#666",
             fontSize: 9,
             letterSpacing: 2,
             textDecoration: "none",
@@ -437,7 +437,7 @@ export default function AdminReview() {
           <Link
             href="/dashboard"
             style={{
-              color: "#555",
+              color: "#888",
               fontSize: 9,
               letterSpacing: 2,
               textDecoration: "none",
@@ -456,7 +456,7 @@ export default function AdminReview() {
             ADMIN REVIEW
           </span>
         </div>
-        <span style={{ color: "#333", fontSize: 9, letterSpacing: 1 }}>
+        <span style={{ color: "#666", fontSize: 9, letterSpacing: 1 }}>
           {overrides.length} PENDING
         </span>
       </div>
@@ -531,7 +531,7 @@ export default function AdminReview() {
         ) : loading ? (
           <div
             style={{
-              color: "#444",
+              color: "#777",
               fontSize: 10,
               letterSpacing: 2,
               textAlign: "center",
@@ -544,7 +544,7 @@ export default function AdminReview() {
           overrides.length === 0 ? (
             <div
               style={{
-                color: "#333",
+                color: "#666",
                 fontSize: 11,
                 letterSpacing: 2,
                 textAlign: "center",
@@ -576,7 +576,7 @@ export default function AdminReview() {
         ) : classifications.length === 0 ? (
           <div
             style={{
-              color: "#333",
+              color: "#666",
               fontSize: 11,
               letterSpacing: 2,
               textAlign: "center",
@@ -641,7 +641,7 @@ function AdminReports() {
           <div style={{ color: "#fff", fontSize: 14, fontWeight: 700, marginBottom: 4 }}>
             Gap Reports
           </div>
-          <div style={{ color: "#555", fontSize: 11 }}>
+          <div style={{ color: "#888", fontSize: 11 }}>
             Generate per-city readiness gap reports. Opens in a new tab — use Cmd+P to print to PDF.
           </div>
         </div>
@@ -682,7 +682,7 @@ function AdminReports() {
                 <span style={{ color: "#fff", fontSize: 13, fontWeight: 600 }}>
                   {city.city}
                 </span>
-                <span style={{ color: "#555", fontSize: 11 }}>
+                <span style={{ color: "#888", fontSize: 11 }}>
                   {city.state}
                 </span>
               </div>
@@ -710,7 +710,7 @@ function AdminReports() {
                 >
                   {tier}
                 </span>
-                <span style={{ color: "#555", fontSize: 10 }}>
+                <span style={{ color: "#888", fontSize: 10 }}>
                   OPEN →
                 </span>
               </div>
@@ -800,7 +800,7 @@ function OverrideCard({
           >
             {override.field}
           </span>
-          <span style={{ color: "#555", fontSize: 10 }}>→</span>
+          <span style={{ color: "#888", fontSize: 10 }}>→</span>
           <span style={{ color: "#fff", fontSize: 11 }}>
             {JSON.stringify(override.value)}
           </span>
@@ -868,7 +868,7 @@ function OverrideCard({
             </span>
             <span
               style={{
-                color: "#333",
+                color: "#666",
                 fontSize: 9,
                 letterSpacing: 1,
               }}
@@ -887,7 +887,7 @@ function OverrideCard({
                 marginBottom: 4,
               }}
             >
-              <span style={{ color: "#555", fontSize: 9, letterSpacing: 1 }}>
+              <span style={{ color: "#888", fontSize: 9, letterSpacing: 1 }}>
                 CONFIDENCE
               </span>
               <span
@@ -940,7 +940,7 @@ function OverrideCard({
                 style={{
                   background: "none",
                   border: "none",
-                  color: "#555",
+                  color: "#888",
                   fontSize: 9,
                   letterSpacing: 1,
                   cursor: "pointer",
@@ -1000,7 +1000,7 @@ function OverrideCard({
             SOURCE →
           </a>
         )}
-        <span style={{ color: "#333", fontSize: 9, letterSpacing: 1 }}>
+        <span style={{ color: "#666", fontSize: 9, letterSpacing: 1 }}>
           {formatRelativeTime(override.createdAt)}
         </span>
       </div>
@@ -1139,14 +1139,14 @@ function ClassificationCard({
             {classification.confidence.toUpperCase()}
           </span>
         </div>
-        <span style={{ color: "#333", fontSize: 9, letterSpacing: 1 }}>
+        <span style={{ color: "#666", fontSize: 9, letterSpacing: 1 }}>
           {formatRelativeTime(classification.createdAt)}
         </span>
       </div>
 
       {/* Cities & factors */}
       <div style={{ marginBottom: 8 }}>
-        <span style={{ color: "#555", fontSize: 9, letterSpacing: 1 }}>
+        <span style={{ color: "#888", fontSize: 9, letterSpacing: 1 }}>
           CITIES:{" "}
         </span>
         <span style={{ color: "#888", fontSize: 10 }}>
@@ -1157,7 +1157,7 @@ function ClassificationCard({
       </div>
 
       <div style={{ marginBottom: 8 }}>
-        <span style={{ color: "#555", fontSize: 9, letterSpacing: 1 }}>
+        <span style={{ color: "#888", fontSize: 9, letterSpacing: 1 }}>
           FACTORS:{" "}
         </span>
         <span style={{ color: "#888", fontSize: 10 }}>
@@ -1171,7 +1171,7 @@ function ClassificationCard({
 
       {/* Model info */}
       <div style={{ marginBottom: 10 }}>
-        <span style={{ color: "#333", fontSize: 9, letterSpacing: 1 }}>
+        <span style={{ color: "#666", fontSize: 9, letterSpacing: 1 }}>
           MODEL: {classification.modelUsed} · PROMPT: v
           {classification.promptVersion}
         </span>
@@ -1183,7 +1183,7 @@ function ClassificationCard({
         style={{
           background: "none",
           border: "none",
-          color: "#555",
+          color: "#888",
           fontSize: 9,
           letterSpacing: 1,
           cursor: "pointer",

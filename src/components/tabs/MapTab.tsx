@@ -14,7 +14,7 @@ const MapView = dynamic(() => import("../MapView"), {
       alignItems: "center",
       justifyContent: "center",
       background: "#07070e",
-      color: "#444",
+      color: "#777",
       fontFamily: "'Space Mono', monospace",
       fontSize: 10,
       letterSpacing: 2,

@@ -639,7 +639,7 @@ export default async function GapReportPage({
               <span className="neon-accent" style={{ fontFamily: "'Courier New', monospace", fontWeight: 400, color: "#00d4ff", letterSpacing: "0.1em" }}>INDEX</span>
               {" "}&middot; Rate the sky.
             </p>
-            <p className="screen-only" style={{ margin: "8px 0 0", color: "#444" }}>
+            <p className="screen-only" style={{ margin: "8px 0 0", color: "#777" }}>
               Print this page (Ctrl+P / Cmd+P) to generate a PDF.
             </p>
           </div>

@@ -338,12 +338,12 @@ export default function KeysTab({
 
         {/* Keys list */}
         {loading ? (
-          <div style={{ color: "#555", fontSize: 12, padding: 20, textAlign: "center" }}>
+          <div style={{ color: "#888", fontSize: 12, padding: 20, textAlign: "center" }}>
             Loading keys...
           </div>
         ) : keys.length === 0 ? (
           <div style={{
-            color: "#555",
+            color: "#888",
             fontSize: 12,
             textAlign: "center",
             padding: "40px 20px",
@@ -358,7 +358,7 @@ export default function KeysTab({
               fontFamily: "'Space Mono', monospace",
               fontSize: 9,
               letterSpacing: 1.5,
-              color: "#555",
+              color: "#888",
               textTransform: "uppercase",
               marginBottom: 4,
             }}>
@@ -409,10 +409,10 @@ export default function KeysTab({
                   }}>
                     {key.tier}
                   </span>
-                  <span style={{ color: "#555", fontSize: 10 }}>
+                  <span style={{ color: "#888", fontSize: 10 }}>
                     {key.lastUsedAt ? `Used ${formatRelative(key.lastUsedAt)}` : "Never used"}
                   </span>
-                  <span style={{ color: "#444", fontSize: 10 }}>
+                  <span style={{ color: "#777", fontSize: 10 }}>
                     Created {formatDate(key.createdAt)}
                   </span>
                 </div>
@@ -444,7 +444,7 @@ export default function KeysTab({
           paddingTop: 20,
           borderTop: "1px solid rgba(255,255,255,0.04)",
           fontSize: 12,
-          color: "#555",
+          color: "#888",
         }}>
           <a href="/api" style={{ color: "#00d4ff", textDecoration: "none" }}>
             API Overview

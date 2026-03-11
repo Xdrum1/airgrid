@@ -174,7 +174,7 @@ export default function AdminFeed({
   const labelStyle: React.CSSProperties = {
     fontSize: 9,
     letterSpacing: 2,
-    color: "#555",
+    color: "#888",
     marginBottom: 4,
     display: "block",
     fontFamily: "'Space Mono', monospace",
@@ -333,11 +333,11 @@ export default function AdminFeed({
 
       {/* Items list */}
       {loading ? (
-        <div style={{ color: "#444", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
+        <div style={{ color: "#777", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
           LOADING...
         </div>
       ) : items.length === 0 ? (
-        <div style={{ color: "#333", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 80 }}>
+        <div style={{ color: "#666", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 80 }}>
           NO FEED ITEMS YET
         </div>
       ) : (
@@ -388,7 +388,7 @@ export default function AdminFeed({
                 )}
 
                 {item.promotedBy && (
-                  <span style={{ fontSize: 8, color: "#333" }}>
+                  <span style={{ fontSize: 8, color: "#666" }}>
                     via {item.promotedBy}
                   </span>
                 )}
@@ -434,7 +434,7 @@ export default function AdminFeed({
                     SOURCE
                   </a>
                 )}
-                <span style={{ fontSize: 9, color: "#333" }}>
+                <span style={{ fontSize: 9, color: "#666" }}>
                   {new Date(item.createdAt).toLocaleDateString()}
                 </span>
                 <div style={{ marginLeft: "auto", display: "flex", gap: 4 }}>

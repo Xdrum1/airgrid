@@ -138,7 +138,7 @@ export default function CorridorSubscribeForm({
               Tracking
             </span>
           </div>
-          <div style={{ color: "#555", fontSize: 9, marginBottom: 8 }}>
+          <div style={{ color: "#888", fontSize: 9, marginBottom: 8 }}>
             You&apos;ll be notified when {corridorName} status changes
           </div>
           <button
@@ -146,7 +146,7 @@ export default function CorridorSubscribeForm({
             style={{
               background: "transparent",
               border: "none",
-              color: "#444",
+              color: "#777",
               fontSize: 8,
               cursor: "pointer",
               padding: 0,

@@ -69,7 +69,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
 
   if (loading) {
     return (
-      <div style={{ color: "#444", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
+      <div style={{ color: "#777", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
         LOADING...
       </div>
     );
@@ -77,7 +77,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
 
   if (!health) {
     return (
-      <div style={{ color: "#333", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 80 }}>
+      <div style={{ color: "#666", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 80 }}>
         FAILED TO LOAD PIPELINE DATA
       </div>
     );
@@ -147,7 +147,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
         }}>
           {overallHealthy ? "ALL PIPELINES HEALTHY" : "ATTENTION NEEDED"}
         </span>
-        <span style={{ color: "#333", fontSize: 9, marginLeft: "auto" }}>
+        <span style={{ color: "#666", fontSize: 9, marginLeft: "auto" }}>
           Queried {formatRelativeTime(health.queriedAt)}
         </span>
       </div>
@@ -203,15 +203,15 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
                 </span>
               </div>
 
-              <div style={{ color: "#555", fontSize: 9, marginBottom: 4 }}>
+              <div style={{ color: "#888", fontSize: 9, marginBottom: 4 }}>
                 {p.desc}
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ color: "#333", fontSize: 8, letterSpacing: 1 }}>
+                <span style={{ color: "#666", fontSize: 8, letterSpacing: 1 }}>
                   {p.schedule}
                 </span>
                 {p.stat && (
-                  <span style={{ color: "#444", fontSize: 9 }}>
+                  <span style={{ color: "#777", fontSize: 9 }}>
                     {p.stat}
                   </span>
                 )}
@@ -231,7 +231,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
           borderRadius: 8,
           padding: "16px 18px",
         }}>
-          <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
+          <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
             CHANGELOG VOLUME BY TYPE
           </div>
           {Object.entries(health.dataVolume)
@@ -265,7 +265,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
                 </div>
               );
             })}
-          <div style={{ color: "#333", fontSize: 9, marginTop: 12, fontFamily: "'Space Mono', monospace" }}>
+          <div style={{ color: "#666", fontSize: 9, marginTop: 12, fontFamily: "'Space Mono', monospace" }}>
             {totalVolume.toLocaleString()} total entries
           </div>
         </div>
@@ -283,7 +283,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
           alignItems: "center",
           textAlign: "center",
         }}>
-          <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 12 }}>
+          <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 12 }}>
             PENDING REVIEWS
           </div>
           <div style={{
@@ -296,7 +296,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
           }}>
             {health.pendingReviews}
           </div>
-          <div style={{ color: "#444", fontSize: 9, fontFamily: "'Space Mono', monospace", lineHeight: 1.5 }}>
+          <div style={{ color: "#777", fontSize: 9, fontFamily: "'Space Mono', monospace", lineHeight: 1.5 }}>
             {health.pendingReviews > 0
               ? "Scoring overrides need admin review"
               : "All clear"}
@@ -312,7 +312,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
           borderRadius: 8,
           padding: "16px 18px",
         }}>
-          <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
+          <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
             RECENT INGESTION RUNS (LAST 7)
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
