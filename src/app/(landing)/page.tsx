@@ -175,6 +175,20 @@ export default async function LandingPage() {
               Pricing
             </Link>
             <Link
+              href="/feed"
+              className="nav-hide-mobile"
+              style={{
+                color: "#888",
+                fontSize: 11,
+                letterSpacing: "0.06em",
+                textDecoration: "none",
+                padding: "8px 16px",
+                transition: "all 0.15s",
+              }}
+            >
+              Intel
+            </Link>
+            <Link
               href="/api"
               className="nav-hide-mobile"
               style={{
@@ -634,6 +648,74 @@ export default async function LandingPage() {
 
           {/* Activity Feed — live from API */}
           <LiveActivityFeed fallback={SAMPLE_ACTIVITY} />
+        </div>
+      </section>
+
+      {/* ======== Intel Feed CTA ======== */}
+      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "0 20px 80px" }}>
+        <div
+          style={{
+            border: "1px solid rgba(124,58,237,0.2)",
+            borderRadius: 12,
+            padding: "48px 32px",
+            background: "rgba(124,58,237,0.03)",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 9,
+              letterSpacing: 3,
+              color: "#7c3aed",
+              marginBottom: 16,
+              fontFamily: "'Space Mono', monospace",
+            }}
+          >
+            INTEL FEED
+          </div>
+          <h2
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(20px, 2.5vw, 28px)",
+              margin: "0 0 12px",
+              color: "#fff",
+            }}
+          >
+            Latest UAM Intelligence
+          </h2>
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              color: "#888",
+              fontSize: 13,
+              margin: "0 0 28px",
+              maxWidth: 520,
+              marginLeft: "auto",
+              marginRight: "auto",
+              lineHeight: 1.6,
+            }}
+          >
+            Curated intelligence on FAA rulings, city policy, operator expansions,
+            and infrastructure developments shaping UAM market readiness.
+          </p>
+          <Link
+            href="/feed"
+            style={{
+              display: "inline-block",
+              padding: "12px 32px",
+              border: "1px solid #7c3aed",
+              borderRadius: 6,
+              color: "#7c3aed",
+              fontSize: 11,
+              letterSpacing: 2,
+              textDecoration: "none",
+              fontFamily: "'Space Mono', monospace",
+              transition: "all 0.2s",
+            }}
+          >
+            READ THE FEED &rarr;
+          </Link>
         </div>
       </section>
 
@@ -1229,6 +1311,12 @@ export default async function LandingPage() {
               style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
             >
               METHODOLOGY
+            </Link>
+            <Link
+              href="/feed"
+              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
+            >
+              INTEL
             </Link>
             <Link
               href="/api"
