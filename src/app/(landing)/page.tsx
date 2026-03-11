@@ -3,7 +3,7 @@ import Image from "next/image";
 import { OPERATORS, CORRIDORS, getCitiesWithOverrides, MARKET_COUNT } from "@/data/seed";
 import CountUpStats from "@/components/landing/CountUpStats";
 import LiveActivityFeed from "@/components/landing/LiveActivityFeed";
-import CityScoreLookup from "@/components/landing/CityScoreLookup";
+
 import LiveTicker from "@/components/landing/LiveTicker";
 import LiveFilingsFeed from "@/components/landing/LiveFilingsFeed";
 import SiteNav from "@/components/SiteNav";
@@ -227,18 +227,6 @@ export default async function LandingPage() {
           </Link>
         </div>
 
-        {/* City Score Lookup */}
-        <div style={{ marginTop: 32 }}>
-          <CityScoreLookup
-            cities={CITIES.map((c) => ({
-              id: c.id,
-              city: c.city,
-              state: c.state,
-              score: c.score ?? 0,
-              regulatoryPosture: c.regulatoryPosture,
-            }))}
-          />
-        </div>
       </section>
 
       {/* ======== Stats Bar ======== */}
