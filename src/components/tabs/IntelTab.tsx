@@ -55,6 +55,8 @@ export default function IntelTab({ animate, isMobile }: IntelTabProps) {
         flex: 1,
         overflow: "auto",
         padding: isMobile ? "16px 12px" : "24px 28px",
+        paddingLeft: isMobile ? 12 : 292,
+        paddingRight: isMobile ? 12 : 316,
         opacity: animate ? 1 : 0,
         transition: "opacity 0.3s",
       }}
