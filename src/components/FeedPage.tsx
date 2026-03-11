@@ -7,6 +7,7 @@ import { safeHref } from "@/lib/safe-url";
 
 interface FeedItem {
   id: string;
+  slug: string;
   title: string;
   summary: string;
   sourceUrl: string | null;
@@ -234,18 +235,22 @@ export default function FeedPage() {
                   </div>
 
                   {/* Title */}
-                  <div
+                  <Link
+                    href={`/feed/${item.slug}`}
                     style={{
+                      display: "block",
                       fontSize: 14,
                       color: "#e0e0e0",
                       fontWeight: 600,
                       marginBottom: 6,
                       fontFamily: "'Syne', sans-serif",
                       lineHeight: 1.4,
+                      textDecoration: "none",
+                      transition: "color 0.15s",
                     }}
                   >
                     {item.title}
-                  </div>
+                  </Link>
 
                   {/* Summary */}
                   <div

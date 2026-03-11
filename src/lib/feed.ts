@@ -13,6 +13,21 @@ async function getPrisma() {
   return prisma;
 }
 
+/** Generate a URL-safe slug from title + optional date suffix for uniqueness. */
+export function generateSlug(title: string, date?: Date): string {
+  const base = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80);
+  if (date) {
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const y = date.getFullYear();
+    return `${base}-${m}-${y}`;
+  }
+  return base;
+}
+
 // -------------------------------------------------------
 // In-memory cache (60s TTL)
 // -------------------------------------------------------
@@ -35,6 +50,7 @@ export type FeedCategory = (typeof FEED_CATEGORIES)[number];
 
 export interface FeedItemPublic {
   id: string;
+  slug: string;
   title: string;
   summary: string;
   sourceUrl: string | null;
@@ -92,6 +108,7 @@ export async function getPublishedFeedItems(options?: {
 
     const items: FeedItemPublic[] = rows.map((r) => ({
       id: r.id,
+      slug: r.slug ?? r.id,
       title: r.title,
       summary: r.summary,
       sourceUrl: r.sourceUrl,
@@ -135,6 +152,28 @@ export async function getFeedItemById(id: string): Promise<FeedItemAdmin | null>
   return row ? toAdmin(row) : null;
 }
 
+export async function getFeedItemBySlug(slug: string): Promise<FeedItemPublic | null> {
+  const prisma = await getPrisma();
+  const row = await prisma.feedItem.findFirst({
+    where: { slug, status: "published", publishedAt: { not: null } },
+  });
+  if (!row) return null;
+  return {
+    id: row.id,
+    slug: row.slug ?? row.id,
+    title: row.title,
+    summary: row.summary,
+    sourceUrl: row.sourceUrl,
+    category: row.category,
+    cityIds: row.cityIds,
+    cities: row.cityIds
+      .map((id) => ({ id, name: CITIES_MAP[id]?.city ?? id }))
+      .filter((c) => c.name !== c.id || CITIES_MAP[c.id]),
+    scoreImpact: row.scoreImpact,
+    publishedAt: (row.publishedAt ?? row.createdAt).toISOString(),
+  };
+}
+
 // -------------------------------------------------------
 // Admin writes
 // -------------------------------------------------------
@@ -156,8 +195,14 @@ export async function createFeedItem(data: CreateFeedItemInput): Promise<FeedIte
   const prisma = await getPrisma();
   const now = new Date();
 
+  // Generate unique slug — append random suffix if collision
+  let slug = generateSlug(data.title, now);
+  const existing = await prisma.feedItem.findUnique({ where: { slug }, select: { id: true } });
+  if (existing) slug = `${slug}-${Math.random().toString(36).slice(2, 6)}`;
+
   const row = await prisma.feedItem.create({
     data: {
+      slug,
       title: data.title,
       summary: data.summary,
       sourceUrl: data.sourceUrl ?? null,
@@ -270,6 +315,7 @@ export async function promoteToDraft(recordId: string): Promise<FeedItemAdmin> {
 
 function toAdmin(row: {
   id: string;
+  slug: string | null;
   title: string;
   summary: string;
   sourceUrl: string | null;
@@ -285,6 +331,7 @@ function toAdmin(row: {
 }): FeedItemAdmin {
   return {
     id: row.id,
+    slug: row.slug ?? row.id,
     title: row.title,
     summary: row.summary,
     sourceUrl: row.sourceUrl,
