@@ -74,7 +74,7 @@ export default function FactorSparklines({ history }: FactorSparklinesProps) {
                 marginBottom: 10,
               }}
             >
-              <span style={{ color: "#555", fontSize: 9, letterSpacing: 1 }}>
+              <span style={{ color: "#888", fontSize: 9, letterSpacing: 1 }}>
                 {label.toUpperCase()}
               </span>
               <span

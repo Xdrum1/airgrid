@@ -366,7 +366,7 @@ function CorridorPopup({
           {corridor.startPoint.label} → {corridor.endPoint.label}
         </div>
         {corridor.notes && (
-          <div style={{ marginTop: 6, color: "#555", fontStyle: "italic" }}>
+          <div style={{ marginTop: 6, color: "#888", fontStyle: "italic" }}>
             {corridor.notes}
           </div>
         )}
@@ -545,7 +545,7 @@ function CityPopup({
       {city.keyMilestones?.[0] && (
         <div
           style={{
-            color: "#555",
+            color: "#888",
             fontSize: 9,
             lineHeight: 1.5,
             marginBottom: 10,
@@ -733,7 +733,7 @@ export default function MapView({
         </div>
         <div
           style={{
-            color: "#555",
+            color: "#888",
             fontSize: 11,
             fontFamily: "'Space Mono', monospace",
             textAlign: "center",
@@ -1090,7 +1090,7 @@ export default function MapView({
             />
             <span
               style={{
-                color: "#555",
+                color: "#888",
                 fontSize: 9,
                 fontFamily: "'Space Mono', monospace",
               }}
@@ -1141,7 +1141,7 @@ export default function MapView({
             />
             <span
               style={{
-                color: "#555",
+                color: "#888",
                 fontSize: 9,
                 fontFamily: "'Space Mono', monospace",
               }}
@@ -1194,7 +1194,7 @@ export default function MapView({
             </svg>
             <span
               style={{
-                color: "#555",
+                color: "#888",
                 fontSize: 9,
                 fontFamily: "'Space Mono', monospace",
               }}

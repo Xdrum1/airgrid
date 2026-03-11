@@ -107,18 +107,18 @@ export default function IntelTab({ animate, isMobile }: IntelTabProps) {
             </button>
           );
         })}
-        <span style={{ fontSize: 9, color: "#333", alignSelf: "center", marginLeft: 6 }}>
+        <span style={{ fontSize: 9, color: "#666", alignSelf: "center", marginLeft: 6 }}>
           {total} item{total !== 1 ? "s" : ""}
         </span>
       </div>
 
       {/* Items */}
       {loading ? (
-        <div style={{ color: "#333", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
+        <div style={{ color: "#666", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
           LOADING...
         </div>
       ) : items.length === 0 ? (
-        <div style={{ color: "#333", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 60 }}>
+        <div style={{ color: "#666", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 60 }}>
           NO INTEL YET
         </div>
       ) : (
@@ -159,7 +159,7 @@ export default function IntelTab({ animate, isMobile }: IntelTabProps) {
                     SCORE IMPACT
                   </span>
                 )}
-                <span style={{ fontSize: 9, color: "#333", marginLeft: "auto" }}>
+                <span style={{ fontSize: 9, color: "#666", marginLeft: "auto" }}>
                   {formatRelativeTime(item.publishedAt)}
                 </span>
               </div>
@@ -211,7 +211,7 @@ export default function IntelTab({ animate, isMobile }: IntelTabProps) {
                     rel="noopener noreferrer"
                     style={{
                       fontSize: 9,
-                      color: "#444",
+                      color: "#777",
                       textDecoration: "none",
                       marginLeft: "auto",
                     }}

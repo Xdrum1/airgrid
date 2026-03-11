@@ -278,7 +278,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
               Subscribed
             </span>
           </div>
-          <div style={{ color: "#555", fontSize: 9, marginBottom: 8 }}>
+          <div style={{ color: "#888", fontSize: 9, marginBottom: 8 }}>
             {session?.user?.email ?? "You"} will receive alerts for {cityName}
           </div>
           <button
@@ -286,7 +286,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
             style={{
               background: "transparent",
               border: "none",
-              color: "#444",
+              color: "#777",
               fontSize: 8,
               cursor: "pointer",
               padding: 0,
@@ -324,7 +324,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
       {session?.user?.email && (
         <div
           style={{
-            color: "#555",
+            color: "#888",
             fontSize: 9,
             marginBottom: 10,
             padding: "8px 12px",
@@ -400,7 +400,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
             </span>
           )}
         </div>
-        <span style={{ color: "#555", fontSize: 9 }}>
+        <span style={{ color: "#888", fontSize: 9 }}>
           Also alert me for ALL cities
         </span>
       </label>

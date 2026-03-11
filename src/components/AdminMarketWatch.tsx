@@ -211,7 +211,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
 
   if (loading) {
     return (
-      <div style={{ color: "#444", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
+      <div style={{ color: "#777", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
         LOADING...
       </div>
     );
@@ -229,7 +229,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
           style={{
             background: "none",
             border: "none",
-            color: "#555",
+            color: "#888",
             fontSize: 10,
             cursor: "pointer",
             marginBottom: 20,
@@ -251,7 +251,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
 
           {/* Watch Status */}
           <div style={{ marginBottom: 20 }}>
-            <label style={{ color: "#555", fontSize: 9, letterSpacing: 2, display: "block", marginBottom: 8 }}>
+            <label style={{ color: "#888", fontSize: 9, letterSpacing: 2, display: "block", marginBottom: 8 }}>
               WATCH STATUS
             </label>
             <div style={{ display: "flex", gap: 8 }}>
@@ -280,7 +280,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
 
           {/* Outlook */}
           <div style={{ marginBottom: 20 }}>
-            <label style={{ color: "#555", fontSize: 9, letterSpacing: 2, display: "block", marginBottom: 8 }}>
+            <label style={{ color: "#888", fontSize: 9, letterSpacing: 2, display: "block", marginBottom: 8 }}>
               6-MONTH OUTLOOK
             </label>
             <div style={{ display: "flex", gap: 8 }}>
@@ -309,7 +309,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
 
           {/* Analyst Note */}
           <div style={{ marginBottom: 20 }}>
-            <label style={{ color: "#555", fontSize: 9, letterSpacing: 2, display: "block", marginBottom: 8 }}>
+            <label style={{ color: "#888", fontSize: 9, letterSpacing: 2, display: "block", marginBottom: 8 }}>
               ANALYST NOTE (visible to Pro users)
             </label>
             <textarea
@@ -330,14 +330,14 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
                 resize: "vertical",
               }}
             />
-            <div style={{ color: "#333", fontSize: 9, textAlign: "right", marginTop: 4 }}>
+            <div style={{ color: "#666", fontSize: 9, textAlign: "right", marginTop: 4 }}>
               {editing.analystNote.length}/2000
             </div>
           </div>
 
           {/* Reason */}
           <div style={{ marginBottom: 24 }}>
-            <label style={{ color: "#555", fontSize: 9, letterSpacing: 2, display: "block", marginBottom: 8 }}>
+            <label style={{ color: "#888", fontSize: 9, letterSpacing: 2, display: "block", marginBottom: 8 }}>
               REASON FOR CHANGE (internal audit trail)
             </label>
             <textarea
@@ -401,7 +401,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
               style={{
                 background: "none",
                 border: "none",
-                color: "#444",
+                color: "#777",
                 fontSize: 10,
                 cursor: "pointer",
                 marginLeft: "auto",
@@ -427,7 +427,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
       {/* AI Suggestions */}
       {suggestions.length > 0 && (
         <div style={{ marginBottom: 28 }}>
-          <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 12 }}>
+          <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 12 }}>
             AI SUGGESTIONS ({suggestions.length})
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -460,7 +460,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
                     }}>
                       {WATCH_STATUS_LABELS[s.suggestedStatus] ?? s.suggestedStatus}
                     </span>
-                    <span style={{ color: "#444", fontSize: 9 }}>
+                    <span style={{ color: "#777", fontSize: 9 }}>
                       {(s.confidence * 100).toFixed(0)}% · {s.signalCount} signals
                     </span>
                   </div>
@@ -489,7 +489,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
                     style={{
                       background: "none",
                       border: "1px solid rgba(255,255,255,0.06)",
-                      color: "#444",
+                      color: "#777",
                       fontSize: 9,
                       padding: "6px 10px",
                       borderRadius: 4,
@@ -508,7 +508,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
       {/* Active Watches */}
       {activeWatches.length > 0 && (
         <div style={{ marginBottom: 28 }}>
-          <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 12 }}>
+          <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 12 }}>
             ACTIVE WATCHES ({activeWatches.length})
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -526,7 +526,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
 
       {/* All Cities */}
       <div>
-        <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 12 }}>
+        <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 12 }}>
           ALL MARKETS ({allCities.length})
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -637,7 +637,7 @@ function WatchRow({
           )}
         </div>
         {!compact && city.analystNote && (
-          <div style={{ color: "#555", fontSize: 10, marginTop: 4, lineHeight: 1.4 }}>
+          <div style={{ color: "#888", fontSize: 10, marginTop: 4, lineHeight: 1.4 }}>
             {city.analystNote.length > 120 ? city.analystNote.slice(0, 120) + "…" : city.analystNote}
           </div>
         )}
@@ -665,7 +665,7 @@ function WatchRow({
 
       {/* Updated */}
       {city.updatedAt && (
-        <span style={{ color: "#333", fontSize: 9, fontFamily: "'Space Mono', monospace", minWidth: 50 }}>
+        <span style={{ color: "#666", fontSize: 9, fontFamily: "'Space Mono', monospace", minWidth: 50 }}>
           {formatRelativeTime(city.updatedAt)}
         </span>
       )}

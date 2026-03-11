@@ -80,7 +80,7 @@ export default function AnalyticsTab({
               transition: `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s`,
             }}
           >
-            <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
+            <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
               {stat.label}
             </div>
             <div style={{ color: stat.color, fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28 }}>
@@ -92,7 +92,7 @@ export default function AnalyticsTab({
 
       {/* Horizontal Bar Chart — Top 10 by Readiness Score */}
       <div style={{ marginBottom: 32 }}>
-        <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
+        <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
           TOP 10 MARKETS BY READINESS SCORE
         </div>
         <svg viewBox="0 0 600 280" style={{ width: "100%", height: "auto" }}>
@@ -167,7 +167,7 @@ export default function AnalyticsTab({
 
       {/* Stacked Bar Chart — Score Breakdown by Component */}
       <div style={{ marginBottom: 32 }}>
-        <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 10 }}>
+        <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 10 }}>
           SCORE BREAKDOWN BY COMPONENT
         </div>
         {/* Legend */}
@@ -270,7 +270,7 @@ export default function AnalyticsTab({
       {/* CORRIDOR INTELLIGENCE */}
       {corridors.length > 0 && (
         <>
-          <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
+          <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
             CORRIDOR INTELLIGENCE
           </div>
 
@@ -300,7 +300,7 @@ export default function AnalyticsTab({
                   transition: `opacity 0.4s ease ${i * 0.08 + 0.2}s, transform 0.4s ease ${i * 0.08 + 0.2}s`,
                 }}
               >
-                <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
+                <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
                   {stat.label}
                 </div>
                 <div style={{ color: stat.color, fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28 }}>
@@ -326,7 +326,7 @@ export default function AnalyticsTab({
                   padding: "14px 14px",
                 }}
               >
-                <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 6 }}>
+                <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 6 }}>
                   {stat.label}
                 </div>
                 <div style={{ color: stat.color, fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 18 }}>
@@ -339,7 +339,7 @@ export default function AnalyticsTab({
           {/* Corridors by City bar chart */}
           {corridorStats.byCitySorted.length > 0 && (
             <div style={{ marginBottom: 32 }}>
-              <div style={{ color: "#444", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
+              <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 14 }}>
                 CORRIDORS BY CITY
               </div>
               <svg

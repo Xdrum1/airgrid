@@ -122,7 +122,7 @@ export default function LiveTicker({
             />
             <span style={{ color: "#bbb" }}>{item.text}</span>
             {item.time && (
-              <span style={{ color: "#555", fontSize: 8 }}>{item.time}</span>
+              <span style={{ color: "#888", fontSize: 8 }}>{item.time}</span>
             )}
           </span>
         ))}

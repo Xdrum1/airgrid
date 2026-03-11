@@ -173,7 +173,7 @@ export default function AdminCorridors({
   };
 
   const labelStyle: React.CSSProperties = {
-    color: "#555",
+    color: "#888",
     fontSize: 9,
     letterSpacing: 1,
     marginBottom: 4,
@@ -182,7 +182,7 @@ export default function AdminCorridors({
 
   if (loading) {
     return (
-      <div style={{ color: "#444", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
+      <div style={{ color: "#777", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
         LOADING CORRIDORS...
       </div>
     );
@@ -192,7 +192,7 @@ export default function AdminCorridors({
     <div>
       {/* Header + Create button */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <div style={{ color: "#555", fontSize: 10, letterSpacing: 1 }}>
+        <div style={{ color: "#888", fontSize: 10, letterSpacing: 1 }}>
           {corridors.length} CORRIDOR{corridors.length !== 1 ? "S" : ""}
         </div>
         <button
@@ -381,7 +381,7 @@ export default function AdminCorridors({
                 border: "1px solid rgba(255,255,255,0.1)",
                 borderRadius: 4,
                 padding: "8px 20px",
-                color: "#555",
+                color: "#888",
                 fontSize: 9,
                 letterSpacing: 1,
                 cursor: "pointer",
@@ -396,7 +396,7 @@ export default function AdminCorridors({
 
       {/* Corridor list */}
       {corridors.length === 0 ? (
-        <div style={{ color: "#333", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 80 }}>
+        <div style={{ color: "#666", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 80 }}>
           NO CORRIDORS
         </div>
       ) : (
@@ -436,7 +436,7 @@ export default function AdminCorridors({
                       {c.status}
                     </span>
                   </div>
-                  <span style={{ color: "#555", fontSize: 9 }}>{cityLabel}</span>
+                  <span style={{ color: "#888", fontSize: 9 }}>{cityLabel}</span>
                 </div>
 
                 {/* Route */}
@@ -448,13 +448,13 @@ export default function AdminCorridors({
                 <div style={{ display: "flex", gap: 16, marginBottom: 10 }}>
                   {c.distanceKm > 0 && (
                     <div>
-                      <span style={{ color: "#444", fontSize: 8, letterSpacing: 1 }}>DIST </span>
+                      <span style={{ color: "#777", fontSize: 8, letterSpacing: 1 }}>DIST </span>
                       <span style={{ color: "#ccc", fontSize: 10 }}>{c.distanceKm} km</span>
                     </div>
                   )}
                   {c.estimatedFlightMinutes > 0 && (
                     <div>
-                      <span style={{ color: "#444", fontSize: 8, letterSpacing: 1 }}>TIME </span>
+                      <span style={{ color: "#777", fontSize: 8, letterSpacing: 1 }}>TIME </span>
                       <span style={{ color: "#ccc", fontSize: 10 }}>{c.estimatedFlightMinutes} min</span>
                     </div>
                   )}
@@ -505,7 +505,7 @@ export default function AdminCorridors({
                           border: "1px solid rgba(255,255,255,0.1)",
                           borderRadius: 4,
                           padding: "6px 14px",
-                          color: "#555",
+                          color: "#888",
                           fontSize: 9,
                           letterSpacing: 1,
                           cursor: "pointer",

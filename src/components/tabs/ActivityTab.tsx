@@ -35,7 +35,7 @@ export default function ActivityTab({
         <div>
           <div
             style={{
-              color: "#444",
+              color: "#777",
               fontSize: 8,
               letterSpacing: 2,
               marginBottom: 4,
@@ -43,12 +43,12 @@ export default function ActivityTab({
           >
             CHANGELOG
           </div>
-          <div style={{ color: "#555", fontSize: 10 }}>
+          <div style={{ color: "#888", fontSize: 10 }}>
             Recent data ingestion events and regulatory changes
           </div>
         </div>
         {fetchedAt && (
-          <span style={{ color: "#444", fontSize: 8, flexShrink: 0 }}>
+          <span style={{ color: "#777", fontSize: 8, flexShrink: 0 }}>
             FETCHED {new Date(fetchedAt).toLocaleTimeString()}
           </span>
         )}
@@ -74,7 +74,7 @@ export default function ActivityTab({
               animation: "spin 0.8s linear infinite",
             }}
           />
-          <span style={{ color: "#555", fontSize: 11 }}>
+          <span style={{ color: "#888", fontSize: 11 }}>
             Fetching activity...
           </span>
         </div>
@@ -98,7 +98,7 @@ export default function ActivityTab({
       {!loading && !error && changelog.length === 0 && fetchedAt && (
         <div
           style={{
-            color: "#444",
+            color: "#777",
             fontSize: 11,
             textAlign: "center",
             padding: "40px 0",
@@ -150,7 +150,7 @@ export default function ActivityTab({
               </span>
               <span
                 style={{
-                  color: "#555",
+                  color: "#888",
                   fontSize: 8,
                   letterSpacing: 1,
                   border: "1px solid rgba(255,255,255,0.08)",
@@ -161,7 +161,7 @@ export default function ActivityTab({
               >
                 {entityLabel}
               </span>
-              <span style={{ color: "#333", fontSize: 9, marginLeft: "auto" }}>
+              <span style={{ color: "#666", fontSize: 9, marginLeft: "auto" }}>
                 {formatRelativeTime(entry.timestamp)}
               </span>
             </div>

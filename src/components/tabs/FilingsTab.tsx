@@ -34,7 +34,7 @@ export default function FilingsTab({
         <div>
           <div
             style={{
-              color: "#444",
+              color: "#777",
               fontSize: 8,
               letterSpacing: 2,
               marginBottom: 4,
@@ -42,12 +42,12 @@ export default function FilingsTab({
           >
             FEDERAL REGISTER
           </div>
-          <div style={{ color: "#555", fontSize: 10 }}>
+          <div style={{ color: "#888", fontSize: 10 }}>
             UAM / eVTOL / vertiport regulatory filings
           </div>
         </div>
         {fetchedAt && (
-          <span style={{ color: "#444", fontSize: 8, flexShrink: 0 }}>
+          <span style={{ color: "#777", fontSize: 8, flexShrink: 0 }}>
             FETCHED {new Date(fetchedAt).toLocaleTimeString()}
           </span>
         )}
@@ -73,7 +73,7 @@ export default function FilingsTab({
               animation: "spin 0.8s linear infinite",
             }}
           />
-          <span style={{ color: "#555", fontSize: 11 }}>
+          <span style={{ color: "#888", fontSize: 11 }}>
             Fetching filings...
           </span>
         </div>
@@ -97,7 +97,7 @@ export default function FilingsTab({
       {!loading && !error && filings.length === 0 && fetchedAt && (
         <div
           style={{
-            color: "#444",
+            color: "#777",
             fontSize: 11,
             textAlign: "center",
             padding: "40px 0",
@@ -168,7 +168,7 @@ export default function FilingsTab({
               >
                 {filing.type}
               </span>
-              <span style={{ color: "#444", fontSize: 9 }}>
+              <span style={{ color: "#777", fontSize: 9 }}>
                 {filing.publication_date}
               </span>
             </div>
@@ -207,10 +207,10 @@ export default function FilingsTab({
                 alignItems: "center",
               }}
             >
-              <span style={{ color: "#333", fontSize: 8 }}>
+              <span style={{ color: "#666", fontSize: 8 }}>
                 {filing.document_number}
               </span>
-              <span style={{ color: "#333", fontSize: 8 }}>
+              <span style={{ color: "#666", fontSize: 8 }}>
                 federalregister.gov →
               </span>
             </div>

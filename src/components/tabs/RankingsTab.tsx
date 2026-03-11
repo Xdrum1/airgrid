@@ -57,7 +57,7 @@ export default function RankingsTab({
           >
             <span
               style={{
-                color: "#444",
+                color: "#777",
                 fontSize: 10,
                 width: 22,
                 textAlign: "right",
@@ -90,7 +90,7 @@ export default function RankingsTab({
                 >
                   {city.city}
                 </span>
-                <span style={{ color: "#444", fontSize: 10 }}>
+                <span style={{ color: "#777", fontSize: 10 }}>
                   {city.state}
                 </span>
               </div>

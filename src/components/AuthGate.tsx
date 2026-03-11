@@ -95,7 +95,7 @@ export default function AuthGate({ tab }: AuthGateProps) {
           SIGN UP FREE
         </button>
 
-        <p style={{ color: "#333", fontSize: 9, marginTop: 20 }}>
+        <p style={{ color: "#666", fontSize: 9, marginTop: 20 }}>
           No password needed — sign in with a magic link.
         </p>
       </div>

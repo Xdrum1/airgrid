@@ -87,7 +87,7 @@ export default function AdminBilling({ showToast }: { showToast: (msg: string) =
 
   if (loading) {
     return (
-      <div style={{ color: "#444", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
+      <div style={{ color: "#777", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
         LOADING...
       </div>
     );
@@ -117,7 +117,7 @@ export default function AdminBilling({ showToast }: { showToast: (msg: string) =
               <div style={{ color: s.color, fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28 }}>
                 {s.value}
               </div>
-              <div style={{ color: "#555", fontSize: 8, letterSpacing: 2, marginTop: 4 }}>
+              <div style={{ color: "#888", fontSize: 8, letterSpacing: 2, marginTop: 4 }}>
                 {s.label}
               </div>
             </div>
@@ -127,7 +127,7 @@ export default function AdminBilling({ showToast }: { showToast: (msg: string) =
 
       {/* User table */}
       {users.length === 0 ? (
-        <div style={{ color: "#333", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 80 }}>
+        <div style={{ color: "#666", fontSize: 11, letterSpacing: 2, textAlign: "center", padding: 80 }}>
           NO NON-FREE USERS
         </div>
       ) : (
@@ -205,7 +205,7 @@ export default function AdminBilling({ showToast }: { showToast: (msg: string) =
                     </select>
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 16, color: "#444", fontSize: 9 }}>
+                <div style={{ display: "flex", gap: 16, color: "#777", fontSize: 9 }}>
                   <span>Created {new Date(user.createdAt).toLocaleDateString()}</span>
                   {sub && (
                     <span>

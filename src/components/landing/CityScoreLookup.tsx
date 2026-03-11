@@ -122,7 +122,7 @@ export default function CityScoreLookup({ cities }: { cities: CityData[] }) {
               border: "none",
               fontFamily: "'Space Mono', monospace",
               fontSize: 8,
-              color: "#555",
+              color: "#888",
               letterSpacing: 1,
               cursor: "pointer",
               padding: 0,

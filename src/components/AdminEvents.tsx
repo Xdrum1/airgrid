@@ -140,7 +140,7 @@ export default function AdminEvents({
         <div style={{ marginBottom: 20 }}>
           <div
             style={{
-              color: "#333",
+              color: "#666",
               fontSize: 8,
               letterSpacing: 2,
               marginBottom: 8,
@@ -178,7 +178,7 @@ export default function AdminEvents({
                 }}
               >
                 {email.split("@")[0]}
-                <span style={{ color: "#555", marginLeft: 6 }}>{count}</span>
+                <span style={{ color: "#888", marginLeft: 6 }}>{count}</span>
               </button>
             ))}
           </div>
@@ -195,7 +195,7 @@ export default function AdminEvents({
           alignItems: "center",
         }}
       >
-        <div style={{ color: "#333", fontSize: 8, letterSpacing: 2, marginRight: 4 }}>
+        <div style={{ color: "#666", fontSize: 8, letterSpacing: 2, marginRight: 4 }}>
           FILTER
         </div>
         {ALL_EVENT_TYPES.map((t) => (
@@ -269,7 +269,7 @@ export default function AdminEvents({
       {loading ? (
         <div
           style={{
-            color: "#444",
+            color: "#777",
             fontSize: 10,
             letterSpacing: 2,
             textAlign: "center",
@@ -281,7 +281,7 @@ export default function AdminEvents({
       ) : events.length === 0 ? (
         <div
           style={{
-            color: "#333",
+            color: "#666",
             fontSize: 11,
             letterSpacing: 2,
             textAlign: "center",
@@ -393,7 +393,7 @@ export default function AdminEvents({
                   Object.keys(e.metadata).length > 0 && (
                     <span
                       style={{
-                        color: "#333",
+                        color: "#666",
                         fontSize: 8,
                         maxWidth: 120,
                         overflow: "hidden",
@@ -411,7 +411,7 @@ export default function AdminEvents({
                 {/* User */}
                 <span
                   style={{
-                    color: "#555",
+                    color: "#888",
                     fontSize: 9,
                     whiteSpace: "nowrap",
                     overflow: "hidden",
@@ -447,7 +447,7 @@ export default function AdminEvents({
                 border: "1px solid rgba(255,255,255,0.06)",
                 borderRadius: 6,
                 padding: "10px 0",
-                color: "#555",
+                color: "#888",
                 fontSize: 9,
                 letterSpacing: 1,
                 cursor: "pointer",
@@ -486,7 +486,7 @@ function StatBox({
         padding: "12px 14px",
       }}
     >
-      <div style={{ color: "#333", fontSize: 8, letterSpacing: 1, marginBottom: 6 }}>
+      <div style={{ color: "#666", fontSize: 8, letterSpacing: 1, marginBottom: 6 }}>
         {label}
       </div>
       <div
