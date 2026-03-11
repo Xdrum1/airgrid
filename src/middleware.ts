@@ -32,7 +32,14 @@ function csrfCheck(request: NextRequest): NextResponse | null {
   // Both headers missing → same-origin browser or non-browser client; auth still gates
   if (!sourceHost) return null;
 
-  if (sourceHost !== request.nextUrl.host) {
+  // Allow request.nextUrl.host (direct) and APP_URL host (behind CDN/proxy like Amplify)
+  const allowedHosts = new Set([request.nextUrl.host]);
+  const appUrl = process.env.APP_URL;
+  if (appUrl) {
+    try { allowedHosts.add(new URL(appUrl).host); } catch {}
+  }
+
+  if (!allowedHosts.has(sourceHost)) {
     return NextResponse.json({ error: "Forbidden — cross-origin request" }, { status: 403 });
   }
   return null;
