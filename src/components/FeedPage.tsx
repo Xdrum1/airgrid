@@ -51,14 +51,7 @@ export default function FeedPage() {
   }, [activeCategory]);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#050508",
-        color: "#ccc",
-        fontFamily: "'Space Mono', monospace",
-      }}
-    >
+    <div style={{ color: "#ccc" }}>
       {/* Header */}
       <div
         style={{
@@ -68,24 +61,12 @@ export default function FeedPage() {
           margin: "0 auto",
         }}
       >
-        <Link
-          href="/"
-          style={{
-            color: "#555",
-            textDecoration: "none",
-            fontSize: 10,
-            letterSpacing: 3,
-          }}
-        >
-          AIRINDEX
-        </Link>
-
         <h1
           style={{
             fontSize: 22,
             fontWeight: 700,
             color: "#fff",
-            margin: "16px 0 6px",
+            margin: "0 0 6px",
             fontFamily: "'Syne', sans-serif",
             letterSpacing: -0.5,
           }}
@@ -358,21 +339,6 @@ export default function FeedPage() {
         )}
       </div>
 
-      {/* Footer */}
-      <div
-        style={{
-          borderTop: "1px solid #111",
-          padding: "20px 24px",
-          textAlign: "center",
-        }}
-      >
-        <Link
-          href="/"
-          style={{ color: "#333", fontSize: 9, letterSpacing: 2, textDecoration: "none" }}
-        >
-          AIRINDEX.IO
-        </Link>
-      </div>
     </div>
   );
 }

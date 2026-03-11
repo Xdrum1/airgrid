@@ -1,12 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { auth } from "@/auth";
 import { OPERATORS, CORRIDORS, getCitiesWithOverrides, MARKET_COUNT } from "@/data/seed";
 import CountUpStats from "@/components/landing/CountUpStats";
 import LiveActivityFeed from "@/components/landing/LiveActivityFeed";
 import CityScoreLookup from "@/components/landing/CityScoreLookup";
 import LiveTicker from "@/components/landing/LiveTicker";
 import LiveFilingsFeed from "@/components/landing/LiveFilingsFeed";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 
 // -------------------------------------------------------
 // Pricing tier data
@@ -96,8 +97,6 @@ const SAMPLE_ACTIVITY = [
 // Page
 // -------------------------------------------------------
 export default async function LandingPage() {
-  const session = await auth();
-  const isAuthed = !!session?.user;
   const CITIES = await getCitiesWithOverrides();
 
   const stats = [
@@ -117,147 +116,7 @@ export default async function LandingPage() {
       }}
     >
       {/* ======== Nav ======== */}
-      <nav
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-          background: "rgba(5,5,8,0.85)",
-          backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1120,
-            margin: "0 auto",
-            padding: "0 20px",
-            height: 64,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <img
-              src="/images/logo/airindex-wordmark.svg"
-              alt="AirIndex"
-              style={{ height: 28 }}
-            />
-          </div>
-          <div className="landing-nav-buttons" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Link
-              href="/about"
-              className="nav-hide-mobile"
-              style={{
-                color: "#888",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                padding: "8px 16px",
-                transition: "all 0.15s",
-              }}
-            >
-              About
-            </Link>
-            <Link
-              href="/pricing"
-              className="nav-hide-mobile"
-              style={{
-                color: "#888",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                padding: "8px 16px",
-                transition: "all 0.15s",
-              }}
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/feed"
-              className="nav-hide-mobile"
-              style={{
-                color: "#888",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                padding: "8px 16px",
-                transition: "all 0.15s",
-              }}
-            >
-              Intel
-            </Link>
-            <Link
-              href="/api"
-              className="nav-hide-mobile"
-              style={{
-                color: "#888",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                padding: "8px 16px",
-                transition: "all 0.15s",
-              }}
-            >
-              API
-            </Link>
-            {isAuthed ? (
-              <Link
-                href="/dashboard"
-                className="nav-hide-mobile"
-                style={{
-                  color: "#888",
-                  fontSize: 11,
-                  letterSpacing: "0.06em",
-                  textDecoration: "none",
-                  padding: "8px 16px",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: 6,
-                  transition: "all 0.15s",
-                }}
-              >
-                Go to Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  style={{
-                    color: "#888",
-                    fontSize: 11,
-                    letterSpacing: "0.06em",
-                    textDecoration: "none",
-                    padding: "8px 16px",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 6,
-                    transition: "all 0.15s",
-                  }}
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/login?mode=signup"
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    fontFamily: "'Syne', sans-serif",
-                    letterSpacing: "0.06em",
-                    textDecoration: "none",
-                    padding: "8px 20px",
-                    background: "#00d4ff",
-                    color: "#050508",
-                    borderRadius: 6,
-                    transition: "opacity 0.15s",
-                  }}
-                >
-                  Sign up free
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       {/* ======== Hero ======== */}
       <section
@@ -1275,101 +1134,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ======== Footer ======== */}
-      <footer
-        style={{
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-          padding: "40px 20px",
-          maxWidth: 1120,
-          margin: "0 auto",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 16,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <img
-              src="/images/logo/airindex-wordmark.svg"
-              alt="AirIndex"
-              style={{ height: 18, opacity: 0.7 }}
-            />
-          </div>
-          <div className="landing-footer-links" style={{ display: "flex", gap: 24 }}>
-            <Link
-              href="/about"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              ABOUT
-            </Link>
-            <Link
-              href="/methodology"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              METHODOLOGY
-            </Link>
-            <Link
-              href="/feed"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              INTEL
-            </Link>
-            <Link
-              href="/api"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              API
-            </Link>
-            <Link
-              href="/pricing"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              PRICING
-            </Link>
-            <Link
-              href="/contact"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              CONTACT
-            </Link>
-            <a
-              href="https://x.com/AirIndexHQ"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              X (TWITTER)
-            </a>
-            <a
-              href="https://www.linkedin.com/company/AirIndexHQ"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              LINKEDIN
-            </a>
-            <Link
-              href="/terms"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              TERMS
-            </Link>
-            <Link
-              href="/privacy"
-              style={{ color: "#888", fontSize: 10, letterSpacing: 1, textDecoration: "none" }}
-            >
-              PRIVACY
-            </Link>
-          </div>
-          <div style={{ color: "#999", fontSize: 9, letterSpacing: 1 }}>
-            &copy; {new Date().getFullYear()} AIRINDEX
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
