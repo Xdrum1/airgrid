@@ -50,6 +50,19 @@ export const OUTLOOK_LABELS: Record<string, string> = {
   DETERIORATING: "Deteriorating",
 };
 
+export const FEED_CATEGORY_COLORS: Record<string, string> = {
+  Regulatory: "#00d4ff",
+  Infrastructure: "#7c3aed",
+  Operator: "#f59e0b",
+  Legislative: "#00ff88",
+};
+
+export const FEED_STATUS_COLORS: Record<string, string> = {
+  draft: "#f59e0b",
+  published: "#00ff88",
+  archived: "#555",
+};
+
 export const SCORE_COMPONENT_COLORS: Record<string, string> = {
   activePilotProgram: "#00ff88",
   approvedVertiport: "#00d4ff",
