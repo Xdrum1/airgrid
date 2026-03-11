@@ -5,6 +5,24 @@ import { createLogger } from "@/lib/logger";
 const logger = createLogger("events");
 
 // -------------------------------------------------------
+// Throttled lastActiveAt update (once per 5 min per user)
+// -------------------------------------------------------
+
+const lastActiveCache = new Map<string, number>();
+const LAST_ACTIVE_THROTTLE_MS = 5 * 60 * 1000;
+
+function updateLastActive(userId: string) {
+  const now = Date.now();
+  const last = lastActiveCache.get(userId) ?? 0;
+  if (now - last < LAST_ACTIVE_THROTTLE_MS) return;
+  lastActiveCache.set(userId, now);
+  prisma.user.update({
+    where: { id: userId },
+    data: { lastActiveAt: new Date() },
+  }).catch((err) => logger.error("Failed to update lastActiveAt:", err));
+}
+
+// -------------------------------------------------------
 // Allowed values
 // -------------------------------------------------------
 
@@ -51,6 +69,9 @@ export async function logEvent(
         metadata: metadata ? (metadata as Prisma.InputJsonValue) : undefined,
       },
     });
+
+    // Throttled lastActiveAt update (once per 5 min per user)
+    updateLastActive(userId);
   } catch (err) {
     // Never throw — callers are fire-and-forget
     logger.error("Failed to log event:", err);

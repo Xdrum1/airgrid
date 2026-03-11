@@ -12,7 +12,7 @@ const logger = createLogger("auth");
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt", maxAge: 7 * 24 * 60 * 60 },
+  session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 }, // 30 days
   pages: {
     signIn: "/login",
     verifyRequest: "/login/check-email",
@@ -131,6 +131,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
     },
     async signIn({ user }) {
+      // Update lastActiveAt
+      if (user.id) {
+        prisma.user.update({
+          where: { id: user.id },
+          data: { lastActiveAt: new Date() },
+        }).catch((err) => logger.error("Failed to update lastActiveAt:", err));
+      }
+
       if (!process.env.SES_ACCESS_KEY_ID) return;
       const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
       if (!adminEmail || !user.email) return;
