@@ -5,7 +5,6 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { City, Corridor, Vertiport } from "@/types";
 import type { FederalFiling } from "@/lib/faa-api";
-import type { ChangelogEntry } from "@/types";
 import { CITIES, CITIES_MAP, OPERATORS_MAP, CORRIDORS, getVertiportsForCity } from "@/data/seed";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useWatchlist } from "@/hooks/useWatchlist";
@@ -27,14 +26,14 @@ import MapTab from "./tabs/MapTab";
 import RankingsTab from "./tabs/RankingsTab";
 import CorridorsTab from "./tabs/CorridorsTab";
 import FilingsTab from "./tabs/FilingsTab";
-import ActivityTab from "./tabs/ActivityTab";
+import IntelTab from "./tabs/IntelTab";
 import AnalyticsTab from "./tabs/AnalyticsTab";
 import KeysTab from "./tabs/KeysTab";
 
 // -------------------------------------------------------
 
-const GATED_TABS: TabKey[] = ["corridors", "filings", "activity", "analytics", "keys"];
-const PRO_TABS: TabKey[] = ["corridors", "filings", "activity", "analytics"];
+const GATED_TABS: TabKey[] = ["corridors", "filings", "intel", "analytics", "keys"];
+const PRO_TABS: TabKey[] = ["corridors", "filings", "intel", "analytics"];
 
 interface DashboardProps {
   initialCities?: City[];
@@ -58,7 +57,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
   const [selected, setSelected] = useState<City>(CITIES_RESOLVED[0]);
   const [filter, setFilter] = useState<FilterKey>("all");
   const [tab, setTab] = useState<TabKey>(
-    ["map", "rank", "corridors", "filings", "activity", "analytics", "keys"].includes(initialTab) ? initialTab : "map"
+    ["map", "rank", "corridors", "filings", "intel", "analytics", "keys"].includes(initialTab) ? initialTab : "map"
   );
   const [animate, setAnimate] = useState(false);
   const [showSignOut, setShowSignOut] = useState(false);
@@ -70,11 +69,6 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
   const [filingsError, setFilingsError] = useState<string | null>(null);
   const [filingsFetchedAt, setFilingsFetchedAt] = useState<string | null>(null);
 
-  // Changelog / Activity state
-  const [changelog, setChangelog] = useState<ChangelogEntry[]>([]);
-  const [changelogLoading, setChangelogLoading] = useState(false);
-  const [changelogError, setChangelogError] = useState<string | null>(null);
-  const [changelogFetchedAt, setChangelogFetchedAt] = useState<string | null>(null);
 
   // Subscriptions — track which cities the user is subscribed to
 
@@ -154,25 +148,6 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
       .finally(() => setFilingsLoading(false));
   }, [tab, filingsFetchedAt]);
 
-  // Fetch changelog on tab switch
-  useEffect(() => {
-    if (tab !== "activity" || changelogFetchedAt) return;
-    setChangelogLoading(true);
-    setChangelogError(null);
-    fetch("/api/changelog?limit=100")
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((json) => {
-        setChangelog(json.data);
-        setChangelogFetchedAt(json.fetchedAt);
-      })
-      .catch((err) => {
-        setChangelogError(err.message ?? "Failed to fetch changelog");
-      })
-      .finally(() => setChangelogLoading(false));
-  }, [tab, changelogFetchedAt]);
 
   const filtered = CITIES_RESOLVED.filter((c) => {
     if (filter === "watching") return watchedCityIds.includes(c.id);
@@ -280,7 +255,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                   ["rank", "RANK"],
                   ["corridors", "ROUTES"],
                   ["filings", "FEED"],
-                  ["activity", "ACTIVITY"],
+                  ["intel", "INTEL"],
                   ["analytics", "STATS"],
                   ["keys", "API"],
                 ] as [TabKey, string][]
@@ -289,7 +264,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                   ["rank", "RANKINGS"],
                   ["corridors", "CORRIDORS"],
                   ["filings", "FILINGS"],
-                  ["activity", "ACTIVITY"],
+                  ["intel", "INTEL"],
                   ["analytics", "ANALYTICS"],
                   ["keys", "API KEYS"],
                 ] as [TabKey, string][]
@@ -359,15 +334,8 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
               animate={animate}
               isMobile={isMobile}
             />
-          ) : tab === "activity" ? (
-            <ActivityTab
-              changelog={changelog}
-              loading={changelogLoading}
-              error={changelogError}
-              fetchedAt={changelogFetchedAt}
-              animate={animate}
-              isMobile={isMobile}
-            />
+          ) : tab === "intel" ? (
+            <IntelTab animate={animate} isMobile={isMobile} />
           ) : tab === "filings" ? (
             <FilingsTab
               filings={filings}

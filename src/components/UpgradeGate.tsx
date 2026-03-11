@@ -8,8 +8,8 @@ const FEATURE_DESCRIPTIONS: Record<string, string> = {
     "Corridor intelligence, route tracking, and operator-cleared flight paths.",
   filings:
     "Federal Register filings, regulatory actions, and document tracking.",
-  activity:
-    "Score history, market activity timeline, and change tracking.",
+  intel:
+    "Curated UAM intelligence — FAA rulings, city policy, operator expansions, and market developments.",
   analytics:
     "Market analytics, corridor statistics, and trend visualizations.",
   subscribe:
