@@ -110,13 +110,14 @@ export default function RequestAccessForm() {
             display: "block",
           }}
         >
-          NAME
+          NAME *
         </label>
         <input
           type="text"
+          required
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
-          placeholder="Optional"
+          placeholder="Your name"
           style={inputStyle}
           maxLength={100}
         />
@@ -158,7 +159,7 @@ export default function RequestAccessForm() {
 
       <button
         type="submit"
-        disabled={state === "submitting" || !form.email.trim()}
+        disabled={state === "submitting" || !form.email.trim() || !form.name.trim()}
         style={{
           padding: "14px 28px",
           background: "#7c3aed",
