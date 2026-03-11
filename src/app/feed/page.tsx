@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import FeedPage from "@/components/FeedPage";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 import TrackPageView from "@/components/TrackPageView";
 
 export const metadata: Metadata = {
@@ -16,9 +18,18 @@ export const metadata: Metadata = {
 
 export default function Feed() {
   return (
-    <>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#050508",
+        fontFamily: "'Space Mono', monospace",
+        color: "#fff",
+      }}
+    >
       <TrackPageView page="/feed" />
+      <SiteNav />
       <FeedPage />
-    </>
+      <SiteFooter />
+    </div>
   );
 }
