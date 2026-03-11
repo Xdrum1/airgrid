@@ -159,7 +159,7 @@ export default function FeedPage() {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-            {items.map((item, idx) => {
+            {items.slice(0, FREE_ITEMS + 2).map((item, idx) => {
               const isGated = idx >= FREE_ITEMS;
               return (
                 <div
