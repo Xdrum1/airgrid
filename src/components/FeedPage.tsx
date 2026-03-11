@@ -24,20 +24,28 @@ export default function FeedPage() {
   const [items, setItems] = useState<FeedItem[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState("All");
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     const params = new URLSearchParams({ limit: "50" });
     if (activeCategory !== "All") params.set("category", activeCategory);
 
     fetch(`/api/feed?${params}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then((json) => {
         setItems(json.data ?? []);
         setTotal(json.meta?.total ?? 0);
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.error("[FeedPage] fetch error:", err);
+        setError(err instanceof Error ? err.message : "Failed to load");
+      })
       .finally(() => setLoading(false));
   }, [activeCategory]);
 
@@ -142,6 +150,18 @@ export default function FeedPage() {
             }}
           >
             LOADING...
+          </div>
+        ) : error ? (
+          <div
+            style={{
+              color: "#ff4444",
+              fontSize: 11,
+              letterSpacing: 2,
+              textAlign: "center",
+              padding: 80,
+            }}
+          >
+            FAILED TO LOAD: {error}
           </div>
         ) : items.length === 0 ? (
           <div
