@@ -363,16 +363,27 @@ export async function classifyRecords(
   const allClassifications: ClassificationItem[] = [];
   const allRawResponses: unknown[] = [];
 
-  // Process in batches
+  // Build batches
+  const batches: IngestedRecord[][] = [];
   for (let i = 0; i < records.length; i += BATCH_SIZE) {
-    const batch = records.slice(i, i + BATCH_SIZE);
-    console.log(
-      `[classifier] Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(records.length / BATCH_SIZE)} (${batch.length} records)`
-    );
+    batches.push(records.slice(i, i + BATCH_SIZE));
+  }
 
-    const classifications = await classifyBatch(batch);
-    allClassifications.push(...classifications);
-    allRawResponses.push({ batch: Math.floor(i / BATCH_SIZE) + 1, classifications });
+  console.log(
+    `[classifier] Processing ${batches.length} batches (${records.length} records) in parallel`
+  );
+
+  // Process all batches in parallel to stay within Lambda timeout
+  const results = await Promise.all(
+    batches.map(async (batch, idx) => {
+      const classifications = await classifyBatch(batch);
+      return { batch: idx + 1, classifications };
+    })
+  );
+
+  for (const result of results) {
+    allClassifications.push(...result.classifications);
+    allRawResponses.push(result);
   }
 
   // Persist audit trail
