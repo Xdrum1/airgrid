@@ -47,7 +47,12 @@ interface PopupInfo {
 // -------------------------------------------------------
 const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 
-// Continental US bounding box — SW corner to NE corner
+// Continental US bounds — lock map to this region
+const US_BOUNDS: [[number, number], [number, number]] = [
+  [-130, 22], // SW: west of California, south of Texas
+  [-65, 50],  // NE: east of Maine, north of Minnesota
+];
+
 // Continental US center — mercator projection
 const INITIAL_VIEW_DESKTOP = {
   longitude: -96,
@@ -815,6 +820,9 @@ export default function MapView({
         ref={mapRef}
         mapboxAccessToken={token}
         initialViewState={isMobile ? INITIAL_VIEW_MOBILE : INITIAL_VIEW_DESKTOP}
+        maxBounds={US_BOUNDS}
+        minZoom={3}
+        maxZoom={12}
         projection={{ name: "mercator" }}
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
