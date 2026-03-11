@@ -22,7 +22,7 @@ async function getPrisma() {
 // Constants
 // -------------------------------------------------------
 
-const PROMPT_VERSION = "v2";
+const PROMPT_VERSION = "v3";
 const MODEL = "claude-haiku-4-5-20251001";
 const BATCH_SIZE = 10;
 const MAX_TOKENS = 4096;
@@ -42,13 +42,13 @@ const SYSTEM_PROMPT = `You are a regulatory intelligence classifier for AirIndex
 ## Scoring Model (7 factors, 0–100 scale)
 
 Each market is scored on 7 binary factors:
-1. **hasActivePilotProgram** (20 pts) — Active eVTOL testing or pilot program in the city
-2. **approvedVertiport** (20 pts) — At least one approved/built vertiport
-3. **activeOperatorPresence** (15 pts) — At least one eVTOL operator active in the market
-4. **hasVertiportZoning** (15 pts) — Local zoning ordinance allows vertiport construction
-5. **regulatoryPosture** (10 pts) — City/state regulatory stance: "friendly" (10), "neutral" (5), "restrictive" (0)
-6. **hasStateLegislation** (10 pts) — State has signed UAM-enabling legislation
-7. **hasLaancCoverage** (10 pts) — FAA LAANC low-altitude authorization coverage exists
+1. **hasActivePilotProgram** (20 pts) — Active eVTOL testing or pilot program in the city. Requires a specific city-level program, not just an operator having FAA certification.
+2. **approvedVertiport** (20 pts) — At least one approved/built vertiport in this specific city.
+3. **activeOperatorPresence** (15 pts) — At least one eVTOL operator has announced or begun operations in this specific market (city). General corporate news (earnings, stock offerings, fundraising) does NOT count.
+4. **hasVertiportZoning** (15 pts) — Local zoning ordinance specifically allows vertiport construction in this city.
+5. **regulatoryPosture** (10 pts) — City/state regulatory stance: "friendly" (10), "neutral" (5), "restrictive" (0). Requires explicit city or state policy action.
+6. **hasStateLegislation** (10 pts) — A specific STATE (not federal) has signed UAM-enabling legislation into law. Federal FAA actions, federal programs, and federal policy do NOT count. Must be a state bill signed into law.
+7. **hasLaancCoverage** (10 pts) — FAA LAANC low-altitude authorization coverage exists in this specific area.
 
 ## Tracked Markets (${CITIES.length} US cities)
 
@@ -65,14 +65,14 @@ ${OPERATOR_TABLE}
 ## Event Type Vocabulary
 
 Classify each record into exactly one event type:
-- \`state_legislation_signed\` — State bill signed/enacted that enables UAM operations
-- \`vertiport_zoning_approved\` — Zoning ordinance for vertiport construction approved
-- \`faa_corridor_filing\` — FAA filing related to air corridors, airspace design, or powered-lift operations
-- \`faa_certification_milestone\` — FAA type certificate, airworthiness, or Part 135 milestone
-- \`operator_market_expansion\` — Operator announcing expansion into a new market
-- \`regulatory_posture_change\` — Change in city/state regulatory stance toward UAM
-- \`infrastructure_development\` — New vertiport, charging infrastructure, or ground support development
-- \`not_relevant\` — Document is not relevant to UAM market readiness scoring
+- \`state_legislation_signed\` — A specific STATE bill signed/enacted that enables UAM operations. Only factors affected: hasStateLegislation. NOT for federal actions.
+- \`vertiport_zoning_approved\` — Zoning ordinance for vertiport construction approved in a specific city. Only factors affected: hasVertiportZoning, approvedVertiport.
+- \`faa_corridor_filing\` — FAA filing related to air corridors, airspace design, or powered-lift operations. Only factors affected: hasLaancCoverage (if LAANC-specific), or regulatoryPosture.
+- \`faa_certification_milestone\` — FAA type certificate, airworthiness, or Part 135 milestone for an operator. This does NOT directly affect any city scoring factor unless it mentions a specific city launch. If no city is mentioned, classify as not_relevant.
+- \`operator_market_expansion\` — Operator announcing expansion into a specific new city/market. Only factors affected: activeOperatorPresence, hasActivePilotProgram.
+- \`regulatory_posture_change\` — Change in city/state regulatory stance toward UAM. Only factors affected: regulatoryPosture.
+- \`infrastructure_development\` — New vertiport, charging infrastructure, or ground support in a specific city. Only factors affected: approvedVertiport, hasVertiportZoning.
+- \`not_relevant\` — Document does not affect any specific city's readiness score. Use this for: general industry news, corporate earnings/financials, stock offerings, fundraising, federal policy without city-specific impact, opinion pieces, and analyst commentary.
 
 ## Output Schema
 
@@ -103,18 +103,19 @@ Return a JSON array. For each record, output one object:
 
 ## Confidence Guidelines
 
-- **high**: Document explicitly states a completed action (bill signed, certificate issued, zoning approved) AND you can map it to specific cities
-- **medium**: Document implies a likely impact but uses less definitive language (proposed, in progress, planned) OR you can only map to a state (not specific cities)
-- **needs_review**: Document mentions relevant topics but the impact on specific markets is unclear, OR it's a federal filing that could affect multiple markets
+- **high**: Document explicitly states a completed action (bill signed, certificate issued, zoning approved, operator launch announced) AND you can map it to one or more specific city IDs from the table. Use this confidently when the evidence is clear — high confidence overrides get auto-applied.
+- **medium**: Document describes a likely or in-progress impact (proposed bill, planned expansion, pilot announced but not launched) AND you can map to specific cities. Also use for state-level legislation mapped to all cities in that state.
+- **needs_review**: You cannot map to specific cities, the evidence is ambiguous, or you're unsure which factors are affected.
 
 ## Rules
 
-1. If a record is \`not_relevant\`, set \`factorsAffected\` to an empty array and \`affectedCityIds\` to an empty array
-2. For state-level legislation, map to ALL cities in that state using the table above
-3. For federal filings, try to identify specific affected markets from the content; if you can't, use an empty \`affectedCityIds\` array
-4. For SEC/operator filings, try to identify which markets the operator is active in from the content
+1. If a record is \`not_relevant\`, set \`factorsAffected\` to an empty array and \`affectedCityIds\` to an empty array.
+2. **CRITICAL**: If you cannot identify at least one specific city affected, classify as \`not_relevant\`. A classification without affected cities has no value — it cannot be applied to any market's score. General federal news, industry trends, and corporate financials without city-specific impact are \`not_relevant\`.
+3. For state-level legislation, map to ALL cities in that state using the table above.
+4. For SEC/operator filings, try to identify which specific markets/cities the content mentions. General corporate filings (earnings, stock offerings, capital raises) are \`not_relevant\` unless they mention specific city expansions.
 5. For \`affectedCityIds\`, only output valid city IDs from the table above. If the document mentions UAM activity in a city NOT in the table, add it to \`untrackedCities\` instead (with city name, state, and reason). Set \`untrackedCities\` to an empty array if no untracked cities are mentioned.
-6. Return ONLY the JSON array — no markdown, no explanation, no wrapping`;
+6. Each \`factorsAffected\` entry MUST use a field that is valid for the event type (see event type definitions above). Do not set \`hasStateLegislation\` for federal actions or certification milestones.
+7. Return ONLY the JSON array — no markdown, no explanation, no wrapping.`;
 
 // -------------------------------------------------------
 // Types
