@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { runIngestion } from "@/lib/ingestion";
 import { rateLimit } from "@/lib/rate-limit";
 import { authorizeCron } from "@/lib/admin-helpers";
 import { alertCronFailure } from "@/lib/cron-alerts";
@@ -25,6 +24,10 @@ function streamIngestion(): Response {
       }, 10_000);
 
       try {
+        // Lazy-import ingestion to reduce cold start time — the heavy module
+        // tree (classifier, rules engine, market leads) loads after the stream
+        // has started, preventing Amplify's 30s gateway integration timeout.
+        const { runIngestion } = await import("@/lib/ingestion");
         const { diff, meta } = await runIngestion();
         clearInterval(keepalive);
 
