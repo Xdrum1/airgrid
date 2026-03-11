@@ -12,6 +12,7 @@ import AdminBilling from "./AdminBilling";
 import AdminPipelineHealth from "./AdminPipelineHealth";
 import AdminLeads from "./AdminLeads";
 import AdminMarketWatch from "./AdminMarketWatch";
+import AdminFeed from "./AdminFeed";
 
 // -------------------------------------------------------
 // Types
@@ -52,7 +53,7 @@ interface ClassificationResult {
   createdAt: string;
 }
 
-type TabKey = "overrides" | "classifications" | "corridors" | "events" | "billing" | "pipeline" | "watch" | "watchlist" | "reports";
+type TabKey = "overrides" | "classifications" | "corridors" | "events" | "billing" | "pipeline" | "watch" | "watchlist" | "reports" | "feed";
 
 // -------------------------------------------------------
 // Helpers
@@ -469,7 +470,7 @@ export default function AdminReview() {
           padding: "0 24px",
         }}
       >
-        {(["overrides", "classifications", "corridors", "events", "billing", "pipeline", "watch", "watchlist", "reports"] as const).map((t) => {
+        {(["overrides", "classifications", "corridors", "events", "billing", "pipeline", "watch", "watchlist", "reports", "feed"] as const).map((t) => {
           const labels: Record<TabKey, string> = {
             overrides: "PENDING OVERRIDES",
             classifications: "CLASSIFICATIONS",
@@ -480,6 +481,7 @@ export default function AdminReview() {
             watch: "WATCH/OUTLOOK",
             watchlist: "LEADS",
             reports: "REPORTS",
+            feed: "INTEL FEED",
           };
           return (
             <button
@@ -510,7 +512,9 @@ export default function AdminReview() {
 
       {/* Content */}
       <div style={{ padding: 24, maxWidth: 900, margin: "0 auto" }}>
-        {tab === "reports" ? (
+        {tab === "feed" ? (
+          <AdminFeed showToast={showToast} />
+        ) : tab === "reports" ? (
           <AdminReports />
         ) : tab === "watch" ? (
           <AdminMarketWatch showToast={showToast} />
