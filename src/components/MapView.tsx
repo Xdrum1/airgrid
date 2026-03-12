@@ -49,8 +49,8 @@ const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 
 // Continental US bounds — lock map to this region
 const US_BOUNDS: [[number, number], [number, number]] = [
-  [-135, 20], // SW: buffer west of California, south of Hawaii
-  [-60, 55],  // NE: buffer east of Maine, north of Washington/Minnesota
+  [-140, 15], // SW: wide buffer south (Miami ~25.7N) and west
+  [-55, 55],  // NE: wide buffer east (Boston ~71W) and north
 ];
 
 // Continental US center — mercator projection
