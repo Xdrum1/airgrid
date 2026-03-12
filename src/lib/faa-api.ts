@@ -118,6 +118,8 @@ async function fetchFederalRegisterTerm(
       // Stop if we got fewer than a full page (no more results)
       if (results.length < perPage) break;
       page++;
+      // Rate limit: small delay between pages to avoid Federal Register API throttling
+      await new Promise((r) => setTimeout(r, 300));
     }
   } catch {
     // Return whatever we collected so far
