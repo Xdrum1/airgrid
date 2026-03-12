@@ -78,12 +78,14 @@ export interface FederalFiling {
 const UAM_SEARCH_TERMS = [
   "eVTOL",
   "powered-lift",
+  '"powered lift"',
   '"advanced air mobility"',
   "vertiport",
   '"unmanned aircraft system"',
   "eIPP",
   '"integration pilot program"',
   '"urban air mobility"',
+  "SFAR",
 ];
 
 async function fetchFederalRegisterTerm(
@@ -91,22 +93,36 @@ async function fetchFederalRegisterTerm(
   startDate: string,
   endDate: string
 ): Promise<FederalFiling[]> {
-  try {
-    const params = new URLSearchParams({
-      "conditions[term]": term,
-      "conditions[publication_date][gte]": startDate,
-      "conditions[publication_date][lte]": endDate,
-      per_page: "20",
-      order: "newest",
-    });
+  const allResults: FederalFiling[] = [];
+  let page = 1;
+  const perPage = 50; // max allowed by Federal Register API
+  const maxPages = 10; // safety cap: 500 results per term
 
-    const url = `${FEDERAL_REGISTER_BASE}/documents.json?${params}`;
-    const res = await fetch(url);
-    const json = await res.json();
-    return json.results ?? [];
+  try {
+    while (page <= maxPages) {
+      const params = new URLSearchParams({
+        "conditions[term]": term,
+        "conditions[publication_date][gte]": startDate,
+        "conditions[publication_date][lte]": endDate,
+        per_page: String(perPage),
+        page: String(page),
+        order: "newest",
+      });
+
+      const url = `${FEDERAL_REGISTER_BASE}/documents.json?${params}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      const results = json.results ?? [];
+      allResults.push(...results);
+
+      // Stop if we got fewer than a full page (no more results)
+      if (results.length < perPage) break;
+      page++;
+    }
   } catch {
-    return [];
+    // Return whatever we collected so far
   }
+  return allResults;
 }
 
 export async function fetchFederalRegisterUAM(
@@ -136,20 +152,14 @@ export async function fetchFederalRegisterUAM(
       }
     }
 
-    // Filter out irrelevant results that slipped through broad search terms.
-    // Keep filings whose title OR abstract mentions UAM-related keywords.
-    const UAM_KEYWORDS = /evtol|vtol|powered.lift|vertiport|air.taxi|air.mobility|unmanned.aircraft|drone|uas\b|aam\b|airworthiness|airspace|pilot.cert|flight.restrict|special.condition|beyond.visual/i;
-    const NOISE = /safety zone|marine mammal|coast guard/i;
-    const filtered = merged.filter(
-      (f) =>
-        (UAM_KEYWORDS.test(f.title) || UAM_KEYWORDS.test(f.abstract || "")) &&
-        !NOISE.test(f.title)
-    );
+    // Only exclude obvious noise — trust the API search terms for relevance
+    const NOISE = /safety zone|marine mammal|coast guard|fisheries|wildlife/i;
+    const filtered = merged.filter((f) => !NOISE.test(f.title));
 
     // Sort newest first
     filtered.sort((a, b) => b.publication_date.localeCompare(a.publication_date));
 
-    console.log(`[FederalRegister] ${merged.length} total → ${filtered.length} relevant filings`);
+    console.log(`[FederalRegister] ${merged.length} total → ${filtered.length} after noise filter`);
     return filtered;
   } catch (err) {
     console.error("[FederalRegister] Fetch failed:", err);

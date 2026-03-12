@@ -342,7 +342,7 @@ export async function runIngestion(): Promise<{
 
     const [federalFilings, legiscanResults, secEdgarResults, operatorNews] = await Promise.all([
       // 1. Federal Register
-      fetchFederalRegisterUAM(90),
+      fetchFederalRegisterUAM(730),
       // 2. LegiScan for all target states (batched to avoid rate limits)
       batchFetchStates(),
       // 3. SEC EDGAR for all operator × form type combos in parallel
