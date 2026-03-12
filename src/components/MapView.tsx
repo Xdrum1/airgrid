@@ -710,7 +710,7 @@ export default function MapView({
     []
   );
 
-  // Compute popup anchor based on marker screen position to avoid edge clipping
+  // Compute popup anchor based on marker screen position to avoid edge/sidebar clipping
   const getPopupAnchor = useCallback(
     (lng: number, lat: number): "bottom" | "top" | "left" | "right" | "bottom-left" | "bottom-right" | "top-left" | "top-right" => {
       const map = mapRef.current;
@@ -719,20 +719,22 @@ export default function MapView({
       const container = map.getContainer();
       const w = container.clientWidth;
       const h = container.clientHeight;
-      const margin = 240; // popup card is ~220px wide
+      const popupW = 240; // popup card is ~220px wide
+      const leftSidebar = isMobile ? 0 : 292;  // city list panel width + gap
+      const rightPanel = isMobile ? 0 : 316;    // detail panel width + gap
 
-      const nearTop = point.y < margin;
-      const nearRight = point.x > w - margin;
-      const nearLeft = point.x < margin;
+      const nearTop = point.y < popupW;
+      const nearLeft = point.x < leftSidebar + popupW;
+      const nearRight = point.x > w - rightPanel - popupW;
 
-      if (nearTop && nearRight) return "top-right";
       if (nearTop && nearLeft) return "top-left";
+      if (nearTop && nearRight) return "top-right";
       if (nearTop) return "top";
-      if (nearRight) return "bottom-right";
       if (nearLeft) return "bottom-left";
+      if (nearRight) return "bottom-right";
       return "bottom";
     },
-    []
+    [isMobile]
   );
 
   const corridorGeoJSON = corridorsToGeoJSON(corridors);
