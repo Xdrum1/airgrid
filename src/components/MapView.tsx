@@ -710,6 +710,31 @@ export default function MapView({
     []
   );
 
+  // Compute popup anchor based on marker screen position to avoid edge clipping
+  const getPopupAnchor = useCallback(
+    (lng: number, lat: number): "bottom" | "top" | "left" | "right" | "bottom-left" | "bottom-right" | "top-left" | "top-right" => {
+      const map = mapRef.current;
+      if (!map) return "bottom";
+      const point = map.project([lng, lat]);
+      const container = map.getContainer();
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      const margin = 240; // popup card is ~220px wide
+
+      const nearTop = point.y < margin;
+      const nearRight = point.x > w - margin;
+      const nearLeft = point.x < margin;
+
+      if (nearTop && nearRight) return "top-right";
+      if (nearTop && nearLeft) return "top-left";
+      if (nearTop) return "top";
+      if (nearRight) return "bottom-right";
+      if (nearLeft) return "bottom-left";
+      return "bottom";
+    },
+    []
+  );
+
   const corridorGeoJSON = corridorsToGeoJSON(corridors);
 
   if (!token || token === "your_mapbox_token_here") {
@@ -931,7 +956,7 @@ export default function MapView({
           <Popup
             longitude={popup.longitude}
             latitude={popup.latitude}
-            anchor="bottom"
+            anchor={getPopupAnchor(popup.longitude, popup.latitude)}
             offset={16}
             onClose={() => setPopup(null)}
             closeOnClick={false}
