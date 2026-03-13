@@ -24,7 +24,7 @@ const prisma = new PrismaClient();
 // ── Config ──────────────────────────────────────────────────────
 const FROM = "AirIndex <hello@airindex.io>";
 const SUBJECT = "UAM Market Pulse — Issue 1 | Week of March 10, 2026";
-const PDF_PATH = "public/docs/UAM_Market_Pulse_Issue1.pdf";
+const PDF_PATH = "public/docs/UAM Market Pulse — Issue 1.pdf";
 const PDF_FILENAME = "UAM_Market_Pulse_Issue1.pdf";
 const ADMIN_EMAIL = "alan@airindex.io";
 const SITE = "https://www.airindex.io";
@@ -227,6 +227,7 @@ async function main() {
       try {
         const unsubUrl = buildUnsubscribeUrl(u.email);
         const raw = buildRawEmail(u.email, pdfBase64, unsubUrl);
+        await sendRawEmail(raw);
         console.log(`    Sent.`);
       } catch (err) {
         console.error(`    FAILED: ${err}`);
