@@ -268,7 +268,7 @@ function buildHtml(
     <!-- HEADER -->
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding:20px 24px;background:#0a0a12;border-radius:8px;">
       <div>
-        <h1 style="color:#111;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;margin:0 0 4px;">UAM MARKET PULSE</h1>
+        <h1 style="color:#ffffff;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;margin:0 0 4px;">UAM MARKET PULSE</h1>
         <div style="color:#999;font-size:13px;">by AirIndex · airindex.io</div>
       </div>
       <div style="text-align:right;">
