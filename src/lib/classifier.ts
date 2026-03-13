@@ -22,7 +22,7 @@ async function getPrisma() {
 // Constants
 // -------------------------------------------------------
 
-const PROMPT_VERSION = "v3";
+const PROMPT_VERSION = "v4";
 const MODEL = "claude-haiku-4-5-20251001";
 const BATCH_SIZE = 10;
 const MAX_TOKENS = 4096;
@@ -115,7 +115,45 @@ Return a JSON array. For each record, output one object:
 4. For SEC/operator filings, try to identify which specific markets/cities the content mentions. General corporate filings (earnings, stock offerings, capital raises) are \`not_relevant\` unless they mention specific city expansions.
 5. For \`affectedCityIds\`, only output valid city IDs from the table above. If the document mentions UAM activity in a city NOT in the table, add it to \`untrackedCities\` instead (with city name, state, and reason). Set \`untrackedCities\` to an empty array if no untracked cities are mentioned.
 6. Each \`factorsAffected\` entry MUST use a field that is valid for the event type (see event type definitions above). Do not set \`hasStateLegislation\` for federal actions or certification milestones.
-7. Return ONLY the JSON array — no markdown, no explanation, no wrapping.`;
+7. Return ONLY the JSON array — no markdown, no explanation, no wrapping.
+
+## IMPORTANT: Look Past Headlines — Identify the Underlying Event
+
+Many relevant regulatory and market signals are reported through a financial/stock framing. Do NOT dismiss an article as not_relevant just because it leads with stock movement or analyst commentary. Always ask: "What is the underlying event?" before classifying.
+
+Examples of stock-framed articles that contain real scoring signals:
+- "Joby Stock Rises as First FAA Test Aircraft Flies" → The underlying event is an FAA certification milestone.
+- "Archer, Joby Stocks Jump After Inclusion in Federal Program" → The underlying event is operator selection for a federal pilot program (operator_market_expansion if specific cities are mentioned).
+- "Flying Cars Take Next Step with Joby's First FAA Flight" → FAA flight test = faa_certification_milestone.
+
+If the underlying event is a completed regulatory action, certification milestone, operator launch, or pilot program selection — classify it by the event, not the headline framing.
+
+## Metro Area Mappings
+
+When a document mentions a city or location that is part of a tracked metro area, map it to the correct city ID:
+- Oakland, San Jose, Berkeley, Palo Alto, Mountain View, Fremont → \`san_francisco\`
+- Fort Worth, Arlington (TX), Plano, Irving → \`dallas\`
+- Fort Lauderdale, Boca Raton, West Palm Beach, Hialeah → \`miami\`
+- Jersey City, Newark (NJ), Hoboken, Brooklyn, Queens → \`new_york\`
+- Long Beach, Pasadena, Santa Monica, Burbank, Inglewood → \`los_angeles\`
+- Aurora, Lakewood, Boulder → \`denver\`
+- Renton, Bellevue, Tacoma, Everett → \`seattle\`
+- Tempe, Scottsdale, Mesa, Chandler → \`phoenix\`
+- Sandy Springs, Marietta, Decatur → \`atlanta\`
+- Cambridge, Somerville, Quincy → \`boston\`
+- The Woodlands, Sugar Land, Katy, Galveston → \`houston\`
+- Round Rock, Cedar Park, San Marcos → \`austin\`
+- St. Paul, Bloomington (MN), Eden Prairie → \`minneapolis\`
+- Arlington (VA), Alexandria, Tysons, Fairfax → \`washington_dc\`
+- Henderson, North Las Vegas, Summerlin → \`las_vegas\`
+- Kissimmee, Sanford, Lake Nona → \`orlando\`
+
+## Federal vs. State Distinction
+
+Be precise about federal versus state actions:
+- **Federal** (FAA, DOT, White House, Congress): These affect \`hasActivePilotProgram\` (if city-specific pilot program), \`regulatoryPosture\`, or are \`faa_certification_milestone\` / \`faa_corridor_filing\`. They NEVER affect \`hasStateLegislation\`.
+- **State** (state legislature, governor signing): These affect \`hasStateLegislation\`. A "five-state pilot program" led by a state DOT is state action. A "federal pilot program" selected by DOT/FAA is federal action.
+- If unclear whether an action is federal or state, default to \`needs_review\`.`;
 
 // -------------------------------------------------------
 // Types
