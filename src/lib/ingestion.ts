@@ -455,15 +455,26 @@ export async function runIngestion(): Promise<{
       await enrichSecFilings(changedRecords);
       await enrichOperatorNews(changedRecords);
 
+      // 10b. Deduplicate by URL before classification (same article can appear in multiple operator feeds)
+      const seenUrls = new Set<string>();
+      const dedupedRecords = changedRecords.filter((r) => {
+        if (!r.url || seenUrls.has(r.url)) return false;
+        seenUrls.add(r.url);
+        return true;
+      });
+      if (dedupedRecords.length < changedRecords.length) {
+        console.log(`[ingestion] Deduped ${changedRecords.length} → ${dedupedRecords.length} records by URL before classification`);
+      }
+
       // 11. Classify new/updated records with NLP (falls back to regex rules)
-      const { overrideCandidates: regexOverrides, corridorEvents, marketLeadSignals: rulesSignals } = evaluateRulesV2(changedRecords);
+      const { overrideCandidates: regexOverrides, corridorEvents, marketLeadSignals: rulesSignals } = evaluateRulesV2(dedupedRecords);
 
       // Collect market lead signals from all layers
       const allMarketLeadSignals: MarketLeadSignal[] = [...rulesSignals];
 
       let overrideCandidates;
       try {
-        const classifierResult = await classifyRecords(changedRecords);
+        const classifierResult = await classifyRecords(dedupedRecords);
         overrideCandidates = classifierResult.overrideCandidates;
         allMarketLeadSignals.push(...classifierResult.marketLeadSignals);
         console.log(`[ingestion] NLP classifier: ${overrideCandidates.length} candidates, ${classifierResult.marketLeadSignals.length} lead signals`);
