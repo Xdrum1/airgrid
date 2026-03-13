@@ -25,6 +25,7 @@ model User {
   watchlist             Watchlist?
   events                UserEvent[]
   apiKeys               ApiKey[]
+  newsletterOptOut      Boolean   @default(false)
   lastActiveAt          DateTime?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
