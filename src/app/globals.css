@@ -92,6 +92,69 @@ body {
 }
 
 
+/* Radar pulse on hero icon */
+@keyframes radarPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+.radar-pulse-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-pulse-ring {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-blue);
+  animation: radarPulse 4.5s ease-out infinite;
+}
+
+.radar-pulse-ring:nth-child(2) {
+  animation-delay: 1.5s;
+}
+
+.radar-pulse-ring:nth-child(3) {
+  animation-delay: 3s;
+}
+
+/* Hero flight path */
+@keyframes drawPath {
+  0% {
+    stroke-dashoffset: 400;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes moveDot {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
 /* Dashboard preview hover overlay */
 .dashboard-preview-overlay {
   position: absolute;
