@@ -86,6 +86,8 @@ const UAM_SEARCH_TERMS = [
   '"integration pilot program"',
   '"urban air mobility"',
   "SFAR",
+  '"eVTOL Integration Pilot Program"',
+  "2025-17844", // FAA eVTOL/AAM Integration Pilot Program RFP docket
 ];
 
 async function fetchFederalRegisterTerm(
