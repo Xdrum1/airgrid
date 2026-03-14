@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AirIndex Methodology Brief v1.2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page {
+    size: letter;
+    margin: 0.75in 0.85in;
+  }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #333;
+    font-size: 10.5pt;
+    line-height: 1.65;
+    background: #fff;
+  }
+
+  /* ── Cover ─────────────────────────── */
+  .cover {
+    background: #0a0a14;
+    color: #fff;
+    padding: 60px 48px 40px;
+    border-radius: 0;
+    margin: -0.75in -0.85in 40px;
+    width: calc(100% + 1.7in);
+  }
+  .cover-label { color: #00d4ff; font-size: 13px; font-weight: 700; letter-spacing: 3px; margin-bottom: 16px; }
+  .cover h1 { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; line-height: 1.15; margin-bottom: 12px; }
+  .cover-sub { color: #00d4ff; font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+  .cover-meta { color: #888; font-size: 12px; margin-bottom: 0; }
+  .cover-bar { height: 4px; background: linear-gradient(90deg, #00d4ff, #0891b2); margin: 0 -0.85in; width: calc(100% + 1.7in); }
+
+  /* ── Stats row ─────────────────────── */
+  .stats-row {
+    display: flex; gap: 0; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;
+    margin: 32px 0 40px; text-align: center;
+  }
+  .stat-box {
+    flex: 1; padding: 24px 12px; border-right: 1px solid #e0e0e0;
+  }
+  .stat-box:last-child { border-right: none; }
+  .stat-num { font-size: 28px; font-weight: 700; color: #0a0a14; }
+  .stat-label { font-size: 10px; color: #888; margin-top: 4px; letter-spacing: 0.5px; }
+
+  /* ── Document overview callout ────── */
+  .overview-callout {
+    border-left: 4px solid #00d4ff; background: #f8fafe; padding: 20px 24px; margin-bottom: 36px;
+  }
+  .overview-callout .oc-label { color: #00d4ff; font-size: 10px; font-weight: 700; letter-spacing: 2px; margin-bottom: 10px; }
+  .overview-callout p { color: #555; font-size: 11pt; line-height: 1.7; }
+
+  /* ── Headings ───────────────────────── */
+  h2 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: #0a0a14;
+    border-bottom: 3px solid #00d4ff; padding-bottom: 8px; margin: 40px 0 20px;
+  }
+  h2 .num { color: #00d4ff; margin-right: 12px; }
+  h3 { font-size: 14px; font-weight: 700; color: #0a0a14; margin: 24px 0 10px; }
+
+  /* ── Tables ─────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 10pt; }
+  th { background: #0a0a14; color: #fff; text-align: left; padding: 10px 14px; font-size: 9pt; font-weight: 600; letter-spacing: 0.5px; }
+  td { padding: 10px 14px; border-bottom: 1px solid #eee; vertical-align: top; }
+  tr:nth-child(even) td { background: #f9f9fb; }
+  .highlight { color: #00d4ff; font-weight: 700; }
+  .amber { color: #f59e0b; font-weight: 700; }
+  .green { color: #10b981; font-weight: 700; }
+  .red { color: #ef4444; }
+
+  /* ── Source cards ────────────────────── */
+  .source-card {
+    border: 1px solid #e0e0e0; border-radius: 6px; padding: 18px 22px; margin-bottom: 14px;
+  }
+  .source-card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .source-card-name { font-weight: 700; font-size: 13pt; }
+  .source-card-stat { color: #888; font-size: 10pt; }
+  .source-card p { color: #555; font-size: 10pt; line-height: 1.6; }
+  .source-card .note { color: #00d4ff; font-size: 9pt; font-style: italic; margin-top: 8px; }
+  .sc-fed { border-left: 4px solid #00d4ff; }
+  .sc-leg { border-left: 4px solid #3b82f6; }
+  .sc-sec { border-left: 4px solid #10b981; }
+  .sc-news { border-left: 4px solid #f59e0b; }
+
+  /* ── Callout boxes ──────────────────── */
+  .callout {
+    border-left: 4px solid #00d4ff; background: #f8fafe; padding: 16px 20px; margin: 20px 0;
+    font-size: 10pt; line-height: 1.6;
+  }
+  .callout strong { color: #0a0a14; }
+  .callout.warn { border-color: #f59e0b; background: #fffbf0; }
+  .callout.policy { border-color: #7c3aed; background: #faf5ff; }
+
+  /* ── Bar chart ──────────────────────── */
+  .bar-row { display: flex; align-items: center; margin-bottom: 8px; font-size: 10pt; }
+  .bar-label { width: 120px; color: #555; }
+  .bar-track { flex: 1; height: 18px; background: #f0f0f0; border-radius: 3px; overflow: hidden; margin: 0 12px; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+  .bar-pct { width: 50px; text-align: right; font-weight: 600; color: #555; }
+
+  /* ── Score change example ───────────── */
+  .score-example td:first-child { font-weight: 600; color: #888; width: 150px; font-size: 9pt; letter-spacing: 0.3px; }
+  .score-example td:nth-child(2) { color: #333; }
+
+  /* ── Version log ────────────────────── */
+  .version-tag { display: inline-block; background: #00d4ff; color: #fff; font-size: 9pt; font-weight: 700; padding: 2px 8px; border-radius: 3px; }
+  .version-tag.new { background: #10b981; }
+
+  /* ── Limitations ────────────────────── */
+  .limitation {
+    border: 1px solid #e0e0e0; border-radius: 6px; padding: 16px 20px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .limitation .lim-content { flex: 1; }
+  .limitation .lim-content strong { font-size: 11pt; }
+  .limitation .lim-content p { color: #555; font-size: 9.5pt; margin-top: 4px; line-height: 1.5; }
+  .lim-status { font-size: 8pt; font-weight: 700; padding: 3px 10px; border-radius: 3px; white-space: nowrap; margin-left: 16px; }
+  .lim-resolved { background: #d1fae5; color: #065f46; }
+  .lim-active { background: #fef3c7; color: #92400e; }
+  .lim-future { background: #e0e7ff; color: #3730a3; }
+
+  /* ── Footer ─────────────────────────── */
+  .page-footer {
+    border-top: 1px solid #ddd; margin-top: 48px; padding-top: 16px; font-size: 8pt; color: #aaa;
+    display: flex; justify-content: space-between;
+  }
+
+  /* ── TOC ─────────────────────────────── */
+  .toc { margin: 20px 0 36px; }
+  .toc-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dotted #ddd; font-size: 10.5pt; }
+  .toc-item .toc-num { color: #00d4ff; font-weight: 700; margin-right: 10px; }
+  .toc-label { color: #333; font-weight: 600; letter-spacing: 0.3px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="cover">
+  <div class="cover-label">AIRINDEX</div>
+  <h1>UAM Market Readiness Index</h1>
+  <div class="cover-sub">Methodology Brief</div>
+  <div class="cover-meta">Version 1.2 &middot; March 2026 &middot; Vertical Data Group, LLC</div>
+</div>
+<div class="cover-bar"></div>
+
+<div class="overview-callout">
+  <div class="oc-label">DOCUMENT OVERVIEW</div>
+  <p>This document describes the data sources, classification engine, scoring framework, and validation methodology underlying the AirIndex UAM Market Readiness Index &mdash; a systematic, data-driven assessment of U.S. city readiness for commercial eVTOL operations.</p>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box"><div class="stat-num">21</div><div class="stat-label">U.S. Markets Scored</div></div>
+  <div class="stat-box"><div class="stat-num">4</div><div class="stat-label">Primary Data Sources</div></div>
+  <div class="stat-box"><div class="stat-num">7</div><div class="stat-label">Scoring Factors</div></div>
+  <div class="stat-box"><div class="stat-num">~89%</div><div class="stat-label">Classification Accuracy</div></div>
+</div>
+
+<!-- ═══════════════ TOC ═══════════════ -->
+<div class="toc">
+  <div class="toc-item"><span><span class="toc-num">1</span><span class="toc-label">Purpose and Scope</span></span></div>
+  <div class="toc-item"><span><span class="toc-num">2</span><span class="toc-label">Scoring Framework</span></span></div>
+  <div class="toc-item"><span><span class="toc-num">3</span><span class="toc-label">Data Sources</span></span></div>
+  <div class="toc-item"><span><span class="toc-num">4</span><span class="toc-label">Classification Engine</span></span></div>
+  <div class="toc-item"><span><span class="toc-num">5</span><span class="toc-label">Accuracy and Validation</span></span></div>
+  <div class="toc-item"><span><span class="toc-num">6</span><span class="toc-label">Score Promotion Policy</span></span></div>
+  <div class="toc-item"><span><span class="toc-num">7</span><span class="toc-label">Market Watch List</span></span></div>
+  <div class="toc-item"><span><span class="toc-num">8</span><span class="toc-label">Score Updates and Versioning</span></span></div>
+  <div class="toc-item"><span><span class="toc-num">9</span><span class="toc-label">Limitations and Ongoing Development</span></span></div>
+</div>
+
+<!-- ═══════════════ 1. PURPOSE ═══════════════ -->
+<div class="page-break"></div>
+<h2><span class="num">1</span> Purpose and Scope</h2>
+
+<p>AirIndex scores U.S. cities on their readiness for commercial eVTOL (electric vertical takeoff and landing) operations using a systematic, data-driven methodology &mdash; not editorial judgment. The index is designed to give operators, city planners, investors, airport authorities, and policy researchers a consistent, auditable framework for comparing market readiness across geographies.</p>
+
+<p style="margin-top:12px">The index currently covers 21 U.S. markets, scored on a 0&ndash;100 scale across seven weighted factors. Scores are updated automatically when qualifying regulatory, legislative, or operator events are detected by the ingestion pipeline, with human review triggered for medium and low-confidence classifications.</p>
+
+<div class="callout">
+  <strong>What the index does not measure:</strong> AirIndex does not predict commercialization timelines, assess operator financial viability, or evaluate aviation safety outcomes. Scores reflect market readiness conditions &mdash; not guarantees of eVTOL deployment.
+</div>
+
+<!-- ═══════════════ 2. SCORING ═══════════════ -->
+<h2><span class="num">2</span> Scoring Framework</h2>
+
+<p>Each city is scored across seven factors. Six factors are binary (present/absent for full points). One factor &mdash; State Legislation &mdash; uses a graduated three-tier model introduced in v1.2.1. The maximum possible score is 100.</p>
+
+<table>
+  <tr><th>SCORING FACTOR</th><th>POINTS</th><th>RATIONALE</th></tr>
+  <tr><td><strong>Active Pilot Program</strong></td><td class="highlight">20 pts</td><td>Presence of a sanctioned UAM/eVTOL pilot program &mdash; the strongest single indicator of near-term commercial readiness.</td></tr>
+  <tr><td><strong>Approved Vertiport</strong></td><td class="highlight">20 pts</td><td>At least one vertiport has received regulatory approval, indicating physical infrastructure commitment.</td></tr>
+  <tr><td><strong>Active Operator Presence</strong></td><td class="highlight">15 pts</td><td>A certified eVTOL operator has announced or commenced operations in the market.</td></tr>
+  <tr><td><strong>Vertiport Zoning</strong></td><td class="highlight">15 pts</td><td>Municipal or county zoning frameworks explicitly accommodate vertiport infrastructure.</td></tr>
+  <tr><td><strong>Regulatory Posture</strong></td><td class="highlight">10 pts</td><td>The local regulatory environment is demonstrably favorable to UAM operations based on FAA and municipal signals.</td></tr>
+  <tr><td><strong>State Legislation</strong></td><td class="highlight">10 pts</td><td>Graduated three-tier model: <strong>enacted</strong> (10 pts) &mdash; state has passed UAM/eVTOL legislation; <strong>actively_moving</strong> (5 pts) &mdash; bills in late legislative stages (committee passage, floor votes, 2nd reading); <strong>none</strong> (0 pts). Source: LegiScan primary legislative data.</td></tr>
+  <tr><td><strong>LAANC Coverage</strong></td><td class="highlight">10 pts</td><td>Low Altitude Authorization and Notification Capability (LAANC) is active in the market area, enabling automated airspace access.</td></tr>
+</table>
+
+<h3>Score Tiers</h3>
+<table>
+  <tr><th>TIER</th><th>RANGE</th><th>DESCRIPTION</th></tr>
+  <tr><td><strong>ADVANCED</strong></td><td>80 &ndash; 100</td><td>All or nearly all readiness factors present. Near-term commercial operations feasible.</td></tr>
+  <tr><td><strong>MODERATE</strong></td><td>60 &ndash; 79</td><td>Strong regulatory and infrastructure foundation. Active development underway.</td></tr>
+  <tr><td><strong>DEVELOPING</strong></td><td>40 &ndash; 59</td><td>Moderate readiness. Key factors present but gaps remain in infrastructure or legislation.</td></tr>
+  <tr><td><strong>EARLY</strong></td><td>20 &ndash; 39</td><td>Early-stage activity. Regulatory or operator interest visible but limited infrastructure.</td></tr>
+  <tr><td><strong>NASCENT</strong></td><td>0 &ndash; 19</td><td>Minimal readiness signals. No pilot programs, vertiport approvals, or legislation detected.</td></tr>
+</table>
+
+<h3>Current Market Snapshot &mdash; March 2026</h3>
+<p>The index currently covers 21 U.S. markets with an average score of 39 (EARLY tier). Three markets have achieved perfect scores: Los Angeles (100), Dallas (100), and Miami (100). Miami was most recently updated on March 13, 2026, following automated detection of an FAA Federal Register filing confirming Archer Aviation's White House AAM Pilot Program selection. Chicago moved from NASCENT to EARLY tier (30&rarr;35) on March 14, 2026, following graduated legislation scoring recognizing IL HB3190.</p>
+
+<!-- ═══════════════ 3. DATA SOURCES ═══════════════ -->
+<div class="page-break"></div>
+<h2><span class="num">3</span> Data Sources</h2>
+
+<p>AirIndex ingests data from four primary sources. Each source feeds a distinct category of scoring signal. As of March 2026, the active dataset contains <strong>1,403</strong> ingested records across all four sources.</p>
+
+<div class="source-card sc-fed">
+  <div class="source-card-header"><span class="source-card-name">Federal Register</span><span class="source-card-stat">6.0% &middot; 84 records</span></div>
+  <p>FAA rulings, NOPRMs, Part 135 applications, Special Federal Aviation Regulations (SFARs), and airspace notices. The most authoritative government source for regulatory posture and pilot program signals. Active lookback window: 730 days (2 years). 12 search terms including "eVTOL Integration Pilot Program" and FAA docket monitoring. Updated: daily cron ingestion.</p>
+  <div class="note">Federal Register coverage expanded from 5 to 84 records in March 2026 via pagination fix, double-filter removal, and search term expansion (v1.1). Additional search terms for FAA eVTOL/AAM Integration Pilot Program added March 14, 2026 (v1.2).</div>
+</div>
+
+<div class="source-card sc-leg">
+  <div class="source-card-header"><span class="source-card-name">LegiScan</span><span class="source-card-stat">28.4% &middot; 399 records</span></div>
+  <p>State-level UAM and UAS legislation across all 50 states &mdash; bills, resolutions, and committee actions. Primary source for the State Legislation scoring factor, including graduated status assessment (enacted vs. actively_moving vs. none). Coverage filters applied to UAM-relevant legislative activity.</p>
+</div>
+
+<div class="source-card sc-sec">
+  <div class="source-card-header"><span class="source-card-name">SEC EDGAR</span><span class="source-card-stat">5.6% &middot; 79 records</span></div>
+  <p>Operator filings from publicly traded eVTOL companies including Joby Aviation and Archer Aviation (8-Ks, 10-Qs, and material event disclosures). Used to detect operator market expansion, partnership announcements, and certification milestones.</p>
+</div>
+
+<div class="source-card sc-news">
+  <div class="source-card-header"><span class="source-card-name">Operator News</span><span class="source-card-stat">59.9% &middot; 841 records</span></div>
+  <p>Curated operator announcements, market expansions, and industry milestones from primary sources including company press releases and aviation trade publications. Selection criteria: announcements must reference a specific market, regulatory action, or operational milestone. General financial coverage and stock analysis are excluded.</p>
+  <div class="note">Operator News is a watch list and intelligence signal source. Per the Score Promotion Policy (Section 6), news coverage alone does not qualify for automatic score promotion on primary-source-required factors.</div>
+</div>
+
+<h3>Source Distribution</h3>
+<div class="bar-row"><span class="bar-label">Operator News</span><div class="bar-track"><div class="bar-fill" style="width:59.9%;background:#f59e0b"></div></div><span class="bar-pct">59.9%</span></div>
+<div class="bar-row"><span class="bar-label">LegiScan</span><div class="bar-track"><div class="bar-fill" style="width:28.4%;background:#3b82f6"></div></div><span class="bar-pct">28.4%</span></div>
+<div class="bar-row"><span class="bar-label">Federal Register</span><div class="bar-track"><div class="bar-fill" style="width:6.0%;background:#00d4ff"></div></div><span class="bar-pct">6.0%</span></div>
+<div class="bar-row"><span class="bar-label">SEC EDGAR</span><div class="bar-track"><div class="bar-fill" style="width:5.6%;background:#10b981"></div></div><span class="bar-pct">5.6%</span></div>
+
+<!-- ═══════════════ 4. CLASSIFICATION ═══════════════ -->
+<div class="page-break"></div>
+<h2><span class="num">4</span> Classification Engine</h2>
+
+<p>Raw ingested records are processed by an AI classification engine (Claude Haiku 4.5) that assigns each record an event type, confidence level, affected city tags, and relevant scoring factors. This classification drives scoring override recommendations &mdash; the mechanism by which new information updates city scores.</p>
+
+<h3>Confidence Tiering</h3>
+<p>Every classification result includes a confidence field with one of three values. The confidence level determines how the record moves through the pipeline:</p>
+
+<table>
+  <tr><th>CONFIDENCE</th><th>VOLUME</th><th>BEHAVIOR</th><th>HUMAN REVIEW</th></tr>
+  <tr><td class="green"><strong>HIGH</strong></td><td>84%</td><td>Classification flows to auto-reviewer. High-confidence overrides evaluated for automatic score promotion (subject to source quality requirements).</td><td>Only if auto-reviewer rejects</td></tr>
+  <tr><td class="amber"><strong>MEDIUM</strong></td><td>12%</td><td>Flagged for human review queue. Not promoted to scoring automatically.</td><td>Required before any score change</td></tr>
+  <tr><td class="red"><strong>NEEDS REVIEW</strong></td><td>4%</td><td>Manual intervention required. Record held pending human classification decision.</td><td>Always required</td></tr>
+</table>
+
+<h3>Audit Trail</h3>
+<p>Every classification and scoring decision is fully logged. The system maintains three persistent audit tables:</p>
+<ul style="margin:10px 0 10px 24px; font-size:10pt; color:#555">
+  <li><strong>ClassificationResult</strong> &mdash; Stores every classification with raw response, confidence level, model used, prompt version, and factors JSON.</li>
+  <li><strong>ScoringOverride</strong> &mdash; Tracks every override with confidence, reason, source record ID, applied timestamp, and superseded timestamp.</li>
+  <li><strong>AutoReviewResult</strong> &mdash; Logs every auto-review decision with reasoning, confidence, application status, and source content.</li>
+</ul>
+
+<div class="callout">
+  Every score change is traceable to a specific source record, classification result, and override decision &mdash; including the timestamp, confidence level, and reasoning. This audit trail is maintained indefinitely and available for methodology review upon request.
+</div>
+
+<h3>Signal Distribution &mdash; March 2026</h3>
+<table>
+  <tr><th>EVENT TYPE</th><th>COUNT</th><th>DESCRIPTION</th></tr>
+  <tr><td>faa_certification_milestone</td><td class="highlight">31</td><td>FAA type certificate actions, conforming aircraft approvals, test flight authorizations</td></tr>
+  <tr><td>operator_market_expansion</td><td class="highlight">25</td><td>Operator announcements of new market entry, partnerships, or route launches</td></tr>
+  <tr><td>state_legislation_signed</td><td class="highlight">3</td><td>State-level UAM/eVTOL legislation enacted</td></tr>
+  <tr><td>faa_corridor_filing</td><td class="highlight">1</td><td>FAA corridor authorization or airspace notice</td></tr>
+  <tr><td>not_relevant</td><td>146</td><td>Correctly filtered noise &mdash; stock analysis, insider trading disclosures, unrelated regulatory filings</td></tr>
+</table>
+
+<!-- ═══════════════ 5. ACCURACY ═══════════════ -->
+<div class="page-break"></div>
+<h2><span class="num">5</span> Accuracy and Validation</h2>
+
+<p>Two retrospective accuracy audits have been conducted in March 2026, establishing a documented improvement arc across prompt versions. Each audit sampled classifications across all three confidence buckets. Records were manually reviewed against source content to verify correct event type assignment, city tagging, and scoring factor mapping.</p>
+
+<h3>v1.1 Accuracy Audit &mdash; March 13, 2026 (Prompt v3)</h3>
+<table>
+  <tr><th>BUCKET</th><th>SAMPLE</th><th>CORRECT</th><th>QUESTIONABLE</th><th>WRONG</th><th>ACCURACY</th></tr>
+  <tr><td>HIGH</td><td>20</td><td>15</td><td>4</td><td>1</td><td>75 &ndash; 95%</td></tr>
+  <tr><td>MEDIUM</td><td>10</td><td>7</td><td>0</td><td>2</td><td>70 &ndash; 80%</td></tr>
+  <tr><td>NEEDS REVIEW</td><td>4</td><td>2</td><td>1</td><td>1</td><td>50 &ndash; 75%</td></tr>
+  <tr><td><strong>OVERALL</strong></td><td><strong>34</strong></td><td class="highlight">24</td><td></td><td>4</td><td><strong>~80%</strong></td></tr>
+</table>
+
+<h3>v1.2 Accuracy Audit &mdash; March 14, 2026 (Prompt v4)</h3>
+<table>
+  <tr><th>BUCKET</th><th>SAMPLE</th><th>CORRECT</th><th>QUESTIONABLE</th><th>WRONG</th><th>ACCURACY</th></tr>
+  <tr><td>HIGH</td><td>20</td><td>19</td><td>1</td><td>0</td><td class="green">~95%</td></tr>
+  <tr><td>MEDIUM</td><td>10</td><td>8</td><td>1</td><td>1</td><td>~85%</td></tr>
+  <tr><td>NEEDS REVIEW</td><td>5</td><td>3</td><td>1</td><td>1</td><td>~75%</td></tr>
+  <tr><td><strong>OVERALL</strong></td><td><strong>35</strong></td><td class="green">30</td><td></td><td>2</td><td><strong class="green">~88&ndash;90%</strong></td></tr>
+</table>
+
+<h3>Improvement Analysis</h3>
+<p>The v1.2 accuracy improvement from ~80% to ~88&ndash;90% is attributable to four targeted prompt fixes deployed between audits:</p>
+
+<table>
+  <tr><th>FIX AREA</th><th>v1.1 STATUS</th><th>v1.2 STATUS</th><th>RESULT</th></tr>
+  <tr><td><strong>Stock-framed false negatives</strong></td><td class="red">Active failure mode</td><td class="green">Resolved</td><td>7/7 stock-framed headlines correctly filtered in HIGH bucket</td></tr>
+  <tr><td><strong>Bay Area metro mapping</strong></td><td class="red">Inconsistent</td><td class="green">Resolved</td><td>6/6 Bay Area locations correctly mapped to san_francisco</td></tr>
+  <tr><td><strong>Federal vs. state distinction</strong></td><td class="amber">Occasional mismatch</td><td class="green">Resolved</td><td>Arizona correctly mapped to Phoenix, federal programs distinguished</td></tr>
+  <tr><td><strong>URL deduplication</strong></td><td class="red">Duplicates present</td><td class="amber">Partial</td><td>Reduced but not eliminated (marketscreener.com domain dedup planned for v1.3)</td></tr>
+</table>
+
+<div class="callout">
+  <strong>Interpretation:</strong> The system's primary failure mode remains conservative &mdash; it drops real signals rather than promoting false ones. For a scoring system where credibility is the product, this is the correct failure mode. Scores are more likely to be understated than overstated. The remaining weakness (DOT "Future of Flight" pilot program under-classification when wrapped in stock commentary) is a known v1.3 prompt refinement target.
+</div>
+
+<!-- ═══════════════ 6. SCORE PROMOTION POLICY ═══════════════ -->
+<div class="page-break"></div>
+<h2><span class="num">6</span> Score Promotion Policy</h2>
+
+<p>Established March 2026. Score changes require source documentation that meets a two-tier quality hierarchy. This policy is enforced automatically in the classification pipeline and auto-reviewer.</p>
+
+<h3>Two-Source Hierarchy</h3>
+
+<table>
+  <tr><th>SOURCE TIER</th><th>EXAMPLES</th><th>ELIGIBLE ACTIONS</th></tr>
+  <tr><td><strong>Primary / Official</strong></td><td>Federal Register filings, FAA documentation, DOT notices, LegiScan legislative records, state legislature records, SEC EDGAR filings, official .gov sources</td><td>Automatic score promotion at high confidence. Full scoring factor changes including hasActivePilotProgram, hasVertiportZoning, stateLegislationStatus.</td></tr>
+  <tr><td><strong>Secondary / News</strong></td><td>Credible local journalism (WRAL, NY Post), aviation trade publications, operator press releases, industry aggregators</td><td>Watch list trigger and elevated activity signal <strong>only</strong>. Does not qualify for automatic score promotion on primary-source-required factors. Suitable for activeOperators and regulatoryPosture changes.</td></tr>
+</table>
+
+<h3>Factors Requiring Primary Source Documentation</h3>
+
+<table>
+  <tr><th>FACTOR</th><th>WEIGHT</th><th>REQUIRED SOURCE</th><th>RATIONALE</th></tr>
+  <tr><td><strong>hasActivePilotProgram</strong></td><td>20 pts</td><td>Federal Register filing or direct FAA documentation</td><td>20-point weight with significant tier implications warrants primary source confirmation</td></tr>
+  <tr><td><strong>hasVertiportZoning</strong></td><td>15 pts</td><td>Official city/county zoning records or council minutes</td><td>Zoning changes require municipal documentation</td></tr>
+  <tr><td><strong>stateLegislationStatus</strong></td><td>10 pts</td><td>LegiScan or official state legislature records</td><td>Legislative status must be traceable to bill records</td></tr>
+</table>
+
+<div class="callout policy">
+  <strong>Policy rationale:</strong> Multi-source news coverage of FAA programs constitutes strong signal and appropriately triggers watch list monitoring. However, pilot program factor changes carry 20-point weight and can produce tier-changing score movements (e.g., Charlotte 15&rarr;35, New York 70&rarr;90). Score changes of this magnitude require primary source documentation on the audit trail. News coverage routes to watch list; Federal Register filings route to scoring.
+</div>
+
+<!-- ═══════════════ 7. WATCH LIST ═══════════════ -->
+<h2><span class="num">7</span> Market Watch List</h2>
+
+<p>Launched March 14, 2026. The Market Watch List is an automated, pipeline-driven intelligence layer that identifies markets showing signals that haven't fully moved their scores yet. Watch list status is not a score change &mdash; it is early intelligence.</p>
+
+<h3>Trigger Types</h3>
+<table>
+  <tr><th>TRIGGER</th><th>CRITERIA</th><th>EXAMPLE</th></tr>
+  <tr><td><strong>LEGISLATION</strong></td><td>stateLegislationStatus === "actively_moving"</td><td>Phoenix (AZ SB1827/SB1819/SB1826), Columbus (OH HR304/HB251), Chicago (IL HB3190)</td></tr>
+  <tr><td><strong>PIPELINE_OVERRIDE</strong></td><td>Unresolved high/medium confidence scoring overrides pending review</td><td>Los Angeles, Miami, Houston &mdash; pending operator or regulatory overrides</td></tr>
+  <tr><td><strong>ELEVATED_ACTIVITY</strong></td><td>3+ relevant classifications in 30 days with no score movement</td><td>Charlotte (NC DOT + FAA AAM pilot program news), New York (FAA air taxi test program news)</td></tr>
+</table>
+
+<h3>Watch List Lifecycle</h3>
+<p>Entries are evaluated daily as part of the 06:00 UTC cron cycle. Entries auto-resolve when their trigger conditions no longer qualify &mdash; either because the underlying signal resolved, the score moved to reflect the change, or legislation was enacted. Resolution reasons are logged for audit purposes.</p>
+
+<p style="margin-top:12px"><strong>Current state (March 14, 2026):</strong> 15 active entries across 10 markets. Includes 2 markets (Charlotte, New York) with elevated activity from news coverage of FAA eVTOL/AAM Integration Pilot Program participant selections &mdash; pending Federal Register confirmation per Score Promotion Policy.</p>
+
+<!-- ═══════════════ 8. VERSIONING ═══════════════ -->
+<div class="page-break"></div>
+<h2><span class="num">8</span> Score Updates and Versioning</h2>
+
+<p>Scores update when the classification pipeline surfaces a high-confidence override from a primary source that the auto-reviewer promotes to active status. The pipeline runs on a daily cron schedule (06:00 UTC). All score changes are logged with source, timestamp, and reasoning.</p>
+
+<h3>Score Change Example &mdash; Chicago, March 14, 2026</h3>
+<table class="score-example">
+  <tr><td>Market</td><td>Chicago, Illinois</td></tr>
+  <tr><td>Previous Score</td><td>30 (EARLY tier)</td></tr>
+  <tr><td>Updated Score</td><td>35 (EARLY tier)</td></tr>
+  <tr><td>Trigger</td><td>LegiScan: IL HB3190 (AERONAUTICS-UNMANNED AIRCRAFT) placed on calendar for 2nd reading</td></tr>
+  <tr><td>Factor Updated</td><td>stateLegislationStatus: none &rarr; actively_moving (+5 pts)</td></tr>
+  <tr><td>Classification</td><td>Graduated legislation scoring path (v1.2.1) &mdash; LegiScan primary source</td></tr>
+  <tr><td>Timestamp</td><td>March 14, 2026 (manual seed data update, clean legislative audit trail)</td></tr>
+</table>
+
+<h3>Methodology Version Log</h3>
+<p>Changes to the scoring methodology, data sources, or classification logic are versioned and documented. The current version is 1.2.</p>
+
+<table>
+  <tr><th style="width:60px">VERSION</th><th style="width:110px">DATE</th><th>CHANGES</th></tr>
+  <tr><td><span class="version-tag">v1.0</span></td><td>March 2026</td><td>Initial methodology. 21 markets, 7 scoring factors, 4 data sources. Federal Register integration active with 90-day lookback and 20 results per term.</td></tr>
+  <tr><td><span class="version-tag">v1.1</span></td><td>March 13, 2026</td><td>Federal Register fix: pagination added (up to 500 results per term), double-filter removed, new search terms (SFAR, "powered lift"), lookback extended to 730 days. Records grew from 5 to 84. Retrospective accuracy audit completed (34 records, ~80% accuracy).</td></tr>
+  <tr><td><span class="version-tag new">v1.2</span></td><td>March 14, 2026</td><td>Classification prompt v4: stock-framed false negative fix, Bay Area metro geographic mappings (17 areas), federal vs. state factor distinction. Accuracy improved from ~80% to ~88&ndash;90% (35-record audit). Two-source hierarchy policy established for score promotion. Federal Register search terms expanded with FAA eVTOL/AAM Integration Pilot Program docket monitoring.</td></tr>
+  <tr><td><span class="version-tag new">v1.2.1</span></td><td>March 14, 2026</td><td>Graduated legislation scoring: State Legislation factor converted from binary (enacted/none) to three-tier model (enacted 10 pts / actively_moving 5 pts / none 0 pts). Based on LegiScan data analysis across 398 records and 49 states. Phoenix +5 (AZ SB1827), Columbus +5 (OH HR304), Chicago +5 (IL HB3190). Market Watch List launched &mdash; automated pipeline-driven intelligence layer with 3 trigger types (LEGISLATION, PIPELINE_OVERRIDE, ELEVATED_ACTIVITY). 15 active entries at launch.</td></tr>
+</table>
+
+<!-- ═══════════════ 9. LIMITATIONS ═══════════════ -->
+<div class="page-break"></div>
+<h2><span class="num">9</span> Limitations and Ongoing Development</h2>
+
+<p>Transparency about current limitations is central to AirIndex's methodology philosophy. The following limitations are acknowledged and tracked with resolution status.</p>
+
+<div class="limitation no-break">
+  <div class="lim-content">
+    <strong>Operator News Manual Curation Dependency</strong>
+    <p>The largest data source by volume (59.9%) relies on curated RSS feeds. While selection criteria are documented, the source is more dependent on active curation than fully automated sources. Full automation of this source is a V2 priority.</p>
+  </div>
+  <span class="lim-status lim-future">V2</span>
+</div>
+
+<div class="limitation no-break">
+  <div class="lim-content">
+    <strong>Classification Feedback Loop</strong>
+    <p>Manual review decisions (approve/reject overrides) are stored in AutoReviewResult but are not yet used to fine-tune classification prompts automatically. This feedback loop will be closed in V2/V3 when sufficient decisions have accumulated.</p>
+  </div>
+  <span class="lim-status lim-future">V2/V3</span>
+</div>
+
+<div class="limitation no-break">
+  <div class="lim-content">
+    <strong>False Negative Rate on Stock-Framed Headlines</strong>
+    <p>High-confidence classifications occasionally dropped real regulatory signals when articles framed underlying events in financial rather than regulatory terms. Resolved in v1.2 prompt update &mdash; 7/7 stock-framed test cases correctly filtered. Remaining edge case: DOT "Future of Flight" pilot program under-classified when wrapped in stock commentary (v1.3 target).</p>
+  </div>
+  <span class="lim-status lim-resolved">RESOLVED v1.2</span>
+</div>
+
+<div class="limitation no-break">
+  <div class="lim-content">
+    <strong>Metropolitan Area Mapping</strong>
+    <p>Geographic city tagging previously did not fully account for metropolitan areas (e.g., Oakland &rarr; san_francisco). Resolved in v1.2 with 17 metro area geographic mappings added to classification prompt. 6/6 Bay Area test cases correctly mapped.</p>
+  </div>
+  <span class="lim-status lim-resolved">RESOLVED v1.2</span>
+</div>
+
+<div class="limitation no-break">
+  <div class="lim-content">
+    <strong>URL Deduplication</strong>
+    <p>Some articles appear through multiple RSS feeds or with variant URLs, causing duplicate classifications. Partial improvement in v1.2 via pre-classification URL dedup. Full domain-level normalization (including marketscreener.com redirect handling) planned for v1.3.</p>
+  </div>
+  <span class="lim-status lim-active">PARTIAL</span>
+</div>
+
+<div class="limitation no-break">
+  <div class="lim-content">
+    <strong>U.S. Markets Only</strong>
+    <p>The current index covers 21 U.S. markets. International expansion (UAE, United Kingdom, Singapore, and parts of Asia) is under consideration for a future version. The scoring methodology is designed to be adaptable to international markets.</p>
+  </div>
+  <span class="lim-status lim-future">V2</span>
+</div>
+
+<div class="limitation no-break">
+  <div class="lim-content">
+    <strong>Graduated Scoring Factors</strong>
+    <p>Six of seven scoring factors remain binary (present/absent). State Legislation was converted to a graduated three-tier model in v1.2.1. Expansion of graduated scoring to additional factors (e.g., regulatoryPosture, operator presence intensity) is under consideration for a future methodology version.</p>
+  </div>
+  <span class="lim-status lim-active">PARTIAL</span>
+</div>
+
+<div class="callout" style="margin-top:32px">
+  AirIndex is committed to publishing methodology updates as the scoring system evolves. Version history is maintained at airindex.io/methodology. Questions regarding methodology or data sourcing may be directed to <strong>alan@airindex.io</strong>.
+</div>
+
+<div class="page-footer">
+  <span>AirIndex UAM Market Readiness Index &mdash; Methodology Brief<br>Vertical Data Group, LLC | Confidential | Version 1.2 | March 2026</span>
+</div>
+
+</body>
+</html>
