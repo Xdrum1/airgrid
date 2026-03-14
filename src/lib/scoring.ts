@@ -1,4 +1,4 @@
-import { City, ScoreBreakdown, RegulatoryPosture } from "@/types";
+import { City, ScoreBreakdown, RegulatoryPosture, LegislationStatus } from "@/types";
 
 export const SCORE_WEIGHTS = {
   activePilotProgram: 20,
@@ -28,9 +28,7 @@ export function calculateReadinessScore(city: City): {
       ? SCORE_WEIGHTS.activeOperatorPresence
       : 0,
     regulatoryPosture: scorePosture(city.regulatoryPosture),
-    stateLegislation: city.hasStateLegislation
-      ? SCORE_WEIGHTS.stateLegislation
-      : 0,
+    stateLegislation: scoreLegislation(city.stateLegislationStatus),
     laancCoverage: city.hasLaancCoverage
       ? SCORE_WEIGHTS.laancCoverage
       : 0,
@@ -46,6 +44,15 @@ function scorePosture(posture: RegulatoryPosture): number {
     case "neutral":     return 5;
     case "restrictive": return 0;
     default:            return 0;
+  }
+}
+
+function scoreLegislation(status: LegislationStatus): number {
+  switch (status) {
+    case "enacted":         return SCORE_WEIGHTS.stateLegislation;
+    case "actively_moving": return 5;
+    case "none":            return 0;
+    default:                return 0;
   }
 }
 
@@ -69,5 +76,14 @@ export function getPostureConfig(posture: RegulatoryPosture) {
     case "neutral":     return { label: "NEUTRAL",     color: "#f59e0b" };
     case "restrictive": return { label: "RESTRICTIVE", color: "#ff4444" };
     default:            return { label: "UNKNOWN",     color: "#555555" };
+  }
+}
+
+export function getLegislationConfig(status: LegislationStatus) {
+  switch (status) {
+    case "enacted":         return { label: "ENACTED",         color: "#00ff88" };
+    case "actively_moving": return { label: "ACTIVELY MOVING", color: "#f59e0b" };
+    case "none":            return { label: "NONE",            color: "#ff4444" };
+    default:                return { label: "UNKNOWN",         color: "#555555" };
   }
 }

@@ -202,18 +202,18 @@ export default function CityDetailPanel({
           >
             {posture.label}
           </span>
-          {selected.hasStateLegislation && (
+          {selected.stateLegislationStatus !== "none" && (
             <span
               style={{
-                color: "#00ff88",
+                color: selected.stateLegislationStatus === "enacted" ? "#00ff88" : "#f59e0b",
                 fontSize: 8,
-                border: "1px solid rgba(0,255,136,0.25)",
+                border: `1px solid ${selected.stateLegislationStatus === "enacted" ? "rgba(0,255,136,0.25)" : "rgba(245,158,11,0.25)"}`,
                 borderRadius: 3,
                 padding: "3px 7px",
                 letterSpacing: 1,
               }}
             >
-              STATE LAW
+              {selected.stateLegislationStatus === "enacted" ? "STATE LAW" : "BILLS MOVING"}
             </span>
           )}
           {selected.hasLaancCoverage && (

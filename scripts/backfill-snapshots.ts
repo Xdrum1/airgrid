@@ -27,13 +27,13 @@ const PRE_CORRECTION_OVERRIDES: Record<string, Partial<typeof CITIES[0]>> = {
     hasActivePilotProgram: true,
     hasVertiportZoning: true,
     regulatoryPosture: "friendly" as const,
-    hasStateLegislation: true,
+    stateLegislationStatus: "enacted" as const,
   },
   phoenix: {
     // 65 = pilot(20) + zoning(15) + friendly(10) + legislation(10) + laanc(10)
     hasVertiportZoning: true,
     regulatoryPosture: "friendly" as const,
-    hasStateLegislation: true,
+    stateLegislationStatus: "enacted" as const,
   },
   austin: {
     // 45 = operator(15) + friendly(10) + legislation(10) + laanc(10)

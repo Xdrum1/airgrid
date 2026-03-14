@@ -202,6 +202,7 @@ const FACTOR_LABELS: Record<string, string> = {
   activeOperatorPresence: "operator presence",
   hasVertiportZoning: "vertiport zoning",
   regulatoryPosture: "regulatory posture",
+  stateLegislationStatus: "state legislation",
   hasStateLegislation: "state legislation",
   hasLaancCoverage: "LAANC coverage",
 };

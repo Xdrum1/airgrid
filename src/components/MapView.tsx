@@ -531,18 +531,18 @@ function CityPopup({
             {city.vertiportCount} VERTIPORT{city.vertiportCount > 1 ? "S" : ""}
           </span>
         )}
-        {city.hasStateLegislation && (
+        {city.stateLegislationStatus !== "none" && (
           <span
             style={{
-              color: "#7c3aed",
+              color: city.stateLegislationStatus === "enacted" ? "#7c3aed" : "#f59e0b",
               fontSize: 7,
-              border: "1px solid rgba(124,58,237,0.3)",
+              border: `1px solid ${city.stateLegislationStatus === "enacted" ? "rgba(124,58,237,0.3)" : "rgba(245,158,11,0.3)"}`,
               borderRadius: 3,
               padding: "2px 6px",
               letterSpacing: 1,
             }}
           >
-            STATE LAW
+            {city.stateLegislationStatus === "enacted" ? "STATE LAW" : "BILLS MOVING"}
           </span>
         )}
       </div>

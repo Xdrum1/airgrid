@@ -269,18 +269,18 @@ export default function CityDetail({
             >
               {posture.label}
             </span>
-            {city.hasStateLegislation && (
+            {city.stateLegislationStatus !== "none" && (
               <span
                 style={{
-                  color: "#00ff88",
+                  color: city.stateLegislationStatus === "enacted" ? "#00ff88" : "#f59e0b",
                   fontSize: 9,
-                  border: "1px solid rgba(0,255,136,0.25)",
+                  border: `1px solid ${city.stateLegislationStatus === "enacted" ? "rgba(0,255,136,0.25)" : "rgba(245,158,11,0.25)"}`,
                   borderRadius: 4,
                   padding: "4px 10px",
                   letterSpacing: 1,
                 }}
               >
-                STATE LAW
+                {city.stateLegislationStatus === "enacted" ? "STATE LAW" : "BILLS MOVING"}
               </span>
             )}
             {city.hasLaancCoverage && (
