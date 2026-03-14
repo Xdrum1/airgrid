@@ -125,7 +125,7 @@ const SCORING_FACTORS = [
   "vertiportCount",
   "activeOperators",
   "regulatoryPosture",
-  "hasStateLegislation",
+  "stateLegislationStatus",
   "hasLaancCoverage",
 ] as const;
 
@@ -225,7 +225,7 @@ Each market is scored on 7 binary factors:
 3. **activeOperatorPresence** (15 pts) — At least one eVTOL operator active
 4. **hasVertiportZoning** (15 pts) — Local zoning ordinance allows vertiport construction
 5. **regulatoryPosture** (10 pts) — "friendly" (10), "neutral" (5), "restrictive" (0)
-6. **hasStateLegislation** (10 pts) — State has signed UAM-enabling legislation
+6. **stateLegislationStatus** (10 pts) — State legislation: "enacted" (10 pts, signed into law), "actively_moving" (5 pts, bill in late stages), "none" (0 pts)
 7. **hasLaancCoverage** (10 pts) — FAA LAANC low-altitude authorization coverage
 
 ## Review Guidelines
@@ -299,7 +299,7 @@ Each market is scored on 7 binary/enum factors:
 3. **vertiportCount** (number, 20 pts if > 0) — Number of approved/operational vertiports
 4. **activeOperators** (string[], 15 pts if non-empty) — IDs of eVTOL operators active in the city
 5. **regulatoryPosture** ("friendly" | "neutral" | "restrictive", 10 pts) — City/state regulatory stance toward UAM
-6. **hasStateLegislation** (boolean, 10 pts) — State has signed UAM-enabling legislation
+6. **stateLegislationStatus** ("enacted" | "actively_moving" | "none", 10 pts) — State legislation: enacted (10 pts), actively_moving (5 pts), none (0 pts)
 7. **hasLaancCoverage** (boolean, 10 pts) — FAA LAANC low-altitude authorization coverage
 
 ## Guidelines
@@ -346,7 +346,7 @@ function buildRecommendationPrompt(
     parts.push(`- vertiportCount: ${city.vertiportCount}`);
     parts.push(`- activeOperators: ${JSON.stringify(city.activeOperators)}`);
     parts.push(`- regulatoryPosture: "${city.regulatoryPosture}"`);
-    parts.push(`- hasStateLegislation: ${city.hasStateLegislation}`);
+    parts.push(`- stateLegislationStatus: "${city.stateLegislationStatus}"`);
     parts.push(`- hasLaancCoverage: ${city.hasLaancCoverage}`);
   } else {
     parts.push(`(City data not found — use your best judgment)`);

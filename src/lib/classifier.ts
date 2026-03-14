@@ -47,7 +47,7 @@ Each market is scored on 7 binary factors:
 3. **activeOperatorPresence** (15 pts) — At least one eVTOL operator has announced or begun operations in this specific market (city). General corporate news (earnings, stock offerings, fundraising) does NOT count.
 4. **hasVertiportZoning** (15 pts) — Local zoning ordinance specifically allows vertiport construction in this city.
 5. **regulatoryPosture** (10 pts) — City/state regulatory stance: "friendly" (10), "neutral" (5), "restrictive" (0). Requires explicit city or state policy action.
-6. **hasStateLegislation** (10 pts) — A specific STATE (not federal) has signed UAM-enabling legislation into law. Federal FAA actions, federal programs, and federal policy do NOT count. Must be a state bill signed into law.
+6. **stateLegislationStatus** (10 pts) — State legislation status: "enacted" (10 pts, signed into law), "actively_moving" (5 pts, bill in late stages — transmit to house, second reading, ordered enrolled, governor's desk), "none" (0 pts). Federal FAA actions do NOT count. Field name in output remains "hasStateLegislation" for compatibility.
 7. **hasLaancCoverage** (10 pts) — FAA LAANC low-altitude authorization coverage exists in this specific area.
 
 ## Tracked Markets (${CITIES.length} US cities)

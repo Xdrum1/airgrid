@@ -5,8 +5,9 @@ import {
   getScoreColor,
   getScoreTier,
   getPostureConfig,
+  getLegislationConfig,
 } from "./scoring";
-import type { City, RegulatoryPosture } from "@/types";
+import type { City, RegulatoryPosture, LegislationStatus } from "@/types";
 
 // Helper to build a minimal City with all factors on or off
 function makeCity(overrides: Partial<City> = {}): City {
@@ -23,7 +24,7 @@ function makeCity(overrides: Partial<City> = {}): City {
     vertiportCount: 0,
     activeOperators: [],
     regulatoryPosture: "restrictive",
-    hasStateLegislation: false,
+    stateLegislationStatus: "none",
     hasLaancCoverage: false,
     notes: "",
     keyMilestones: [],
@@ -39,7 +40,7 @@ function allFactorsCity(): City {
     vertiportCount: 3,
     activeOperators: ["op_joby"],
     regulatoryPosture: "friendly",
-    hasStateLegislation: true,
+    stateLegislationStatus: "enacted",
     hasLaancCoverage: true,
   });
 }
@@ -108,6 +109,27 @@ describe("calculateReadinessScore", () => {
     expect(breakdown.regulatoryPosture).toBe(0);
   });
 
+  it("stateLegislation 'enacted' gives full weight", () => {
+    const { breakdown } = calculateReadinessScore(
+      makeCity({ stateLegislationStatus: "enacted" })
+    );
+    expect(breakdown.stateLegislation).toBe(SCORE_WEIGHTS.stateLegislation);
+  });
+
+  it("stateLegislation 'actively_moving' gives 5 points", () => {
+    const { breakdown } = calculateReadinessScore(
+      makeCity({ stateLegislationStatus: "actively_moving" })
+    );
+    expect(breakdown.stateLegislation).toBe(5);
+  });
+
+  it("stateLegislation 'none' gives 0 points", () => {
+    const { breakdown } = calculateReadinessScore(
+      makeCity({ stateLegislationStatus: "none" })
+    );
+    expect(breakdown.stateLegislation).toBe(0);
+  });
+
   it("breakdown values sum to score", () => {
     const partial = makeCity({
       hasActivePilotProgram: true,
@@ -120,17 +142,31 @@ describe("calculateReadinessScore", () => {
     expect(sum).toBe(score);
   });
 
-  it("partial combo: pilot + zoning + legislation", () => {
+  it("partial combo: pilot + zoning + legislation enacted", () => {
     const city = makeCity({
       hasActivePilotProgram: true,
       hasVertiportZoning: true,
-      hasStateLegislation: true,
+      stateLegislationStatus: "enacted",
     });
     const { score } = calculateReadinessScore(city);
     expect(score).toBe(
       SCORE_WEIGHTS.activePilotProgram +
         SCORE_WEIGHTS.vertiportZoning +
         SCORE_WEIGHTS.stateLegislation
+    );
+  });
+
+  it("partial combo: pilot + zoning + legislation actively_moving", () => {
+    const city = makeCity({
+      hasActivePilotProgram: true,
+      hasVertiportZoning: true,
+      stateLegislationStatus: "actively_moving",
+    });
+    const { score } = calculateReadinessScore(city);
+    expect(score).toBe(
+      SCORE_WEIGHTS.activePilotProgram +
+        SCORE_WEIGHTS.vertiportZoning +
+        5
     );
   });
 });
@@ -201,5 +237,23 @@ describe("getPostureConfig", () => {
   it("returns UNKNOWN for unrecognized posture", () => {
     const cfg = getPostureConfig("unknown" as RegulatoryPosture);
     expect(cfg).toEqual({ label: "UNKNOWN", color: "#555555" });
+  });
+});
+
+// ----- getLegislationConfig -----
+describe("getLegislationConfig", () => {
+  it("returns ENACTED config", () => {
+    const cfg = getLegislationConfig("enacted");
+    expect(cfg).toEqual({ label: "ENACTED", color: "#00ff88" });
+  });
+
+  it("returns ACTIVELY MOVING config", () => {
+    const cfg = getLegislationConfig("actively_moving");
+    expect(cfg).toEqual({ label: "ACTIVELY MOVING", color: "#f59e0b" });
+  });
+
+  it("returns NONE config", () => {
+    const cfg = getLegislationConfig("none");
+    expect(cfg).toEqual({ label: "NONE", color: "#ff4444" });
   });
 });

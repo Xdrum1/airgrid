@@ -54,6 +54,7 @@ const FACTOR_LABELS: Record<string, string> = {
   approvedVertiport: "Approved Vertiport",
   activeOperatorPresence: "Operator Presence",
   regulatoryPosture: "Regulatory Posture",
+  stateLegislationStatus: "State Legislation",
   hasStateLegislation: "State Legislation",
   hasLaancCoverage: "LAANC Coverage",
 };

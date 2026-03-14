@@ -138,7 +138,7 @@ function evaluateRecord(record: IngestedRecord): OverrideCandidate[] {
 
   const text = `${record.title} ${record.summary}`.toLowerCase();
 
-  // Rule 1: State bill signed → hasStateLegislation = true
+  // Rule 1: State bill signed → stateLegislationStatus = "enacted"
   if (
     record.source === "legiscan" &&
     SIGNED_STATUS.test(record.status) &&

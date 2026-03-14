@@ -4,6 +4,8 @@
 
 export type RegulatoryPosture = "friendly" | "neutral" | "restrictive" | "unknown";
 
+export type LegislationStatus = "enacted" | "actively_moving" | "none";
+
 export type OperatorType =
   | "evtol_manufacturer"
   | "air_taxi_service"
@@ -57,7 +59,7 @@ export interface City {
   vertiportCount: number;
   activeOperators: string[];           // Operator IDs
   regulatoryPosture: RegulatoryPosture;
-  hasStateLegislation: boolean;
+  stateLegislationStatus: LegislationStatus;
   hasLaancCoverage: boolean;
 
   // Computed

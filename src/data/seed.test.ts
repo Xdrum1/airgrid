@@ -10,8 +10,8 @@ import {
 
 // ----- CITIES -----
 describe("CITIES", () => {
-  it("has 20 entries", () => {
-    expect(CITIES).toHaveLength(20);
+  it("has 21 entries", () => {
+    expect(CITIES).toHaveLength(21);
   });
 
   it("has unique IDs", () => {

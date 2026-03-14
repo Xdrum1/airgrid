@@ -88,13 +88,13 @@ const FACTORS = [
     label: "State Legislation",
     weight: 10,
     description:
-      "Has the state enacted legislation specifically enabling or regulating UAM or advanced air mobility operations? State-level legislation creates the legal framework that allows (or blocks) commercial UAM at scale. States that have passed enabling legislation signal long-term institutional commitment and provide legal certainty that municipal actions won't be preempted.",
+      "What is the state of UAM-enabling legislation? This factor uses a graduated three-tier model: Enacted (10 pts) — UAM-specific legislation signed into law; Actively Moving (5 pts) — UAM-specific bills in late legislative stages with real momentum; None (0 pts) — no meaningful UAM legislative activity. State-level legislation creates the legal framework that allows (or blocks) commercial UAM at scale. States with enacted legislation signal long-term institutional commitment. States with actively moving bills show community preparedness — a leading indicator of future enactment.",
     qualifies:
-      "State-level UAM or advanced air mobility legislation signed into law. Includes enabling acts that define UAM in state code, task force creation with legislative mandate, state DOT integration directives, or dedicated appropriations for AAM infrastructure.",
+      "Enacted (full points): State-level UAM or AAM legislation signed into law — enabling acts, task force creation with legislative mandate, state DOT integration directives, or dedicated AAM appropriations. Actively Moving (partial points): UAM-specific bills in late stages — transmit to house, second reading, ordered enrolled, governor's desk, or committee recommendation for passage. Must show coordinated legislative activity, not just a single early-stage referral.",
     doesNotQualify:
-      "Bills introduced but not passed. Resolutions without legal force. Executive orders without legislative backing. General aviation legislation without UAM-specific provisions.",
+      "Bills introduced but stalled in early committee without movement. Resolutions without legal force (classified as Actively Moving at most, not Enacted). Executive orders without legislative backing. General aviation or drone legislation without UAM-specific provisions.",
     actionable:
-      "Advocate for state-level AAM enabling legislation. Support bills that define vertiports in state building codes, establish state-level UAM task forces, or direct state DOTs to integrate AAM into transportation planning.",
+      "Advocate for state-level AAM enabling legislation. Support bills that define vertiports in state building codes, establish state-level UAM task forces, or direct state DOTs to integrate AAM into transportation planning. States with coordinated multi-bill UAM legislative clusters (e.g., Arizona's 2026 pattern) are 12–18 months from enacted legislation.",
     sources: "State legislature records (LegiScan), governor's office press releases, state DOT publications, legislative tracking services.",
   },
   {
