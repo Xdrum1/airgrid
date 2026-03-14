@@ -471,11 +471,12 @@ export default function MethodologyPage() {
             </div>
           </div>
           <p style={{ marginBottom: 24 }}>
-            This hierarchy reflects a core observation: infrastructure and operational factors are
-            leading indicators of commercial readiness, while regulatory factors are lagging indicators
-            that tend to follow market demand. A state passes UAM legislation after operators
-            express interest, not before. A pilot program, by contrast, requires the full stack &mdash;
-            regulation, infrastructure, and operations &mdash; to exist simultaneously.
+            This hierarchy reflects current market conditions rather than a fixed causal sequence.
+            Infrastructure and operational factors are the strongest signals of near-term commercial
+            readiness. However, state legislation functions as a prerequisite in practice &mdash;
+            infrastructure developers require a legislative framework before committing capital, and
+            community preparedness, reflected in legislative activity, often precedes and enables
+            operator engagement. The weight structure is under active review to reflect this finding.
           </p>
 
           {/* Weight distribution visualization */}
