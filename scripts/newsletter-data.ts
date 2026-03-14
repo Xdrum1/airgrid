@@ -124,10 +124,10 @@ async function main() {
 
   const tierOrder = ["ADVANCED", "MODERATE", "EARLY", "NASCENT"];
   const tierRanges: Record<string, string> = {
-    ADVANCED: "80–100",
-    MODERATE: "60–79",
-    EARLY: "20–59",
-    NASCENT: "0–19",
+    ADVANCED: "75–100",
+    MODERATE: "50–74",
+    EARLY: "30–49",
+    NASCENT: "0–29",
   };
 
   for (const tier of tierOrder) {
