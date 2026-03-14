@@ -275,8 +275,8 @@ function mapToOverrideCandidates(
   const candidates: OverrideCandidate[] = [];
 
   for (const item of classifications) {
-    // Skip not_relevant classifications
-    if (item.eventType === "not_relevant") continue;
+    // Skip not_relevant classifications unless they identified factor changes
+    if (item.eventType === "not_relevant" && (!item.factorsAffected || item.factorsAffected.length === 0)) continue;
 
     const record = recordsById.get(item.recordId);
     if (!record) continue;
