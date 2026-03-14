@@ -396,7 +396,7 @@
 </table>
 
 <h3>Methodology Version Log</h3>
-<p>Changes to the scoring methodology, data sources, or classification logic are versioned and documented. The current version is 1.2.</p>
+<p>Changes to the scoring methodology, data sources, or classification logic are versioned and documented. The current version is 1.2.2.</p>
 
 <table>
   <tr><th style="width:60px">VERSION</th><th style="width:110px">DATE</th><th>CHANGES</th></tr>
@@ -404,6 +404,7 @@
   <tr><td><span class="version-tag">v1.1</span></td><td>March 13, 2026</td><td>Federal Register fix: pagination added (up to 500 results per term), double-filter removed, new search terms (SFAR, "powered lift"), lookback extended to 730 days. Records grew from 5 to 84. Retrospective accuracy audit completed (34 records, ~80% accuracy).</td></tr>
   <tr><td><span class="version-tag new">v1.2</span></td><td>March 14, 2026</td><td>Classification prompt v4: stock-framed false negative fix, Bay Area metro geographic mappings (17 areas), federal vs. state factor distinction. Accuracy improved from ~80% to ~88&ndash;90% (35-record audit). Two-source hierarchy policy established for score promotion. Federal Register search terms expanded with FAA eVTOL/AAM Integration Pilot Program docket monitoring.</td></tr>
   <tr><td><span class="version-tag new">v1.2.1</span></td><td>March 14, 2026</td><td>Graduated legislation scoring: State Legislation factor converted from binary (enacted/none) to three-tier model (enacted 10 pts / actively_moving 5 pts / none 0 pts). Based on LegiScan data analysis across 398 records and 49 states. Phoenix +5 (AZ SB1827), Columbus +5 (OH HR304), Chicago +5 (IL HB3190). Market Watch List launched &mdash; automated pipeline-driven intelligence layer with 3 trigger types (LEGISLATION, PIPELINE_OVERRIDE, ELEVATED_ACTIVITY). 15 active entries at launch.</td></tr>
+  <tr><td><span class="version-tag new">v1.2.2</span></td><td>March 14, 2026</td><td>Prompt v5: Stock filter tuning for articles containing both regulatory news and stock commentary (DOT/FAA pilot program few-shot examples added). URL deduplication improved &mdash; MarketScreener domain-level normalization and tracking parameter stripping.</td></tr>
 </table>
 
 <!-- ═══════════════ 9. LIMITATIONS ═══════════════ -->
