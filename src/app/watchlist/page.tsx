@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { hasProAccess, getUserTier } from "@/lib/billing";
 import { getActiveMarketWatchList, getRecentlyResolvedEntries } from "@/lib/market-watchlist";
 import { CITIES_MAP } from "@/data/seed";
@@ -39,12 +40,12 @@ export default async function WatchListPage() {
       <div style={{ maxWidth: 900, margin: "0 auto" }}>
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
-          <a
+          <Link
             href="/"
             style={{ color: "#555", fontSize: 12, textDecoration: "none", letterSpacing: 1 }}
           >
             ← BACK TO DASHBOARD
-          </a>
+          </Link>
           <h1
             style={{
               color: "#fff",
