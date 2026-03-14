@@ -87,6 +87,7 @@ const FACTORS = [
     key: "stateLegislation",
     label: "State Legislation",
     weight: 10,
+    graduated: true,
     description:
       "What is the state of UAM-enabling legislation? This factor uses a graduated three-tier model: Enacted (10 pts) — UAM-specific legislation signed into law; Actively Moving (5 pts) — UAM-specific bills in late legislative stages with real momentum; None (0 pts) — no meaningful UAM legislative activity. State-level legislation creates the legal framework that allows (or blocks) commercial UAM at scale. States with enacted legislation signal long-term institutional commitment. States with actively moving bills show community preparedness — a leading indicator of future enactment.",
     qualifies:
@@ -224,7 +225,7 @@ export default function MethodologyPage() {
               marginBottom: 16,
             }}
           >
-            Scoring Methodology &middot; v1.0 &middot; March 2026
+            Scoring Methodology &middot; v1.2 &middot; March 2026
           </div>
           <h1
             style={{
@@ -404,18 +405,18 @@ export default function MethodologyPage() {
             Binary Model
           </h3>
           <p style={{ marginBottom: 16 }}>
-            Six of seven factors use binary scoring: a factor is either present or it isn&apos;t.
+            Five of seven factors use binary scoring: a factor is either present or it isn&apos;t.
             This is a deliberate design choice. Binary scoring eliminates subjective grading,
             makes scores reproducible across analysts, and provides clear, actionable thresholds
             for city planners and operators. A market either has an approved vertiport or it
             doesn&apos;t &mdash; there is no partial credit for &ldquo;almost permitted.&rdquo;
           </p>
           <p style={{ marginBottom: 24 }}>
-            The one exception is Regulatory Posture, which uses a three-level graduated scale
-            (Friendly / Neutral / Restrictive). This reflects the reality that regulatory
-            environments exist on a spectrum and a binary model would lose meaningful signal.
-            As reliable sub-indicators become available for other factors, the graduated model
-            may be extended &mdash; Regulatory Posture serves as the proof of concept.
+            Two factors use graduated scoring: Regulatory Posture (Friendly / Neutral / Restrictive)
+            and State Legislation (Enacted / Actively Moving / None). Both reflect domains where a
+            binary model would lose meaningful signal &mdash; regulatory environments and legislative
+            progress exist on a spectrum. As reliable sub-indicators become available for other
+            factors, the graduated model may be extended.
           </p>
 
           {/* Differential weighting */}
@@ -688,7 +689,7 @@ export default function MethodologyPage() {
             support.
           </p>
           <p style={{ marginBottom: 16 }}>
-            The Regulatory Posture factor already uses graduated scoring as a proof of concept.
+            Regulatory Posture and State Legislation already use graduated scoring (see v1.2.1).
             As historical data accumulates and reliable sub-indicators emerge for other factors,
             the graduated model will be extended. Any such changes will be published as a new
             methodology version with a full changelog.
@@ -774,7 +775,7 @@ export default function MethodologyPage() {
               marginBottom: 16,
             }}
           >
-            Source: AirIndex UAM Market Readiness Index, v1.0 (airindex.io/methodology)
+            Source: AirIndex UAM Market Readiness Index, v1.2 (airindex.io/methodology)
           </div>
           <p style={{ color: "#999", fontSize: 13, marginBottom: 16 }}>
             A formal methodology paper with DOI assignment is forthcoming. Researchers requiring
