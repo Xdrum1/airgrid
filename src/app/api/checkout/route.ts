@@ -24,7 +24,9 @@ export async function POST(request: NextRequest) {
   }
 
   const interval = body.interval === "annual" ? "annual" : "monthly";
-  const tier = body.tier === "institutional" ? "institutional" : "pro";
+  type PaidTier = "alert" | "pro" | "institutional";
+  const validTiers: PaidTier[] = ["alert", "pro", "institutional"];
+  const tier: PaidTier = validTiers.includes(body.tier as PaidTier) ? (body.tier as PaidTier) : "pro";
 
   try {
     const stripe = getStripe();

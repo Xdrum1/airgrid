@@ -6,6 +6,8 @@ import {
   addToWatchlist,
   removeFromWatchlist,
 } from "@/lib/watchlist";
+import { getUserTier } from "@/lib/billing";
+import { getWatchlistLimit } from "@/lib/billing-shared";
 
 export async function GET() {
   try {
@@ -46,9 +48,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const cityIds = await addToWatchlist(session.user.id, cityId);
+    const tier = await getUserTier(session.user.id);
+    const limit = getWatchlistLimit(tier);
+    const cityIds = await addToWatchlist(session.user.id, cityId, limit);
     return NextResponse.json({ cityIds });
   } catch (err) {
+    if (err instanceof Error && err.message.startsWith("WATCHLIST_LIMIT:")) {
+      const max = err.message.split(":")[1];
+      return NextResponse.json(
+        { error: "watchlist_limit", limit: Number(max), upgrade: "/pricing" },
+        { status: 403 }
+      );
+    }
     console.error("[API /watchlist POST] Error:", err);
     return NextResponse.json(
       { error: "Failed to add to watchlist" },

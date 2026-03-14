@@ -26,9 +26,10 @@ interface Summary {
 }
 
 const TIER_COLORS: Record<string, string> = {
+  alert: "#f59e0b",
   pro: "#00ff88",
   institutional: "#7c3aed",
-  enterprise: "#f59e0b",
+  enterprise: "#ff6b35",
   grandfathered: "#00d4ff",
   free: "#555",
 };
