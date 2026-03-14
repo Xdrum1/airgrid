@@ -5,6 +5,7 @@ import { getScoreTier } from "@/lib/scoring";
 import { authorizeCron } from "@/lib/admin-helpers";
 import { rateLimit } from "@/lib/rate-limit";
 import { alertCronFailure } from "@/lib/cron-alerts";
+import { updateMarketWatchList } from "@/lib/market-watchlist";
 
 // Vercel crons send GET requests
 export async function GET(request: NextRequest) {
@@ -45,10 +46,14 @@ async function captureSnapshots() {
       })),
     });
 
+    // Update market watch list after snapshots
+    const watchResult = await updateMarketWatchList();
+
     return NextResponse.json({
       success: true,
       count: result.count,
       capturedAt: now.toISOString(),
+      watchList: watchResult,
     });
   } catch (err) {
     console.error("[API /snapshot] Error:", err);

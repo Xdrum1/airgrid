@@ -369,6 +369,23 @@ model MarketWatchSuggestion {
   @@index([status])
 }
 
+// ── Automated Watch List (pipeline-driven) ──────────────
+
+model WatchListEntry {
+  id               String    @id @default(cuid())
+  cityId           String
+  triggerType       String    // LEGISLATION | PIPELINE_OVERRIDE | ELEVATED_ACTIVITY
+  triggerDetail     String    // human-readable description
+  currentScore      Int       // score at time of trigger
+  triggeredAt       DateTime  @default(now())
+  resolvedAt        DateTime? // null if still active
+  resolutionReason  String?   // SCORE_CHANGED | SIGNAL_RESOLVED | MANUAL_REMOVE
+
+  @@index([cityId])
+  @@index([triggerType])
+  @@index([resolvedAt])
+}
+
 // ── Intel Feed ──────────────────────────────────────────
 
 model FeedItem {
