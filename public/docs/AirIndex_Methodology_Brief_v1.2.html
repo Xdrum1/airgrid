@@ -153,7 +153,7 @@
   <div class="cover-label">AIRINDEX</div>
   <h1>UAM Market Readiness Index</h1>
   <div class="cover-sub">Methodology Brief</div>
-  <div class="cover-meta">Version 1.2 &middot; March 2026 &middot; Vertical Data Group, LLC</div>
+  <div class="cover-meta">Version 1.2.2 &middot; March 2026 &middot; Vertical Data Group, LLC</div>
 </div>
 <div class="cover-bar"></div>
 
@@ -338,11 +338,11 @@
   <tr><td><strong>Stock-framed false negatives</strong></td><td class="red">Active failure mode</td><td class="green">Resolved</td><td>7/7 stock-framed headlines correctly filtered in HIGH bucket</td></tr>
   <tr><td><strong>Bay Area metro mapping</strong></td><td class="red">Inconsistent</td><td class="green">Resolved</td><td>6/6 Bay Area locations correctly mapped to san_francisco</td></tr>
   <tr><td><strong>Federal vs. state distinction</strong></td><td class="amber">Occasional mismatch</td><td class="green">Resolved</td><td>Arizona correctly mapped to Phoenix, federal programs distinguished</td></tr>
-  <tr><td><strong>URL deduplication</strong></td><td class="red">Duplicates present</td><td class="amber">Partial</td><td>Reduced but not eliminated (marketscreener.com domain dedup planned for v1.3)</td></tr>
+  <tr><td><strong>URL deduplication</strong></td><td class="red">Duplicates present</td><td class="green">Resolved</td><td>MarketScreener domain-level normalization and tracking parameter stripping shipped in v1.2.2. Full cross-domain dedup remains a v1.3 target.</td></tr>
 </table>
 
 <div class="callout">
-  <strong>Interpretation:</strong> The system's primary failure mode remains conservative &mdash; it drops real signals rather than promoting false ones. For a scoring system where credibility is the product, this is the correct failure mode. Scores are more likely to be understated than overstated. The remaining weakness (DOT "Future of Flight" pilot program under-classification when wrapped in stock commentary) is a known v1.3 prompt refinement target.
+  <strong>Interpretation:</strong> The system's primary failure mode remains conservative &mdash; it drops real signals rather than promoting false ones. For a scoring system where credibility is the product, this is the correct failure mode. Scores are more likely to be understated than overstated. The DOT "Future of Flight" pilot program edge case was resolved in v1.2.2 (prompt v5) with targeted few-shot examples for government programs wrapped in stock commentary.
 </div>
 
 <!-- ═══════════════ 6. SCORE PROMOTION POLICY ═══════════════ -->
@@ -444,9 +444,9 @@
 <div class="limitation no-break">
   <div class="lim-content">
     <strong>False Negative Rate on Stock-Framed Headlines</strong>
-    <p>High-confidence classifications occasionally dropped real regulatory signals when articles framed underlying events in financial rather than regulatory terms. Resolved in v1.2 prompt update &mdash; 7/7 stock-framed test cases correctly filtered. Remaining edge case: DOT "Future of Flight" pilot program under-classified when wrapped in stock commentary (v1.3 target).</p>
+    <p>High-confidence classifications occasionally dropped real regulatory signals when articles framed underlying events in financial rather than regulatory terms. Resolved in v1.2 prompt update &mdash; 7/7 stock-framed test cases correctly filtered. DOT "Future of Flight" edge case resolved in v1.2.2 with targeted few-shot examples for government programs wrapped in stock commentary.</p>
   </div>
-  <span class="lim-status lim-resolved">RESOLVED v1.2</span>
+  <span class="lim-status lim-resolved">RESOLVED v1.2.2</span>
 </div>
 
 <div class="limitation no-break">
@@ -460,9 +460,9 @@
 <div class="limitation no-break">
   <div class="lim-content">
     <strong>URL Deduplication</strong>
-    <p>Some articles appear through multiple RSS feeds or with variant URLs, causing duplicate classifications. Partial improvement in v1.2 via pre-classification URL dedup. Full domain-level normalization (including marketscreener.com redirect handling) planned for v1.3.</p>
+    <p>Some articles appear through multiple RSS feeds or with variant URLs, causing duplicate classifications. Resolved in v1.2.2 with MarketScreener domain-level normalization and tracking parameter stripping. Full cross-domain deduplication (handling additional aggregator domains) remains a future improvement target.</p>
   </div>
-  <span class="lim-status lim-active">PARTIAL</span>
+  <span class="lim-status lim-resolved">RESOLVED v1.2.2</span>
 </div>
 
 <div class="limitation no-break">
@@ -486,7 +486,7 @@
 </div>
 
 <div class="page-footer">
-  <span>AirIndex UAM Market Readiness Index &mdash; Methodology Brief<br>Vertical Data Group, LLC | Confidential | Version 1.2 | March 2026</span>
+  <span>AirIndex UAM Market Readiness Index &mdash; Methodology Brief<br>Vertical Data Group, LLC | Confidential | Version 1.2.2 | March 2026</span>
 </div>
 
 </body>
