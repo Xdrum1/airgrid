@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin, getClientIp, authorizeCron } from "@/lib/admin-helpers";
 import { rateLimit } from "@/lib/rate-limit";
-import { runAutoReview } from "@/lib/auto-reviewer";
 import { alertCronFailure } from "@/lib/cron-alerts";
 
 // Extend Lambda timeout for AI processing
@@ -78,6 +77,7 @@ function streamAutoReview(options: {
       }, 10_000);
 
       try {
+        const { runAutoReview } = await import("@/lib/auto-reviewer");
         const summary = await runAutoReview(options);
         clearInterval(keepalive);
 
