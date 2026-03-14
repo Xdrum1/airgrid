@@ -456,10 +456,31 @@ export async function runIngestion(): Promise<{
       await enrichOperatorNews(changedRecords);
 
       // 10b. Deduplicate by URL before classification (same article can appear in multiple operator feeds)
+      // Normalize URLs: strip tracking params and aggregator path variations
+      function normalizeUrl(url: string): string {
+        try {
+          const u = new URL(url);
+          // Strip common tracking params
+          for (const p of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "ref", "fbclid", "gclid"]) {
+            u.searchParams.delete(p);
+          }
+          // Domain-level normalization for known aggregators
+          if (u.hostname.includes("marketscreener.com")) {
+            // MarketScreener republishes same article at multiple paths — normalize to article ID
+            const match = u.pathname.match(/\/(\d{8,})/);
+            if (match) return `marketscreener:${match[1]}`;
+          }
+          return u.toString();
+        } catch {
+          return url;
+        }
+      }
       const seenUrls = new Set<string>();
       const dedupedRecords = changedRecords.filter((r) => {
-        if (!r.url || seenUrls.has(r.url)) return false;
-        seenUrls.add(r.url);
+        if (!r.url) return false;
+        const normalized = normalizeUrl(r.url);
+        if (seenUrls.has(normalized)) return false;
+        seenUrls.add(normalized);
         return true;
       });
       if (dedupedRecords.length < changedRecords.length) {

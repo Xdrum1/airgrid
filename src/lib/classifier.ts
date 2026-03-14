@@ -22,7 +22,7 @@ async function getPrisma() {
 // Constants
 // -------------------------------------------------------
 
-const PROMPT_VERSION = "v4";
+const PROMPT_VERSION = "v5";
 const MODEL = "claude-haiku-4-5-20251001";
 const BATCH_SIZE = 10;
 const MAX_TOKENS = 4096;
@@ -125,8 +125,10 @@ Examples of stock-framed articles that contain real scoring signals:
 - "Joby Stock Rises as First FAA Test Aircraft Flies" → The underlying event is an FAA certification milestone.
 - "Archer, Joby Stocks Jump After Inclusion in Federal Program" → The underlying event is operator selection for a federal pilot program (operator_market_expansion if specific cities are mentioned).
 - "Flying Cars Take Next Step with Joby's First FAA Flight" → FAA flight test = faa_certification_milestone.
+- "eVTOL Stocks Rally on DOT Future of Flight Pilot Program Launch in Miami, Dallas" → The underlying event is a DOT/FAA pilot program selection for specific cities (hasActivePilotProgram for Miami, Dallas). The stock rally is commentary — the pilot program launch is the scoring signal.
+- "Analysts Weigh In as DOT Selects 5 Cities for Advanced Air Mobility Integration" → The underlying event is a federal pilot program with city-specific impact. Classify by the cities selected, not the analyst commentary.
 
-If the underlying event is a completed regulatory action, certification milestone, operator launch, or pilot program selection — classify it by the event, not the headline framing.
+If the underlying event is a completed regulatory action, certification milestone, operator launch, or pilot program selection — classify it by the event, not the headline framing. This is especially critical for government program announcements (DOT, FAA, state DOTs) that are frequently reported through financial media with stock-focused framing.
 
 ## Metro Area Mappings
 
