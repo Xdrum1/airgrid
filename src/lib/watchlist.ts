@@ -9,8 +9,18 @@ export async function getWatchlist(userId: string): Promise<string[]> {
 
 export async function addToWatchlist(
   userId: string,
-  cityId: string
+  cityId: string,
+  maxCities?: number | null
 ): Promise<string[]> {
+  // Check limit before adding
+  if (maxCities != null) {
+    const existing = await prisma.watchlist.findUnique({ where: { userId } });
+    const current = existing?.cityIds ?? [];
+    if (!current.includes(cityId) && current.length >= maxCities) {
+      throw new Error(`WATCHLIST_LIMIT:${maxCities}`);
+    }
+  }
+
   const record = await prisma.watchlist.upsert({
     where: { userId },
     create: { userId, cityIds: [cityId] },

@@ -74,7 +74,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
 
 
   // Watchlist
-  const { cityIds: watchedCityIds, isWatched, toggle: toggleWatch, isAuthenticated } = useWatchlist();
+  const { cityIds: watchedCityIds, isWatched, toggle: toggleWatch, isAuthenticated, limitHit } = useWatchlist();
 
   // Role picker — show once for new users without a role
   const [showRolePicker, setShowRolePicker] = useState(false);
@@ -165,6 +165,34 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
     <>
     {showRolePicker && (
       <RolePicker onComplete={() => setShowRolePicker(false)} />
+    )}
+    {limitHit && (
+      <div
+        style={{
+          position: "fixed",
+          top: 20,
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 9999,
+          background: "rgba(245, 158, 11, 0.95)",
+          color: "#1a1a1a",
+          padding: "12px 24px",
+          borderRadius: 8,
+          fontSize: 13,
+          fontWeight: 600,
+          fontFamily: "'Inter', sans-serif",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+          animation: "fadeIn 0.2s ease",
+          maxWidth: 420,
+          textAlign: "center",
+        }}
+      >
+        You&apos;re tracking 3 markets.{" "}
+        <a href="/pricing" style={{ color: "#1a1a1a", textDecoration: "underline", fontWeight: 700 }}>
+          Upgrade to Pro
+        </a>{" "}
+        to monitor all 21+ and unlock the full dashboard.
+      </div>
     )}
     <div
       style={{

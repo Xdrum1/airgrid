@@ -30,6 +30,7 @@ export function useWatchlist() {
   const { data: session, status } = useSession();
   const [cityIds, setCityIds] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [limitHit, setLimitHit] = useState(false);
   const inflightRef = useRef(false);
 
   // 1. Load from localStorage immediately
@@ -81,8 +82,16 @@ export function useWatchlist() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cityId }),
       })
-        .then((r) => (r.ok ? r.json() : null))
-        .then((json) => {
+        .then(async (r) => {
+          const json = await r.json();
+          if (r.status === 403 && json?.error === "watchlist_limit") {
+            // Revert optimistic update and signal limit hit
+            setCityIds(cityIds);
+            writeLocal(cityIds);
+            setLimitHit(true);
+            setTimeout(() => setLimitHit(false), 5000);
+            return;
+          }
           if (json?.cityIds) {
             setCityIds(json.cityIds);
             writeLocal(json.cityIds);
@@ -102,5 +111,5 @@ export function useWatchlist() {
     [cityIds, status]
   );
 
-  return { cityIds, isWatched, toggle, isAuthenticated: status === "authenticated" };
+  return { cityIds, isWatched, toggle, isAuthenticated: status === "authenticated", limitHit };
 }

@@ -11,13 +11,17 @@ export function getStripe(): Stripe {
   return _stripe;
 }
 
-export function getPriceId(tier: "pro" | "institutional", interval: "monthly" | "annual"): string {
-  const prefix = tier === "institutional" ? "STRIPE_INSTITUTIONAL" : "STRIPE_PRO";
-  const id =
-    interval === "annual"
-      ? process.env[`${prefix}_ANNUAL_PRICE_ID`]
-      : process.env[`${prefix}_MONTHLY_PRICE_ID`];
-  if (!id) throw new Error(`${prefix}_${interval.toUpperCase()}_PRICE_ID is not set`);
+export function getPriceId(tier: "alert" | "pro" | "institutional", interval: "monthly" | "annual" | "founding"): string {
+  if (tier === "alert" && interval === "founding") {
+    const id = process.env.STRIPE_ALERT_FOUNDING_PRICE_ID;
+    if (!id) throw new Error("STRIPE_ALERT_FOUNDING_PRICE_ID is not set");
+    return id;
+  }
+  const prefixMap = { alert: "STRIPE_ALERT", pro: "STRIPE_PRO", institutional: "STRIPE_INSTITUTIONAL" };
+  const prefix = prefixMap[tier];
+  const suffix = interval === "annual" ? "ANNUAL" : "MONTHLY";
+  const id = process.env[`${prefix}_${suffix}_PRICE_ID`];
+  if (!id) throw new Error(`${prefix}_${suffix}_PRICE_ID is not set`);
   return id;
 }
 
@@ -27,6 +31,10 @@ export function getProPriceId(interval: "monthly" | "annual"): string {
 }
 
 export function tierFromPriceId(priceId: string): string {
+  const alertMonthly = process.env.STRIPE_ALERT_MONTHLY_PRICE_ID;
+  const alertAnnual = process.env.STRIPE_ALERT_ANNUAL_PRICE_ID;
+  const alertFounding = process.env.STRIPE_ALERT_FOUNDING_PRICE_ID;
+  if (priceId === alertMonthly || priceId === alertAnnual || priceId === alertFounding) return "alert";
   const proMonthly = process.env.STRIPE_PRO_MONTHLY_PRICE_ID;
   const proAnnual = process.env.STRIPE_PRO_ANNUAL_PRICE_ID;
   if (priceId === proMonthly || priceId === proAnnual) return "pro";

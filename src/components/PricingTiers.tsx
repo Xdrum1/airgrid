@@ -19,7 +19,7 @@ interface Tier {
   note: string;
   features: string[];
   checkout: "free" | "stripe" | "contact";
-  stripeTier?: "pro" | "institutional";
+  stripeTier?: "alert" | "pro" | "institutional";
 }
 
 const TIERS: Tier[] = [
@@ -35,9 +35,25 @@ const TIERS: Tier[] = [
       "Current readiness scores",
       "City rankings",
       "Basic market overview per city",
-      "Monthly market summary (PDF)",
     ],
     checkout: "free",
+  },
+  {
+    name: "Alert",
+    monthly: 25,
+    annual: 249,
+    accent: "#f59e0b",
+    highlight: false,
+    note: "",
+    features: [
+      "Everything in Free, plus:",
+      "Monitor up to 3 markets",
+      "Score change email notifications",
+      "Watch list alerts",
+      "Monthly market summary email",
+    ],
+    checkout: "stripe",
+    stripeTier: "alert",
   },
   {
     name: "Pro",
@@ -47,15 +63,15 @@ const TIERS: Tier[] = [
     highlight: true,
     note: "",
     features: [
-      "Everything in Free, plus:",
+      "Everything in Alert, plus:",
+      "Full dashboard — all 21+ markets",
       "Score history & trend lines",
       "Factor-level breakdown behind each score",
       "Corridor intelligence",
-      "Operator tracker",
-      "Market Watch status & analyst outlook notes",
-      "SEC filing content & summaries",
-      "Email alerts on score changes",
-      "Full monthly market report (all markets + breakdowns)",
+      "Operator tracker & SEC filings",
+      "Market Watch status & analyst outlook",
+      "Intel Feed & deep-dives",
+      "Full monthly market report",
     ],
     checkout: "stripe",
     stripeTier: "pro",
@@ -82,7 +98,7 @@ const TIERS: Tier[] = [
     name: "Enterprise",
     monthly: null,
     annual: null,
-    accent: "#f59e0b",
+    accent: "#ff6b35",
     highlight: false,
     note: "For organizations embedding UAM data",
     features: [

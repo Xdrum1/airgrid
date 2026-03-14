@@ -4,7 +4,7 @@ import PricingTiers from "@/components/PricingTiers";
 
 export const metadata: Metadata = {
   title: "Pricing — AirIndex",
-  description: "Choose the plan that fits your workflow. Free, Pro, Institutional, and Enterprise tiers.",
+  description: "Choose the plan that fits your workflow. Free, Alert, Pro, Institutional, and Enterprise tiers.",
 };
 
 export default function PricingPage() {

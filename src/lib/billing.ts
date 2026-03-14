@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 // Re-export client-safe helpers so existing server-side imports from "@/lib/billing" still work
 import { hasProAccess } from "@/lib/billing-shared";
-export { hasProAccess, hasInstitutionalAccess } from "@/lib/billing-shared";
+export { hasAlertAccess, hasProAccess, hasInstitutionalAccess, getWatchlistLimit } from "@/lib/billing-shared";
 
 const GRANDFATHERED_EXPIRY = process.env.GRANDFATHERED_EXPIRY || "2026-12-31";
 
