@@ -310,6 +310,14 @@ Each market is scored on 7 binary/enum factors:
 - For activeOperators, recommend adding a specific operator ID (e.g. "op_joby", "op_archer")
 - For regulatoryPosture, only recommend changes with strong evidence
 
+## Source Quality Hierarchy
+
+Score-changing factor confirmations require methodology-grade sources:
+- **hasActivePilotProgram**: Requires Federal Register filing or direct FAA/DOT documentation. News coverage of FAA programs is signal (elevated activity / watch list trigger) but does NOT qualify for automatic hasActivePilotProgram promotion. If the source is news coverage rather than an official filing, set confidence below 0.90 and note the source limitation in your reasoning.
+- **stateLegislationStatus**: LegiScan or official state legislature records are primary sources. News coverage alone is insufficient.
+- **hasVertiportZoning**: Requires official city/county zoning records or council minutes.
+- Other factors (activeOperators, regulatoryPosture, hasLaancCoverage): News coverage from credible outlets is acceptable.
+
 ## Output
 
 Return ONLY a JSON object (no markdown, no wrapping):
@@ -437,6 +445,27 @@ async function recommendFactorChanges(
 // Apply recommendations — upgrade __review__ override
 // -------------------------------------------------------
 
+// Fields that require official/primary source documentation for auto-promotion
+// News coverage alone is insufficient — only Federal Register, FAA, LegiScan, etc.
+const REQUIRES_PRIMARY_SOURCE: Set<string> = new Set([
+  "hasActivePilotProgram",
+  "hasVertiportZoning",
+  "stateLegislationStatus",
+]);
+
+function sourceIsPrimary(sourceUrl: string | null | undefined): boolean {
+  if (!sourceUrl) return false;
+  const url = sourceUrl.toLowerCase();
+  return (
+    url.includes("federalregister.gov") ||
+    url.includes("faa.gov") ||
+    url.includes("dot.gov") ||
+    url.includes("legiscan.com") ||
+    url.includes("sec.gov") ||
+    url.includes(".gov/") // any government source
+  );
+}
+
 async function applyRecommendations(
   overrideId: string,
   override: {
@@ -473,10 +502,23 @@ async function applyRecommendations(
   const now = new Date();
 
   // Helper: determine if a recommendation should be auto-promoted
-  const shouldAutoPromote = (rec: FactorRecommendation): boolean =>
-    rec.confidence >= AUTO_PROMOTE_THRESHOLD &&
-    autoPromotionsRemaining - autoPromoted > 0 &&
-    override.cityId !== "__unresolved__";
+  const shouldAutoPromote = (rec: FactorRecommendation): boolean => {
+    if (rec.confidence < AUTO_PROMOTE_THRESHOLD) return false;
+    if (autoPromotionsRemaining - autoPromoted <= 0) return false;
+    if (override.cityId === "__unresolved__") return false;
+
+    // Fields requiring primary source documentation cannot be auto-promoted
+    // from news/operator sources — they need Federal Register, FAA, LegiScan, etc.
+    if (REQUIRES_PRIMARY_SOURCE.has(rec.field) && !sourceIsPrimary(override.sourceUrl)) {
+      logger.info(
+        `[auto-review] Blocking auto-promote for ${override.cityId}/${rec.field}: ` +
+        `source "${override.sourceUrl}" is not a primary/official source`
+      );
+      return false;
+    }
+
+    return true;
+  };
 
   // First recommendation upgrades the existing __review__ override
   const first = recommendations[0];
@@ -1040,7 +1082,21 @@ export async function runAutoReview(
         resultItem.assignedCityId = decision.assignedCityId;
         resultItem.reasoning = decision.reasoning;
 
-        const applied = await applyDecision(override.id, decision, dryRun);
+        // Block auto-approval for fields requiring primary source documentation
+        // when the source is news/operator coverage rather than official filings
+        let applied = false;
+        if (
+          decision.decision === "approve" &&
+          REQUIRES_PRIMARY_SOURCE.has(override.field) &&
+          !sourceIsPrimary(override.sourceUrl)
+        ) {
+          logger.info(
+            `[auto-review] Blocking auto-approve for ${override.cityId}/${override.field}: ` +
+            `source "${override.sourceUrl}" is not a primary/official source`
+          );
+        } else {
+          applied = await applyDecision(override.id, decision, dryRun);
+        }
         resultItem.applied = applied;
 
         await persistResult(override.id, decision, applied, dryRun, sourceContent);
