@@ -4,8 +4,9 @@ import { OPERATORS, CORRIDORS, getCitiesWithOverrides, MARKET_COUNT } from "@/da
 import CountUpStats from "@/components/landing/CountUpStats";
 import LiveActivityFeed from "@/components/landing/LiveActivityFeed";
 
-import LiveTicker from "@/components/landing/LiveTicker";
 import LiveFilingsFeed from "@/components/landing/LiveFilingsFeed";
+import ScrollReveal from "@/components/landing/ScrollReveal";
+import HeroFlightPath from "@/components/landing/HeroFlightPath";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -137,13 +138,16 @@ export default async function LandingPage() {
       {/* ======== Hero ======== */}
       <section
         style={{
+          position: "relative",
           maxWidth: 1120,
           margin: "0 auto",
           padding: "clamp(48px, 8vw, 80px) 20px 40px",
           textAlign: "center",
+          overflow: "hidden",
         }}
       >
-        <div style={{ marginBottom: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+        <HeroFlightPath />
+        <div style={{ position: "relative", marginBottom: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
           <img
             src="/images/logo/airindex-icon.svg"
             alt=""
@@ -174,12 +178,6 @@ export default async function LandingPage() {
             </span>
           </div>
         </div>
-        <LiveTicker
-          fallbackText={`Continuously updated · ${CITIES.length} markets · ${OPERATORS.length} operators · ${CORRIDORS.length} corridors`}
-          marketCount={CITIES.length}
-          operatorCount={OPERATORS.length}
-          corridorCount={CORRIDORS.length}
-        />
         <h1
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
@@ -246,17 +244,20 @@ export default async function LandingPage() {
       </section>
 
       {/* ======== Stats Bar ======== */}
-      <section
-        style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "0 20px",
-        }}
-      >
-        <CountUpStats stats={stats} />
-      </section>
+      <ScrollReveal>
+        <section
+          style={{
+            maxWidth: 1120,
+            margin: "0 auto",
+            padding: "0 20px",
+          }}
+        >
+          <CountUpStats stats={stats} />
+        </section>
+      </ScrollReveal>
 
       {/* ======== Feature Explainer ======== */}
+      <ScrollReveal>
       <section
         style={{
           maxWidth: 1120,
@@ -388,7 +389,10 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      </ScrollReveal>
+
       {/* ======== Dashboard Preview ======== */}
+      <ScrollReveal>
       <section
         style={{
           maxWidth: 1120,
@@ -472,7 +476,10 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      </ScrollReveal>
+
       {/* ======== Live Data Teaser ======== */}
+      <ScrollReveal>
       <section
         id="live-data"
         style={{
@@ -514,7 +521,10 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      </ScrollReveal>
+
       {/* ======== Intel Feed CTA ======== */}
+      <ScrollReveal>
       <section style={{ maxWidth: 1120, margin: "0 auto", padding: "0 20px 80px" }}>
         <div
           style={{
@@ -582,7 +592,10 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      </ScrollReveal>
+
       {/* ======== Monthly Market Report ======== */}
+      <ScrollReveal>
       <section style={{ maxWidth: 1120, margin: "0 auto", padding: "0 20px 80px" }}>
         <div style={{
           border: "1px solid rgba(0,212,255,0.15)",
@@ -751,7 +764,10 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      </ScrollReveal>
+
       {/* ======== Who It's For ======== */}
+      <ScrollReveal>
       <section
         style={{
           maxWidth: 1120,
@@ -873,7 +889,10 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      </ScrollReveal>
+
       {/* ======== Pricing ======== */}
+      <ScrollReveal>
       <section id="pricing" style={{ maxWidth: 1120, margin: "0 auto", padding: "40px 20px clamp(60px, 8vw, 100px)", scrollMarginTop: 80 }}>
         <div style={{ textAlign: "center", marginBottom: 56 }}>
           <h2
@@ -1080,7 +1099,10 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      </ScrollReveal>
+
       {/* ======== Closing CTA ======== */}
+      <ScrollReveal>
       <section
         style={{
           maxWidth: 1120,
@@ -1136,6 +1158,8 @@ export default async function LandingPage() {
           </Link>
         </div>
       </section>
+
+      </ScrollReveal>
 
       {/* ======== Footer ======== */}
       <SiteFooter />
