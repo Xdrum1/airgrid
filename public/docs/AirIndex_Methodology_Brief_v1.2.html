@@ -272,6 +272,18 @@
   <tr><td class="red"><strong>NEEDS REVIEW</strong></td><td>4%</td><td>Manual intervention required. Record held pending human classification decision.</td><td>Always required</td></tr>
 </table>
 
+<h3>Classifier Prompt Version History</h3>
+<p>The classification prompt is iteratively refined based on accuracy audits, false negative analysis, and pipeline performance data. Every prompt version is tracked with a commit hash, enabling precise reproducibility of any historical classification.</p>
+
+<table>
+  <tr><th style="width:50px">VERSION</th><th style="width:90px">DATE</th><th>CHANGES</th></tr>
+  <tr><td><strong>v1</strong></td><td>Feb 28, 2026</td><td>Initial classifier. Generic factor keys, basic event type taxonomy, single-pass classification.</td></tr>
+  <tr><td><strong>v2</strong></td><td>Mar 4, 2026</td><td>Field mapping standardization &mdash; aligned classifier output keys to scoring engine fields (<code>activePilotProgram</code> &rarr; <code>hasActivePilotProgram</code>). Content enrichment added (SEC filings 2K chars, operator news 1.5K chars).</td></tr>
+  <tr><td><strong>v3</strong></td><td>Mar 11, 2026</td><td>Confidence calibration. Established ~80% accuracy baseline across 34-record retrospective audit.</td></tr>
+  <tr><td><strong>v4</strong></td><td>Mar 13, 2026</td><td>Stock-framed false negative fix (3 few-shot examples). Metro area geographic mappings (17 areas). Federal vs. state factor distinction rules. Accuracy improved to ~88&ndash;90%.</td></tr>
+  <tr><td><strong>v5</strong></td><td>Mar 14, 2026</td><td>DOT/FAA pilot program few-shot examples for government programs wrapped in stock commentary. URL deduplication improved &mdash; MarketScreener domain-level normalization and tracking parameter stripping.</td></tr>
+</table>
+
 <h3>Audit Trail</h3>
 <p>Every classification and scoring decision is fully logged. The system maintains three persistent audit tables:</p>
 <ul style="margin:10px 0 10px 24px; font-size:10pt; color:#555">

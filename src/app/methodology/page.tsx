@@ -641,11 +641,54 @@ export default function MethodologyPage() {
             the underlying source was last confirmed. Markets are re-verified on a rolling basis,
             with high-activity markets reviewed more frequently.
           </p>
-          <p>
+          <p style={{ marginBottom: 24 }}>
             This verification architecture is designed to meet the evidentiary standards required
             for use in regulatory filings, academic publications, and government procurement
             decisions. All source records are retained and available for audit upon request.
           </p>
+
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#fff",
+              marginBottom: 12,
+            }}
+          >
+            Classifier Prompt Version History
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            The AI classification engine is iteratively refined based on accuracy audits and
+            pipeline performance. Every prompt version is tracked with a commit hash, enabling
+            precise reproducibility of any historical classification.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+            {[
+              { version: "v1", date: "Feb 28, 2026", desc: "Initial classifier. Generic factor keys, basic event type taxonomy." },
+              { version: "v2", date: "Mar 4, 2026", desc: "Field mapping standardization. Content enrichment (SEC 2K chars, news 1.5K chars)." },
+              { version: "v3", date: "Mar 11, 2026", desc: "Confidence calibration. ~80% accuracy baseline established." },
+              { version: "v4", date: "Mar 13, 2026", desc: "Stock-framed false negative fix, 17 metro area mappings, federal vs. state distinction. ~88\u201390% accuracy." },
+              { version: "v5", date: "Mar 14, 2026", desc: "DOT/FAA pilot program examples, MarketScreener URL deduplication normalization." },
+            ].map((p) => (
+              <div
+                key={p.version}
+                style={{
+                  display: "flex",
+                  gap: 16,
+                  padding: "12px 16px",
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 6,
+                  alignItems: "baseline",
+                }}
+              >
+                <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 13, color: "#00d4ff", minWidth: 28 }}>{p.version}</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#555", minWidth: 100, flexShrink: 0 }}>{p.date}</span>
+                <span style={{ color: "#999", fontSize: 13 }}>{p.desc}</span>
+              </div>
+            ))}
+          </div>
         </Section>
 
         {/* Section 5: Limitations */}
