@@ -140,7 +140,7 @@ export default function DashboardHeader({
                 fontSize: 9,
                 letterSpacing: 1,
                 cursor: "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 transition: "all 0.15s",
               }}
             >
@@ -160,7 +160,7 @@ export default function DashboardHeader({
                   padding: "14px 18px",
                   zIndex: 100,
                   minWidth: 180,
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                 }}
               >
                 <div style={{ color: "#888", fontSize: 10, marginBottom: 12 }}>
@@ -181,7 +181,7 @@ export default function DashboardHeader({
                       letterSpacing: 1,
                       fontWeight: 700,
                       cursor: "pointer",
-                      fontFamily: "'Space Mono', monospace",
+                      fontFamily: "'Inter', sans-serif",
                     }}
                   >
                     YES
@@ -197,7 +197,7 @@ export default function DashboardHeader({
                       fontSize: 9,
                       letterSpacing: 1,
                       cursor: "pointer",
-                      fontFamily: "'Space Mono', monospace",
+                      fontFamily: "'Inter', sans-serif",
                     }}
                   >
                     NO
@@ -219,7 +219,7 @@ export default function DashboardHeader({
               letterSpacing: 2,
               fontWeight: 700,
               cursor: "pointer",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               transition: "all 0.15s",
             }}
           >

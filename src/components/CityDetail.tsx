@@ -119,7 +119,7 @@ export default function CityDetail({
         height: "100vh",
         overflowY: "auto",
         background: "#050508",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
       }}
     >
@@ -443,7 +443,7 @@ export default function CityDetail({
                     fontSize: 10,
                     letterSpacing: 1,
                     textDecoration: "none",
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                   }}
                 >
                   VIEW PLANS →
@@ -643,7 +643,7 @@ export default function CityDetail({
                     fontSize: 10,
                     letterSpacing: 1,
                     textDecoration: "none",
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                   }}
                 >
                   VIEW PLANS →

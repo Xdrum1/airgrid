@@ -113,7 +113,7 @@ export default function RolePicker({ onComplete }: { onComplete: () => void }) {
               borderRadius: 6,
               color: "#666",
               fontSize: 11,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               letterSpacing: "0.06em",
               cursor: "pointer",
             }}
@@ -132,7 +132,7 @@ export default function RolePicker({ onComplete }: { onComplete: () => void }) {
               color: selected ? "#000" : "#555",
               fontSize: 12,
               fontWeight: 700,
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               letterSpacing: "0.06em",
               cursor: selected ? "pointer" : "default",
               transition: "all 0.15s",

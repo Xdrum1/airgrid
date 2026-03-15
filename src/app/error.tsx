@@ -15,7 +15,7 @@ export default function Error({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
       }}
     >
@@ -54,7 +54,7 @@ export default function Error({
             padding: "10px 20px",
             background: "transparent",
             cursor: "pointer",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           TRY AGAIN
@@ -69,7 +69,7 @@ export default function Error({
             border: "1px solid rgba(85,85,85,0.3)",
             borderRadius: 6,
             padding: "10px 20px",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           BACK TO DASHBOARD

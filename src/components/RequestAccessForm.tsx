@@ -49,7 +49,7 @@ export default function RequestAccessForm() {
     borderRadius: 6,
     color: "#ccc",
     fontSize: 13,
-    fontFamily: "'Space Mono', monospace",
+    fontFamily: "'Inter', sans-serif",
     outline: "none",
     transition: "border-color 0.15s",
   };
@@ -62,7 +62,7 @@ export default function RequestAccessForm() {
             fontSize: 14,
             color: "#00ff88",
             marginBottom: 8,
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             fontWeight: 700,
           }}
         >
@@ -170,7 +170,7 @@ export default function RequestAccessForm() {
           border: "none",
           borderRadius: 6,
           cursor: state === "submitting" ? "wait" : "pointer",
-          fontFamily: "'Space Mono', monospace",
+          fontFamily: "'Inter', sans-serif",
           transition: "opacity 0.15s",
           opacity: state === "submitting" ? 0.6 : 1,
           marginTop: 8,

@@ -4,8 +4,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.airindex.io"),
-  title: "AirIndex — UAM Market Readiness Ratings",
-  description: "Know exactly where urban air mobility launches first. AirIndex scores 20+ US cities on UAM market readiness in real time — regulatory posture, infrastructure, operator presence, and corridor authorizations.",
+  title: "AirIndex — UAM Market Intelligence",
+  description: "AirIndex is the authoritative market intelligence platform for urban air mobility. 21 US cities scored daily across 7 verified factors. Trusted by operators, city planners, and investors.",
   keywords: ["urban air mobility", "eVTOL", "vertiport", "air taxi", "UAM", "Joby", "Archer"],
   manifest: "/manifest.json",
   icons: {
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
     apple: "/images/logo/airindex-logo-300.png",
   },
   openGraph: {
-    title: "AirIndex — UAM Market Readiness Ratings",
-    description: "Know exactly where urban air mobility launches first. AirIndex scores 20+ US cities on UAM market readiness in real time.",
+    title: "AirIndex — UAM Market Intelligence",
+    description: "AirIndex is the authoritative market intelligence platform for urban air mobility. 21 US cities scored daily across 7 verified factors.",
     siteName: "AirIndex",
     url: "https://www.airindex.io",
     images: [{ url: "/images/og-image.png", width: 1200, height: 630 }],
@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@AirIndexHQ",
-    title: "AirIndex — UAM Market Readiness Ratings",
-    description: "Know exactly where urban air mobility launches first. AirIndex scores 20+ US cities on UAM market readiness in real time.",
+    title: "AirIndex — UAM Market Intelligence",
+    description: "AirIndex is the authoritative market intelligence platform for urban air mobility. 21 US cities scored daily across 7 verified factors.",
     images: ["/images/og-image.png"],
   },
 };

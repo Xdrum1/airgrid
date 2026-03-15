@@ -119,7 +119,7 @@ function AdminLogin({ onVerified }: { onVerified: () => void }) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
       }}
     >
@@ -170,7 +170,7 @@ function AdminLogin({ onVerified }: { onVerified: () => void }) {
               borderRadius: 6,
               color: "#fff",
               fontSize: 13,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               padding: "12px 16px",
               outline: "none",
               boxSizing: "border-box",
@@ -192,7 +192,7 @@ function AdminLogin({ onVerified }: { onVerified: () => void }) {
               borderRadius: 6,
               color: "#fff",
               fontSize: 16,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               padding: "12px 16px",
               textAlign: "center",
               letterSpacing: 6,
@@ -232,7 +232,7 @@ function AdminLogin({ onVerified }: { onVerified: () => void }) {
               fontWeight: 700,
               letterSpacing: 2,
               cursor: submitting ? "default" : "pointer",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               transition: "all 0.15s",
               opacity: submitting || !email.trim() || !pin.trim() ? 0.5 : 1,
             }}
@@ -418,7 +418,7 @@ export default function AdminReview() {
       style={{
         minHeight: "100vh",
         background: "#050508",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
       }}
     >
@@ -499,7 +499,7 @@ export default function AdminReview() {
                 letterSpacing: 2,
                 padding: "14px 20px",
                 cursor: "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 fontWeight: tab === t ? 700 : 400,
                 transition: "all 0.15s",
               }}
@@ -609,7 +609,7 @@ export default function AdminReview() {
             color: "#fff",
             fontSize: 11,
             letterSpacing: 1,
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             zIndex: 9999,
           }}
         >
@@ -944,7 +944,7 @@ function OverrideCard({
                   fontSize: 9,
                   letterSpacing: 1,
                   cursor: "pointer",
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                   padding: 0,
                 }}
               >
@@ -1018,7 +1018,7 @@ function OverrideCard({
               color: selectedCity ? "#fff" : "#555",
               fontSize: 11,
               padding: "8px 12px",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               width: "100%",
               cursor: "pointer",
             }}
@@ -1048,7 +1048,7 @@ function OverrideCard({
             fontWeight: 700,
             letterSpacing: 1,
             cursor: isActing ? "default" : "pointer",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             transition: "all 0.15s",
           }}
         >
@@ -1067,7 +1067,7 @@ function OverrideCard({
             fontWeight: 700,
             letterSpacing: 1,
             cursor: isActing ? "default" : "pointer",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             transition: "all 0.15s",
           }}
         >
@@ -1187,7 +1187,7 @@ function ClassificationCard({
           fontSize: 9,
           letterSpacing: 1,
           cursor: "pointer",
-          fontFamily: "'Space Mono', monospace",
+          fontFamily: "'Inter', sans-serif",
           padding: 0,
         }}
       >

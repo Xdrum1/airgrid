@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const S = {
   h2: {
-    fontFamily: "var(--font-syne), sans-serif",
+    fontFamily: "'Inter', sans-serif",
     fontWeight: 700 as const,
     fontSize: 20,
     color: "#fff",
@@ -18,7 +18,7 @@ const S = {
     marginBottom: 16,
   },
   h3: {
-    fontFamily: "var(--font-syne), sans-serif",
+    fontFamily: "'Inter', sans-serif",
     fontWeight: 600 as const,
     fontSize: 15,
     color: "#ddd",
@@ -93,7 +93,7 @@ export default function PrivacyPage() {
         minHeight: "100vh",
         background: "#050508",
         color: "#fff",
-        fontFamily: "var(--font-space-mono), monospace",
+        fontFamily: "'Inter', sans-serif",
       }}
     >
       <TrackPageView page="privacy" />
@@ -136,7 +136,7 @@ export default function PrivacyPage() {
 
         <h1
           style={{
-            fontFamily: "var(--font-syne), sans-serif",
+            fontFamily: "'Inter', sans-serif",
             fontWeight: 700,
             fontSize: 28,
             color: "#fff",

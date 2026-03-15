@@ -143,7 +143,7 @@ export default function ActivityTab({
                   borderRadius: 3,
                   padding: "2px 6px",
                   textTransform: "uppercase",
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                 }}
               >
                 {entry.changeType.replace(/_/g, " ")}
@@ -156,7 +156,7 @@ export default function ActivityTab({
                   border: "1px solid rgba(255,255,255,0.08)",
                   borderRadius: 3,
                   padding: "2px 6px",
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                 }}
               >
                 {entityLabel}
@@ -170,7 +170,7 @@ export default function ActivityTab({
                 color: "#ddd",
                 fontSize: 11,
                 lineHeight: 1.5,
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               {entry.summary}

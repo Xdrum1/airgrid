@@ -168,7 +168,7 @@ export default function AdminFeed({
     borderRadius: 4,
     color: "#ccc",
     fontSize: 12,
-    fontFamily: "'Space Mono', monospace",
+    fontFamily: "'Inter', sans-serif",
   };
 
   const labelStyle: React.CSSProperties = {
@@ -177,7 +177,7 @@ export default function AdminFeed({
     color: "#888",
     marginBottom: 4,
     display: "block",
-    fontFamily: "'Space Mono', monospace",
+    fontFamily: "'Inter', sans-serif",
   };
 
   const btnStyle = (color: string): React.CSSProperties => ({
@@ -189,7 +189,7 @@ export default function AdminFeed({
     padding: "4px 10px",
     borderRadius: 3,
     cursor: "pointer",
-    fontFamily: "'Space Mono', monospace",
+    fontFamily: "'Inter', sans-serif",
   });
 
   return (

@@ -160,7 +160,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               textDecoration: "none",
               transition: "all 0.15s",
             }}
@@ -173,7 +173,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
                 color: "#00ff88",
                 fontSize: 8,
                 letterSpacing: 1,
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               VIEW PLANS
@@ -213,7 +213,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             transition: "all 0.15s",
           }}
         >
@@ -225,7 +225,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
               color: "#00ff88",
               fontSize: 8,
               letterSpacing: 1,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             {session?.user ? "SUBSCRIBE" : "SIGN IN"}
@@ -290,7 +290,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
               fontSize: 8,
               cursor: "pointer",
               padding: 0,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               letterSpacing: 1,
               transition: "color 0.15s",
             }}
@@ -357,7 +357,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
                 fontSize: 7,
                 letterSpacing: 1,
                 cursor: isSubmitting ? "default" : "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 transition: "all 0.15s",
               }}
             >
@@ -439,7 +439,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
           letterSpacing: 1,
           fontWeight: 700,
           cursor: isSubmitting ? "default" : "pointer",
-          fontFamily: "'Space Mono', monospace",
+          fontFamily: "'Inter', sans-serif",
           transition: "all 0.15s",
           opacity: isSubmitting ? 0.6 : 1,
         }}

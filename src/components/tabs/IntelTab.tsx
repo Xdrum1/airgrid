@@ -69,7 +69,7 @@ export default function IntelTab({ animate, isMobile }: IntelTabProps) {
             fontWeight: 700,
             color: "#fff",
             margin: "0 0 6px",
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             letterSpacing: -0.5,
           }}
         >
@@ -99,7 +99,7 @@ export default function IntelTab({ animate, isMobile }: IntelTabProps) {
                 padding: "5px 12px",
                 borderRadius: 4,
                 cursor: "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 transition: "all 0.15s",
               }}
             >
@@ -173,7 +173,7 @@ export default function IntelTab({ animate, isMobile }: IntelTabProps) {
                   color: "#e0e0e0",
                   fontWeight: 600,
                   marginBottom: 4,
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Inter', sans-serif",
                   lineHeight: 1.4,
                   textDecoration: "none",
                 }}

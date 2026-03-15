@@ -150,7 +150,7 @@ export default function CorridorSubscribeForm({
               fontSize: 8,
               cursor: "pointer",
               padding: 0,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               letterSpacing: 1,
               transition: "color 0.15s",
             }}
@@ -182,7 +182,7 @@ export default function CorridorSubscribeForm({
             alignItems: "center",
             justifyContent: "center",
             gap: 8,
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             textDecoration: "none",
             transition: "all 0.15s",
           }}
@@ -228,7 +228,7 @@ export default function CorridorSubscribeForm({
           alignItems: "center",
           justifyContent: "center",
           gap: 8,
-          fontFamily: "'Space Mono', monospace",
+          fontFamily: "'Inter', sans-serif",
           transition: "all 0.15s",
           opacity: isSubmitting ? 0.6 : 1,
         }}

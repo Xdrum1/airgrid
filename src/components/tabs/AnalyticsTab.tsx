@@ -83,7 +83,7 @@ export default function AnalyticsTab({
             <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
               {stat.label}
             </div>
-            <div style={{ color: stat.color, fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28 }}>
+            <div style={{ color: stat.color, fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 28 }}>
               {stat.value}
             </div>
           </div>
@@ -113,7 +113,7 @@ export default function AnalyticsTab({
                 fill="#333"
                 fontSize={9}
                 textAnchor="middle"
-                fontFamily="'Space Mono', monospace"
+                fontFamily="'Inter', sans-serif"
               >
                 {tick}
               </text>
@@ -131,7 +131,7 @@ export default function AnalyticsTab({
                   fill="#888"
                   fontSize={10}
                   textAnchor="end"
-                  fontFamily="'Space Mono', monospace"
+                  fontFamily="'Inter', sans-serif"
                 >
                   {city.city}
                 </text>
@@ -150,7 +150,7 @@ export default function AnalyticsTab({
                   y={i * 27 + 16}
                   fill={barColor}
                   fontSize={10}
-                  fontFamily="'Space Mono', monospace"
+                  fontFamily="'Inter', sans-serif"
                   fontWeight={700}
                   style={{
                     opacity: animate ? 1 : 0,
@@ -175,7 +175,7 @@ export default function AnalyticsTab({
           {Object.entries(SCORE_COMPONENT_LABELS).map(([key, label]) => (
             <div key={key} style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <div style={{ width: 8, height: 8, borderRadius: 2, background: SCORE_COMPONENT_COLORS[key] }} />
-              <span style={{ color: "#666", fontSize: 8, fontFamily: "'Space Mono', monospace" }}>{label}</span>
+              <span style={{ color: "#666", fontSize: 8, fontFamily: "'Inter', sans-serif" }}>{label}</span>
             </div>
           ))}
         </div>
@@ -197,7 +197,7 @@ export default function AnalyticsTab({
                 fill="#333"
                 fontSize={9}
                 textAnchor="middle"
-                fontFamily="'Space Mono', monospace"
+                fontFamily="'Inter', sans-serif"
               >
                 {tick}
               </text>
@@ -231,7 +231,7 @@ export default function AnalyticsTab({
                   fill="#888"
                   fontSize={10}
                   textAnchor="end"
-                  fontFamily="'Space Mono', monospace"
+                  fontFamily="'Inter', sans-serif"
                 >
                   {city.city}
                 </text>
@@ -253,7 +253,7 @@ export default function AnalyticsTab({
                   y={i * 27 + 16}
                   fill="#555"
                   fontSize={10}
-                  fontFamily="'Space Mono', monospace"
+                  fontFamily="'Inter', sans-serif"
                   style={{
                     opacity: animate ? 1 : 0,
                     transition: `opacity 0.4s ease ${0.4 + i * 0.05}s`,
@@ -303,7 +303,7 @@ export default function AnalyticsTab({
                 <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
                   {stat.label}
                 </div>
-                <div style={{ color: stat.color, fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28 }}>
+                <div style={{ color: stat.color, fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 28 }}>
                   {stat.value}
                 </div>
               </div>
@@ -329,7 +329,7 @@ export default function AnalyticsTab({
                 <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 6 }}>
                   {stat.label}
                 </div>
-                <div style={{ color: stat.color, fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 18 }}>
+                <div style={{ color: stat.color, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 18 }}>
                   {stat.value}
                 </div>
               </div>
@@ -357,7 +357,7 @@ export default function AnalyticsTab({
                         fill="#888"
                         fontSize={10}
                         textAnchor="end"
-                        fontFamily="'Space Mono', monospace"
+                        fontFamily="'Inter', sans-serif"
                       >
                         {entry.cityName}
                       </text>
@@ -376,7 +376,7 @@ export default function AnalyticsTab({
                         y={i * 30 + 18}
                         fill="#00d4ff"
                         fontSize={10}
-                        fontFamily="'Space Mono', monospace"
+                        fontFamily="'Inter', sans-serif"
                         fontWeight={700}
                         style={{
                           opacity: animate ? 1 : 0,

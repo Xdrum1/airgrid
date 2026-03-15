@@ -87,7 +87,7 @@ function ContactForm() {
     borderRadius: 6,
     color: "#fff",
     fontSize: 13,
-    fontFamily: "'Space Mono', monospace",
+    fontFamily: "'Inter', sans-serif",
     outline: "none",
     boxSizing: "border-box" as const,
   };
@@ -212,7 +212,7 @@ function ContactForm() {
           color: "#050508",
           fontSize: 12,
           fontWeight: 700,
-          fontFamily: "'Syne', sans-serif",
+          fontFamily: "'Inter', sans-serif",
           letterSpacing: "0.06em",
           cursor: state === "submitting" ? "default" : "pointer",
           transition: "opacity 0.15s",
@@ -240,7 +240,7 @@ export default function ContactPage() {
       style={{
         minHeight: "100vh",
         background: "#050508",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
       }}
     >

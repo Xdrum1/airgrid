@@ -224,7 +224,7 @@ export default function KeysTab({
             marginBottom: 20,
           }}>
             <div style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 10,
               letterSpacing: 1,
               color: "#00ff88",
@@ -235,7 +235,7 @@ export default function KeysTab({
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <code style={{
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: 12,
                 color: "#fff",
                 background: "rgba(0,0,0,0.3)",
@@ -256,7 +256,7 @@ export default function KeysTab({
                   color: copied ? "#00ff88" : "#ccc",
                   padding: "8px 14px",
                   fontSize: 11,
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                   cursor: "pointer",
                   whiteSpace: "nowrap",
                 }}
@@ -294,7 +294,7 @@ export default function KeysTab({
               padding: "8px 12px",
               color: "#fff",
               fontSize: 12,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               outline: "none",
             }}
             onKeyDown={(e) => {
@@ -355,7 +355,7 @@ export default function KeysTab({
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 9,
               letterSpacing: 1.5,
               color: "#888",
@@ -389,7 +389,7 @@ export default function KeysTab({
                     {key.name}
                   </div>
                   <code style={{
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                     fontSize: 11,
                     color: "#888",
                   }}>
@@ -398,7 +398,7 @@ export default function KeysTab({
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
                   <span style={{
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                     fontSize: 9,
                     letterSpacing: 1,
                     color: "#00d4ff",
@@ -426,7 +426,7 @@ export default function KeysTab({
                     color: "#ff4444",
                     padding: "6px 12px",
                     fontSize: 10,
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                     cursor: revoking === key.id ? "default" : "pointer",
                     opacity: revoking === key.id ? 0.5 : 1,
                   }}

@@ -233,7 +233,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
             fontSize: 10,
             cursor: "pointer",
             marginBottom: 20,
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           ← BACK TO GRID
@@ -245,7 +245,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
           borderRadius: 10,
           padding: 28,
         }}>
-          <div style={{ color: "#fff", fontSize: 16, fontFamily: "'Syne', sans-serif", fontWeight: 700, marginBottom: 24 }}>
+          <div style={{ color: "#fff", fontSize: 16, fontFamily: "'Inter', sans-serif", fontWeight: 700, marginBottom: 24 }}>
             {editing.cityName}
           </div>
 
@@ -268,7 +268,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
                     padding: "8px 14px",
                     borderRadius: 6,
                     cursor: "pointer",
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                     fontWeight: editing.watchStatus === s ? 700 : 400,
                   }}
                 >
@@ -297,7 +297,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
                     padding: "8px 14px",
                     borderRadius: 6,
                     cursor: "pointer",
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                     fontWeight: editing.outlook === o ? 700 : 400,
                   }}
                 >
@@ -325,7 +325,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
                 borderRadius: 6,
                 color: "#ccc",
                 fontSize: 12,
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 padding: 12,
                 resize: "vertical",
               }}
@@ -352,7 +352,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
                 borderRadius: 6,
                 color: "#ccc",
                 fontSize: 12,
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 padding: 12,
                 resize: "vertical",
               }}
@@ -372,7 +372,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
                 padding: "10px 20px",
                 borderRadius: 6,
                 cursor: saving ? "default" : "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 opacity: saving ? 0.5 : 1,
               }}
             >
@@ -389,7 +389,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
                 padding: "10px 20px",
                 borderRadius: 6,
                 cursor: saving ? "default" : "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 fontWeight: 700,
                 opacity: saving ? 0.5 : 1,
               }}
@@ -446,7 +446,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
               >
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                    <span style={{ color: "#e879f9", fontSize: 11, fontWeight: 700, fontFamily: "'Space Mono', monospace" }}>
+                    <span style={{ color: "#e879f9", fontSize: 11, fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>
                       {s.cityName}
                     </span>
                     <span style={{
@@ -479,7 +479,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
                       padding: "6px 12px",
                       borderRadius: 4,
                       cursor: "pointer",
-                      fontFamily: "'Space Mono', monospace",
+                      fontFamily: "'Inter', sans-serif",
                     }}
                   >
                     REVIEW
@@ -592,7 +592,7 @@ function WatchRow({
       <div style={{
         color: tierColor,
         fontSize: 14,
-        fontFamily: "'Syne', sans-serif",
+        fontFamily: "'Inter', sans-serif",
         fontWeight: 800,
         minWidth: 32,
         textAlign: "center",
@@ -656,7 +656,7 @@ function WatchRow({
             padding: "4px 8px",
             borderRadius: 3,
             cursor: "pointer",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           {city.published ? "LIVE" : "DRAFT"}
@@ -665,7 +665,7 @@ function WatchRow({
 
       {/* Updated */}
       {city.updatedAt && (
-        <span style={{ color: "#666", fontSize: 9, fontFamily: "'Space Mono', monospace", minWidth: 50 }}>
+        <span style={{ color: "#666", fontSize: 9, fontFamily: "'Inter', sans-serif", minWidth: 50 }}>
           {formatRelativeTime(city.updatedAt)}
         </span>
       )}
@@ -681,7 +681,7 @@ function WatchRow({
           padding: "6px 12px",
           borderRadius: 4,
           cursor: "pointer",
-          fontFamily: "'Space Mono', monospace",
+          fontFamily: "'Inter', sans-serif",
         }}
       >
         EDIT

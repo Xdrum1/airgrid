@@ -81,7 +81,7 @@ export default function CityScoreLookup({ cities }: { cities: CityData[] }) {
           </div>
           <div
             style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 9,
               color: "#888",
               marginTop: 4,
@@ -93,7 +93,7 @@ export default function CityScoreLookup({ cities }: { cities: CityData[] }) {
         </div>
         <div
           style={{
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             fontWeight: 800,
             fontSize: 38,
             color,
@@ -106,7 +106,7 @@ export default function CityScoreLookup({ cities }: { cities: CityData[] }) {
           <Link
             href={`/city/${selected.id}`}
             style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 8,
               color: "#00d4ff",
               letterSpacing: 1,
@@ -120,7 +120,7 @@ export default function CityScoreLookup({ cities }: { cities: CityData[] }) {
             style={{
               background: "none",
               border: "none",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 8,
               color: "#888",
               letterSpacing: 1,
@@ -220,7 +220,7 @@ export default function CityScoreLookup({ cities }: { cities: CityData[] }) {
                 </span>
                 <span
                   style={{
-                    fontFamily: "'Syne', sans-serif",
+                    fontFamily: "'Inter', sans-serif",
                     fontWeight: 800,
                     fontSize: 18,
                     color,

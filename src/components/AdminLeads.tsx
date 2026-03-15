@@ -107,7 +107,7 @@ export default function AdminLeads({ showToast }: { showToast: (msg: string) => 
             fontWeight: 700,
             letterSpacing: 1,
             cursor: "pointer",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           {showForm ? "CANCEL" : "+ NEW LEAD"}
@@ -137,7 +137,7 @@ export default function AdminLeads({ showToast }: { showToast: (msg: string) => 
               fontSize: 9,
               letterSpacing: 1,
               cursor: "pointer",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontWeight: filter === f ? 700 : 400,
             }}
           >
@@ -200,7 +200,7 @@ function NewLeadForm({ onCreated, onCancel }: { onCreated: () => void; onCancel:
     borderRadius: 6,
     color: "#fff",
     fontSize: 12,
-    fontFamily: "'Space Mono', monospace",
+    fontFamily: "'Inter', sans-serif",
     padding: "10px 14px",
     outline: "none",
     width: "100%",
@@ -241,14 +241,14 @@ function NewLeadForm({ onCreated, onCancel }: { onCreated: () => void; onCancel:
         <button type="button" onClick={onCancel} style={{
           background: "none", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4,
           padding: "8px 16px", color: "#888", fontSize: 10, letterSpacing: 1, cursor: "pointer",
-          fontFamily: "'Space Mono', monospace",
+          fontFamily: "'Inter', sans-serif",
         }}>
           CANCEL
         </button>
         <button type="submit" disabled={submitting || !city.trim() || !state.trim() || !source.trim() || !signal.trim()} style={{
           background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.4)", borderRadius: 4,
           padding: "8px 16px", color: "#7c3aed", fontSize: 10, fontWeight: 700, letterSpacing: 1,
-          cursor: submitting ? "default" : "pointer", fontFamily: "'Space Mono', monospace",
+          cursor: submitting ? "default" : "pointer", fontFamily: "'Inter', sans-serif",
           opacity: submitting ? 0.5 : 1,
         }}>
           {submitting ? "SAVING..." : "ADD LEAD"}
@@ -426,7 +426,7 @@ function LeadCard({
           fontSize: 9,
           letterSpacing: 1,
           cursor: "pointer",
-          fontFamily: "'Space Mono', monospace",
+          fontFamily: "'Inter', sans-serif",
           padding: 0,
           marginBottom: expanded ? 12 : 0,
         }}
@@ -448,7 +448,7 @@ function LeadCard({
                   fontSize: 8,
                   letterSpacing: 2,
                   cursor: "pointer",
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                   padding: 0,
                   marginBottom: showSignals ? 8 : 0,
                 }}
@@ -535,7 +535,7 @@ function LeadCard({
                   <span style={{
                     color: factors[factor] ? "#00ff88" : "#555",
                     fontSize: 10,
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                   }}>
                     {FACTOR_LABELS[factor]}
                   </span>
@@ -561,7 +561,7 @@ function LeadCard({
                 borderRadius: 6,
                 color: "#ccc",
                 fontSize: 11,
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 padding: "10px 14px",
                 outline: "none",
                 resize: "vertical",
@@ -586,7 +586,7 @@ function LeadCard({
                 fontWeight: 700,
                 letterSpacing: 1,
                 cursor: "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               SAVE NOTES & FACTORS
@@ -619,7 +619,7 @@ function LeadCard({
                     borderRadius: 4,
                     color: "#888",
                     fontSize: 10,
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                     padding: "7px 12px",
                     outline: "none",
                     width: 200,
@@ -659,7 +659,7 @@ function StatusButton({ label, color, onClick }: { label: string; color: string;
         fontWeight: 700,
         letterSpacing: 1,
         cursor: "pointer",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
       }}
     >
       {label}

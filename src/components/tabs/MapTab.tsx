@@ -15,7 +15,7 @@ const MapView = dynamic(() => import("../MapView"), {
       justifyContent: "center",
       background: "#07070e",
       color: "#777",
-      fontFamily: "'Space Mono', monospace",
+      fontFamily: "'Inter', sans-serif",
       fontSize: 10,
       letterSpacing: 2,
     }}>
@@ -97,7 +97,7 @@ export default function MapTab({
             letterSpacing: 1.5,
             fontWeight: 700,
             cursor: "pointer",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
           }}
         >

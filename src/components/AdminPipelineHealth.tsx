@@ -196,7 +196,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
                 <span style={{
                   color: freshness.color,
                   fontSize: 14,
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                   fontWeight: 600,
                 }}>
                   {freshness.label}
@@ -241,10 +241,10 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
               return (
                 <div key={type} style={{ marginBottom: 10 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                    <span style={{ color: "#666", fontSize: 10, fontFamily: "'Space Mono', monospace" }}>
+                    <span style={{ color: "#666", fontSize: 10, fontFamily: "'Inter', sans-serif" }}>
                       {DATA_SOURCE_LABELS[type] ?? type}
                     </span>
-                    <span style={{ color: "#888", fontSize: 10, fontFamily: "'Space Mono', monospace", fontWeight: 600 }}>
+                    <span style={{ color: "#888", fontSize: 10, fontFamily: "'Inter', sans-serif", fontWeight: 600 }}>
                       {count.toLocaleString()}
                     </span>
                   </div>
@@ -265,7 +265,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
                 </div>
               );
             })}
-          <div style={{ color: "#666", fontSize: 9, marginTop: 12, fontFamily: "'Space Mono', monospace" }}>
+          <div style={{ color: "#666", fontSize: 9, marginTop: 12, fontFamily: "'Inter', sans-serif" }}>
             {totalVolume.toLocaleString()} total entries
           </div>
         </div>
@@ -288,7 +288,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
           </div>
           <div style={{
             color: health.pendingReviews > 0 ? "#f59e0b" : "#00ff88",
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             fontWeight: 800,
             fontSize: 42,
             lineHeight: 1,
@@ -296,7 +296,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
           }}>
             {health.pendingReviews}
           </div>
-          <div style={{ color: "#777", fontSize: 9, fontFamily: "'Space Mono', monospace", lineHeight: 1.5 }}>
+          <div style={{ color: "#777", fontSize: 9, fontFamily: "'Inter', sans-serif", lineHeight: 1.5 }}>
             {health.pendingReviews > 0
               ? "Scoring overrides need admin review"
               : "All clear"}
@@ -334,10 +334,10 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
                   }}
                 >
                   <div style={{ width: 5, height: 5, borderRadius: "50%", background: color, flexShrink: 0 }} />
-                  <span style={{ color: "#666", fontSize: 10, fontFamily: "'Space Mono', monospace", minWidth: 100 }}>
+                  <span style={{ color: "#666", fontSize: 10, fontFamily: "'Inter', sans-serif", minWidth: 100 }}>
                     {formatRelativeTime(run.startedAt)}
                   </span>
-                  <span style={{ color: "#888", fontSize: 10, fontFamily: "'Space Mono', monospace" }}>
+                  <span style={{ color: "#888", fontSize: 10, fontFamily: "'Inter', sans-serif" }}>
                     {run.newRecords} new
                   </span>
                   {hasError && (

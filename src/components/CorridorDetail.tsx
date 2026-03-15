@@ -63,7 +63,7 @@ export default function CorridorDetail({
         height: "100vh",
         overflowY: "auto",
         background: "#050508",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
       }}
     >
@@ -139,7 +139,7 @@ export default function CorridorDetail({
               style={{
                 fontSize: 28,
                 fontWeight: 800,
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 letterSpacing: -1,
                 margin: 0,
               }}
