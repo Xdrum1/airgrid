@@ -206,8 +206,6 @@ export async function fetchClinicalTrials(daysBack: number = 365): Promise<Emerg
     } catch (err) {
       log.error(`ClinicalTrials fetch failed for "${term}":`, err);
     }
-
-    await delay(DELAY_MS);
   }
 
   log.info(`ClinicalTrials: fetched ${records.length} studies`);
