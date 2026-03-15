@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 
-
 // -------------------------------------------------------
 // Tier data
 // -------------------------------------------------------
@@ -12,39 +11,39 @@ type Interval = "monthly" | "annual";
 
 interface Tier {
   name: string;
+  tagline: string;
   monthly: number | null;
   annual: number | null;
   accent: string;
   highlight: boolean;
-  note: string;
   features: string[];
-  checkout: "free" | "stripe" | "contact";
-  stripeTier?: "alert" | "pro" | "institutional";
+  cta: "free" | "stripe" | "contact";
+  stripeTier?: "alert" | "pro";
 }
 
 const TIERS: Tier[] = [
   {
     name: "Free",
+    tagline: "Explore the index.",
     monthly: 0,
     annual: 0,
     accent: "#00d4ff",
     highlight: false,
-    note: "Free forever.",
     features: [
       "Dashboard map with city markers",
       "Current readiness scores",
       "City rankings",
       "Basic market overview per city",
     ],
-    checkout: "free",
+    cta: "free",
   },
   {
     name: "Alert",
+    tagline: "Stay ahead of score changes.",
     monthly: 25,
     annual: 249,
     accent: "#f59e0b",
     highlight: false,
-    note: "",
     features: [
       "Everything in Free, plus:",
       "Monitor up to 3 markets",
@@ -52,19 +51,19 @@ const TIERS: Tier[] = [
       "Watch list alerts",
       "Monthly market summary email",
     ],
-    checkout: "stripe",
+    cta: "stripe",
     stripeTier: "alert",
   },
   {
     name: "Pro",
+    tagline: "Full market intelligence for active UAM professionals.",
     monthly: 149,
     annual: 1490,
     accent: "#00ff88",
     highlight: true,
-    note: "",
     features: [
       "Everything in Alert, plus:",
-      "Full dashboard — all 21+ markets",
+      "Full dashboard — all 20+ markets",
       "Score history & trend lines",
       "Factor-level breakdown behind each score",
       "Corridor intelligence",
@@ -73,42 +72,42 @@ const TIERS: Tier[] = [
       "Intel Feed & deep-dives",
       "Full monthly market report",
     ],
-    checkout: "stripe",
+    cta: "stripe",
     stripeTier: "pro",
   },
   {
     name: "Institutional",
-    monthly: 499,
-    annual: 4990,
+    tagline: "For teams making capital allocation and market entry decisions.",
+    monthly: null,
+    annual: null,
     accent: "#7c3aed",
     highlight: false,
-    note: "For teams and organizations",
     features: [
       "Everything in Pro, plus:",
-      "API access",
-      "Data export (JSON/CSV)",
+      "API access with dedicated rate limits",
+      "Data export (JSON / CSV)",
       "3 seats included (+$99/seat/mo)",
-      "Custom alerts",
-      "Priority support",
+      "Custom alert configurations",
+      "Priority support & onboarding",
     ],
-    checkout: "stripe",
-    stripeTier: "institutional",
+    cta: "contact",
   },
   {
     name: "Enterprise",
+    tagline: "For organizations embedding UAM data into their workflows.",
     monthly: null,
     annual: null,
     accent: "#ff6b35",
     highlight: false,
-    note: "For organizations embedding UAM data",
     features: [
       "Everything in Institutional, plus:",
       "White-label endpoints",
-      "Webhooks",
+      "Webhooks & event streams",
       "Embedded widgets",
       "Direct data feeds",
+      "Custom SLA",
     ],
-    checkout: "contact",
+    cta: "contact",
   },
 ];
 
@@ -120,7 +119,7 @@ export default function PricingTiers() {
   const [interval, setInterval] = useState<Interval>("annual");
 
   function getDisplayPrice(tier: Tier): string {
-    if (tier.monthly === null) return "Custom";
+    if (tier.monthly === null) return "";
     if (tier.monthly === 0) return "$0";
     if (interval === "annual") {
       const perMonth = Math.round(tier.annual! / 12);
@@ -134,17 +133,17 @@ export default function PricingTiers() {
     return "/mo";
   }
 
-  function getNote(tier: Tier): string {
+  function getBillingNote(tier: Tier): string {
     if (tier.monthly === 0) return "Free forever.";
-    if (tier.monthly === null) return tier.note;
+    if (tier.monthly === null) return "";
+    if (interval === "annual" && tier.annual) {
+      return `Billed $${tier.annual.toLocaleString()}/year`;
+    }
     if (interval === "monthly" && tier.annual) {
       const savings = Math.round((1 - tier.annual / (tier.monthly * 12)) * 100);
       return `$${tier.annual.toLocaleString()}/year (save ${savings}%)`;
     }
-    if (interval === "annual" && tier.annual) {
-      return `Billed $${tier.annual.toLocaleString()}/year`;
-    }
-    return tier.note;
+    return "";
   }
 
   return (
@@ -222,10 +221,11 @@ export default function PricingTiers() {
 
       {/* Tier cards */}
       <div
+        className="pricing-grid"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))",
-          gap: 20,
+          gridTemplateColumns: "repeat(5, 1fr)",
+          gap: 16,
           alignItems: "stretch",
         }}
       >
@@ -260,45 +260,67 @@ export default function PricingTiers() {
             {/* Tier name */}
             <div
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 700,
                 fontSize: 16,
                 color: "#ccc",
-                marginBottom: tier.checkout === "free" ? 10 : 4,
+                marginBottom: 4,
               }}
             >
               {tier.name}
             </div>
-            {tier.checkout !== "free" && (
-              <div
-                style={{
-                  fontSize: 9,
-                  letterSpacing: 1,
-                  color: "#666",
-                  marginBottom: 6,
-                }}
-              >
-                COMING SOON
+
+            {/* Tagline */}
+            <div
+              style={{
+                fontSize: 11,
+                color: "#777",
+                lineHeight: 1.5,
+                marginBottom: 16,
+                minHeight: 34,
+              }}
+            >
+              {tier.tagline}
+            </div>
+
+            {/* Price or Contact prompt */}
+            {tier.monthly !== null ? (
+              <>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
+                  <span
+                    style={{
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontWeight: 700,
+                      fontSize: 36,
+                      color: "#fff",
+                    }}
+                  >
+                    {getDisplayPrice(tier)}
+                  </span>
+                  <span style={{ color: "#888", fontSize: 13 }}>{getPeriod(tier)}</span>
+                </div>
+                <div style={{ color: "#666", fontSize: 10, marginBottom: 24, minHeight: 14 }}>
+                  {getBillingNote(tier)}
+                </div>
+              </>
+            ) : (
+              <div style={{ marginBottom: 24 }}>
+                <div
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 20,
+                    color: "#fff",
+                    marginBottom: 4,
+                  }}
+                >
+                  Let&apos;s talk
+                </div>
+                <div style={{ color: "#666", fontSize: 10, minHeight: 14 }}>
+                  Custom pricing for your organization
+                </div>
               </div>
             )}
-
-            {/* Price */}
-            <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
-              <span
-                style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  fontWeight: 700,
-                  fontSize: 36,
-                  color: "#fff",
-                }}
-              >
-                {getDisplayPrice(tier)}
-              </span>
-              <span style={{ color: "#888", fontSize: 13 }}>{getPeriod(tier)}</span>
-            </div>
-            <div style={{ color: "#777", fontSize: 10, marginBottom: 24 }}>
-              {getNote(tier)}
-            </div>
 
             {/* Features */}
             <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px", flex: 1 }}>
@@ -317,7 +339,7 @@ export default function PricingTiers() {
                 >
                   {f.endsWith(":") ? null : (
                     <span style={{ color: tier.accent, fontSize: 10, marginTop: 3, flexShrink: 0 }}>
-                      ✓
+                      &#10003;
                     </span>
                   )}
                   <span>{f}</span>
@@ -326,7 +348,7 @@ export default function PricingTiers() {
             </ul>
 
             {/* CTA */}
-            {tier.checkout === "free" ? (
+            {tier.cta === "free" ? (
               <Link
                 href="/login?mode=signup"
                 style={{
@@ -336,7 +358,6 @@ export default function PricingTiers() {
                   borderRadius: 6,
                   fontSize: 11,
                   fontWeight: 700,
-                  fontFamily: "'Syne', sans-serif",
                   letterSpacing: "0.06em",
                   textDecoration: "none",
                   transition: "opacity 0.15s",
@@ -347,9 +368,9 @@ export default function PricingTiers() {
               >
                 Sign up free
               </Link>
-            ) : tier.checkout === "contact" ? (
-              <Link
-                href="/contact?tier=enterprise"
+            ) : tier.cta === "contact" ? (
+              <a
+                href={`mailto:sales@airindex.io?subject=${tier.name} inquiry`}
                 style={{
                   display: "block",
                   textAlign: "center",
@@ -357,7 +378,6 @@ export default function PricingTiers() {
                   borderRadius: 6,
                   fontSize: 11,
                   fontWeight: 700,
-                  fontFamily: "'Syne', sans-serif",
                   letterSpacing: "0.06em",
                   textDecoration: "none",
                   transition: "opacity 0.15s",
@@ -366,11 +386,11 @@ export default function PricingTiers() {
                   color: tier.accent,
                 }}
               >
-                Contact us
-              </Link>
+                Contact sales
+              </a>
             ) : (
               <Link
-                href="/contact?tier=pro"
+                href="/login?mode=signup"
                 style={{
                   display: "block",
                   textAlign: "center",
@@ -378,16 +398,15 @@ export default function PricingTiers() {
                   borderRadius: 6,
                   fontSize: 11,
                   fontWeight: 700,
-                  fontFamily: "'Syne', sans-serif",
                   letterSpacing: "0.06em",
                   textDecoration: "none",
                   transition: "opacity 0.15s",
-                  background: `${tier.accent}15`,
+                  background: tier.highlight ? tier.accent : `${tier.accent}15`,
                   border: `1px solid ${tier.accent}44`,
-                  color: tier.accent,
+                  color: tier.highlight ? "#050508" : tier.accent,
                 }}
               >
-                Join waitlist
+                Get started
               </Link>
             )}
           </div>
