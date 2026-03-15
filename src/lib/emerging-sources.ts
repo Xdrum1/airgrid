@@ -58,13 +58,7 @@ export async function fetchArpaEAwards(daysBack: number = 365): Promise<Emerging
     while (hasNext && page <= 5) {
       const body = {
         filters: {
-          agencies: [
-            {
-              type: "awarding",
-              tier: "subtier",
-              name: "Advanced Research Projects Agency - Energy",
-            },
-          ],
+          keywords: ["ARPA-E"],
           time_period: [{ start_date: sinceStr, end_date: new Date().toISOString().slice(0, 10) }],
           award_type_codes: ["02", "03", "04", "05"], // grants and cooperative agreements
         },
