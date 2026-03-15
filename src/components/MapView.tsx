@@ -266,12 +266,12 @@ function VertiportPopup({
         borderRadius: 8,
         padding: "14px 16px",
         minWidth: 200,
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
       }}
     >
       <div
         style={{
-          fontFamily: "'Syne', sans-serif",
+          fontFamily: "'Inter', sans-serif",
           fontWeight: 800,
           fontSize: 14,
           color: "#fff",
@@ -337,12 +337,12 @@ function CorridorPopup({
         borderRadius: 8,
         padding: "14px 16px",
         minWidth: 220,
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
       }}
     >
       <div
         style={{
-          fontFamily: "'Syne', sans-serif",
+          fontFamily: "'Inter', sans-serif",
           fontWeight: 800,
           fontSize: 14,
           color: "#fff",
@@ -421,7 +421,7 @@ function CityPopup({
         borderRadius: 8,
         padding: "14px 16px",
         minWidth: 220,
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
       }}
     >
       <div
@@ -436,7 +436,7 @@ function CityPopup({
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontWeight: 800,
                 fontSize: 15,
                 color: "#fff",
@@ -455,7 +455,7 @@ function CityPopup({
           <div
             style={{
               color,
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               fontWeight: 800,
               fontSize: 24,
               lineHeight: 1,
@@ -576,7 +576,7 @@ function CityPopup({
           fontSize: 9,
           letterSpacing: 2,
           cursor: "pointer",
-          fontFamily: "'Space Mono', monospace",
+          fontFamily: "'Inter', sans-serif",
           transition: "all 0.15s",
           textAlign: "center",
           textDecoration: "none",
@@ -755,7 +755,7 @@ export default function MapView({
         <div style={{ fontSize: 32 }}>🗺️</div>
         <div
           style={{
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             fontWeight: 800,
             fontSize: 16,
             color: "#fff",
@@ -767,7 +767,7 @@ export default function MapView({
           style={{
             color: "#888",
             fontSize: 11,
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             textAlign: "center",
             lineHeight: 1.8,
             maxWidth: 340,
@@ -1050,7 +1050,7 @@ export default function MapView({
             letterSpacing: 1.5,
             fontWeight: 700,
             cursor: "pointer",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
             transition: "all 0.15s",
           }}
@@ -1079,7 +1079,7 @@ export default function MapView({
             fontSize: 8,
             lineHeight: 1.5,
             marginBottom: 10,
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           US metro markets scored for UAM readiness.
@@ -1091,7 +1091,7 @@ export default function MapView({
             fontSize: 8,
             letterSpacing: 2,
             marginBottom: 8,
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           READINESS SCORE
@@ -1127,7 +1127,7 @@ export default function MapView({
               style={{
                 color: "#888",
                 fontSize: 9,
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               {lbl}
@@ -1143,7 +1143,7 @@ export default function MapView({
             letterSpacing: 2,
             marginTop: 12,
             marginBottom: 8,
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           VERTIPORTS
@@ -1178,7 +1178,7 @@ export default function MapView({
               style={{
                 color: "#888",
                 fontSize: 9,
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               {lbl}
@@ -1194,7 +1194,7 @@ export default function MapView({
             letterSpacing: 2,
             marginTop: 12,
             marginBottom: 8,
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           CORRIDORS
@@ -1231,7 +1231,7 @@ export default function MapView({
               style={{
                 color: "#888",
                 fontSize: 9,
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               {lbl}

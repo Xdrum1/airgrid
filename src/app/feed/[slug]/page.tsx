@@ -51,7 +51,7 @@ export default async function FeedItemPage({ params }: Props) {
       style={{
         minHeight: "100vh",
         background: "#050508",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
       }}
     >
@@ -126,7 +126,7 @@ export default async function FeedItemPage({ params }: Props) {
             fontWeight: 700,
             color: "#fff",
             margin: "0 0 20px",
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             letterSpacing: -0.5,
             lineHeight: 1.3,
           }}
@@ -292,7 +292,7 @@ export default async function FeedItemPage({ params }: Props) {
                         fontSize: 13,
                         color: "#ccc",
                         fontWeight: 600,
-                        fontFamily: "'Syne', sans-serif",
+                        fontFamily: "'Inter', sans-serif",
                         lineHeight: 1.4,
                       }}
                     >

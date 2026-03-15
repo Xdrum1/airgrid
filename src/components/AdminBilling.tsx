@@ -115,7 +115,7 @@ export default function AdminBilling({ showToast }: { showToast: (msg: string) =
                 textAlign: "center",
               }}
             >
-              <div style={{ color: s.color, fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28 }}>
+              <div style={{ color: s.color, fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 28 }}>
                 {s.value}
               </div>
               <div style={{ color: "#888", fontSize: 8, letterSpacing: 2, marginTop: 4 }}>
@@ -193,7 +193,7 @@ export default function AdminBilling({ showToast }: { showToast: (msg: string) =
                         color: "#888",
                         fontSize: 9,
                         padding: "4px 8px",
-                        fontFamily: "'Space Mono', monospace",
+                        fontFamily: "'Inter', sans-serif",
                         cursor: "pointer",
                       }}
                     >

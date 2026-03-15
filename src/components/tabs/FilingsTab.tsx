@@ -163,7 +163,7 @@ export default function FilingsTab({
                   borderRadius: 3,
                   padding: "2px 6px",
                   textTransform: "uppercase",
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                 }}
               >
                 {filing.type}
@@ -179,7 +179,7 @@ export default function FilingsTab({
                 fontWeight: 700,
                 lineHeight: 1.4,
                 marginBottom: 6,
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               {filing.title}

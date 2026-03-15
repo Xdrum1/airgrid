@@ -116,7 +116,7 @@ export default function CityDetailPanel({
               fontSize: 12,
               padding: "8px 16px",
               cursor: "pointer",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             CLOSE
@@ -143,7 +143,7 @@ export default function CityDetailPanel({
               <Link
                 href={`/city/${selected.id}`}
                 style={{
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Inter', sans-serif",
                   fontWeight: 800,
                   fontSize: 19,
                   lineHeight: 1.1,
@@ -173,7 +173,7 @@ export default function CityDetailPanel({
             <div
               style={{
                 color: scoreColor,
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontWeight: 800,
                 fontSize: 34,
                 lineHeight: 1,

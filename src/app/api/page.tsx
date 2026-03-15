@@ -62,7 +62,7 @@ const linkStyle = {
   fontSize: 11,
   letterSpacing: "0.06em",
   textDecoration: "none" as const,
-  fontFamily: "'Space Mono', monospace",
+  fontFamily: "'Inter', sans-serif",
 };
 
 export default function ApiLandingPage() {
@@ -105,7 +105,7 @@ export default function ApiLandingPage() {
         <div style={{ marginBottom: 48 }}>
           <div
             style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 10,
               letterSpacing: 2,
               color: "#555",
@@ -151,7 +151,7 @@ export default function ApiLandingPage() {
         >
           <span
             style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 10,
               letterSpacing: 1.5,
               color: "#7c3aed",
@@ -172,7 +172,7 @@ export default function ApiLandingPage() {
               color: "#7c3aed",
               fontSize: 12,
               textDecoration: "none",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               marginLeft: "auto",
             }}
           >
@@ -209,7 +209,7 @@ export default function ApiLandingPage() {
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
                   <span
                     style={{
-                      fontFamily: "'Space Mono', monospace",
+                      fontFamily: "'Inter', sans-serif",
                       fontSize: 10,
                       letterSpacing: 1,
                       color: "#00ff88",
@@ -222,7 +222,7 @@ export default function ApiLandingPage() {
                   </span>
                   <code
                     style={{
-                      fontFamily: "'Space Mono', monospace",
+                      fontFamily: "'Inter', sans-serif",
                       fontSize: 13,
                       color: "#fff",
                     }}
@@ -300,7 +300,7 @@ export default function ApiLandingPage() {
               border: "1px solid rgba(0, 212, 255, 0.1)",
               borderRadius: 8,
               padding: "20px 24px",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 12,
               lineHeight: 1.8,
               color: "#ccc",

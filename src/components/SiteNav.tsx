@@ -6,9 +6,18 @@ const linkStyle: React.CSSProperties = {
   fontSize: 11,
   letterSpacing: "0.06em",
   textDecoration: "none",
-  padding: "8px 16px",
+  padding: "8px 14px",
   transition: "all 0.15s",
 };
+
+const SOLUTIONS = [
+  { label: "Infrastructure Developers", href: "/#infrastructure-developers" },
+  { label: "Operators & OEMs", href: "/#operators" },
+  { label: "Investors & Analysts", href: "/#investors" },
+  { label: "City Planners & Policy", href: "/#city-planners" },
+  { label: "Research & Academic", href: "/#research" },
+  { label: "Press & Media", href: "/#press" },
+];
 
 export default async function SiteNav() {
   const session = await auth();
@@ -43,12 +52,32 @@ export default async function SiteNav() {
             style={{ height: 28 }}
           />
         </Link>
-        <div className="landing-nav-buttons" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <Link href="/about" className="nav-hide-mobile" style={linkStyle}>
-            About
-          </Link>
-          <Link href="/pricing" className="nav-hide-mobile" style={linkStyle}>
-            Pricing
+        <div className="landing-nav-buttons" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          {/* Solutions dropdown */}
+          <div className="nav-dropdown-wrapper nav-hide-mobile">
+            <span
+              style={{
+                ...linkStyle,
+                cursor: "default",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              Solutions
+              <span style={{ fontSize: 8, opacity: 0.5 }}>&#9662;</span>
+            </span>
+            <div className="nav-dropdown">
+              {SOLUTIONS.map((item) => (
+                <Link key={item.label} href={item.href}>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <Link href="/methodology" className="nav-hide-mobile" style={linkStyle}>
+            Data
           </Link>
           <Link href="/feed" className="nav-hide-mobile" style={linkStyle}>
             Intel
@@ -56,6 +85,10 @@ export default async function SiteNav() {
           <Link href="/api" className="nav-hide-mobile" style={linkStyle}>
             API
           </Link>
+          <Link href="/pricing" className="nav-hide-mobile" style={linkStyle}>
+            Pricing
+          </Link>
+
           {isAuthed ? (
             <Link
               href="/dashboard"
@@ -64,9 +97,10 @@ export default async function SiteNav() {
                 ...linkStyle,
                 border: "1px solid rgba(255,255,255,0.1)",
                 borderRadius: 6,
+                marginLeft: 4,
               }}
             >
-              Go to Dashboard
+              Dashboard
             </Link>
           ) : (
             <>
@@ -76,6 +110,7 @@ export default async function SiteNav() {
                   ...linkStyle,
                   border: "1px solid rgba(255,255,255,0.1)",
                   borderRadius: 6,
+                  marginLeft: 4,
                 }}
               >
                 Sign in
@@ -85,7 +120,7 @@ export default async function SiteNav() {
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Inter', sans-serif",
                   letterSpacing: "0.06em",
                   textDecoration: "none",
                   padding: "8px 20px",

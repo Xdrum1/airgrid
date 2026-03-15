@@ -67,7 +67,7 @@ export default function FeedPage() {
             fontWeight: 700,
             color: "#fff",
             margin: "0 0 6px",
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Inter', sans-serif",
             letterSpacing: -0.5,
           }}
         >
@@ -106,7 +106,7 @@ export default function FeedPage() {
                 padding: "6px 14px",
                 borderRadius: 4,
                 cursor: "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 transition: "all 0.15s",
               }}
             >
@@ -224,7 +224,7 @@ export default function FeedPage() {
                       color: "#e0e0e0",
                       fontWeight: 600,
                       marginBottom: 6,
-                      fontFamily: "'Syne', sans-serif",
+                      fontFamily: "'Inter', sans-serif",
                       lineHeight: 1.4,
                       textDecoration: "none",
                       transition: "color 0.15s",
@@ -311,7 +311,7 @@ export default function FeedPage() {
                     fontSize: 13,
                     color: "#888",
                     marginBottom: 12,
-                    fontFamily: "'Syne', sans-serif",
+                    fontFamily: "'Inter', sans-serif",
                   }}
                 >
                   {total - FREE_ITEMS} more intel items available
@@ -327,7 +327,7 @@ export default function FeedPage() {
                     fontSize: 10,
                     letterSpacing: 2,
                     textDecoration: "none",
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                     transition: "all 0.2s",
                   }}
                 >

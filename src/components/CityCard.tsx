@@ -55,7 +55,7 @@ export default function CityCard({
             <span
               style={{
                 color: "#fff",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: 12,
                 fontWeight: 700,
               }}
@@ -65,7 +65,7 @@ export default function CityCard({
             <span
               style={{
                 color: "#777",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: 10,
                 marginLeft: 6,
               }}
@@ -104,7 +104,7 @@ export default function CityCard({
           <span
             style={{
               color,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 16,
               fontWeight: 700,
             }}

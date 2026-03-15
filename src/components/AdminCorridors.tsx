@@ -167,7 +167,7 @@ export default function AdminCorridors({
     color: "#fff",
     fontSize: 11,
     padding: "8px 10px",
-    fontFamily: "'Space Mono', monospace",
+    fontFamily: "'Inter', sans-serif",
     boxSizing: "border-box",
     outline: "none",
   };
@@ -215,7 +215,7 @@ export default function AdminCorridors({
             fontWeight: 700,
             letterSpacing: 1,
             cursor: "pointer",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           {showForm && !editingId ? "CANCEL" : "CREATE CORRIDOR"}
@@ -367,7 +367,7 @@ export default function AdminCorridors({
                 fontWeight: 700,
                 letterSpacing: 1,
                 cursor: submitting ? "default" : "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 opacity: submitting ? 0.5 : 1,
               }}
             >
@@ -385,7 +385,7 @@ export default function AdminCorridors({
                 fontSize: 9,
                 letterSpacing: 1,
                 cursor: "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               CANCEL
@@ -418,7 +418,7 @@ export default function AdminCorridors({
                 {/* Header row */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ color: "#fff", fontSize: 12, fontWeight: 700, fontFamily: "'Space Mono', monospace" }}>
+                    <span style={{ color: "#fff", fontSize: 12, fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>
                       {c.name}
                     </span>
                     <span
@@ -430,7 +430,7 @@ export default function AdminCorridors({
                         borderRadius: 3,
                         padding: "2px 6px",
                         textTransform: "uppercase",
-                        fontFamily: "'Space Mono', monospace",
+                        fontFamily: "'Inter', sans-serif",
                       }}
                     >
                       {c.status}
@@ -474,7 +474,7 @@ export default function AdminCorridors({
                       fontWeight: 700,
                       letterSpacing: 1,
                       cursor: "pointer",
-                      fontFamily: "'Space Mono', monospace",
+                      fontFamily: "'Inter', sans-serif",
                     }}
                   >
                     EDIT
@@ -493,7 +493,7 @@ export default function AdminCorridors({
                           fontWeight: 700,
                           letterSpacing: 1,
                           cursor: "pointer",
-                          fontFamily: "'Space Mono', monospace",
+                          fontFamily: "'Inter', sans-serif",
                         }}
                       >
                         CONFIRM DELETE
@@ -509,7 +509,7 @@ export default function AdminCorridors({
                           fontSize: 9,
                           letterSpacing: 1,
                           cursor: "pointer",
-                          fontFamily: "'Space Mono', monospace",
+                          fontFamily: "'Inter', sans-serif",
                         }}
                       >
                         CANCEL
@@ -528,7 +528,7 @@ export default function AdminCorridors({
                         fontWeight: 700,
                         letterSpacing: 1,
                         cursor: "pointer",
-                        fontFamily: "'Space Mono', monospace",
+                        fontFamily: "'Inter', sans-serif",
                       }}
                     >
                       DELETE

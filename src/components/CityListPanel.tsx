@@ -76,7 +76,7 @@ export default function CityListPanel({
             flexShrink: 0,
           }}
         >
-          <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 15 }}>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 15 }}>
             MARKETS
           </span>
           <button
@@ -89,7 +89,7 @@ export default function CityListPanel({
               fontSize: 12,
               padding: "8px 16px",
               cursor: "pointer",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             CLOSE
@@ -144,7 +144,7 @@ export default function CityListPanel({
                   fontSize: isMobile ? 9 : 8,
                   letterSpacing: 1,
                   cursor: "pointer",
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                   transition: "all 0.15s",
                 }}
               >

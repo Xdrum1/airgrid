@@ -204,7 +204,7 @@ export default function MethodologyPage() {
             fontSize: 11,
             letterSpacing: "0.06em",
             textDecoration: "none",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}
         >
           VIEW DASHBOARD

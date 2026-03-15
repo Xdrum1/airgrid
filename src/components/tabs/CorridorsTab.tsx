@@ -109,7 +109,7 @@ export default function CorridorsTab({
             <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 8 }}>
               {stat.label}
             </div>
-            <div style={{ color: stat.color, fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 28 }}>
+            <div style={{ color: stat.color, fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 28 }}>
               {stat.value}
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function CorridorsTab({
             color: "#ccc",
             fontSize: 11,
             padding: "10px 14px",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             outline: "none",
             boxSizing: "border-box",
             marginBottom: 12,
@@ -157,7 +157,7 @@ export default function CorridorsTab({
                     fontSize: 8,
                     letterSpacing: 1,
                     cursor: "pointer",
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Inter', sans-serif",
                     fontWeight: isActive ? 700 : 400,
                     textTransform: "uppercase",
                   }}
@@ -180,7 +180,7 @@ export default function CorridorsTab({
                 color: "#888",
                 fontSize: 9,
                 padding: "4px 8px",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 cursor: "pointer",
                 outline: "none",
               }}
@@ -230,7 +230,7 @@ export default function CorridorsTab({
             {/* Name + status + city */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ color: "#fff", fontSize: 13, fontWeight: 700, fontFamily: "'Space Mono', monospace" }}>
+                <span style={{ color: "#fff", fontSize: 13, fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>
                   {corridor.name}
                 </span>
                 <span style={{
@@ -241,13 +241,13 @@ export default function CorridorsTab({
                   borderRadius: 3,
                   padding: "2px 6px",
                   textTransform: "uppercase",
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                 }}>
                   {corridor.status}
                 </span>
               </div>
               {city && (
-                <span style={{ color: "#888", fontSize: 9, fontFamily: "'Space Mono', monospace" }}>
+                <span style={{ color: "#888", fontSize: 9, fontFamily: "'Inter', sans-serif" }}>
                   {city.city}, {city.state}
                 </span>
               )}
@@ -268,22 +268,22 @@ export default function CorridorsTab({
             <div style={{ display: "flex", gap: 16, marginBottom: 10, flexWrap: "wrap" }}>
               <div>
                 <div style={{ color: "#777", fontSize: 7, letterSpacing: 1, marginBottom: 2 }}>DISTANCE</div>
-                <div style={{ color: "#ccc", fontSize: 11, fontFamily: "'Space Mono', monospace" }}>{corridor.distanceKm} km</div>
+                <div style={{ color: "#ccc", fontSize: 11, fontFamily: "'Inter', sans-serif" }}>{corridor.distanceKm} km</div>
               </div>
               <div>
                 <div style={{ color: "#777", fontSize: 7, letterSpacing: 1, marginBottom: 2 }}>FLIGHT TIME</div>
-                <div style={{ color: "#ccc", fontSize: 11, fontFamily: "'Space Mono', monospace" }}>{corridor.estimatedFlightMinutes} min</div>
+                <div style={{ color: "#ccc", fontSize: 11, fontFamily: "'Inter', sans-serif" }}>{corridor.estimatedFlightMinutes} min</div>
               </div>
               <div>
                 <div style={{ color: "#777", fontSize: 7, letterSpacing: 1, marginBottom: 2 }}>ALTITUDE</div>
-                <div style={{ color: "#ccc", fontSize: 11, fontFamily: "'Space Mono', monospace" }}>
+                <div style={{ color: "#ccc", fontSize: 11, fontFamily: "'Inter', sans-serif" }}>
                   {corridor.altitudeMinFt ? `${corridor.altitudeMinFt}–${corridor.maxAltitudeFt}` : corridor.maxAltitudeFt} ft
                 </div>
               </div>
               {operator && (
                 <div>
                   <div style={{ color: "#777", fontSize: 7, letterSpacing: 1, marginBottom: 2 }}>OPERATOR</div>
-                  <div style={{ color: operator.color, fontSize: 11, fontFamily: "'Space Mono', monospace" }}>{operator.name}</div>
+                  <div style={{ color: operator.color, fontSize: 11, fontFamily: "'Inter', sans-serif" }}>{operator.name}</div>
                 </div>
               )}
             </div>
@@ -300,18 +300,18 @@ export default function CorridorsTab({
                 <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                   <div>
                     <div style={{ color: "#777", fontSize: 7, letterSpacing: 1, marginBottom: 2 }}>FAA AUTH</div>
-                    <div style={{ color: "#00ff88", fontSize: 10, fontFamily: "'Space Mono', monospace" }}>{corridor.faaAuthNumber}</div>
+                    <div style={{ color: "#00ff88", fontSize: 10, fontFamily: "'Inter', sans-serif" }}>{corridor.faaAuthNumber}</div>
                   </div>
                   {corridor.effectiveDate && (
                     <div>
                       <div style={{ color: "#777", fontSize: 7, letterSpacing: 1, marginBottom: 2 }}>EFFECTIVE</div>
-                      <div style={{ color: "#ccc", fontSize: 10, fontFamily: "'Space Mono', monospace" }}>{corridor.effectiveDate}</div>
+                      <div style={{ color: "#ccc", fontSize: 10, fontFamily: "'Inter', sans-serif" }}>{corridor.effectiveDate}</div>
                     </div>
                   )}
                   {corridor.expirationDate && (
                     <div>
                       <div style={{ color: "#777", fontSize: 7, letterSpacing: 1, marginBottom: 2 }}>EXPIRES</div>
-                      <div style={{ color: "#ccc", fontSize: 10, fontFamily: "'Space Mono', monospace" }}>{corridor.expirationDate}</div>
+                      <div style={{ color: "#ccc", fontSize: 10, fontFamily: "'Inter', sans-serif" }}>{corridor.expirationDate}</div>
                     </div>
                   )}
                 </div>
@@ -333,7 +333,7 @@ export default function CorridorsTab({
                         border: `1px solid ${op.color}44`,
                         borderRadius: 3,
                         padding: "2px 8px",
-                        fontFamily: "'Space Mono', monospace",
+                        fontFamily: "'Inter', sans-serif",
                       }}
                     >
                       {op.name}

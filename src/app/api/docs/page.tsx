@@ -25,7 +25,7 @@ const linkStyle = {
   fontSize: 11,
   letterSpacing: "0.06em",
   textDecoration: "none" as const,
-  fontFamily: mono,
+  fontFamily: inter,
 };
 
 const sectionTitleStyle = {

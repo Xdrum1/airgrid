@@ -74,7 +74,7 @@ export default function LiveActivityFeed({
           <span style={{ color: "#00d4ff", fontSize: 14 }}>&#9889;</span>
           <span
             style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 9,
               letterSpacing: 2,
               color: "#00d4ff",
@@ -98,7 +98,7 @@ export default function LiveActivityFeed({
         </div>
         <span
           style={{
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             fontSize: 8,
             color: "#999",
             letterSpacing: 1,
@@ -146,7 +146,7 @@ export default function LiveActivityFeed({
             </div>
             <span
               style={{
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: 8,
                 color: "#aaa",
                 letterSpacing: 1,
@@ -167,7 +167,7 @@ export default function LiveActivityFeed({
         <Link
           href="/dashboard?tab=activity"
           style={{
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             fontSize: 9,
             color: "#00d4ff",
             letterSpacing: 1,

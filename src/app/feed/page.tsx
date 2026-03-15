@@ -22,7 +22,7 @@ export default function Feed() {
       style={{
         minHeight: "100vh",
         background: "#050508",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
       }}
     >

@@ -50,7 +50,7 @@ export default async function WatchListPage() {
             style={{
               color: "#fff",
               fontSize: 28,
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               fontWeight: 700,
               margin: "16px 0 8px",
             }}
@@ -72,7 +72,7 @@ export default async function WatchListPage() {
               fontSize: 10,
               letterSpacing: 2,
               marginBottom: 16,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             ACTIVE ({active.length})
@@ -182,7 +182,7 @@ export default async function WatchListPage() {
                 fontSize: 10,
                 letterSpacing: 2,
                 marginBottom: 16,
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
               RECENTLY RESOLVED ({resolved.length})

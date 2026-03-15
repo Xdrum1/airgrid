@@ -198,7 +198,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
       style={{
         minHeight: "100vh",
         background: "#050508",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
         overflow: "hidden",
         display: "flex",
@@ -317,7 +317,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                   fontSize: isMobile ? 10 : 9,
                   letterSpacing: isMobile ? 1 : 2,
                   cursor: "pointer",
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                   marginBottom: -1,
                   textTransform: "uppercase",
                   whiteSpace: "nowrap",

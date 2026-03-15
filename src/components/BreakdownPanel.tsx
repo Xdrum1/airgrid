@@ -27,7 +27,7 @@ function BreakdownRow({
         <span
           style={{
             color: "#888",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             fontSize: 9,
           }}
         >
@@ -36,7 +36,7 @@ function BreakdownRow({
         <span
           style={{
             color: value > 0 ? color : "#666",
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             fontSize: 9,
           }}
         >

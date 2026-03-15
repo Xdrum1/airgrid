@@ -11,85 +11,56 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
 // -------------------------------------------------------
-// Pricing tier data
+// Solutions section data
 // -------------------------------------------------------
-const TIERS = [
+const SOLUTIONS = [
   {
-    name: "Free",
-    price: "$0",
-    period: "",
-    accent: "#00d4ff",
-    badge: null,
-    features: [
-      "Dashboard map with city markers",
-      "Current readiness scores",
-      "City rankings",
-      "Basic market overview per city",
-    ],
-    yearlyNote: "Free forever.",
-    cta: { label: "Sign up free", href: "/login?mode=signup" },
-  },
-  {
-    name: "Alert",
-    price: "$25",
-    period: "/month",
-    accent: "#f59e0b",
-    badge: null,
-    features: [
-      "Everything in Free, plus:",
-      "Monitor up to 3 markets",
-      "Score change email notifications",
-      "Watch list alerts",
-      "Monthly market summary email",
-    ],
-    yearlyNote: "$249/year (2 months free)",
-    cta: { label: "Join waitlist", href: "/contact?tier=alert" },
-  },
-  {
-    name: "Pro",
-    price: "$149",
-    period: "/month",
+    id: "infrastructure-developers",
+    label: "INFRASTRUCTURE DEVELOPERS",
     accent: "#00ff88",
-    badge: null,
-    features: [
-      "Everything in Alert, plus:",
-      "Full dashboard — all 21+ markets",
-      "Score history & factor breakdowns",
-      "Corridor intelligence & operator tracker",
-      "Intel Feed & SEC filings",
-    ],
-    yearlyNote: "$1,490/year (2 months free)",
-    cta: { label: "Join waitlist", href: "/contact?tier=pro" },
-    highlight: true,
+    headline: "Know which markets are ready before you break ground.",
+    copy: "AirIndex scores every U.S. UAM market across the factors that determine infrastructure viability \u2014 state legislation, vertiport zoning, pilot program activity, and regulatory posture. When a market\u2019s legislative framework is moving, the watch list flags it before the score changes. Site selection decisions backed by live, auditable intelligence.",
+    cta: { label: "View market scores", href: "/dashboard" },
   },
   {
-    name: "Institutional",
-    price: "$499",
-    period: "/month",
+    id: "operators",
+    label: "OPERATORS & OEMs",
+    accent: "#00d4ff",
+    headline: "Prioritize markets based on what\u2019s actually in place.",
+    copy: "AirIndex tracks operator presence, corridor authorizations, pilot program status, and regulatory posture across 21 US markets. Score history shows trajectory \u2014 not just where a market is today, but how fast it\u2019s moving. Competitive analysis across markets without building your own research function.",
+    cta: { label: "Explore the index", href: "/dashboard" },
+  },
+  {
+    id: "investors",
+    label: "INVESTORS & ANALYSTS",
+    accent: "#f59e0b",
+    headline: "Market timing signals from a live readiness index.",
+    copy: "Score trends reveal which markets are building toward commercial readiness and which are stalling. Factor-level breakdowns show exactly what\u2019s changing and why. Every score change is sourced and timestamped \u2014 the audit trail institutional due diligence requires.",
+    cta: { label: "Request access", href: "/pricing" },
+  },
+  {
+    id: "city-planners",
+    label: "CITY PLANNERS & POLICY",
     accent: "#7c3aed",
-    badge: null,
-    features: [
-      "Everything in Pro, plus:",
-      "API access & data export",
-      "3 seats included (+$99/seat/mo)",
-      "Custom alerts & priority support",
-    ],
-    yearlyNote: "$4,990/year (2 months free)",
-    cta: { label: "Learn more", href: "/contact?tier=institutional" },
+    headline: "Benchmark your market against peer cities.",
+    copy: "See exactly where your city stands across seven verified readiness factors and what peer markets have done differently. The gap analysis shows what your market needs to move up a tier \u2014 and which federal programs are available to help get there.",
+    cta: { label: "Find your city", href: "/dashboard" },
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    accent: "#ff6b35",
-    badge: null,
-    features: [
-      "Everything in Institutional, plus:",
-      "White-label endpoints & webhooks",
-      "Embedded widgets & direct data feeds",
-    ],
-    yearlyNote: "For organizations embedding UAM data",
-    cta: { label: "Contact us", href: "/contact?tier=enterprise" },
+    id: "research",
+    label: "RESEARCH & ACADEMIC",
+    accent: "#14b8a6",
+    headline: "Cite the index. Build on the methodology.",
+    copy: "AirIndex data and scores are free to cite in publications, reports, and analysis. The full methodology is published at airindex.io/methodology including data sources, classification logic, confidence tiering, and version history. Research access and data collaborations available.",
+    cta: { label: "Read the methodology", href: "/methodology" },
+  },
+  {
+    id: "press",
+    label: "PRESS & MEDIA",
+    accent: "#e879f9",
+    headline: "The UAM readiness benchmark the industry cites.",
+    copy: "AirIndex provides market readiness scores, trend data, and market intelligence for aviation and urban mobility coverage. Scores are updated daily based on primary source monitoring. Press inquiries and data access at info@airindex.io.",
+    cta: { label: "Contact us", href: "mailto:info@airindex.io" },
   },
 ] as const;
 
@@ -128,7 +99,7 @@ export default async function LandingPage() {
       style={{
         minHeight: "100vh",
         background: "#050508",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
       }}
     >
@@ -167,9 +138,9 @@ export default async function LandingPage() {
             </span>
             <span
               style={{
-                fontFamily: "'Syne', sans-serif",
-                fontStyle: "italic",
-                fontSize: 13,
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700,
+                fontSize: 14,
                 letterSpacing: 1,
                 color: "#777",
               }}
@@ -201,8 +172,9 @@ export default async function LandingPage() {
             margin: "0 auto 40px",
           }}
         >
-          {MARKET_COUNT} US cities scored for UAM market readiness — updated in real time.
-          Regulatory posture, infrastructure, operator presence, and corridor authorizations in one place.
+          The authoritative intelligence layer for UAM market readiness. {MARKET_COUNT} US cities scored
+          daily across 7 verified factors — built on a systematic pipeline monitoring federal regulatory
+          filings, state legislation, operator disclosures, and infrastructure data.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
@@ -214,7 +186,7 @@ export default async function LandingPage() {
               color: "#050508",
               fontSize: 12,
               fontWeight: 700,
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               letterSpacing: "0.06em",
               textDecoration: "none",
               borderRadius: 6,
@@ -256,7 +228,34 @@ export default async function LandingPage() {
         </section>
       </ScrollReveal>
 
-      {/* ======== Feature Explainer ======== */}
+      {/* ======== Data Statement ======== */}
+      <ScrollReveal>
+        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "40px 20px 0" }}>
+          <div style={{
+            textAlign: "center",
+            padding: "28px 32px",
+            border: "1px solid rgba(0,212,255,0.12)",
+            borderRadius: 10,
+            background: "rgba(0,212,255,0.02)",
+          }}>
+            <p style={{
+              fontFamily: "'Inter', sans-serif",
+              color: "#999",
+              fontSize: 13,
+              lineHeight: 1.7,
+              margin: 0,
+              maxWidth: 720,
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}>
+              Every score is backed by a live pipeline ingesting Federal Register filings, state legislation,
+              SEC operator disclosures, and infrastructure data — classified, verified, and auditable.
+            </p>
+          </div>
+        </section>
+      </ScrollReveal>
+
+      {/* ======== Capabilities ======== */}
       <ScrollReveal>
       <section
         style={{
@@ -275,7 +274,7 @@ export default async function LandingPage() {
               color: "#fff",
             }}
           >
-            Rating system capabilities
+            How the intelligence layer works
           </h2>
         </div>
         <div
@@ -313,6 +312,13 @@ export default async function LandingPage() {
               title: "Historical Score Tracking",
               description:
                 "Weekly automated snapshots with sparkline trends. Track how market readiness evolves as policies change and infrastructure develops.",
+            },
+            {
+              icon: "⊘",
+              accent: "#ef4444",
+              title: "Market Watch List",
+              description:
+                "Automated pipeline-driven intelligence that surfaces markets showing momentum signals before scores move. When legislation is advancing, overrides are pending, or signal activity is elevated \u2014 the watch list flags it.",
             },
             {
               icon: "◉",
@@ -454,7 +460,7 @@ export default async function LandingPage() {
                 gap: 8,
               }}>
                 <span style={{
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Inter', sans-serif",
                   fontWeight: 700,
                   fontSize: 14,
                   letterSpacing: "0.06em",
@@ -463,8 +469,8 @@ export default async function LandingPage() {
                   Explore the dashboard &rarr;
                 </span>
                 <span style={{
-                  fontFamily: "'Space Mono', monospace",
                   fontSize: 9,
+                  fontWeight: 500,
                   letterSpacing: 2,
                   color: "#00d4ff",
                 }}>
@@ -541,7 +547,7 @@ export default async function LandingPage() {
               letterSpacing: 3,
               color: "#7c3aed",
               marginBottom: 16,
-              fontFamily: "'Space Mono', monospace",
+              fontWeight: 500,
             }}
           >
             INTEL FEED
@@ -583,8 +589,8 @@ export default async function LandingPage() {
               fontSize: 11,
               letterSpacing: 2,
               textDecoration: "none",
-              fontFamily: "'Space Mono', monospace",
               transition: "all 0.2s",
+              fontWeight: 600,
             }}
           >
             READ THE FEED &rarr;
@@ -615,15 +621,15 @@ export default async function LandingPage() {
             gap: 12,
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#00d4ff", textTransform: "uppercase" }}>
+              <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: 2, color: "#00d4ff", textTransform: "uppercase" }}>
                 Monthly Market Report
               </div>
               <div style={{
                 background: "rgba(0,212,255,0.15)",
                 border: "1px solid rgba(0,212,255,0.3)",
                 borderRadius: 4,
-                fontFamily: "'Space Mono', monospace",
                 fontSize: 8,
+                fontWeight: 500,
                 letterSpacing: 1,
                 color: "#00d4ff",
                 padding: "3px 8px",
@@ -631,7 +637,7 @@ export default async function LandingPage() {
                 ISSUE 001 — FEBRUARY 2026
               </div>
             </div>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: "#aaa", letterSpacing: 1 }}>
+            <div style={{ fontSize: 8, fontWeight: 500, color: "#aaa", letterSpacing: 1 }}>
               FEBRUARY PREVIEW FREE · FULL REPORTS PRO
             </div>
           </div>
@@ -674,8 +680,8 @@ export default async function LandingPage() {
                   <div key={tag} style={{
                     border: "1px solid rgba(0,212,255,0.2)",
                     borderRadius: 4,
-                    fontFamily: "'Space Mono', monospace",
                     fontSize: 8,
+                    fontWeight: 500,
                     letterSpacing: 1,
                     color: "#00d4ff",
                     padding: "4px 10px",
@@ -698,7 +704,7 @@ export default async function LandingPage() {
                     padding: "12px 24px",
                     background: "#00d4ff",
                     color: "#050508",
-                    fontFamily: "'Syne', sans-serif",
+                    fontFamily: "'Inter', sans-serif",
                     fontSize: 11,
                     fontWeight: 700,
                     letterSpacing: "0.06em",
@@ -718,7 +724,7 @@ export default async function LandingPage() {
                     background: "transparent",
                     border: "1px solid rgba(0,255,136,0.4)",
                     color: "#00ff88",
-                    fontFamily: "'Syne', sans-serif",
+                    fontFamily: "'Inter', sans-serif",
                     fontSize: 11,
                     fontWeight: 700,
                     letterSpacing: "0.06em",
@@ -745,7 +751,7 @@ export default async function LandingPage() {
               <div style={{ fontSize: 6, color: "#aaa", letterSpacing: 0.5, marginBottom: 12, borderBottom: "1px solid #1a1a2e", paddingBottom: 8 }}>
                 UAM MARKET REPORT · FEB 2026
               </div>
-              {([["Los Angeles", 100], ["Dallas", 100], ["Orlando", 85], ["Las Vegas", 85], ["Miami", 80]] as [string, number][]).map(([city, score]) => (
+              {([["Los Angeles", 100], ["Dallas", 100], ["Miami", 100], ["Orlando", 85], ["New York", 70]] as [string, number][]).map(([city, score]) => (
                 <div key={city} style={{ marginBottom: 6 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
                     <span style={{ fontSize: 6, color: "#888" }}>{city}</span>
@@ -766,339 +772,122 @@ export default async function LandingPage() {
 
       </ScrollReveal>
 
-      {/* ======== Who It's For ======== */}
-      <ScrollReveal>
-      <section
-        style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "0 20px 64px",
-        }}
-      >
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <h2
+      {/* ======== Solutions Sections ======== */}
+      {SOLUTIONS.map((solution, idx) => (
+        <ScrollReveal key={solution.id}>
+          <section
+            id={solution.id}
             style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 700,
-              fontSize: "clamp(22px, 2.5vw, 32px)",
-              margin: "0 0 10px",
-              color: "#fff",
+              maxWidth: 1120,
+              margin: "0 auto",
+              padding: idx === 0 ? "0 20px 40px" : "20px 20px 40px",
+              scrollMarginTop: 80,
             }}
           >
-            Who it&apos;s for
-          </h2>
-          <p style={{ fontFamily: "'Inter', sans-serif", color: "#888", fontSize: 13, margin: 0 }}>
-            One rating system, three audiences.
-          </p>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))",
-            gap: 16,
-          }}
-        >
-          {[
-            {
-              title: "Investors & Analysts",
-              accent: "#00d4ff",
-              items: [
-                "Due diligence on UAM market readiness",
-                "Operator and infrastructure tracking",
-                "Market timing signals from score trends",
-                "Regulatory risk assessment by market",
-              ],
-            },
-            {
-              title: "Operators & OEMs",
-              accent: "#00ff88",
-              items: [
-                "Competitive analysis across markets",
-                "Market entry strategy and prioritization",
-                "Corridor status and infrastructure gaps",
-                "Regulatory landscape comparison",
-              ],
-            },
-            {
-              title: "City Planners & Policy",
-              accent: "#7c3aed",
-              items: [
-                "Benchmarking against peer cities",
-                "Infrastructure planning data",
-                "Regulatory comparison and best practices",
-                "Stakeholder reporting and public data",
-              ],
-            },
-          ].map((card) => (
-            <div
-              key={card.title}
-              style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
-                borderRadius: 10,
-                padding: "28px 24px",
-                borderTop: `2px solid ${card.accent}`,
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
+            <div style={{
+              border: `1px solid ${solution.accent}22`,
+              borderRadius: 12,
+              overflow: "hidden",
+              background: `${solution.accent}04`,
+            }}>
+              {/* Section header */}
+              <div style={{
+                background: `${solution.accent}08`,
+                borderBottom: `1px solid ${solution.accent}15`,
+                padding: "14px 32px",
+              }}>
+                <div style={{
+                  fontSize: 9,
                   fontWeight: 600,
-                  fontSize: 15,
-                  color: card.accent,
-                  marginBottom: 16,
-                }}
-              >
-                {card.title}
+                  letterSpacing: 3,
+                  color: solution.accent,
+                }}>
+                  {solution.label}
+                </div>
               </div>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {card.items.map((item) => (
-                  <li
-                    key={item}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: 10,
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: 12.5,
-                      lineHeight: 1.6,
-                      color: "#aaa",
-                      marginBottom: 8,
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: card.accent,
-                        fontSize: 6,
-                        marginTop: 6,
-                        flexShrink: 0,
-                        display: "inline-block",
-                        width: 6,
-                        height: 6,
-                        borderRadius: "50%",
-                        background: card.accent,
-                        opacity: 0.6,
-                      }}
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
 
-      </ScrollReveal>
-
-      {/* ======== Pricing ======== */}
-      <ScrollReveal>
-      <section id="pricing" style={{ maxWidth: 1120, margin: "0 auto", padding: "40px 20px clamp(60px, 8vw, 100px)", scrollMarginTop: 80 }}>
-        <div style={{ textAlign: "center", marginBottom: 56 }}>
-          <h2
-            style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 700,
-              fontSize: "clamp(24px, 3vw, 36px)",
-              margin: "0 0 12px",
-            }}
-          >
-            The index is live. Paid plans activate April 2026.
-          </h2>
-          <p style={{ fontFamily: "'Inter', sans-serif", color: "#999", fontSize: 13, margin: 0 }}>
-            Full dashboard access is free through launch.{" "}
-            <Link href="/pricing" style={{ color: "#00d4ff", textDecoration: "none" }}>
-              View full pricing →
-            </Link>
-          </p>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))",
-            gap: 20,
-            maxWidth: 1120,
-            margin: "0 auto",
-            alignItems: "stretch",
-          }}
-        >
-          {TIERS.map((tier) => {
-            const isHighlight = "highlight" in tier && tier.highlight;
-            return (
-              <div
-                key={tier.name}
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  flexDirection: "column",
-                  background: isHighlight ? "rgba(0,255,136,0.03)" : "rgba(255,255,255,0.02)",
-                  border: isHighlight
-                    ? `1px solid ${tier.accent}44`
-                    : "1px solid rgba(255,255,255,0.06)",
-                  borderRadius: 12,
-                  padding: "36px 24px 28px",
-                  transition: "border-color 0.2s",
-                }}
-              >
-                {/* Top accent line */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: -1,
-                    left: 28,
-                    right: 28,
-                    height: 2,
-                    background: tier.accent,
-                    borderRadius: "2px 2px 0 0",
-                  }}
-                />
-
-                {/* Badge */}
-                {tier.badge && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: -11,
-                      right: 20,
-                      background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
-                      color: "#000",
-                      fontSize: 8,
-                      fontWeight: 700,
-                      fontFamily: "'Syne', sans-serif",
-                      letterSpacing: "0.1em",
-                      padding: "4px 10px",
-                      borderRadius: 4,
-                    }}
-                  >
-                    {tier.badge}
-                  </div>
-                )}
-
-                {/* Tier name */}
-                <div
-                  style={{
-                    fontFamily: "'Syne', sans-serif",
-                    fontWeight: 700,
-                    fontSize: 16,
-                    color: "#ccc",
-                    marginBottom: 8,
-                  }}
-                >
-                  {tier.name}
-                </div>
-
-                {/* Price */}
-                <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
-                  <span
-                    style={{
-                      fontFamily: "'Space Grotesk', sans-serif",
-                      fontWeight: 700,
-                      fontSize: 36,
-                      color: "#fff",
-                    }}
-                  >
-                    {tier.price}
-                  </span>
-                  <span style={{ color: "#888", fontSize: 13 }}>{tier.period}</span>
-                </div>
-                {"yearlyNote" in tier && tier.yearlyNote && (
-                  <div style={{ color: "#aaa", fontSize: 10, marginBottom: 20 }}>
-                    {tier.yearlyNote}
-                  </div>
-                )}
-                {!("yearlyNote" in tier) && <div style={{ marginBottom: 20 }} />}
-
-                {/* Features */}
-                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px", flex: 1 }}>
-                  {tier.features.map((f) => (
-                    <li
-                      key={f}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: 10,
-                        color: "#888",
-                        fontSize: 12,
-                        lineHeight: 1.6,
-                        marginBottom: 8,
-                      }}
-                    >
-                      {f.endsWith(":") ? null : (
-                        <span style={{ color: tier.accent, fontSize: 10, marginTop: 3, flexShrink: 0 }}>
-                          ✓
-                        </span>
-                      )}
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* CTA */}
-                {tier.cta.href.startsWith("mailto:") ? (
+              {/* Body */}
+              <div style={{ padding: "36px 32px" }}>
+                <h2 style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "clamp(20px, 2.2vw, 28px)",
+                  color: "#fff",
+                  margin: "0 0 16px",
+                  lineHeight: 1.25,
+                }}>
+                  {solution.headline}
+                </h2>
+                <p style={{
+                  fontFamily: "'Inter', sans-serif",
+                  color: "#999",
+                  fontSize: 13,
+                  lineHeight: 1.75,
+                  margin: "0 0 28px",
+                  maxWidth: 640,
+                }}>
+                  {solution.copy}
+                </p>
+                {solution.cta.href.startsWith("mailto:") ? (
                   <a
-                    href={tier.cta.href}
+                    href={solution.cta.href}
                     style={{
-                      display: "block",
-                      textAlign: "center",
-                      padding: "12px 0",
+                      display: "inline-block",
+                      padding: "10px 24px",
+                      border: `1px solid ${solution.accent}66`,
                       borderRadius: 6,
+                      color: solution.accent,
                       fontSize: 11,
                       fontWeight: 700,
-                      fontFamily: "'Syne', sans-serif",
+                      fontFamily: "'Inter', sans-serif",
                       letterSpacing: "0.06em",
                       textDecoration: "none",
-                      transition: "opacity 0.15s",
-                      ...(isHighlight
-                        ? { background: tier.accent, color: "#050508" }
-                        : { background: `${tier.accent}15`, border: `1px solid ${tier.accent}44`, color: tier.accent }
-                      ),
+                      transition: "all 0.15s",
                     }}
                   >
-                    {tier.cta.label}
+                    {solution.cta.label} &rarr;
                   </a>
                 ) : (
                   <Link
-                    href={tier.cta.href}
+                    href={solution.cta.href}
                     style={{
-                      display: "block",
-                      textAlign: "center",
-                      padding: "12px 0",
+                      display: "inline-block",
+                      padding: "10px 24px",
+                      border: `1px solid ${solution.accent}66`,
                       borderRadius: 6,
+                      color: solution.accent,
                       fontSize: 11,
                       fontWeight: 700,
-                      fontFamily: "'Syne', sans-serif",
+                      fontFamily: "'Inter', sans-serif",
                       letterSpacing: "0.06em",
                       textDecoration: "none",
-                      transition: "opacity 0.15s",
-                      ...(isHighlight
-                        ? { background: tier.accent, color: "#050508" }
-                        : { background: `${tier.accent}15`, border: `1px solid ${tier.accent}44`, color: tier.accent }
-                      ),
+                      transition: "all 0.15s",
                     }}
                   >
-                    {tier.cta.label}
+                    {solution.cta.label} &rarr;
                   </Link>
                 )}
-                {tier.name !== "Free" && (
-                  <div
-                    style={{
-                      textAlign: "center",
-                      marginTop: 8,
-                      fontSize: 9,
-                      color: "#555",
-                      letterSpacing: 0.5,
-                    }}
-                  >
-                    Coming soon
-                  </div>
-                )}
               </div>
-            );
-          })}
-        </div>
-      </section>
+            </div>
+          </section>
+        </ScrollReveal>
+      ))}
 
+      {/* ======== Pricing link ======== */}
+      <ScrollReveal>
+      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "20px 20px 40px", textAlign: "center" }}>
+        <p style={{
+          fontFamily: "'Inter', sans-serif",
+          color: "#888",
+          fontSize: 13,
+          margin: 0,
+        }}>
+          Full dashboard access is free.{" "}
+          <Link href="/pricing" style={{ color: "#00d4ff", textDecoration: "none" }}>
+            View paid plans &rarr;
+          </Link>
+        </p>
+      </section>
       </ScrollReveal>
 
       {/* ======== Closing CTA ======== */}
@@ -1147,7 +936,7 @@ export default async function LandingPage() {
               color: "#050508",
               fontSize: 12,
               fontWeight: 700,
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               letterSpacing: "0.06em",
               textDecoration: "none",
               borderRadius: 6,

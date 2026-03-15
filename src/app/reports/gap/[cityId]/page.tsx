@@ -110,7 +110,7 @@ export default async function GapReportPage({
         style={{
           background: "#050508",
           color: "#e0e0e0",
-          fontFamily: "'Space Mono', 'Courier New', monospace",
+          fontFamily: "'Inter', sans-serif",
           minHeight: "100vh",
           padding: "40px 24px",
         }}
@@ -157,7 +157,7 @@ export default async function GapReportPage({
 
             <h1
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: 36,
                 fontWeight: 700,
                 margin: "0 0 8px",
@@ -214,7 +214,7 @@ export default async function GapReportPage({
             </p>
             <p
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontStyle: "italic",
                 color: "#555",
                 fontSize: 13,
@@ -240,7 +240,7 @@ export default async function GapReportPage({
           >
             <h2
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: 20,
                 fontWeight: 700,
                 color: "#ffffff",
@@ -283,7 +283,7 @@ export default async function GapReportPage({
           >
             <h2
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: 20,
                 fontWeight: 700,
                 color: "#ffffff",
@@ -352,7 +352,7 @@ export default async function GapReportPage({
             >
               <h2
                 style={{
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Inter', sans-serif",
                   fontSize: 20,
                   fontWeight: 700,
                   color: "#ffffff",
@@ -397,7 +397,7 @@ export default async function GapReportPage({
           >
             <h2
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: 20,
                 fontWeight: 700,
                 color: "#ffffff",
@@ -467,7 +467,7 @@ export default async function GapReportPage({
           >
             <h2
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: 20,
                 fontWeight: 700,
                 color: "#ffffff",
@@ -533,7 +533,7 @@ export default async function GapReportPage({
             >
               <h2
                 style={{
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Inter', sans-serif",
                   fontSize: 20,
                   fontWeight: 700,
                   color: "#ffffff",
@@ -599,7 +599,7 @@ export default async function GapReportPage({
           >
             <h2
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Inter', sans-serif",
                 fontSize: 20,
                 fontWeight: 700,
                 color: "#ffffff",

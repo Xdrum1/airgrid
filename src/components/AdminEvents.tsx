@@ -171,7 +171,7 @@ export default function AdminEvents({
                   borderRadius: 4,
                   padding: "5px 10px",
                   cursor: "pointer",
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                   fontSize: 10,
                   color: "#888",
                   transition: "all 0.15s",
@@ -217,7 +217,7 @@ export default function AdminEvents({
               fontSize: 8,
               letterSpacing: 0.5,
               cursor: "pointer",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               transition: "all 0.15s",
             }}
           >
@@ -239,7 +239,7 @@ export default function AdminEvents({
               fontSize: 8,
               letterSpacing: 1,
               cursor: "pointer",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             CLEAR
@@ -257,7 +257,7 @@ export default function AdminEvents({
               fontSize: 9,
               letterSpacing: 1,
               cursor: "pointer",
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             REFRESH
@@ -451,7 +451,7 @@ export default function AdminEvents({
                 fontSize: 9,
                 letterSpacing: 1,
                 cursor: "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 marginTop: 4,
               }}
             >

@@ -16,7 +16,7 @@ export default function RequestAccessPage() {
       style={{
         minHeight: "100vh",
         background: "#050508",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
         color: "#fff",
       }}
     >
@@ -31,14 +31,14 @@ export default function RequestAccessPage() {
               letterSpacing: 3,
               color: "#7c3aed",
               marginBottom: 16,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             EARLY ACCESS
           </div>
           <h1
             style={{
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               fontWeight: 700,
               fontSize: "clamp(22px, 3vw, 32px)",
               margin: "0 0 12px",

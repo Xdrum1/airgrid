@@ -47,7 +47,7 @@ export default function LiveTicker({
     return (
       <div
         style={{
-          fontFamily: "'Space Mono', monospace",
+          fontFamily: "'Inter', sans-serif",
           fontSize: 10,
           letterSpacing: 2,
           color: "#888",
@@ -100,7 +100,7 @@ export default function LiveTicker({
           <span
             key={i}
             style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 10,
               letterSpacing: 1,
               color: "#888",

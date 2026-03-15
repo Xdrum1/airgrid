@@ -68,7 +68,7 @@ function LoginForm() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
       }}
     >
       <div style={{ width: "100%", maxWidth: 400, padding: 32, textAlign: "center" }}>
@@ -161,7 +161,7 @@ function LoginForm() {
                   borderRadius: 6,
                   color: "#e0e0e8",
                   fontSize: 14,
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                   outline: "none",
                   marginBottom: 16,
                 }}
@@ -180,7 +180,7 @@ function LoginForm() {
                   color: email.trim() ? "#000" : "#555",
                   fontSize: 13,
                   fontWeight: 700,
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Inter', sans-serif",
                   letterSpacing: "0.06em",
                   cursor: email.trim() ? "pointer" : "default",
                   transition: "all 0.2s",
@@ -268,7 +268,7 @@ function LoginForm() {
                 color: "#555",
                 fontSize: 11,
                 cursor: "pointer",
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: "'Inter', sans-serif",
                 transition: "color 0.15s",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "#888")}
@@ -291,7 +291,7 @@ export default function LoginPage() {
   return (
     <Suspense fallback={
       <div style={{ minHeight: "100vh", background: "#050508", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ color: "#555", fontSize: 13, fontFamily: "'Space Mono', monospace", letterSpacing: 2 }}>LOADING...</div>
+        <div style={{ color: "#555", fontSize: 13, fontFamily: "'Inter', sans-serif", letterSpacing: 2 }}>LOADING...</div>
       </div>
     }>
       <LoginForm />

@@ -19,7 +19,7 @@ export default function CheckEmailPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Inter', sans-serif",
       }}
     >
       <div style={{ width: "100%", maxWidth: 400, padding: 32, textAlign: "center" }}>

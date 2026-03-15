@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const S = {
   h2: {
-    fontFamily: "var(--font-syne), sans-serif",
+    fontFamily: "'Inter', sans-serif",
     fontWeight: 700 as const,
     fontSize: 20,
     color: "#fff",
@@ -46,7 +46,7 @@ export default function TermsPage() {
         minHeight: "100vh",
         background: "#050508",
         color: "#fff",
-        fontFamily: "var(--font-space-mono), monospace",
+        fontFamily: "'Inter', sans-serif",
       }}
     >
       <TrackPageView page="terms" />
@@ -89,7 +89,7 @@ export default function TermsPage() {
 
         <h1
           style={{
-            fontFamily: "var(--font-syne), sans-serif",
+            fontFamily: "'Inter', sans-serif",
             fontWeight: 700,
             fontSize: 28,
             color: "#fff",

@@ -85,7 +85,7 @@ export default function LiveFilingsFeed({
           <span style={{ color: "#ff6b35", fontSize: 14 }}>&#9673;</span>
           <span
             style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Inter', sans-serif",
               fontSize: 9,
               letterSpacing: 2,
               color: "#ff6b35",
@@ -109,7 +109,7 @@ export default function LiveFilingsFeed({
         </div>
         <span
           style={{
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             fontSize: 8,
             color: "#999",
             letterSpacing: 1,
@@ -146,7 +146,7 @@ export default function LiveFilingsFeed({
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <span
                 style={{
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                   fontSize: 8,
                   color: "#888",
                   letterSpacing: 1,
@@ -157,7 +157,7 @@ export default function LiveFilingsFeed({
               <span style={{ color: "#999", fontSize: 8 }}>·</span>
               <span
                 style={{
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Inter', sans-serif",
                   fontSize: 8,
                   color: "#aaa",
                   letterSpacing: 1,
@@ -178,7 +178,7 @@ export default function LiveFilingsFeed({
         <Link
           href="/dashboard?tab=filings"
           style={{
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             fontSize: 9,
             color: "#ff6b35",
             letterSpacing: 1,
