@@ -28,14 +28,14 @@ jobs:
             "$URL/api/emerging-ingest" || true
           sleep 3
 
-      - name: Trigger emerging markets ingestion
+      - name: "Phase 1: Fetch + persist raw records"
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           APP_URL: ${{ vars.APP_URL }}
         run: |
           URL="${APP_URL:-https://www.airindex.io}"
           RESPONSE=$(curl -s -w "\n%{http_code}" \
-            --max-time 120 \
+            --max-time 29 \
             -H "Authorization: Bearer $CRON_SECRET" \
             "$URL/api/emerging-ingest")
 
@@ -50,16 +50,57 @@ jobs:
             exit 1
           fi
 
-          LAST_EVENT=$(echo "$BODY" | grep "^data:" | tail -1 | sed 's/^data: //')
-          echo "Final event: $LAST_EVENT"
-
-          if echo "$LAST_EVENT" | grep -q '"status":"error"'; then
-            echo "::error::Emerging ingestion completed with error"
+          if echo "$BODY" | grep -q '"success":true'; then
+            echo "Phase 1 complete"
+          else
+            echo "::error::Unexpected response from ingestion"
             exit 1
           fi
 
-          if echo "$LAST_EVENT" | grep -q '"status":"complete"'; then
-            echo "Emerging ingestion completed successfully"
-          else
-            echo "::warning::Unexpected final event status"
+      - name: "Phase 2: Classify records (loop until done)"
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          MAX_ITERATIONS=20
+          ITERATION=0
+          TOTAL_CLASSIFIED=0
+
+          while [ $ITERATION -lt $MAX_ITERATIONS ]; do
+            ITERATION=$((ITERATION + 1))
+
+            RESPONSE=$(curl -s -w "\n%{http_code}" \
+              --max-time 29 \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              "$URL/api/emerging-classify")
+
+            HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+            BODY=$(echo "$RESPONSE" | sed '$d')
+
+            echo "[$ITERATION] Status: $HTTP_CODE | Response: $BODY"
+
+            if [ "$HTTP_CODE" != "200" ]; then
+              echo "::warning::Classification call $ITERATION failed with $HTTP_CODE"
+              sleep 5
+              continue
+            fi
+
+            CLASSIFIED=$(echo "$BODY" | grep -o '"classified":[0-9]*' | grep -o '[0-9]*')
+            REMAINING=$(echo "$BODY" | grep -o '"remaining":[0-9]*' | grep -o '[0-9]*')
+            TOTAL_CLASSIFIED=$((TOTAL_CLASSIFIED + CLASSIFIED))
+
+            if [ "${REMAINING:-0}" -eq 0 ]; then
+              echo "All records classified. Total: $TOTAL_CLASSIFIED"
+              break
+            fi
+
+            echo "$REMAINING remaining, continuing..."
+            sleep 3
+          done
+
+          if [ $ITERATION -ge $MAX_ITERATIONS ]; then
+            echo "::warning::Hit max iterations ($MAX_ITERATIONS), some records may be unclassified"
           fi
+
+          echo "Classification complete: $TOTAL_CLASSIFIED total classified across $ITERATION iterations"
