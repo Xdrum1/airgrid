@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import SiteNav from "@/components/SiteNav";
 import PricingTiers from "@/components/PricingTiers";
 
 export const metadata: Metadata = {
   title: "Pricing — AirIndex",
-  description: "Choose the plan that fits your workflow. Free, Alert, Pro, Institutional, and Enterprise tiers.",
+  description: "Self-serve plans for individuals. Custom pricing for teams and organizations. The score is free — the intelligence behind the score is paid.",
 };
 
 export default function PricingPage() {
@@ -17,81 +18,7 @@ export default function PricingPage() {
         color: "#fff",
       }}
     >
-      {/* Nav */}
-      <nav
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-          background: "rgba(5,5,8,0.85)",
-          backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1120,
-            margin: "0 auto",
-            padding: "0 20px",
-            height: 64,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "inherit" }}>
-            <img
-              src="/images/logo/airindex-wordmark.svg"
-              alt="AirIndex"
-              style={{ height: 28 }}
-            />
-          </Link>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Link
-              href="/api"
-              style={{
-                color: "#888",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                padding: "8px 16px",
-              }}
-            >
-              API
-            </Link>
-            <Link
-              href="/dashboard"
-              style={{
-                color: "#888",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                padding: "8px 16px",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 6,
-              }}
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/login?mode=signup"
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                fontFamily: "'Inter', sans-serif",
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                padding: "8px 20px",
-                background: "#00d4ff",
-                color: "#050508",
-                borderRadius: 6,
-              }}
-            >
-              Sign up free
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       {/* Header */}
       <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(48px, 6vw, 80px) 20px 0", textAlign: "center" }}>
@@ -103,10 +30,13 @@ export default function PricingPage() {
             margin: "0 0 16px",
           }}
         >
-          Simple, transparent pricing
+          Plans that scale with your needs
         </h1>
-        <p style={{ fontFamily: "'Inter', sans-serif", color: "#999", fontSize: 14, margin: "0 0 8px", lineHeight: 1.6 }}>
-          Full dashboard access is free through launch. Paid plans activate April 2026.
+        <p style={{ color: "#999", fontSize: 14, margin: "0 0 4px", lineHeight: 1.6 }}>
+          The score is free. The intelligence behind the score is paid.
+        </p>
+        <p style={{ color: "#666", fontSize: 12, margin: 0, lineHeight: 1.6 }}>
+          Self-serve for individuals. Custom pricing for teams and organizations.
         </p>
       </section>
 
@@ -134,16 +64,20 @@ export default function PricingPage() {
             a: "Free accounts include the dashboard map, current readiness scores, city rankings, and basic market overviews. The score is free — the intelligence behind the score is paid.",
           },
           {
-            q: "What happens to early signups?",
-            a: "Free accounts retain full dashboard access through launch. When paid plans activate, free users keep the map, scores, and rankings. Pro features require an upgrade.",
+            q: "What's the difference between Pro and Institutional?",
+            a: "Pro is designed for individual professionals — analysts, consultants, city planners. Institutional adds API access, data export, multi-seat support, and priority onboarding for teams making capital allocation or market entry decisions.",
           },
           {
             q: "What's included in the API?",
-            a: "RESTful access to readiness scores, factor breakdowns, corridor data, and historical snapshots. Rate limits vary by tier. See the full documentation at airindex.io/api/docs.",
+            a: "RESTful access to readiness scores, factor breakdowns, corridor data, and historical snapshots. Rate limits vary by tier. Available on Institutional and Enterprise plans.",
           },
           {
             q: "Can I cancel anytime?",
-            a: "Yes. All subscriptions are month-to-month with no lock-in. Annual plans offer a discount.",
+            a: "Yes. All self-serve subscriptions are month-to-month with no lock-in. Annual plans offer a discount and can be cancelled at any time — you retain access through the end of your billing period.",
+          },
+          {
+            q: "What happens to early signups?",
+            a: "Free accounts retain full dashboard access through launch. When paid plans activate, free users keep the map, scores, and rankings. Pro features require an upgrade.",
           },
         ].map((faq) => (
           <div
