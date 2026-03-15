@@ -5,7 +5,7 @@ import TrackPageView from "@/components/TrackPageView";
 export const metadata: Metadata = {
   title: "Terms of Service — AirIndex",
   description:
-    "Subscription Terms of Service for AirIndex.io, operated by Vertical Data Group, LLC. Effective March 6, 2026.",
+    "Subscription Terms of Service for AirIndex.io, operated by Vertical Data Group, LLC. Effective March 6, 2026. Last updated March 15, 2026.",
 };
 
 const S = {
@@ -100,7 +100,7 @@ export default function TermsPage() {
         </h1>
 
         <p style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>
-          Effective Date: March 6, 2026 &middot; Last Updated: March 6, 2026
+          Effective Date: March 6, 2026 &middot; Last Updated: March 15, 2026
         </p>
         <p style={{ color: "#666", fontSize: 11, marginBottom: 40 }}>
           Vertical Data Group, LLC &middot; airindex.io
@@ -148,6 +148,10 @@ export default function TermsPage() {
           <Link href="/pricing" style={S.link}>airindex.io/pricing</Link>:
         </p>
         <ul style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, lineHeight: 1.8, paddingLeft: 20, marginBottom: 14 }}>
+          <li style={{ marginBottom: 8 }}>
+            <strong style={S.strong}>Alert</strong> ($25/month or $249/year): includes score change notifications
+            and watch list alerts for up to three monitored markets, and a monthly market summary.
+          </li>
           <li style={{ marginBottom: 8 }}>
             <strong style={S.strong}>Pro</strong> ($149/month or $1,490/year): includes all Free features plus score
             history and trend lines, factor-level breakdowns with source citations, corridor intelligence, operator
@@ -232,7 +236,22 @@ export default function TermsPage() {
         </p>
 
         {/* Section 11 */}
-        <h2 style={S.h2}>11. Limitation of Liability</h2>
+        <h2 style={S.h2}>11. Indemnification</h2>
+        <p style={S.p}>
+          You agree to indemnify, defend, and hold harmless Vertical Data Group, LLC and its members, managers,
+          officers, employees, agents, successors, and assigns from and against any and all claims, liabilities,
+          damages, losses, costs, and expenses, including reasonable attorneys&apos; fees and court costs, arising out
+          of or in any way connected with: (a) your access to or use of the Service; (b) your violation of these
+          Terms; (c) your violation of any applicable law or regulation; (d) your infringement of any third-party
+          rights, including intellectual property rights; or (e) any decision, action, or inaction taken by you or
+          any third party in reliance on data, scores, ratings, or other information obtained through the Service.
+          The Company reserves the right to assume exclusive control of the defense of any matter subject to
+          indemnification by you, in which case you agree to cooperate with the Company&apos;s defense of such claim.
+          This indemnification obligation will survive the termination of these Terms and your use of the Service.
+        </p>
+
+        {/* Section 12 */}
+        <h2 style={S.h2}>12. Limitation of Liability</h2>
         <p style={S.caps}>
           TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE COMPANY BE LIABLE FOR ANY
           INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF REVENUE, PROFITS,
@@ -241,8 +260,8 @@ export default function TermsPage() {
           THE 12 MONTHS PRECEDING THE CLAIM, OR (B) ONE HUNDRED DOLLARS ($100.00).
         </p>
 
-        {/* Section 12 */}
-        <h2 style={S.h2}>12. DMCA and Copyright</h2>
+        {/* Section 13 */}
+        <h2 style={S.h2}>13. DMCA and Copyright</h2>
         <p style={S.p}>
           The Company respects intellectual property rights. If you believe content on the Service infringes your
           copyright, please send a DMCA notice to{" "}
@@ -252,15 +271,23 @@ export default function TermsPage() {
           under penalty of perjury.
         </p>
 
-        {/* Section 13 */}
-        <h2 style={S.h2}>13. Privacy</h2>
+        {/* Section 14 */}
+        <h2 style={S.h2}>14. Privacy</h2>
         <p style={S.p}>
           Your use of the Service is also governed by the Company&apos;s Privacy Policy, available at{" "}
           <Link href="/privacy" style={S.link}>airindex.io/privacy</Link>, which is incorporated herein by reference.
         </p>
 
-        {/* Section 14 */}
-        <h2 style={S.h2}>14. Governing Law and Dispute Resolution</h2>
+        {/* Section 15 */}
+        <h2 style={S.h2}>15. Insurance</h2>
+        <p style={S.p}>
+          Vertical Data Group, LLC maintains commercial general liability and professional liability (errors and
+          omissions) insurance coverage. Certificates of Insurance are available upon written request at{" "}
+          <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a>.
+        </p>
+
+        {/* Section 16 */}
+        <h2 style={S.h2}>16. Governing Law and Dispute Resolution</h2>
         <p style={S.p}>
           These Terms are governed by the laws of the State of South Carolina. Any dispute arising out of or
           relating to these Terms or the Service shall be resolved by binding arbitration administered by the
@@ -272,24 +299,24 @@ export default function TermsPage() {
           YOU WAIVE ANY RIGHT TO A JURY TRIAL AND TO PARTICIPATE IN A CLASS ACTION.
         </p>
 
-        {/* Section 15 */}
-        <h2 style={S.h2}>15. Modifications</h2>
+        {/* Section 17 */}
+        <h2 style={S.h2}>17. Modifications</h2>
         <p style={S.p}>
           The Company reserves the right to modify these Terms at any time. The Company will provide 30 days&apos;
           notice of material changes by email to your registered address or by posting notice on the Service. Your
           continued use of the Service after such notice constitutes acceptance of the modified Terms.
         </p>
 
-        {/* Section 16 */}
-        <h2 style={S.h2}>16. Termination</h2>
+        {/* Section 18 */}
+        <h2 style={S.h2}>18. Termination</h2>
         <p style={S.p}>
           The Company may suspend or terminate your account and access to the Service at any time, with or without
           cause, upon 30 days&apos; notice (or immediately if you breach these Terms). Upon termination, all licenses
           granted to you shall immediately terminate.
         </p>
 
-        {/* Section 17 */}
-        <h2 style={S.h2}>17. General</h2>
+        {/* Section 19 */}
+        <h2 style={S.h2}>19. General</h2>
         <p style={S.p}>
           These Terms constitute the entire agreement between you and the Company regarding the Service. If any
           provision is held unenforceable, the remaining provisions shall continue in full force and effect. The
