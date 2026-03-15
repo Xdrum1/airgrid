@@ -1,0 +1,65 @@
+name: Daily emerging markets ingestion cron
+
+on:
+  schedule:
+    # Run every day at 06:30 UTC — 30 min after AirIndex ingest cron
+    - cron: "30 6 * * *"
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health check + warmup
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/health")
+          echo "Health: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Health check returned $HTTP_CODE — app may be degraded"
+          fi
+          # Warm up the Lambda
+          echo "Warming up emerging-ingest Lambda..."
+          curl -s -o /dev/null --max-time 15 \
+            -H "Authorization: invalid-warmup" \
+            "$URL/api/emerging-ingest" || true
+          sleep 3
+
+      - name: Trigger emerging markets ingestion
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 120 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$URL/api/emerging-ingest")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "Status: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Emerging ingestion failed with status $HTTP_CODE"
+            exit 1
+          fi
+
+          LAST_EVENT=$(echo "$BODY" | grep "^data:" | tail -1 | sed 's/^data: //')
+          echo "Final event: $LAST_EVENT"
+
+          if echo "$LAST_EVENT" | grep -q '"status":"error"'; then
+            echo "::error::Emerging ingestion completed with error"
+            exit 1
+          fi
+
+          if echo "$LAST_EVENT" | grep -q '"status":"complete"'; then
+            echo "Emerging ingestion completed successfully"
+          else
+            echo "::warning::Unexpected final event status"
+          fi

@@ -1,0 +1,191 @@
+/**
+ * Emerging Markets — Lightweight Haiku Classifier
+ *
+ * Much simpler than the AirIndex classifier. Three outputs only:
+ * relevant (bool), signal_type (7 categories), momentum (pos/neg/neutral).
+ * No city tagging, no factor mapping, no scoring overrides.
+ */
+
+import Anthropic from "@anthropic-ai/sdk";
+import type { EmergingRawRecord } from "@/lib/emerging-sources";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("emerging-classifier");
+
+// -------------------------------------------------------
+// Constants
+// -------------------------------------------------------
+
+const PROMPT_VERSION = "emerging-v1";
+const MODEL = "claude-haiku-4-5-20251001";
+const BATCH_SIZE = 15;
+const MAX_TOKENS = 4096;
+
+// Lazy singleton
+let _client: Anthropic | null = null;
+function getClient(): Anthropic {
+  if (!_client) {
+    _client = new Anthropic();
+  }
+  return _client;
+}
+
+// -------------------------------------------------------
+// Types
+// -------------------------------------------------------
+
+export interface EmergingClassification {
+  sourceId: string;
+  relevant: boolean;
+  signalType: string;
+  momentum: string;
+  marketName: string;
+}
+
+// -------------------------------------------------------
+// System prompt
+// -------------------------------------------------------
+
+const SYSTEM_PROMPT = `You are a signal classifier for an emerging infrastructure markets intelligence platform. Your job is to analyze records from government databases and determine whether they represent meaningful signals for emerging technology/infrastructure markets.
+
+## Target Markets
+
+1. Nuclear Microreactors / Small Modular Reactors (SMR)
+2. Commercial Drone Infrastructure
+3. Hydrogen Fueling Infrastructure
+4. Autonomous Vehicle Infrastructure Corridors
+5. Physical AI / Humanoid Robotics Deployment
+6. Geothermal Energy 2.0
+7. Space Economy Infrastructure
+8. Longevity / Biological Age Intervention
+9. Spatial Computing Infrastructure
+10. Decentralized Physical Infrastructure Networks (DePIN)
+
+## Classification Rules
+
+For each record, output:
+
+1. **relevant** (boolean): Is this record a meaningful signal for any of the 10 markets above? Be selective — routine administrative actions, unrelated medical trials, and generic grant renewals are NOT relevant. Look for: new funding, regulatory milestones, technology deployments, policy changes, pilot programs, or significant research breakthroughs.
+
+2. **signal_type** (string, exactly one of):
+   - "regulatory_filing" — government regulatory action, permit, license, rulemaking
+   - "legislative_activity" — bill, law, resolution, executive order
+   - "grant_award" — government or institutional funding award
+   - "patent_filing" — patent application or grant
+   - "investment_round" — private investment, SPAC, IPO-related
+   - "research_publication" — study, trial, technical report
+   - "other" — none of the above
+
+3. **momentum** (string, exactly one of):
+   - "positive" — signal indicates forward progress (new funding, approval, expansion, breakthrough)
+   - "negative" — signal indicates setback (cancellation, denial, failure, delay)
+   - "neutral" — informational, no clear directional signal
+
+4. **market_name** (string): Which of the 10 markets does this primarily relate to? Use these exact names:
+   - "Nuclear SMR"
+   - "Commercial Drone"
+   - "Hydrogen Fueling"
+   - "Autonomous Vehicle"
+   - "Physical AI / Robotics"
+   - "Geothermal Energy"
+   - "Space Economy"
+   - "Longevity"
+   - "Spatial Computing"
+   - "DePIN"
+   - "Other" (if relevant but doesn't fit neatly)
+
+## Output Format
+
+Return a JSON array. One object per input record, in the same order:
+
+\`\`\`json
+[
+  {
+    "source_id": "NCT12345678",
+    "relevant": true,
+    "signal_type": "grant_award",
+    "momentum": "positive",
+    "market_name": "Nuclear SMR"
+  }
+]
+\`\`\`
+
+If a record is not relevant, still include it with relevant: false. Use signal_type: "other", momentum: "neutral", and market_name: "Other" for irrelevant records.`;
+
+// -------------------------------------------------------
+// Classification
+// -------------------------------------------------------
+
+async function classifyBatch(records: EmergingRawRecord[]): Promise<EmergingClassification[]> {
+  const client = getClient();
+
+  const recordList = records
+    .map((r, i) => `[${i + 1}] ID: ${r.sourceId}\nSource: ${r.source}\nTitle: ${r.title}\nSummary: ${r.summary.slice(0, 300)}\nDate: ${r.date}`)
+    .join("\n\n");
+
+  try {
+    const response = await client.messages.create({
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
+      system: SYSTEM_PROMPT,
+      messages: [
+        {
+          role: "user",
+          content: `Classify the following ${records.length} records:\n\n${recordList}`,
+        },
+      ],
+    });
+
+    const text = response.content
+      .filter((b): b is Anthropic.TextBlock => b.type === "text")
+      .map((b) => b.text)
+      .join("");
+
+    // Extract JSON from possible markdown wrapping
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) {
+      log.warn("No JSON array found in classifier response");
+      return [];
+    }
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed.map((item: Record<string, unknown>) => ({
+      sourceId: String(item.source_id ?? ""),
+      relevant: Boolean(item.relevant),
+      signalType: String(item.signal_type ?? "other"),
+      momentum: String(item.momentum ?? "neutral"),
+      marketName: String(item.market_name ?? "Other"),
+    }));
+  } catch (err) {
+    log.error("Classification batch failed:", err);
+    return [];
+  }
+}
+
+export async function classifyEmergingRecords(
+  records: EmergingRawRecord[]
+): Promise<EmergingClassification[]> {
+  if (records.length === 0) return [];
+
+  const results: EmergingClassification[] = [];
+
+  for (let i = 0; i < records.length; i += BATCH_SIZE) {
+    const batch = records.slice(i, i + BATCH_SIZE);
+    log.info(`Classifying batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(records.length / BATCH_SIZE)} (${batch.length} records)`);
+
+    const classified = await classifyBatch(batch);
+    results.push(...classified);
+
+    // Small delay between batches to avoid rate limits
+    if (i + BATCH_SIZE < records.length) {
+      await new Promise((r) => setTimeout(r, 300));
+    }
+  }
+
+  const relevant = results.filter((r) => r.relevant).length;
+  log.info(`Classification complete: ${results.length} classified, ${relevant} relevant (${PROMPT_VERSION})`);
+
+  return results;
+}
