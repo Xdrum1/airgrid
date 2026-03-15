@@ -370,8 +370,8 @@ export default function PricingTiers() {
                 Sign up free
               </Link>
             ) : tier.cta === "contact" ? (
-              <a
-                href={`mailto:sales@airindex.io?subject=${tier.name} inquiry`}
+              <Link
+                href="/contact?tier=enterprise"
                 style={{
                   display: "block",
                   textAlign: "center",
@@ -388,10 +388,9 @@ export default function PricingTiers() {
                 }}
               >
                 Contact sales
-              </a>
+              </Link>
             ) : (
-              <Link
-                href="/login?mode=signup"
+              <div
                 style={{
                   display: "block",
                   textAlign: "center",
@@ -400,15 +399,14 @@ export default function PricingTiers() {
                   fontSize: 11,
                   fontWeight: 700,
                   letterSpacing: "0.06em",
-                  textDecoration: "none",
-                  transition: "opacity 0.15s",
-                  background: tier.highlight ? tier.accent : `${tier.accent}15`,
-                  border: `1px solid ${tier.accent}44`,
-                  color: tier.highlight ? "#050508" : tier.accent,
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  color: "#555",
+                  cursor: "default",
                 }}
               >
-                Get started
-              </Link>
+                Coming April 2026
+              </div>
             )}
           </div>
         ))}
