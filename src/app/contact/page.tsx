@@ -163,12 +163,12 @@ function ContactForm() {
         >
           {tierLocked ? (
             <option value={form.tier}>
-              {form.tier === "pro" ? "Pro Waitlist" : form.tier === "institutional" ? "Institutional" : "Enterprise"}
+              {form.tier === "pro" ? "Pro" : form.tier === "institutional" ? "Team" : "Enterprise"}
             </option>
           ) : (
             <>
-              <option value="pro">Pro Waitlist</option>
-              <option value="institutional">Institutional</option>
+              <option value="pro">Pro</option>
+              <option value="institutional">Team</option>
               <option value="enterprise">Enterprise</option>
             </>
           )}
