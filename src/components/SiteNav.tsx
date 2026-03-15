@@ -92,11 +92,17 @@ export default async function SiteNav() {
           {isAuthed ? (
             <Link
               href="/dashboard"
-              className="nav-hide-mobile"
               style={{
-                ...linkStyle,
-                border: "1px solid rgba(255,255,255,0.1)",
+                fontSize: 11,
+                fontWeight: 700,
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: "0.06em",
+                textDecoration: "none",
+                padding: "8px 20px",
+                background: "#00d4ff",
+                color: "#050508",
                 borderRadius: 6,
+                transition: "opacity 0.15s",
                 marginLeft: 4,
               }}
             >
