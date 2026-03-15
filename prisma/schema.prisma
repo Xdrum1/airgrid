@@ -432,3 +432,26 @@ model MarketLead {
   @@index([status])
   @@index([priority])
 }
+
+// ── Emerging Markets Stealth Pipeline ────────────────────
+
+model EmergingMarketSignal {
+  id           String   @id @default(cuid())
+  marketName   String   // e.g. "Nuclear SMR", "Commercial Drone", "Hydrogen Fueling"
+  sourceId     String   // unique ID from source API
+  title        String
+  url          String
+  source       String   // "doe_arpa_e" | "clinicaltrials_gov" | "nrc_adams" | ...
+  relevant     Boolean
+  signalType   String   // regulatory_filing | legislative_activity | grant_award | patent_filing | investment_round | research_publication | other
+  momentum     String   // positive | negative | neutral
+  raw          Json     // full API response for audit
+  classifiedAt DateTime
+  ingestedAt   DateTime @default(now())
+
+  @@unique([source, sourceId])
+  @@index([marketName])
+  @@index([source])
+  @@index([signalType])
+  @@index([relevant, ingestedAt])
+}
