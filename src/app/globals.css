@@ -196,10 +196,20 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   padding: 8px 0;
-  margin-top: 4px;
+  padding-top: 12px;
+  margin-top: 0;
   backdrop-filter: blur(16px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   z-index: 200;
+}
+/* Invisible bridge so hover doesn't break between trigger and dropdown */
+.nav-dropdown-wrapper .nav-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
 }
 .nav-dropdown-wrapper:hover .nav-dropdown {
   display: block;
@@ -219,13 +229,27 @@ body {
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* Nav link hover */
+.nav-link:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.04);
+}
+.nav-cta:hover {
+  opacity: 0.85;
+}
+
+/* Mobile nav toggle — hidden by default, shown on mobile */
+.nav-mobile-toggle {
+  display: none !important;
+}
+
 /* Landing page responsive */
-@media (max-width: 640px) {
-  .landing-nav-buttons {
-    gap: 8px !important;
-  }
-  .landing-nav-buttons .nav-hide-mobile {
+@media (max-width: 768px) {
+  .nav-desktop {
     display: none !important;
+  }
+  .nav-mobile-toggle {
+    display: block !important;
   }
   .landing-stats-grid {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -234,5 +258,11 @@ body {
     gap: 16px !important;
     flex-wrap: wrap;
     justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
