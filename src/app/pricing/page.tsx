@@ -64,12 +64,12 @@ export default function PricingPage() {
             a: "Free accounts include the dashboard map, current readiness scores, city rankings, and basic market overviews. The score is free — the intelligence behind the score is paid.",
           },
           {
-            q: "What's the difference between Pro and Institutional?",
-            a: "Pro is designed for individual professionals — analysts, consultants, city planners. Institutional adds API access, data export, multi-seat support, and priority onboarding for teams making capital allocation or market entry decisions.",
+            q: "What's the difference between Pro and Team?",
+            a: "Pro is designed for individual professionals — analysts, consultants, city planners. Team adds API access, data export, multi-seat support, and priority onboarding for teams making capital allocation or market entry decisions.",
           },
           {
             q: "What's included in the API?",
-            a: "RESTful access to readiness scores, factor breakdowns, corridor data, and historical snapshots. Rate limits vary by tier. Available on Institutional and Enterprise plans.",
+            a: "RESTful access to readiness scores, factor breakdowns, corridor data, and historical snapshots. Rate limits vary by tier. Available on Team and Enterprise plans.",
           },
           {
             q: "Can I cancel anytime?",

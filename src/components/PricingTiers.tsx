@@ -18,7 +18,7 @@ interface Tier {
   highlight: boolean;
   features: string[];
   cta: "free" | "stripe" | "contact";
-  stripeTier?: "alert" | "pro";
+  stripeTier?: "alert" | "pro" | "institutional";
 }
 
 const TIERS: Tier[] = [
@@ -76,10 +76,10 @@ const TIERS: Tier[] = [
     stripeTier: "pro",
   },
   {
-    name: "Institutional",
-    tagline: "For teams making capital allocation and market entry decisions.",
-    monthly: null,
-    annual: null,
+    name: "Team",
+    tagline: "API access and multi-seat for teams making market decisions.",
+    monthly: 499,
+    annual: 4990,
     accent: "#7c3aed",
     highlight: false,
     features: [
@@ -90,7 +90,8 @@ const TIERS: Tier[] = [
       "Custom alert configurations",
       "Priority support & onboarding",
     ],
-    cta: "contact",
+    cta: "stripe",
+    stripeTier: "institutional",
   },
   {
     name: "Enterprise",
@@ -100,7 +101,7 @@ const TIERS: Tier[] = [
     accent: "#ff6b35",
     highlight: false,
     features: [
-      "Everything in Institutional, plus:",
+      "Everything in Team, plus:",
       "White-label endpoints",
       "Webhooks & event streams",
       "Embedded widgets",
