@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import TrackPageView from "@/components/TrackPageView";
+import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
   title: "Ratings Methodology — AirIndex",
@@ -184,32 +185,7 @@ export default function MethodologyPage() {
     >
       <TrackPageView page="/methodology" />
 
-      {/* Nav */}
-      <nav
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "16px clamp(20px, 5vw, 64px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-          <img src="/images/logo/airindex-wordmark.svg" alt="AirIndex" style={{ height: 26 }} />
-        </Link>
-        <Link
-          href="/dashboard"
-          style={{
-            color: "#888",
-            fontSize: 11,
-            letterSpacing: "0.06em",
-            textDecoration: "none",
-            fontFamily: "'Inter', sans-serif",
-          }}
-        >
-          VIEW DASHBOARD
-        </Link>
-      </nav>
+      <SiteNav />
 
       {/* Content */}
       <main style={{ maxWidth: 720, margin: "0 auto", padding: "48px clamp(20px, 5vw, 32px) 80px" }}>
