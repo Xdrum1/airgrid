@@ -248,8 +248,8 @@ export default async function LandingPage() {
               marginLeft: "auto",
               marginRight: "auto",
             }}>
-              Every score is backed by a live pipeline ingesting Federal Register filings, state legislation,
-              SEC operator disclosures, and infrastructure data — classified, verified, and auditable.
+              Every score is backed by a live pipeline monitoring federal, state, and operator primary sources
+              — classified, verified, and auditable.
             </p>
           </div>
         </section>
