@@ -8,6 +8,27 @@ import { addChangelogEntries } from "@/lib/changelog";
 import { calculateReadinessScore, getScoreTier } from "@/lib/scoring";
 import { CITIES_MAP } from "@/data/seed";
 
+// Fields that require primary source documentation (Federal Register, FAA, LegiScan, etc.)
+// News coverage alone is insufficient for auto-application of these factors
+const REQUIRES_PRIMARY_SOURCE = new Set([
+  "hasActivePilotProgram",
+  "hasVertiportZoning",
+  "stateLegislationStatus",
+]);
+
+function sourceIsPrimary(url: string | null | undefined): boolean {
+  if (!url) return false;
+  const lower = url.toLowerCase();
+  return (
+    lower.includes("federalregister.gov") ||
+    lower.includes("faa.gov") ||
+    lower.includes("dot.gov") ||
+    lower.includes("legiscan.com") ||
+    lower.includes("sec.gov") ||
+    lower.includes(".gov/")
+  );
+}
+
 // Dynamic import to prevent client bundle contamination
 async function getPrisma() {
   const { prisma } = await import("@/lib/prisma");
@@ -47,6 +68,19 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
     // Skip unresolved city placeholders for auto-apply (still persist them)
     const isResolvable = candidate.cityId !== "__unresolved__" && candidate.field !== "__review__";
 
+    // Downgrade confidence for fields that require primary sources when
+    // the source is news/operator coverage (not Federal Register, FAA, etc.)
+    let effectiveConfidence = candidate.confidence;
+    if (
+      candidate.confidence === "high" &&
+      REQUIRES_PRIMARY_SOURCE.has(candidate.field) &&
+      !sourceIsPrimary(candidate.sourceUrl)
+    ) {
+      effectiveConfidence = "medium";
+    }
+
+    const shouldAutoApply = effectiveConfidence === "high" && isResolvable;
+
     // Supersede any existing active override for the same cityId+field
     if (isResolvable) {
       await prisma.scoringOverride.updateMany({
@@ -68,13 +102,13 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
         reason: candidate.reason,
         sourceRecordId: candidate.sourceRecordId,
         sourceUrl: candidate.sourceUrl,
-        confidence: candidate.confidence,
-        appliedAt: candidate.confidence === "high" && isResolvable ? now : null,
+        confidence: effectiveConfidence,
+        appliedAt: shouldAutoApply ? now : null,
       },
     });
     persisted++;
 
-    if (candidate.confidence === "high" && isResolvable) {
+    if (shouldAutoApply) {
       applied++;
       affectedCityIds.add(candidate.cityId);
     }
