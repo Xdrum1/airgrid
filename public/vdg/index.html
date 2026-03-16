@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertical Data Group</title>
+  <meta name="description" content="Intelligence infrastructure for emerging markets. Systematic signal detection platforms built on verified primary sources.">
+  <meta property="og:title" content="Vertical Data Group">
+  <meta property="og:description" content="Intelligence infrastructure for emerging markets.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://verticaldatagroup.com">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>V</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #060d1a;
+      --navy2: #0d1829;
+      --navy3: #162035;
+      --cyan: #00c8f0;
+      --cyan-dim: rgba(0,200,240,0.12);
+      --cyan-border: rgba(0,200,240,0.25);
+      --white: #f0f4f8;
+      --muted: #7a8fa8;
+      --muted2: #3d5270;
+      --border: rgba(255,255,255,0.06);
+      --green: #10b981;
+      --amber: #f59e0b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--cyan-dim);
+      color: var(--white);
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(6, 13, 26, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--white);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 96px 0 72px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-label::before {
+      content: '';
+      display: inline-block;
+      width: 32px;
+      height: 1px;
+      background: var(--cyan);
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-weight: 400;
+      font-size: 48px;
+      line-height: 1.2;
+      color: var(--white);
+      max-width: 720px;
+    }
+
+    .hero h1 em {
+      font-family: 'DM Serif Display', serif;
+      color: var(--cyan);
+      font-style: italic;
+    }
+
+    .hero-subtext {
+      margin-top: 28px;
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 540px;
+      line-height: 1.8;
+    }
+
+    .hero-stats {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+    }
+
+    .hero-stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted2);
+      margin-bottom: 6px;
+    }
+
+    .hero-stat-value {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── Section Label ── */
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      margin-bottom: 32px;
+      font-weight: 500;
+    }
+
+    /* ── Products ── */
+    .products {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .product-card {
+      background: var(--navy2);
+      padding: 36px 32px;
+      position: relative;
+    }
+
+    .product-card:first-child {
+      border-right: 1px solid var(--border);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .badge-live {
+      color: var(--green);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .badge-dev {
+      color: var(--amber);
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .product-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted2);
+      margin-bottom: 16px;
+    }
+
+    .product-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .product-domain {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--cyan);
+      text-decoration: none;
+      margin-bottom: 16px;
+      display: inline-block;
+      transition: opacity 0.2s;
+    }
+
+    .product-domain:hover {
+      opacity: 0.7;
+    }
+
+    .product-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* ── Methodology ── */
+    .methodology {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .methodology-statement {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--white);
+      max-width: 720px;
+      margin-bottom: 56px;
+    }
+
+    .methodology-statement em {
+      font-family: 'DM Serif Display', serif;
+      color: var(--cyan);
+      font-style: italic;
+    }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+    }
+
+    .pillar-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--cyan);
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .pillar h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+
+    .pillar p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* ── AirIndex Spotlight ── */
+    .spotlight {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .spotlight-box {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+
+    .spotlight-left {
+      padding: 40px 36px;
+      border-right: 1px solid var(--border);
+    }
+
+    .spotlight-right {
+      padding: 40px 36px;
+    }
+
+    .spotlight-product-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 24px;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .spotlight-tagline {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+
+    .spotlight-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .spotlight-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--cyan);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: opacity 0.2s;
+    }
+
+    .spotlight-link:hover {
+      opacity: 0.7;
+    }
+
+    .score-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .score-city {
+      font-size: 13px;
+      color: var(--muted);
+      min-width: 110px;
+      font-weight: 400;
+    }
+
+    .score-bar-track {
+      flex: 1;
+      height: 6px;
+      background: var(--navy3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .score-bar-fill {
+      height: 100%;
+      background: var(--cyan);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .score-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white);
+      min-width: 28px;
+      text-align: right;
+    }
+
+    .score-tier {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 3px;
+      min-width: 78px;
+      text-align: center;
+      background: transparent;
+    }
+
+    .tier-advanced {
+      color: var(--cyan);
+      border: 1px solid var(--cyan-border);
+    }
+
+    .tier-moderate {
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .tier-early {
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    /* ── Contact ── */
+    .contact {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    .contact-statement {
+      font-family: 'DM Serif Display', serif;
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--white);
+      line-height: 1.4;
+    }
+
+    .contact-items {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .contact-item-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted2);
+      margin-bottom: 4px;
+    }
+
+    .contact-item-value {
+      font-size: 14px;
+      color: var(--cyan);
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .contact-item-value:hover {
+      opacity: 0.7;
+    }
+
+    .contact-form-wrapper {
+      grid-column: 1 / -1;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, margin-top 0.4s ease, opacity 0.3s ease;
+      opacity: 0;
+      margin-top: 0;
+    }
+
+    .contact-form-wrapper.open {
+      max-height: 500px;
+      opacity: 1;
+      margin-top: 32px;
+    }
+
+    .contact-form-heading {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--cyan);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .contact-form-close {
+      font-size: 13px;
+      color: var(--muted2);
+      cursor: pointer;
+      transition: color 0.2s;
+      background: none;
+      border: none;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .contact-form-close:hover {
+      color: var(--white);
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .contact-form label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted2);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+      color: var(--muted2);
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: var(--cyan-border);
+    }
+
+    .contact-form textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .contact-form button[type="submit"] {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 500;
+      background: var(--cyan);
+      color: var(--navy);
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      align-self: flex-start;
+    }
+
+    .contact-form button[type="submit"]:hover {
+      opacity: 0.85;
+    }
+
+    .contact-form button[type="submit"]:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .form-status {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .form-status.success {
+      color: var(--green);
+    }
+
+    .form-status.error {
+      color: #ef4444;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 32px 0 48px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer p {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted2);
+      letter-spacing: 0.02em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted2);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--muted);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; }
+      .hero-stats { grid-template-columns: 1fr; gap: 20px; }
+      .product-grid { grid-template-columns: 1fr; }
+      .product-card:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+      .pillars { grid-template-columns: 1fr; gap: 28px; }
+      .spotlight-box { grid-template-columns: 1fr; }
+      .spotlight-left { border-right: none; border-bottom: 1px solid var(--border); }
+      .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+      .methodology-statement { font-size: 22px; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 10px; }
+      .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .hero { padding: 64px 0 56px; }
+      .hero h1 { font-size: 28px; }
+      .nav-links { display: none; }
+      .score-city { min-width: 80px; font-size: 12px; }
+      .score-tier { min-width: 64px; font-size: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Vertical Data Group</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#methodology">Methodology</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Hero -->
+    <section class="hero" id="about">
+      <h1>Intelligence infrastructure for <em>emerging markets</em></h1>
+      <p class="hero-subtext">
+        We build systematic signal detection platforms that tell you where markets are going before
+        mainstream awareness arrives. Every product is auditable, methodology-driven, and built
+        on verified primary sources.
+      </p>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-label">Founded</div>
+          <div class="hero-stat-value">March 2026 &middot; Charleston, SC</div>
+        </div>
+        <div>
+          <div class="hero-stat-label">Coverage</div>
+          <div class="hero-stat-value">20+ US metropolitan areas</div>
+        </div>
+        <div>
+          <div class="hero-stat-label">Current Product</div>
+          <div class="hero-stat-value">AirIndex &middot; UAM market intelligence</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products -->
+    <section class="products" id="products">
+      <div class="section-label">What we build</div>
+      <div class="product-grid">
+        <div class="product-card">
+          <span class="product-badge badge-live">Live</span>
+          <div class="product-number">01</div>
+          <h3>AirIndex</h3>
+          <a href="https://airindex.io" class="product-domain" target="_blank" rel="noopener">airindex.io</a>
+          <p>
+            The authoritative market intelligence layer for Urban Air Mobility. US cities scored daily
+            across 7 verified factors. Trusted by infrastructure developers, operators, investors, and
+            city planners.
+          </p>
+        </div>
+        <div class="product-card">
+          <span class="product-badge badge-dev">In development</span>
+          <div class="product-number">02</div>
+          <h3>Emerging Market Intelligence</h3>
+          <p>
+            Systematic signal detection across pre-mainstream technology and infrastructure markets.
+            The same methodology that powers AirIndex, applied at scale to the markets that will
+            define the next decade.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Methodology -->
+    <section class="methodology" id="methodology">
+      <div class="section-label">How we work</div>
+      <p class="methodology-statement">
+        Every market that matters in the next 20 years is <em>visible in public data today</em>.
+        The signals exist before mainstream awareness. We build the infrastructure to detect them.
+      </p>
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar-number">01</div>
+          <h4>Ingest</h4>
+          <p>
+            Continuous monitoring of regulatory filings, legislative activity, operator disclosures, and
+            infrastructure data from verified primary sources.
+          </p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-number">02</div>
+          <h4>Classify</h4>
+          <p>
+            Every record classified by event type, relevance, and market attribution. Structured
+            for auditability and reproducibility.
+          </p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-number">03</div>
+          <h4>Score</h4>
+          <p>
+            Scored, tiered, and ranked intelligence updated automatically when qualifying signals are
+            detected. Every change is sourced and traceable to its origin record.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- AirIndex Spotlight -->
+    <section class="spotlight">
+      <div class="section-label">Flagship product</div>
+      <div class="spotlight-box">
+        <div class="spotlight-left">
+          <div class="spotlight-product-name">AirIndex</div>
+          <div class="spotlight-tagline">UAM Market Readiness Intelligence</div>
+          <p class="spotlight-desc">
+            AirIndex scores US cities on readiness for commercial eVTOL operations across 7 verified
+            factors. Infrastructure developers use it for site selection. Operators use it for market entry
+            prioritization. City planners use it to benchmark against peers and close readiness gaps.
+          </p>
+          <a href="https://airindex.io" class="spotlight-link" target="_blank" rel="noopener">airindex.io &rarr;</a>
+        </div>
+        <div class="spotlight-right">
+          <div class="score-list">
+            <div class="score-row">
+              <span class="score-city">Los Angeles, CA</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:100%"></div></div>
+              <span class="score-value">100</span>
+              <span class="score-tier tier-advanced">Advanced</span>
+            </div>
+            <div class="score-row">
+              <span class="score-city">Dallas, TX</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:100%"></div></div>
+              <span class="score-value">100</span>
+              <span class="score-tier tier-advanced">Advanced</span>
+            </div>
+            <div class="score-row">
+              <span class="score-city">Miami, FL</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:100%"></div></div>
+              <span class="score-value">100</span>
+              <span class="score-tier tier-advanced">Advanced</span>
+            </div>
+            <div class="score-row">
+              <span class="score-city">Orlando, FL</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:85%"></div></div>
+              <span class="score-value">85</span>
+              <span class="score-tier tier-advanced">Advanced</span>
+            </div>
+            <div class="score-row">
+              <span class="score-city">New York, NY</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:70%"></div></div>
+              <span class="score-value">70</span>
+              <span class="score-tier tier-moderate">Moderate</span>
+            </div>
+            <div class="score-row">
+              <span class="score-city">San Francisco, CA</span>
+              <div class="score-bar-track"><div class="score-bar-fill" style="width:60%"></div></div>
+              <span class="score-value">60</span>
+              <span class="score-tier tier-moderate">Moderate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact" id="contact">
+      <div class="section-label">Get in touch</div>
+      <div class="contact-grid">
+        <div class="contact-statement">
+          For data partnerships, research collaborations, federal inquiries, and press.
+        </div>
+        <div class="contact-items">
+          <div>
+            <div class="contact-item-label">General inquiries</div>
+            <div class="contact-item-value" data-type="general">Get in touch &rarr;</div>
+          </div>
+          <div>
+            <div class="contact-item-label">Data partnerships & API</div>
+            <div class="contact-item-value" data-type="partnership">Get in touch &rarr;</div>
+          </div>
+          <div>
+            <div class="contact-item-label">Federal & grant inquiries</div>
+            <div class="contact-item-value" data-type="federal">Get in touch &rarr;</div>
+          </div>
+          <div>
+            <div class="contact-item-label">Press</div>
+            <div class="contact-item-value" data-type="press">Get in touch &rarr;</div>
+          </div>
+        </div>
+        <div class="contact-form-wrapper" id="formWrapper">
+          <div class="contact-form-heading">
+            <span id="formHeading">General inquiries</span>
+            <button class="contact-form-close" id="formClose">&times; Close</button>
+          </div>
+          <form class="contact-form" id="contactForm">
+            <input type="hidden" id="type" name="type" value="">
+            <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+              <label for="website">Website</label>
+              <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+            <div class="form-row">
+              <div>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your name" required>
+              </div>
+              <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="you@company.com" required>
+              </div>
+            </div>
+            <div>
+              <label for="message">Message</label>
+              <textarea id="message" name="message" placeholder="How can we help?" required></textarea>
+            </div>
+            <button type="submit">Send message</button>
+            <div class="form-status" id="formStatus"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-inner">
+        <p>&copy; 2026 Vertical Data Group, LLC &middot; Charleston, SC</p>
+        <ul class="footer-links">
+          <li><a href="https://airindex.io" target="_blank" rel="noopener">AirIndex</a></li>
+          <li><a href="#methodology">Methodology</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    const typeLabels = {
+      general: 'General inquiries',
+      partnership: 'Data partnerships & API',
+      federal: 'Federal & grant inquiries',
+      press: 'Press'
+    };
+
+    const wrapper = document.getElementById('formWrapper');
+    const heading = document.getElementById('formHeading');
+    const typeInput = document.getElementById('type');
+
+    document.querySelectorAll('.contact-item-value[data-type]').forEach(el => {
+      el.addEventListener('click', () => {
+        const t = el.dataset.type;
+        typeInput.value = t;
+        heading.textContent = typeLabels[t] || t;
+        wrapper.classList.add('open');
+        setTimeout(() => {
+          wrapper.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          document.getElementById('name').focus();
+        }, 350);
+      });
+    });
+
+    document.getElementById('formClose').addEventListener('click', () => {
+      wrapper.classList.remove('open');
+    });
+
+    let formOpenedAt = 0;
+    const origAddOpen = wrapper.classList.add.bind(wrapper.classList);
+    const origObserver = new MutationObserver(() => {
+      if (wrapper.classList.contains('open')) formOpenedAt = Date.now();
+    });
+    origObserver.observe(wrapper, { attributes: true, attributeFilter: ['class'] });
+
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Honeypot check
+      if (document.getElementById('website').value) return;
+
+      // Timing check — reject if submitted less than 2 seconds after form opened
+      if (Date.now() - formOpenedAt < 2000) return;
+
+      const btn = e.target.querySelector('button[type="submit"]');
+      const status = document.getElementById('formStatus');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      status.textContent = '';
+      status.className = 'form-status';
+
+      try {
+        const res = await fetch('https://airindex.io/api/vdg-contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            type: document.getElementById('type').value,
+            message: document.getElementById('message').value
+          })
+        });
+
+        if (res.ok) {
+          status.textContent = 'Message sent. We\'ll be in touch.';
+          status.className = 'form-status success';
+          e.target.reset();
+          setTimeout(() => wrapper.classList.remove('open'), 2000);
+        } else {
+          throw new Error();
+        }
+      } catch {
+        status.textContent = 'Something went wrong. Please try again or email hello@airindex.io directly.';
+        status.className = 'form-status error';
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Send message';
+    });
+  </script>
+</body>
+</html>

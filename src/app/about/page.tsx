@@ -114,7 +114,7 @@ export default function AboutPage() {
           <h2 style={sectionHeading}>The Company</h2>
           <div className="space-y-6 text-white/80 leading-relaxed">
             <p>
-              Vertical Data Group, LLC is a South Carolina-based data intelligence company
+              <a href="https://verticaldatagroup.com" target="_blank" rel="noopener" className="text-[#00d4ff] hover:underline">Vertical Data Group, LLC</a> is a South Carolina-based data intelligence company
               founded in March 2026. AirIndex is our first product — the UAM market readiness
               index we built because it didn&apos;t exist and the industry needed it.
             </p>
@@ -194,7 +194,7 @@ export default function AboutPage() {
 
         {/* Footer */}
         <div className="border-t border-white/10 pt-8 text-xs text-white/40 space-y-2">
-          <p>Vertical Data Group, LLC &middot; PO Box 31172 &middot; Myrtle Beach, SC 29588</p>
+          <p><a href="https://verticaldatagroup.com" target="_blank" rel="noopener" className="text-white/40 hover:text-white/60 transition-colors">Vertical Data Group, LLC</a> &middot; PO Box 31172 &middot; Myrtle Beach, SC 29588</p>
           <p>
             <Link href="/" className="text-white/40 hover:text-white/60 transition-colors">airindex.io</Link>
             {" "}&middot;{" "}

@@ -150,7 +150,7 @@ export default function PrivacyPage() {
           Effective Date: March 6, 2026 &middot; Last Updated: March 16, 2026
         </p>
         <p style={{ color: "#666", fontSize: 11, marginBottom: 40 }}>
-          Vertical Data Group, LLC &middot; airindex.io
+          <a href="https://verticaldatagroup.com" target="_blank" rel="noopener" style={{ color: "#666", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>Vertical Data Group, LLC</a> &middot; airindex.io
         </p>
 
         {/* Privacy First callout */}
