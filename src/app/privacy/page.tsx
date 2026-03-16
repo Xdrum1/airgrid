@@ -147,7 +147,7 @@ export default function PrivacyPage() {
         </h1>
 
         <p style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>
-          Effective Date: March 6, 2026 &middot; Last Updated: March 6, 2026
+          Effective Date: March 6, 2026 &middot; Last Updated: March 16, 2026
         </p>
         <p style={{ color: "#666", fontSize: 11, marginBottom: 40 }}>
           Vertical Data Group, LLC &middot; airindex.io
@@ -183,8 +183,9 @@ export default function PrivacyPage() {
 
         <h3 style={S.h3}>1.1 Information You Provide Directly</h3>
         <ul style={S.ul}>
-          <li><strong style={S.strong}>Account information</strong> — name and email address when you create an account</li>
-          <li><strong style={S.strong}>Payment information</strong> — billing name, billing address, and last 4 digits of your payment card. Your full card number is entered directly into Stripe&apos;s secure form and is never transmitted to or stored on our servers</li>
+          <li><strong style={S.strong}>Account information</strong> — name, email address, and professional role (e.g., &ldquo;City Planner,&rdquo; &ldquo;Investor&rdquo;) when you create an account or complete onboarding</li>
+          <li><strong style={S.strong}>Access request information</strong> — email address, professional role, and optional context you provide when requesting access to the platform</li>
+          <li><strong style={S.strong}>Payment and subscription information</strong> — billing name, billing address, last 4 digits of your payment card, subscription tier, and subscription status (active, canceled, past due). Your full card number is entered directly into Stripe&apos;s secure form and is never transmitted to or stored on our servers. We store a Stripe customer identifier to manage your subscription</li>
           <li><strong style={S.strong}>Alert and subscription preferences</strong> — the markets and corridors you choose to monitor, and how you want to be notified</li>
           <li><strong style={S.strong}>Communications</strong> — any messages you send to <a href="mailto:legal@airindex.io" style={S.link}>legal@airindex.io</a></li>
         </ul>
