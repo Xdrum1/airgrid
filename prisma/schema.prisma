@@ -449,6 +449,12 @@ model EmergingMarketSignal {
   classifiedAt DateTime
   ingestedAt   DateTime @default(now())
 
+  // Classification audit trail — same discipline as AirIndex ClassificationResult
+  promptVersion     String?  // e.g. "emerging-v1"
+  modelUsed         String?  // e.g. "claude-haiku-4-5-20251001"
+  confidence        String?  // "high" | "medium" | "low" — classifier self-assessed confidence
+  rawClassification Json?    // full Claude API response for reproducibility audit
+
   @@unique([source, sourceId])
   @@index([marketName])
   @@index([source])

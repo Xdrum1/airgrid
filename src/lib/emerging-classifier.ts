@@ -40,6 +40,15 @@ export interface EmergingClassification {
   signalType: string;
   momentum: string;
   marketName: string;
+  confidence: string;
+}
+
+/** Full batch result including raw API response for audit trail */
+export interface EmergingClassificationBatch {
+  classifications: EmergingClassification[];
+  rawResponse: string;
+  promptVersion: string;
+  modelUsed: string;
 }
 
 // -------------------------------------------------------
@@ -94,6 +103,11 @@ For each record, output:
    - "DePIN"
    - "Other" (if relevant but doesn't fit neatly)
 
+5. **confidence** (string, exactly one of):
+   - "high" — clear, unambiguous signal with direct relevance to a target market
+   - "medium" — likely relevant but some ambiguity in market fit or signal strength
+   - "low" — weak or tangential signal, borderline relevance
+
 ## Output Format
 
 Return a JSON array. One object per input record, in the same order:
@@ -105,18 +119,19 @@ Return a JSON array. One object per input record, in the same order:
     "relevant": true,
     "signal_type": "grant_award",
     "momentum": "positive",
-    "market_name": "Nuclear SMR"
+    "market_name": "Nuclear SMR",
+    "confidence": "high"
   }
 ]
 \`\`\`
 
-If a record is not relevant, still include it with relevant: false. Use signal_type: "other", momentum: "neutral", and market_name: "Other" for irrelevant records.`;
+If a record is not relevant, still include it with relevant: false. Use signal_type: "other", momentum: "neutral", market_name: "Other", and confidence: "low" for irrelevant records.`;
 
 // -------------------------------------------------------
 // Classification
 // -------------------------------------------------------
 
-async function classifyBatch(records: EmergingRawRecord[]): Promise<EmergingClassification[]> {
+async function classifyBatch(records: EmergingRawRecord[]): Promise<EmergingClassificationBatch> {
   const client = getClient();
 
   const recordList = records
@@ -145,38 +160,47 @@ async function classifyBatch(records: EmergingRawRecord[]): Promise<EmergingClas
     const jsonMatch = text.match(/\[[\s\S]*\]/);
     if (!jsonMatch) {
       log.warn("No JSON array found in classifier response");
-      return [];
+      return { classifications: [], rawResponse: text, promptVersion: PROMPT_VERSION, modelUsed: MODEL };
     }
 
     const parsed = JSON.parse(jsonMatch[0]);
-    if (!Array.isArray(parsed)) return [];
+    if (!Array.isArray(parsed)) {
+      return { classifications: [], rawResponse: text, promptVersion: PROMPT_VERSION, modelUsed: MODEL };
+    }
 
-    return parsed.map((item: Record<string, unknown>) => ({
+    const classifications = parsed.map((item: Record<string, unknown>) => ({
       sourceId: String(item.source_id ?? ""),
       relevant: Boolean(item.relevant),
       signalType: String(item.signal_type ?? "other"),
       momentum: String(item.momentum ?? "neutral"),
       marketName: String(item.market_name ?? "Other"),
+      confidence: String(item.confidence ?? "low"),
     }));
+
+    return { classifications, rawResponse: text, promptVersion: PROMPT_VERSION, modelUsed: MODEL };
   } catch (err) {
     log.error("Classification batch failed:", err);
-    return [];
+    return { classifications: [], rawResponse: String(err), promptVersion: PROMPT_VERSION, modelUsed: MODEL };
   }
 }
 
 export async function classifyEmergingRecords(
   records: EmergingRawRecord[]
-): Promise<EmergingClassification[]> {
-  if (records.length === 0) return [];
+): Promise<EmergingClassificationBatch> {
+  if (records.length === 0) {
+    return { classifications: [], rawResponse: "", promptVersion: PROMPT_VERSION, modelUsed: MODEL };
+  }
 
-  const results: EmergingClassification[] = [];
+  const allClassifications: EmergingClassification[] = [];
+  const allRawResponses: string[] = [];
 
   for (let i = 0; i < records.length; i += BATCH_SIZE) {
     const batch = records.slice(i, i + BATCH_SIZE);
     log.info(`Classifying batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(records.length / BATCH_SIZE)} (${batch.length} records)`);
 
-    const classified = await classifyBatch(batch);
-    results.push(...classified);
+    const result = await classifyBatch(batch);
+    allClassifications.push(...result.classifications);
+    allRawResponses.push(result.rawResponse);
 
     // Small delay between batches to avoid rate limits
     if (i + BATCH_SIZE < records.length) {
@@ -184,8 +208,13 @@ export async function classifyEmergingRecords(
     }
   }
 
-  const relevant = results.filter((r) => r.relevant).length;
-  log.info(`Classification complete: ${results.length} classified, ${relevant} relevant (${PROMPT_VERSION})`);
+  const relevant = allClassifications.filter((r) => r.relevant).length;
+  log.info(`Classification complete: ${allClassifications.length} classified, ${relevant} relevant (${PROMPT_VERSION})`);
 
-  return results;
+  return {
+    classifications: allClassifications,
+    rawResponse: allRawResponses.join("\n---\n"),
+    promptVersion: PROMPT_VERSION,
+    modelUsed: MODEL,
+  };
 }

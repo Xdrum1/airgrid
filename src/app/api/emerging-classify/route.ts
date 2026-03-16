@@ -44,9 +44,10 @@ async function runClassification(): Promise<Response> {
     }));
 
     // Classify
-    const classifications = await classifyEmergingRecords(rawRecords);
+    const { classifications, rawResponse, promptVersion, modelUsed } =
+      await classifyEmergingRecords(rawRecords);
 
-    // Update records with classification results
+    // Update records with classification results + audit trail
     let updated = 0;
     let relevant = 0;
 
@@ -65,7 +66,12 @@ async function runClassification(): Promise<Response> {
             relevant: isRelevant,
             signalType: classification.signalType,
             momentum: classification.momentum,
+            confidence: classification.confidence,
             classifiedAt: new Date(),
+            // Audit trail — same discipline as AirIndex ClassificationResult
+            promptVersion,
+            modelUsed,
+            rawClassification: rawResponse,
           },
         });
         updated++;
