@@ -3,20 +3,17 @@ import { requireAdmin, getClientIp, authorizeCron } from "@/lib/admin-helpers";
 import { rateLimit } from "@/lib/rate-limit";
 import { alertCronFailure } from "@/lib/cron-alerts";
 
-// Extend Lambda timeout for AI processing
-export const maxDuration = 120;
-
 // -------------------------------------------------------
-// POST — Admin-triggered auto-review (streaming to avoid gateway timeout)
+// POST — Admin-triggered auto-review (batch)
 // -------------------------------------------------------
 
 export async function POST(request: NextRequest) {
   const denied = await requireAdmin(request);
   if (denied) return denied;
 
-  // Rate limit: 3 per 10 minutes per IP
+  // Rate limit: 10 per 10 minutes per IP (higher for batch approach)
   const ip = getClientIp(request);
-  const rl = await rateLimit(`auto-review:${ip}`, 3, 10 * 60 * 1000);
+  const rl = await rateLimit(`auto-review:${ip}`, 10, 10 * 60 * 1000);
   if (!rl.allowed) {
     return NextResponse.json(
       { error: "Rate limit exceeded. Try again later." },
@@ -31,85 +28,61 @@ export async function POST(request: NextRequest) {
     // empty body is fine — use defaults
   }
 
-  const maxOverrides = Math.min(body.maxOverrides ?? 20, 50);
+  const maxOverrides = Math.min(body.maxOverrides ?? 5, 10);
   const dryRun = body.dryRun ?? false;
   const fetchSource = body.fetchSource ?? true;
 
-  return streamAutoReview({ maxOverrides, dryRun, fetchSource });
+  return runBatch({ maxOverrides, dryRun, fetchSource });
 }
 
 // -------------------------------------------------------
-// GET — Cron-triggered auto-review (streaming to avoid gateway timeout)
+// GET — Cron-triggered auto-review (batch of 5)
 // -------------------------------------------------------
 
 export async function GET(request: NextRequest) {
   const denied = authorizeCron(request);
   if (denied) return denied;
 
-  return streamAutoReview({
-    maxOverrides: 20,
+  return runBatch({
+    maxOverrides: 5,
     dryRun: false,
     fetchSource: true,
   });
 }
 
 // -------------------------------------------------------
-// Streaming wrapper — keeps Amplify gateway alive
+// Batch runner — processes a small batch and returns JSON
 // -------------------------------------------------------
 
-function streamAutoReview(options: {
+async function runBatch(options: {
   maxOverrides: number;
   dryRun: boolean;
   fetchSource: boolean;
-}): Response {
-  const encoder = new TextEncoder();
+}): Promise<NextResponse> {
+  try {
+    const { runAutoReview } = await import("@/lib/auto-reviewer");
+    const summary = await runAutoReview(options);
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      controller.enqueue(encoder.encode("data: {\"status\":\"started\"}\n\n"));
+    // Count remaining pending overrides
+    const { getPendingOverrides } = await import("@/lib/admin");
+    const pending = await getPendingOverrides();
+    const remaining = Math.max(0, pending.length - summary.processed);
 
-      const keepalive = setInterval(() => {
-        try {
-          controller.enqueue(encoder.encode("data: {\"status\":\"running\"}\n\n"));
-        } catch {
-          clearInterval(keepalive);
-        }
-      }, 10_000);
+    return NextResponse.json({
+      success: true,
+      ...summary,
+      remaining,
+    });
+  } catch (err) {
+    console.error("[API /auto-review] Error:", err);
+    await alertCronFailure("auto-review", err);
 
-      try {
-        const { runAutoReview } = await import("@/lib/auto-reviewer");
-        const summary = await runAutoReview(options);
-        clearInterval(keepalive);
-
-        const result = JSON.stringify({
-          status: "complete",
-          success: true,
-          ...summary,
-        });
-
-        controller.enqueue(encoder.encode(`data: ${result}\n\n`));
-        controller.close();
-      } catch (err) {
-        clearInterval(keepalive);
-        console.error("[API /auto-review] Error:", err);
-        await alertCronFailure("auto-review", err);
-
-        const error = JSON.stringify({
-          status: "error",
-          success: false,
-          error: err instanceof Error ? err.message : String(err),
-        });
-        controller.enqueue(encoder.encode(`data: ${error}\n\n`));
-        controller.close();
-      }
-    },
-  });
-
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-    },
-  });
+    return NextResponse.json(
+      {
+        success: false,
+        error: err instanceof Error ? err.message : String(err),
+      },
+      { status: 500 }
+    );
+  }
 }

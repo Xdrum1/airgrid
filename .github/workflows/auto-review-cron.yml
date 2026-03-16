@@ -21,40 +21,65 @@ jobs:
             echo "::warning::Health check returned $HTTP_CODE — app may be degraded"
           fi
 
-      - name: Trigger auto-review endpoint
+      - name: Run auto-review in batches
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           APP_URL: ${{ vars.APP_URL }}
         run: |
           URL="${APP_URL:-https://www.airindex.io}"
-          # Streaming response — collect full output, check last event for result
-          RESPONSE=$(curl -s -w "\n%{http_code}" \
-            --max-time 120 \
-            -H "Authorization: Bearer $CRON_SECRET" \
-            "$URL/api/admin/overrides/auto-review")
+          TOTAL_PROCESSED=0
+          TOTAL_APPROVED=0
+          TOTAL_REJECTED=0
+          TOTAL_RECOMMENDED=0
+          TOTAL_AUTO_PROMOTED=0
+          MAX_ITERATIONS=20
 
-          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
-          BODY=$(echo "$RESPONSE" | sed '$d')
+          for i in $(seq 1 $MAX_ITERATIONS); do
+            echo "--- Batch $i ---"
+            RESPONSE=$(curl -s -w "\n%{http_code}" \
+              --max-time 60 \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              "$URL/api/admin/overrides/auto-review")
 
-          echo "Status: $HTTP_CODE"
-          echo "Response: $BODY"
+            HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+            BODY=$(echo "$RESPONSE" | sed '$d')
 
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "::error::Auto-review failed with status $HTTP_CODE"
-            exit 1
-          fi
+            echo "Status: $HTTP_CODE"
+            echo "Response: $BODY"
 
-          # Check the final SSE event for success
-          LAST_EVENT=$(echo "$BODY" | grep "^data:" | tail -1 | sed 's/^data: //')
-          echo "Final event: $LAST_EVENT"
+            if [ "$HTTP_CODE" != "200" ]; then
+              echo "::error::Auto-review batch $i failed with status $HTTP_CODE"
+              exit 1
+            fi
 
-          if echo "$LAST_EVENT" | grep -q '"status":"error"'; then
-            echo "::error::Auto-review completed with error"
-            exit 1
-          fi
+            PROCESSED=$(echo "$BODY" | jq -r '.processed // 0')
+            APPROVED=$(echo "$BODY" | jq -r '.approved // 0')
+            REJECTED=$(echo "$BODY" | jq -r '.rejected // 0')
+            RECOMMENDED=$(echo "$BODY" | jq -r '.recommended // 0')
+            AUTO_PROMOTED=$(echo "$BODY" | jq -r '.autoPromoted // 0')
+            REMAINING=$(echo "$BODY" | jq -r '.remaining // 0')
 
-          if echo "$LAST_EVENT" | grep -q '"status":"complete"'; then
-            echo "Auto-review completed successfully"
-          else
-            echo "::warning::Unexpected final event status"
-          fi
+            TOTAL_PROCESSED=$((TOTAL_PROCESSED + PROCESSED))
+            TOTAL_APPROVED=$((TOTAL_APPROVED + APPROVED))
+            TOTAL_REJECTED=$((TOTAL_REJECTED + REJECTED))
+            TOTAL_RECOMMENDED=$((TOTAL_RECOMMENDED + RECOMMENDED))
+            TOTAL_AUTO_PROMOTED=$((TOTAL_AUTO_PROMOTED + AUTO_PROMOTED))
+
+            echo "Batch processed: $PROCESSED, remaining: $REMAINING"
+
+            if [ "$REMAINING" = "0" ] || [ "$PROCESSED" = "0" ]; then
+              echo "All overrides processed."
+              break
+            fi
+
+            # Brief pause between batches
+            sleep 3
+          done
+
+          echo ""
+          echo "=== Auto-review complete ==="
+          echo "Total processed: $TOTAL_PROCESSED"
+          echo "Approved: $TOTAL_APPROVED"
+          echo "Rejected: $TOTAL_REJECTED"
+          echo "Recommended: $TOTAL_RECOMMENDED"
+          echo "Auto-promoted: $TOTAL_AUTO_PROMOTED"
