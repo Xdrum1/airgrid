@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import TrackPageView from "@/components/TrackPageView";
+import SiteNav from "@/components/SiteNav";
 import { MARKET_COUNT } from "@/data/seed";
 
 export const metadata: Metadata = {
@@ -28,18 +29,7 @@ export default function AboutPage() {
     >
       <TrackPageView page="about" />
 
-      {/* Nav */}
-      <nav className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-        <Link href="/" className="text-lg font-bold tracking-wide" style={{ fontFamily: "var(--font-syne), sans-serif" }}>
-          AIRINDEX
-        </Link>
-        <div className="flex items-center gap-6 text-sm text-white/60">
-          <Link href="/methodology" className="hover:text-white transition-colors">Methodology</Link>
-          <Link href="/api" className="hover:text-white transition-colors">API</Link>
-          <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
-          <Link href="/login" className="hover:text-white transition-colors">Sign in</Link>
-        </div>
-      </nav>
+      <SiteNav />
 
       {/* Content */}
       <div className="max-w-2xl mx-auto px-6 py-16 space-y-10">

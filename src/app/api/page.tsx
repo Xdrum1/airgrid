@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import TrackPageView from "@/components/TrackPageView";
+import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
   title: "API — AirIndex",
@@ -57,14 +58,6 @@ const FEATURES = [
   },
 ];
 
-const linkStyle = {
-  color: "#888",
-  fontSize: 11,
-  letterSpacing: "0.06em",
-  textDecoration: "none" as const,
-  fontFamily: "'Inter', sans-serif",
-};
-
 export default function ApiLandingPage() {
   return (
     <div
@@ -80,25 +73,7 @@ export default function ApiLandingPage() {
     >
       <TrackPageView page="/api" />
 
-      {/* Nav */}
-      <nav
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "16px clamp(20px, 5vw, 64px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-          <img src="/images/logo/airindex-wordmark.svg" alt="AirIndex" style={{ height: 26 }} />
-        </Link>
-        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <Link href="/dashboard" style={linkStyle}>DASHBOARD</Link>
-          <Link href="/methodology" style={linkStyle}>METHODOLOGY</Link>
-          <Link href="/pricing" style={linkStyle}>PRICING</Link>
-        </div>
-      </nav>
+      <SiteNav />
 
       <main style={{ maxWidth: 720, margin: "0 auto", padding: "48px clamp(20px, 5vw, 32px) 80px" }}>
         {/* Header */}
