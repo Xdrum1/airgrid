@@ -316,16 +316,16 @@ export default async function LandingPage() {
             {
               icon: "⊘",
               accent: "#ef4444",
-              title: "Market Watch List",
+              title: "Market Watch & Outlook",
               description:
-                "Automated pipeline-driven intelligence that surfaces markets showing momentum signals before scores move. When legislation is advancing, overrides are pending, or signal activity is elevated \u2014 the watch list flags it.",
+                "Watch status and 6-month outlook on every rated market. Surfaces momentum signals — advancing legislation, pending overrides, elevated activity — before scores move. Know which cities are on the move with analyst notes explaining the signal.",
             },
             {
               icon: "◉",
               accent: "#ff6b35",
-              title: "Regulatory Ingestion",
+              title: "Regulatory & Filing Intelligence",
               description:
-                "Automated data from Federal Register, LegiScan, FAA LAANC, and SEC EDGAR. Filings surfaced by market with source attribution.",
+                "Automated pipeline monitoring federal, state, and operator filings across multiple primary sources. Every signal classified by market, sourced, and timestamped.",
             },
             {
               icon: "⚡",
@@ -333,13 +333,6 @@ export default async function LandingPage() {
               title: "Alerts & Subscriptions",
               description:
                 "Market-level and corridor-level change notifications. Subscribe to the markets and corridors you care about — get notified when the data moves.",
-            },
-            {
-              icon: "◆",
-              accent: "#e879f9",
-              title: "Market Watch & Analyst Outlook",
-              description:
-                "Moody\u2019s-style watch status and 6-month outlook on every rated market. Know which cities are on the move before scores change \u2014 with analyst notes explaining the signal.",
             },
           ].map((card) => (
             <div
