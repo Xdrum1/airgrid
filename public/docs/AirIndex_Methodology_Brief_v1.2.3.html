@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AirIndex Methodology Brief v1.2</title>
+<title>AirIndex Methodology Brief v1.2.3</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
@@ -153,7 +153,7 @@
   <div class="cover-label">AIRINDEX</div>
   <h1>UAM Market Readiness Index</h1>
   <div class="cover-sub">Methodology Brief</div>
-  <div class="cover-meta">Version 1.2.2 &middot; March 2026 &middot; Vertical Data Group, LLC</div>
+  <div class="cover-meta">Version 1.2.3 &middot; March 2026 &middot; Vertical Data Group, LLC</div>
 </div>
 <div class="cover-bar"></div>
 
@@ -408,7 +408,7 @@
 </table>
 
 <h3>Methodology Version Log</h3>
-<p>Changes to the scoring methodology, data sources, or classification logic are versioned and documented. The current version is 1.2.2.</p>
+<p>Changes to the scoring methodology, data sources, or classification logic are versioned and documented. The current version is 1.2.3.</p>
 
 <table>
   <tr><th style="width:60px">VERSION</th><th style="width:110px">DATE</th><th>CHANGES</th></tr>
@@ -417,6 +417,7 @@
   <tr><td><span class="version-tag new">v1.2</span></td><td>March 14, 2026</td><td>Classification prompt v4: stock-framed false negative fix, Bay Area metro geographic mappings (17 areas), federal vs. state factor distinction. Accuracy improved from ~80% to ~88&ndash;90% (35-record audit). Two-source hierarchy policy established for score promotion. Federal Register search terms expanded with FAA eVTOL/AAM Integration Pilot Program docket monitoring.</td></tr>
   <tr><td><span class="version-tag new">v1.2.1</span></td><td>March 14, 2026</td><td>Graduated legislation scoring: State Legislation factor converted from binary (enacted/none) to three-tier model (enacted 10 pts / actively_moving 5 pts / none 0 pts). Based on LegiScan data analysis across 398 records and 49 states. Phoenix +5 (AZ SB1827), Columbus +5 (OH HR304), Chicago +5 (IL HB3190). Market Watch List launched &mdash; automated pipeline-driven intelligence layer with 3 trigger types (LEGISLATION, PIPELINE_OVERRIDE, ELEVATED_ACTIVITY). 15 active entries at launch.</td></tr>
   <tr><td><span class="version-tag new">v1.2.2</span></td><td>March 14, 2026</td><td>Prompt v5: Stock filter tuning for articles containing both regulatory news and stock commentary (DOT/FAA pilot program few-shot examples added). URL deduplication improved &mdash; MarketScreener domain-level normalization and tracking parameter stripping.</td></tr>
+  <tr><td><span class="version-tag new">v1.2.3</span></td><td>March 17, 2026</td><td>Confidence cap for news-sourced overrides on primary-source-required fields (hasActivePilotProgram, hasVertiportZoning, stateLegislationStatus). Classifier confidence is now evaluated independently of source quality tier &mdash; high-confidence news classifications route to watch list only, not auto-promotion queue. San Francisco score corrected from 75 to 60: Joby Bay Area demo flight is a watch list signal, not pilot program confirmation.</td></tr>
 </table>
 
 <!-- ═══════════════ 9. LIMITATIONS ═══════════════ -->
@@ -447,6 +448,14 @@
     <p>High-confidence classifications occasionally dropped real regulatory signals when articles framed underlying events in financial rather than regulatory terms. Resolved in v1.2 prompt update &mdash; 7/7 stock-framed test cases correctly filtered. DOT "Future of Flight" edge case resolved in v1.2.2 with targeted few-shot examples for government programs wrapped in stock commentary.</p>
   </div>
   <span class="lim-status lim-resolved">RESOLVED v1.2.2</span>
+</div>
+
+<div class="limitation no-break">
+  <div class="lim-content">
+    <strong>News-Sourced Override Auto-Promotion</strong>
+    <p>High-confidence classifications from news sources could bypass the two-source hierarchy and auto-promote score changes on primary-source-required factors (hasActivePilotProgram, hasVertiportZoning, stateLegislationStatus). Resolved in v1.2.3 with a confidence cap that evaluates classifier confidence independently of source quality tier. News-sourced overrides on restricted fields are capped at medium confidence regardless of classifier output, routing them to the watch list instead of the auto-promotion queue. San Francisco score corrected from 75 to 60 as a result.</p>
+  </div>
+  <span class="lim-status lim-resolved">RESOLVED v1.2.3</span>
 </div>
 
 <div class="limitation no-break">
@@ -486,7 +495,7 @@
 </div>
 
 <div class="page-footer">
-  <span>AirIndex UAM Market Readiness Index &mdash; Methodology Brief<br>Vertical Data Group, LLC | Confidential | Version 1.2.2 | March 2026</span>
+  <span>AirIndex UAM Market Readiness Index &mdash; Methodology Brief<br>Vertical Data Group, LLC | Confidential | Version 1.2.3 | March 2026</span>
 </div>
 
 </body>

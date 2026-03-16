@@ -228,33 +228,6 @@ export default async function LandingPage() {
         </section>
       </ScrollReveal>
 
-      {/* ======== Data Statement ======== */}
-      <ScrollReveal>
-        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "40px 20px 0" }}>
-          <div style={{
-            textAlign: "center",
-            padding: "28px 32px",
-            border: "1px solid rgba(0,212,255,0.12)",
-            borderRadius: 10,
-            background: "rgba(0,212,255,0.02)",
-          }}>
-            <p style={{
-              fontFamily: "'Inter', sans-serif",
-              color: "#999",
-              fontSize: 13,
-              lineHeight: 1.7,
-              margin: 0,
-              maxWidth: 720,
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}>
-              Every score is backed by a live pipeline monitoring federal, state, and operator primary sources
-              — classified, verified, and auditable.
-            </p>
-          </div>
-        </section>
-      </ScrollReveal>
-
       {/* ======== Capabilities ======== */}
       <ScrollReveal>
       <section
