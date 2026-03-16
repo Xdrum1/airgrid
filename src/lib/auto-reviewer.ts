@@ -879,13 +879,12 @@ export async function runAutoReview(
     fetchSource = true,
   } = options;
 
-  // Clean up dead __review__ overrides that already have a skip/reject AutoReviewResult
-  // These will never be actionable — clear the backlog
+  // Clean up overrides already skipped/rejected by auto-review
+  // These will never be auto-approved — supersede them to clear the backlog
   if (!dryRun) {
     try {
       const prisma = await getPrisma();
 
-      // Find __review__ overrides that have been reviewed and skipped/rejected
       const reviewedSkips = await prisma.autoReviewResult.findMany({
         where: { decision: { in: ["skip", "reject"] } },
         select: { overrideId: true },
@@ -896,7 +895,6 @@ export async function runAutoReview(
       if (reviewedIds.size > 0) {
         const deadOverrides = await prisma.scoringOverride.findMany({
           where: {
-            field: "__review__",
             appliedAt: null,
             supersededAt: null,
             id: { in: Array.from(reviewedIds) },
@@ -911,7 +909,7 @@ export async function runAutoReview(
             data: { supersededAt: now },
           });
           logger.info(
-            `[auto-review] Cleaned up ${deadOverrides.length} dead __review__ overrides`
+            `[auto-review] Cleaned up ${deadOverrides.length} previously-skipped overrides`
           );
         }
       }
