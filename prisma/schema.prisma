@@ -433,6 +433,26 @@ model MarketLead {
   @@index([priority])
 }
 
+// ── Event-Driven Signal Layer (Phase 2) ─────────────────
+
+model SignalEvent {
+  id         String    @id @default(cuid())
+  source     String    // "federal_register" | "legiscan" | "sec_edgar" | "operator_news"
+  cityId     String
+  eventType  String    // regulatory_filing | legislative_activity | operator_announcement | faa_update
+  title      String
+  sourceUrl  String?
+  confidence String    // "high" | "medium" | "needs_review"
+  rawRecord  Json      // original record data for audit
+  detectedAt DateTime  @default(now())
+  notifiedAt DateTime? // when Pro+ subscribers were notified (null = pending)
+
+  @@index([cityId, detectedAt])
+  @@index([source])
+  @@index([eventType])
+  @@index([confidence, detectedAt])
+}
+
 // ── Emerging Markets Stealth Pipeline ────────────────────
 
 model EmergingMarketSignal {

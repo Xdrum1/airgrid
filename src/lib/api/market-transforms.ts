@@ -117,6 +117,66 @@ export function transformMarketDetail(
 }
 
 // -------------------------------------------------------
+// Trajectory entry (used in /markets/[cityId]/trajectory)
+// -------------------------------------------------------
+
+import type { TrajectoryPoint, TrajectorySummary } from "@/lib/score-history";
+
+const FACTOR_LABELS: Record<string, string> = {
+  activePilotProgram: "Active Pilot Program",
+  approvedVertiport: "Approved Vertiport",
+  activeOperatorPresence: "Operator Presence",
+  vertiportZoning: "Vertiport Zoning",
+  regulatoryPosture: "Regulatory Posture",
+  stateLegislation: "State Legislation",
+  laancCoverage: "LAANC Coverage",
+};
+
+function humanFactorName(key: string): string {
+  return FACTOR_LABELS[key] ?? key;
+}
+
+export function transformTrajectoryEntry(point: TrajectoryPoint) {
+  return toSnakeCase({
+    score: point.score,
+    previousScore: point.previousScore,
+    scoreDelta: point.scoreDelta,
+    tier: point.tier,
+    breakdown: Object.fromEntries(
+      Object.entries(point.breakdown).map(([k, v]) => [humanFactorName(k), v]),
+    ),
+    factorDeltas: point.factorDeltas.map((d) => ({
+      factor: humanFactorName(d.factor),
+      previous: d.previous,
+      current: d.current,
+      delta: d.delta,
+    })),
+    capturedAt: point.capturedAt,
+    triggeringEventId: point.triggeringEventId,
+    filingIngestedAt: point.filingIngestedAt,
+    triggeringEvent: point.triggeringEvent
+      ? {
+          summary: point.triggeringEvent.summary,
+          sourceUrl: point.triggeringEvent.sourceUrl,
+          changeType: point.triggeringEvent.changeType,
+          timestamp: point.triggeringEvent.timestamp,
+        }
+      : null,
+  });
+}
+
+export function transformTrajectorySummary(summary: TrajectorySummary) {
+  return toSnakeCase({
+    entries: summary.entries,
+    firstSnapshot: summary.firstSnapshot,
+    lastSnapshot: summary.lastSnapshot,
+    scoreRange: summary.scoreRange,
+    netScoreChange: summary.netScoreChange,
+    factorsChanged: summary.factorsChanged.map(humanFactorName),
+  });
+}
+
+// -------------------------------------------------------
 // History entry (used in /markets/[cityId]/history)
 // -------------------------------------------------------
 
