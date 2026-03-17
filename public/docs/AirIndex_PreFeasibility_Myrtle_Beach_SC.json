@@ -1,0 +1,108 @@
+{
+  "city": "Myrtle Beach",
+  "state": "SC",
+  "metro": "Myrtle Beach–Horry Metro",
+  "lat": 33.6956461,
+  "lng": -78.8900409,
+  "populationCity": "35,682",
+  "populationMetro": "—",
+  "marketProfile": "Small city",
+  "preparedFor": "Rex Alexander",
+  "hasActivePilotProgram": false,
+  "hasVertiportZoning": false,
+  "vertiportCount": 0,
+  "activeOperators": [],
+  "regulatoryPosture": "neutral",
+  "stateLegislationStatus": "none",
+  "hasLaancCoverage": true,
+  "laancNote": "Myrtle Beach area airport covered · outlying areas may not be covered",
+  "legislationBill": "",
+  "gapNotes": {
+    "activePilotProgram": "No FAA-sanctioned UAM/eVTOL pilot program. Highest-weight factor. Requires Federal Register filing — White House AAM Pilot Program or FAA BEYOND designation.",
+    "approvedVertiport": "No vertiport has received regulatory approval. No known active development projects in the Myrtle Beach market area.",
+    "activeOperatorPresence": "No eVTOL operator has announced or commenced operations. Joby, Archer, and Beta all have no visible presence in this market.",
+    "vertiportZoning": "No municipal or county zoning framework accommodates vertiport infrastructure. Horry County and Myrtle Beach have no UAM-specific land-use provisions on record.",
+    "regulatoryPosture": "Currently Neutral. Local government has not taken a public position on UAM. No ordinances, resolutions, or pilot programs initiated.",
+    "stateLegislation": "No UAM-related legislation found in SC. 0 points. State legislation is a 5-10 point opportunity.",
+    "laancCoverage": "LAANC coverage confirmed near Myrtle Beach. Myrtle Beach area airport covered · outlying areas may not be covered"
+  },
+  "priorityActions": [
+    {
+      "title": "Engage local government",
+      "description": "Present AirIndex data to Myrtle Beach City Council and Horry County planning. UAM is not on their radar — this is the first step per 30 years of infrastructure development experience. Community awareness precedes every other action."
+    },
+    {
+      "title": "Commission a vertiport feasibility study",
+      "description": "Answer the fundamental infrastructure questions: grid capacity, structural load, airspace class, community acceptance. The $500K–$1M/mile grid extension cost makes this a critical early decision point."
+    },
+    {
+      "title": "Advocate for SC state legislation",
+      "description": "No UAM legislation found in SC. State legislation provides the legal certainty operators need before committing capital. Texas HB 1735 is the gold standard — it created a statewide legal framework. Engage state representatives to introduce a UAM framework bill."
+    },
+    {
+      "title": "Identify a pilot program pathway",
+      "description": "The White House AAM Pilot Program and FAA eVTOL Integration Pilot Program are the two primary federal pathways to 20 points. Connecting city leadership to FAA regional office is the precursor step."
+    }
+  ],
+  "infraQuestions": [
+    "What is the grid capacity near potential vertiport sites in Myrtle Beach? Nearest electrical substation?",
+    "Can existing helipad infrastructure at the nearest airport be adapted for eVTOL operations?",
+    "What structural load requirements apply for rooftop sites in the Myrtle Beach market area?",
+    "Has Horry County planning been engaged on UAM zoning? What is their current position?",
+    "Are there any existing FAA Part 135 operators in the market with AAM adjacency?"
+  ],
+  "federalPrograms": [
+    {
+      "name": "White House AAM Pilot Program",
+      "addresses": "hasActivePilotProgram",
+      "relevance": "Presidential initiative. Miami, Dallas, LA achieved ADVANCED via selection. City application requires demonstrating community preparedness."
+    },
+    {
+      "name": "FAA BEYOND Program",
+      "addresses": "hasActivePilotProgram",
+      "relevance": "FAA BVLOS designation. Provides regulatory pathway for AAM operations. Tourism and coastal geography are potential qualifying use cases."
+    },
+    {
+      "name": "DOT RAISE Grants",
+      "addresses": "hasVertiportZoning / hasApprovedVertiport",
+      "relevance": "Infrastructure funding for multimodal transportation. Vertiport development at the nearest major airport is eligible."
+    },
+    {
+      "name": "NASA AAM National Campaign",
+      "addresses": "hasActivePilotProgram",
+      "relevance": "Community and integration planning program. Participation builds the regulatory framework that precedes pilot program selection."
+    }
+  ],
+  "peers": [
+    {
+      "city": "Charlotte",
+      "state": "NC",
+      "score": 15,
+      "tier": "NASCENT",
+      "note": "Nearest scored market. Regional neighbor. Similar mid-size market profile.",
+      "distanceKm": 247
+    },
+    {
+      "city": "Phoenix",
+      "state": "AZ",
+      "score": 40,
+      "tier": "EARLY",
+      "note": "AZ legislation actively moving — demonstrates state legislation as the fastest path to score improvement.",
+      "distanceKm": 3061
+    },
+    {
+      "city": "San Diego",
+      "state": "CA",
+      "score": 45,
+      "tier": "EARLY",
+      "note": "Higher-scoring comparison market. CA legislation. Military/defense drone testing infrastructure.",
+      "distanceKm": 3542
+    }
+  ],
+  "dataSources": [
+    "Census Bureau Geocoder",
+    "FAA LAANC (UAS Facility Map)",
+    "LegiScan (no results)",
+    "AirIndex Scored Market Index (21 markets)"
+  ]
+}

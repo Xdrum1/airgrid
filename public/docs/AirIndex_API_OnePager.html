@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirIndex API v1 — One-Pager</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050508; color: #ccc; font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.6; }
+    code, .mono { font-family: 'Space Mono', monospace; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    @page { size: letter; margin: 0.4in; }
+  </style>
+</head>
+<body>
+  <div style="max-width: 780px; margin: 0 auto; padding: 32px 24px;">
+
+    <!-- ======== HEADER ======== -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+      <div>
+        <div style="font-size: 10px; letter-spacing: 2px; color: #555; text-transform: uppercase; margin-bottom: 10px;">
+          API &middot; v1.0 &middot; March 2026
+        </div>
+        <h1 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 28px; color: #fff; line-height: 1.2; margin-bottom: 8px;">
+          AirIndex API
+        </h1>
+        <p style="color: #888; font-size: 14px; max-width: 420px; line-height: 1.6;">
+          Programmatic access to UAM market readiness ratings across 20+ U.S. cities. Seven-factor methodology, primary government data sources, real-time updates.
+        </p>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-family: 'Space Mono', monospace; font-weight: 800; font-size: 20px; color: #e0e0e0; letter-spacing: 0.12em;">AIR<span style="color: #00d4ff; font-weight: 400;">INDEX</span></div>
+        <div style="color: #555; font-size: 11px; margin-top: 4px;">airindex.io/api</div>
+        <div style="color: #555; font-size: 11px;">hello@airindex.io</div>
+      </div>
+    </div>
+
+    <!-- ======== TWO-COLUMN LAYOUT ======== -->
+    <div style="display: flex; gap: 24px;">
+
+      <!-- LEFT COLUMN -->
+      <div style="flex: 1.1;">
+
+        <!-- Endpoints -->
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            Endpoints
+          </h2>
+
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 12px 14px; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 9px; letter-spacing: 1px; color: #00ff88; background: rgba(0,255,136,0.08); padding: 2px 6px; border-radius: 3px; font-family: 'Space Mono', monospace;">GET</span>
+              <code style="font-size: 12px; color: #fff;">/api/v1/markets</code>
+            </div>
+            <p style="color: #777; font-size: 12px; margin: 0;">Current readiness ratings for all scored U.S. markets</p>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 12px 14px; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 9px; letter-spacing: 1px; color: #00ff88; background: rgba(0,255,136,0.08); padding: 2px 6px; border-radius: 3px; font-family: 'Space Mono', monospace;">GET</span>
+              <code style="font-size: 12px; color: #fff;">/api/v1/markets/{city_id}</code>
+            </div>
+            <p style="color: #777; font-size: 12px; margin: 0;">Full detail &mdash; operators, corridors, tier history, source citations</p>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 12px 14px; margin-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 9px; letter-spacing: 1px; color: #00ff88; background: rgba(0,255,136,0.08); padding: 2px 6px; border-radius: 3px; font-family: 'Space Mono', monospace;">GET</span>
+              <code style="font-size: 12px; color: #fff;">/api/v1/markets/{city_id}/history</code>
+            </div>
+            <p style="color: #777; font-size: 12px; margin: 0;">Timestamped score history with triggering event attribution</p>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 12px 14px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 9px; letter-spacing: 1px; color: #00ff88; background: rgba(0,255,136,0.08); padding: 2px 6px; border-radius: 3px; font-family: 'Space Mono', monospace;">GET</span>
+              <code style="font-size: 12px; color: #fff;">/api/v1/markets/export</code>
+            </div>
+            <p style="color: #777; font-size: 12px; margin: 0;">Bulk export &mdash; all markets at current ratings, pipeline-ready</p>
+          </div>
+        </div>
+
+        <!-- Example Request -->
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            Example
+          </h2>
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 14px 16px; font-family: 'Space Mono', monospace; font-size: 11px; line-height: 1.8; color: #ccc;">
+            <div style="color: #555;"># Get all ADVANCED-tier markets</div>
+            <div><span style="color: #00d4ff;">curl</span> https://airindex.io/api/v1/markets \</div>
+            <div style="padding-left: 16px;">-H <span style="color: #00ff88;">"Authorization: Bearer aix_your_key"</span></div>
+          </div>
+          <div style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 14px 16px; font-family: 'Space Mono', monospace; font-size: 10px; line-height: 1.7; color: #888; margin-top: 8px;">
+            <div style="color: #555;">// Response envelope</div>
+            <div>{</div>
+            <div style="padding-left: 16px;"><span style="color: #00d4ff;">"meta"</span>: { "total": 21, "methodology": "v1.0" },</div>
+            <div style="padding-left: 16px;"><span style="color: #00d4ff;">"data"</span>: [</div>
+            <div style="padding-left: 32px;">{ "city_id": "dallas", "score": 100, "tier": "ADVANCED", ... }</div>
+            <div style="padding-left: 16px;">]</div>
+            <div>}</div>
+          </div>
+        </div>
+
+        <!-- Data Sources -->
+        <div>
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            Data Sources
+          </h2>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 10px 14px;">
+              <div style="color: #fff; font-weight: 600; font-size: 12px; margin-bottom: 2px;">FAA LAANC</div>
+              <div style="color: #666; font-size: 11px;">UAS Facility Maps, airspace authorization</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 10px 14px;">
+              <div style="color: #fff; font-weight: 600; font-size: 12px; margin-bottom: 2px;">Federal Register</div>
+              <div style="color: #666; font-size: 11px;">FAA rulemakings, eVTOL regulatory filings</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 10px 14px;">
+              <div style="color: #fff; font-weight: 600; font-size: 12px; margin-bottom: 2px;">LegiScan</div>
+              <div style="color: #666; font-size: 11px;">State UAM legislation tracking, 50 states</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 10px 14px;">
+              <div style="color: #fff; font-weight: 600; font-size: 12px; margin-bottom: 2px;">SEC EDGAR</div>
+              <div style="color: #666; font-size: 11px;">Public operator filings (Joby, Archer, Lilium)</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div style="flex: 0.9;">
+
+        <!-- Authentication -->
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            Authentication
+          </h2>
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 14px 16px;">
+            <p style="color: #999; font-size: 12px; line-height: 1.7; margin-bottom: 10px;">
+              All requests require a Bearer token in the <code style="color: #00d4ff; font-size: 11px;">Authorization</code> header. Keys are issued from the AirIndex dashboard.
+            </p>
+            <div style="background: rgba(0,0,0,0.3); border-radius: 4px; padding: 8px 12px; font-family: 'Space Mono', monospace; font-size: 11px; color: #888;">
+              Authorization: Bearer <span style="color: #00d4ff;">aix_</span>xxxxxxxxxxxx
+            </div>
+            <p style="color: #666; font-size: 11px; margin-top: 8px;">
+              Keys are prefixed with <code style="color: #00d4ff; font-size: 10px;">aix_</code>. SHA-256 hashed at rest. Revocable from dashboard.
+            </p>
+          </div>
+        </div>
+
+        <!-- Response Format -->
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            Response Format
+          </h2>
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <tbody>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                <td style="padding: 7px 10px; color: #888; width: 110px;">Format</td>
+                <td style="padding: 7px 10px; color: #ccc;">JSON &mdash; all responses</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                <td style="padding: 7px 10px; color: #888;">Keys</td>
+                <td style="padding: 7px 10px; color: #ccc;">snake_case throughout</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                <td style="padding: 7px 10px; color: #888;">Timestamps</td>
+                <td style="padding: 7px 10px; color: #ccc;">ISO-8601 (UTC)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                <td style="padding: 7px 10px; color: #888;">Envelope</td>
+                <td style="padding: 7px 10px; color: #ccc;"><code style="font-size: 11px; color: #00d4ff;">{ meta, data }</code></td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                <td style="padding: 7px 10px; color: #888;">Market IDs</td>
+                <td style="padding: 7px 10px; color: #ccc;">snake_case slugs</td>
+              </tr>
+              <tr>
+                <td style="padding: 7px 10px; color: #888;">Headers</td>
+                <td style="padding: 7px 10px; color: #ccc;">X-RateLimit-* on every response</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Rate Limits -->
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            Rate Limits
+          </h2>
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <tbody>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                <td style="padding: 7px 10px; color: #888; width: 130px;">Pro</td>
+                <td style="padding: 7px 10px; color: #ccc;">100 requests / hour</td>
+              </tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                <td style="padding: 7px 10px; color: #888;">Institutional</td>
+                <td style="padding: 7px 10px; color: #ccc;">1,000 requests / hour</td>
+              </tr>
+              <tr>
+                <td style="padding: 7px 10px; color: #888;">Enterprise</td>
+                <td style="padding: 7px 10px; color: #ccc;">10,000 requests / hour</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="color: #555; font-size: 11px; margin-top: 8px; line-height: 1.5;">
+            429 responses include <code style="font-size: 10px; color: #888;">Retry-After</code> header. Rate limits enforced via Upstash Redis.
+          </p>
+        </div>
+
+        <!-- Pricing -->
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            Plans
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="color: #fff; font-weight: 600; font-size: 13px;">Pro</div>
+                <div style="color: #666; font-size: 11px;">Dashboard + API (100 req/hr)</div>
+              </div>
+              <div style="color: #00d4ff; font-weight: 700; font-size: 14px;">$149<span style="color: #666; font-size: 11px; font-weight: 400;">/mo</span></div>
+            </div>
+            <div style="background: rgba(124,58,237,0.06); border: 1px solid rgba(124,58,237,0.2); border-radius: 6px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="color: #fff; font-weight: 600; font-size: 13px;">Institutional</div>
+                <div style="color: #666; font-size: 11px;">3 seats + API (1K req/hr) + export</div>
+              </div>
+              <div style="color: #7c3aed; font-weight: 700; font-size: 14px;">$499<span style="color: #666; font-size: 11px; font-weight: 400;">/mo</span></div>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="color: #fff; font-weight: 600; font-size: 13px;">Enterprise</div>
+                <div style="color: #666; font-size: 11px;">White-label + webhooks + data feeds</div>
+              </div>
+              <div style="color: #888; font-weight: 700; font-size: 13px;">Custom</div>
+            </div>
+          </div>
+          <p style="color: #555; font-size: 11px; margin-top: 8px;">Annual plans: ~17% discount (2 months free).</p>
+        </div>
+
+        <!-- What You Get -->
+        <div>
+          <h2 style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            What You Get
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+            <div style="display: flex; gap: 8px; align-items: flex-start;">
+              <span style="color: #00ff88; min-width: 14px;">&#10003;</span>
+              <span style="color: #999;">Seven-factor readiness ratings &mdash; same methodology as the dashboard</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: flex-start;">
+              <span style="color: #00ff88; min-width: 14px;">&#10003;</span>
+              <span style="color: #999;">Attribution trail &mdash; every score change linked to the triggering event</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: flex-start;">
+              <span style="color: #00ff88; min-width: 14px;">&#10003;</span>
+              <span style="color: #999;">Real-time updates &mdash; ratings refresh as filings and legislation are ingested</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: flex-start;">
+              <span style="color: #00ff88; min-width: 14px;">&#10003;</span>
+              <span style="color: #999;">Clean REST interface &mdash; JSON, snake_case, consistent envelope</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======== FOOTER ======== -->
+    <div style="margin-top: 28px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; color: #444; font-size: 10px;">
+      <span>AirIndex API v1.0 &middot; Vertical Data Group, LLC &middot; March 2026</span>
+      <span style="font-style: italic; letter-spacing: 0.08em;">Rate the sky.</span>
+    </div>
+
+  </div>
+</body>
+</html>
