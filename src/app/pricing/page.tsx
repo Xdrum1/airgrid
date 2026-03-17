@@ -5,7 +5,7 @@ import PricingTiers from "@/components/PricingTiers";
 
 export const metadata: Metadata = {
   title: "Pricing — AirIndex",
-  description: "Self-serve plans for individuals. Custom pricing for teams and organizations. The score is free — the intelligence behind the score is paid.",
+  description: "Intelligence access for every stage of the market. From individual analysts to institutional data partners — structured access to the industry's authoritative UAM readiness index.",
 };
 
 export default function PricingPage() {
@@ -21,27 +21,59 @@ export default function PricingPage() {
       <SiteNav />
 
       {/* Header */}
-      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(48px, 6vw, 80px) 20px 0", textAlign: "center" }}>
+      <section style={{ maxWidth: 800, margin: "0 auto", padding: "clamp(48px, 6vw, 80px) 20px 0", textAlign: "center" }}>
         <h1
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 700,
-            fontSize: "clamp(28px, 4vw, 44px)",
+            fontSize: "clamp(28px, 4vw, 40px)",
             margin: "0 0 16px",
+            lineHeight: 1.3,
           }}
         >
-          Plans that scale with your needs
+          Intelligence access for every stage of the market
         </h1>
-        <p style={{ color: "#999", fontSize: 14, margin: "0 0 4px", lineHeight: 1.6 }}>
-          The score is free. The intelligence behind the score is paid.
-        </p>
-        <p style={{ color: "#666", fontSize: 12, margin: 0, lineHeight: 1.6 }}>
-          Self-serve for individuals. Custom pricing for teams and organizations.
+        <p style={{ color: "#999", fontSize: 15, margin: "0 auto", lineHeight: 1.7, maxWidth: 620 }}>
+          From individual analysts to institutional data partners — structured access to
+          the industry&apos;s authoritative UAM readiness index.
         </p>
       </section>
 
+      {/* Audience context */}
+      <section style={{ maxWidth: 720, margin: "0 auto", padding: "48px 20px 0" }}>
+        <div style={{
+          borderLeft: "2px solid rgba(0,212,255,0.2)",
+          paddingLeft: 24,
+          display: "flex",
+          flexDirection: "column",
+          gap: 14,
+        }}>
+          {[
+            { role: "Analysts and consultants", action: "use Pro to track market trajectories and produce client deliverables." },
+            { role: "City planners", action: "use Pro to benchmark against peer markets and identify gap closure pathways." },
+            { role: "Infrastructure developers", action: "use Institutional to integrate readiness data into site selection workflows." },
+            { role: "Operators", action: "use Institutional API to monitor market conditions before making entry decisions." },
+            { role: "Data partnerships", action: "are negotiated directly —", link: true },
+          ].map((item) => (
+            <p key={item.role} style={{ color: "#7a8a9e", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
+              <span style={{ color: "#c0c8d8", fontWeight: 500 }}>{item.role}</span>{" "}
+              {item.link ? (
+                <>
+                  {item.action}{" "}
+                  <Link href="/contact?tier=enterprise" style={{ color: "#00d4ff", textDecoration: "none", borderBottom: "1px solid rgba(0,212,255,0.3)" }}>
+                    contact us
+                  </Link>.
+                </>
+              ) : (
+                item.action
+              )}
+            </p>
+          ))}
+        </div>
+      </section>
+
       {/* Tiers */}
-      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "48px 20px clamp(60px, 8vw, 100px)" }}>
+      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 20px clamp(60px, 8vw, 100px)" }}>
         <PricingTiers />
       </section>
 
@@ -64,20 +96,20 @@ export default function PricingPage() {
             a: "Free accounts include the dashboard map, current readiness scores, city rankings, and basic market overviews. The score is free — the intelligence behind the score is paid.",
           },
           {
-            q: "What's the difference between Pro and Team?",
-            a: "Pro is designed for individual professionals — analysts, consultants, city planners. Team adds API access, data export, multi-seat support, and priority onboarding for teams making capital allocation or market entry decisions.",
+            q: "How often is the data updated?",
+            a: "The AirIndex scoring pipeline runs daily. Score changes, factor-level updates, and regulatory signals are timestamped and reflected in the dashboard and API within 24 hours of detection.",
+          },
+          {
+            q: "How is AirIndex data licensed?",
+            a: "Self-serve tiers are month-to-month subscriptions. Institutional and API access is available under annual data license agreements. Enterprise and custom arrangements are negotiated directly.",
           },
           {
             q: "What's included in the API?",
-            a: "RESTful access to readiness scores, factor breakdowns, corridor data, and historical snapshots. Rate limits vary by tier. Available on Team and Enterprise plans.",
+            a: "RESTful access to readiness scores, factor breakdowns, corridor data, and historical snapshots. Rate limits and export capabilities vary by tier. Available on Institutional and Enterprise plans.",
           },
           {
-            q: "Can I cancel anytime?",
-            a: "Yes. All self-serve subscriptions are month-to-month with no lock-in. Annual plans offer a discount and can be cancelled at any time — you retain access through the end of your billing period.",
-          },
-          {
-            q: "What happens to early signups?",
-            a: "Free accounts retain full dashboard access through launch. When paid plans activate, free users keep the map, scores, and rankings. Pro features require an upgrade.",
+            q: "What data sources does AirIndex use?",
+            a: "AirIndex ingests from verified primary sources including the FAA, Federal Register, LegiScan state legislation databases, and SEC EDGAR. Every score is auditable and traceable to its origin records.",
           },
         ].map((faq) => (
           <div
