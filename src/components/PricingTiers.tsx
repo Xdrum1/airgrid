@@ -48,8 +48,6 @@ const TIERS: Tier[] = [
     features: [
       "Everything in Free, plus:",
       "Monitor up to 3 markets",
-      "Score change notifications",
-      "Watch list alerts",
       "Monthly market summary",
     ],
     cta: "coming_soon",
@@ -86,9 +84,7 @@ const TIERS: Tier[] = [
     features: [
       "Everything in Professional, plus:",
       "API access with dedicated rate limits",
-      "Data export (JSON / CSV)",
-      "3 seats included",
-      "Custom alert configurations",
+      "Data export (JSON)",
       "Priority support & onboarding",
     ],
     cta: "stripe",

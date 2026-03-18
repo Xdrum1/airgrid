@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
         institutional: {
           subject: "We received your inquiry — AirIndex",
           heading: `Thanks, ${firstName}.`,
-          body: "We've received your inquiry about AirIndex Institutional. Our team will reach out within 48 hours to learn more about your use case and walk you through what's available — monthly reports, API access, data exports, and multi-seat team access.",
+          body: "We've received your inquiry about AirIndex Institutional. Our team will reach out within 48 hours to learn more about your use case and walk you through what's available — monthly reports, API access, data exports, and priority support.",
           cta: { label: "View the Dashboard", href: `${appUrl}/dashboard` },
         },
         enterprise: {

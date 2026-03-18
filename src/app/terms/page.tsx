@@ -149,8 +149,8 @@ export default function TermsPage() {
         </p>
         <ul style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, lineHeight: 1.8, paddingLeft: 20, marginBottom: 14 }}>
           <li style={{ marginBottom: 8 }}>
-            <strong style={S.strong}>Alert</strong> ($25/month or $249/year): includes score change notifications
-            and watch list alerts for up to three monitored markets, and a monthly market summary.
+            <strong style={S.strong}>Alert</strong> ($25/month or $249/year): monitor up to three markets
+            and receive a monthly market summary.
           </li>
           <li style={{ marginBottom: 8 }}>
             <strong style={S.strong}>Pro</strong> ($149/month or $1,490/year): includes all Free features plus score
@@ -159,7 +159,7 @@ export default function TermsPage() {
           </li>
           <li style={{ marginBottom: 8 }}>
             <strong style={S.strong}>Institutional</strong> ($499/month or $4,990/year): includes all Pro features
-            plus API access (JSON/CSV), data export, multi-seat team access, custom alerts, and priority support.
+            plus API access (JSON), data export, and priority support.
           </li>
           <li style={{ marginBottom: 8 }}>
             <strong style={S.strong}>Enterprise</strong>: custom pricing for white-label endpoints, webhooks,
