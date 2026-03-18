@@ -89,7 +89,9 @@ export interface Operator {
   aircraft: string[];
   funding: string;
   keyPartnerships: string[];
+  acquisitions?: string[];             // Notable acquisitions
   activeMarkets: string[];             // City IDs
+  status?: "active" | "acquired";      // Acquired = folded into parent company
   color: string;                       // UI accent color
   website?: string;
   lastUpdated: string;
