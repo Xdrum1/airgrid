@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 // -------------------------------------------------------
 // Tier data
@@ -17,7 +18,7 @@ interface Tier {
   accent: string;
   highlight: boolean;
   features: string[];
-  cta: "free" | "stripe" | "contact";
+  cta: "free" | "stripe" | "coming_soon" | "contact";
   stripeTier?: "alert" | "pro" | "institutional";
 }
 
@@ -51,7 +52,7 @@ const TIERS: Tier[] = [
       "Watch list alerts",
       "Monthly market summary",
     ],
-    cta: "stripe",
+    cta: "coming_soon",
     stripeTier: "alert",
   },
   {
@@ -118,6 +119,8 @@ const TIERS: Tier[] = [
 
 export default function PricingTiers() {
   const [interval, setInterval] = useState<Interval>("annual");
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const { data: session } = useSession();
 
   function getDisplayPrice(tier: Tier): string {
     if (tier.monthly === null) return "";
@@ -144,6 +147,32 @@ export default function PricingTiers() {
       return `Save with annual — $${tier.annual.toLocaleString()}/year`;
     }
     return "";
+  }
+
+  async function handleCheckout(tier: Tier) {
+    if (!session?.user) {
+      window.location.href = `/login?mode=signup&redirect=/pricing`;
+      return;
+    }
+
+    setLoadingTier(tier.stripeTier ?? null);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier: tier.stripeTier, interval }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("[pricing] Checkout error:", data.error);
+        setLoadingTier(null);
+      }
+    } catch (err) {
+      console.error("[pricing] Checkout error:", err);
+      setLoadingTier(null);
+    }
   }
 
   return (
@@ -324,7 +353,50 @@ export default function PricingTiers() {
               >
                 Inquire
               </Link>
+            ) : tier.cta === "coming_soon" ? (
+              <div
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  padding: "12px 0",
+                  borderRadius: 6,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: "0.04em",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  color: "#555",
+                  cursor: "default",
+                }}
+              >
+                Coming soon
+              </div>
             ) : (
+              /* Stripe checkout ready — activate by setting STRIPE_*_PRICE_ID env vars */
+              process.env.NEXT_PUBLIC_STRIPE_LIVE === "true" ? (
+              <button
+                onClick={() => handleCheckout(tier)}
+                disabled={loadingTier === tier.stripeTier}
+                className="pricing-cta"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "center",
+                  padding: "12px 0",
+                  borderRadius: 6,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: "0.04em",
+                  background: tier.highlight ? "rgba(0,212,255,0.08)" : "rgba(255,255,255,0.04)",
+                  border: tier.highlight ? "1px solid rgba(0,212,255,0.2)" : "1px solid rgba(255,255,255,0.08)",
+                  color: tier.highlight ? "#00d4ff" : "#999",
+                  cursor: loadingTier === tier.stripeTier ? "wait" : "pointer",
+                  opacity: loadingTier === tier.stripeTier ? 0.6 : 1,
+                }}
+              >
+                {loadingTier === tier.stripeTier ? "Redirecting..." : "Subscribe"}
+              </button>
+              ) : (
               <div
                 style={{
                   display: "block",
@@ -342,6 +414,7 @@ export default function PricingTiers() {
               >
                 Coming April 2026
               </div>
+              )
             )}
           </div>
         ))}
