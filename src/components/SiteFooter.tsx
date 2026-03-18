@@ -59,8 +59,16 @@ export default function SiteFooter() {
           <Link href="/terms" style={footerLinkStyle}>TERMS</Link>
           <Link href="/privacy" style={footerLinkStyle}>PRIVACY</Link>
         </div>
-        <div style={{ color: "#999", fontSize: 9, letterSpacing: 1 }}>
-          &copy; {new Date().getFullYear()} AIRINDEX
+        <div style={{ color: "#555", fontSize: 9, letterSpacing: 1 }}>
+          &copy; {new Date().getFullYear()} AIRINDEX &middot;{" "}
+          <a
+            href="https://verticaldatagroup.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#555", textDecoration: "none" }}
+          >
+            A Vertical Data Group product
+          </a>
         </div>
       </div>
     </footer>
