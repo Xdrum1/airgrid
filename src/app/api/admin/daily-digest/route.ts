@@ -43,14 +43,14 @@ export async function POST(request: NextRequest) {
       // New signups in last 24h
       prisma.user.findMany({
         where: { createdAt: { gte: yesterday } },
-        select: { email: true, createdAt: true, role: true },
+        select: { email: true, createdAt: true, organization: true, jobTitle: true },
         orderBy: { createdAt: "desc" },
       }),
 
       // Users active in last 24h
       prisma.user.findMany({
         where: { lastActiveAt: { gte: yesterday } },
-        select: { email: true, lastActiveAt: true, tier: true, role: true },
+        select: { email: true, lastActiveAt: true, tier: true, organization: true },
         orderBy: { lastActiveAt: "desc" },
       }),
 
@@ -156,7 +156,7 @@ export async function POST(request: NextRequest) {
       html += `<h3 style="font-size:12px;letter-spacing:2px;color:#999;margin:24px 0 8px;">NEW SIGNUPS</h3>`;
       html += `<table style="width:100%;border-collapse:collapse;">`;
       for (const u of newUsers) {
-        html += `<tr><td style="padding:6px 0;color:#333;font-size:13px;">${escapeHtml(u.email)}</td><td style="padding:6px 0;color:#999;font-size:11px;text-align:right;">${u.role ?? "—"}</td></tr>`;
+        html += `<tr><td style="padding:6px 0;color:#333;font-size:13px;">${escapeHtml(u.email)}</td><td style="padding:6px 0;color:#999;font-size:11px;text-align:right;">${u.organization ?? "—"}</td></tr>`;
       }
       html += `</table>`;
     }

@@ -11,13 +11,17 @@ generator client {
 
 model User {
   id                    String    @id @default(cuid())
-  name                  String?
+  firstName             String?
+  lastName              String?
+  organization          String?
+  jobTitle              String?
+  referralSource        String?
   email                 String    @unique
   emailVerified         DateTime?
   image                 String?
   stripeCustomerId      String?   @unique
   tier                  String    @default("free") // free|pro|institutional|enterprise|grandfathered
-  role                  String?   // operator|investor|government|researcher|press|other
+  role                  String?   // legacy — kept for existing data
   accounts              Account[]
   sessions              Session[]
   subscriptions         Subscription[]
