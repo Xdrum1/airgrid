@@ -217,7 +217,7 @@ async function main() {
     // Send to all users except admin and opted-out
     const users = await prisma.user.findMany({
       where: { email: { not: ADMIN_EMAIL }, newsletterOptOut: false },
-      select: { email: true, name: true },
+      select: { email: true, firstName: true },
       orderBy: { createdAt: "asc" },
     });
 

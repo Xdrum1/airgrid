@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
-  let body: { interval?: string; tier?: string };
+  let body: { interval?: string; tier?: string; organization?: string; jobTitle?: string };
   try {
     body = await request.json();
   } catch {
@@ -35,20 +35,33 @@ export async function POST(request: NextRequest) {
     // Find or create Stripe customer
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { stripeCustomerId: true, email: true },
+      select: { stripeCustomerId: true, email: true, firstName: true, lastName: true },
     });
 
     let customerId = user?.stripeCustomerId;
+    const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || undefined;
+    const customerMeta = {
+      userId: session.user.id,
+      ...(body.organization && { organization: body.organization }),
+      ...(body.jobTitle && { jobTitle: body.jobTitle }),
+    };
 
     if (!customerId) {
       const customer = await stripe.customers.create({
         email: session.user.email,
-        metadata: { userId: session.user.id },
+        ...(fullName && { name: fullName }),
+        metadata: customerMeta,
       });
       customerId = customer.id;
       await prisma.user.update({
         where: { id: session.user.id },
         data: { stripeCustomerId: customerId },
+      });
+    } else {
+      // Update existing customer with latest profile data
+      await stripe.customers.update(customerId, {
+        ...(fullName && { name: fullName }),
+        metadata: customerMeta,
       });
     }
 

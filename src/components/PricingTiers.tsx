@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import PreCheckoutModal from "./PreCheckoutModal";
 
 // -------------------------------------------------------
 // Tier data
@@ -116,6 +117,7 @@ const TIERS: Tier[] = [
 export default function PricingTiers() {
   const [interval, setInterval] = useState<Interval>("annual");
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [checkoutTier, setCheckoutTier] = useState<Tier | null>(null);
   const { data: session } = useSession();
 
   function getDisplayPrice(tier: Tier): string {
@@ -145,18 +147,30 @@ export default function PricingTiers() {
     return "";
   }
 
-  async function handleCheckout(tier: Tier) {
+  function handleCheckout(tier: Tier) {
     if (!session?.user) {
       window.location.href = `/login?mode=signup&redirect=/pricing`;
       return;
     }
+    // Open pre-checkout modal instead of going straight to Stripe
+    setCheckoutTier(tier);
+  }
 
+  async function proceedToStripe(profileData: { organization: string; jobTitle: string }) {
+    if (!checkoutTier) return;
+    const tier = checkoutTier;
+    setCheckoutTier(null);
     setLoadingTier(tier.stripeTier ?? null);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: tier.stripeTier, interval }),
+        body: JSON.stringify({
+          tier: tier.stripeTier,
+          interval,
+          organization: profileData.organization,
+          jobTitle: profileData.jobTitle,
+        }),
       });
       const data = await res.json();
       if (data.url) {
@@ -465,6 +479,16 @@ export default function PricingTiers() {
           </span>
         )}
       </div>
+
+      {checkoutTier && session?.user?.email && (
+        <PreCheckoutModal
+          tier={checkoutTier.stripeTier ?? "pro"}
+          interval={interval}
+          userEmail={session.user.email}
+          onSubmit={proceedToStripe}
+          onCancel={() => setCheckoutTier(null)}
+        />
+      )}
     </>
   );
 }

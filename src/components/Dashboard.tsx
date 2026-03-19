@@ -12,7 +12,7 @@ import { trackEvent } from "@/lib/track";
 import { plausible } from "@/lib/plausible";
 import AuthGate from "./AuthGate";
 import UpgradeGate from "./UpgradeGate";
-import RolePicker from "./RolePicker";
+import CheckoutSuccessModal from "./CheckoutSuccessModal";
 import { hasProAccess } from "@/lib/billing-shared";
 import type { FilterKey, TabKey, MobilePanel } from "./dashboard-types";
 
@@ -76,16 +76,15 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
   // Watchlist
   const { cityIds: watchedCityIds, isWatched, toggle: toggleWatch, isAuthenticated, limitHit } = useWatchlist();
 
-  // Role picker — show once for new users without a role
-  const [showRolePicker, setShowRolePicker] = useState(false);
+  // Checkout success modal
+  const [showCheckoutSuccess, setShowCheckoutSuccess] = useState(false);
 
   useEffect(() => {
-    if (!session?.user) return;
-    fetch("/api/user/role")
-      .then((r) => r.json())
-      .then((data) => { if (!data.role) setShowRolePicker(true); })
-      .catch(() => {});
-  }, [session?.user]);
+    if (searchParams.get("checkout") === "success") {
+      setShowCheckoutSuccess(true);
+      router.replace("/dashboard", { scroll: false });
+    }
+  }, [searchParams, router]);
 
   // Market Watch data
   const [watchData, setWatchData] = useState<Record<string, { watchStatus: string; outlook: string; analystNote: string | null }>>({});
@@ -163,8 +162,11 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
 
   return (
     <>
-    {showRolePicker && (
-      <RolePicker onComplete={() => setShowRolePicker(false)} />
+    {showCheckoutSuccess && (
+      <CheckoutSuccessModal
+        tierName={userTier === "institutional" ? "Institutional" : "Professional"}
+        onDismiss={() => setShowCheckoutSuccess(false)}
+      />
     )}
     {limitHit && (
       <div

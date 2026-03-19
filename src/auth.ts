@@ -124,7 +124,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 8px;">New user signed up:</p>
               <p style="color:#7c3aed;font-size:16px;font-weight:700;margin:0 0 8px;">${user.email}</p>
               <p style="color:#999;font-size:12px;margin:0 0 4px;">${new Date().toUTCString()}</p>
-              <p style="color:#999;font-size:12px;margin:0;">Role will be captured on first dashboard visit.</p>
+              <p style="color:#999;font-size:12px;margin:0;">Profile will be captured at checkout.</p>
             </div>
           `.trim(),
         }).catch((err) => logger.error("Admin notify failed:", err));
@@ -169,7 +169,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.sub = user.id;
         token.email = user.email;
-        token.name = user.name;
+        token.firstName = (user as { firstName?: string | null }).firstName;
+        token.lastName = (user as { lastName?: string | null }).lastName;
       }
       // Refresh tier on sign-in or when session update is triggered
       if ((user || trigger === "update") && token.sub) {
@@ -186,7 +187,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (session.user) {
         if (token.sub) session.user.id = token.sub;
         if (token.email) session.user.email = token.email as string;
-        if (token.name) session.user.name = token.name as string;
+        session.user.firstName = token.firstName as string | null | undefined;
+        session.user.lastName = token.lastName as string | null | undefined;
         session.user.tier = (token.tier as string) ?? "free";
       }
       return session;
