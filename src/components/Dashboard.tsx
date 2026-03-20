@@ -287,7 +287,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                   ["filings", "FEED"],
                   ["intel", "INTEL"],
                   ["analytics", "STATS"],
-                  ["keys", "API"],
+                  ...(hasProAccess(userTier) ? [["keys", "API"]] : []),
                 ] as [TabKey, string][]
               : [
                   ["map", "MAP VIEW"],
@@ -296,7 +296,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                   ["filings", "FILINGS"],
                   ["intel", "INTEL"],
                   ["analytics", "ANALYTICS"],
-                  ["keys", "API KEYS"],
+                  ...(hasProAccess(userTier) ? [["keys", "API KEYS"]] : []),
                 ] as [TabKey, string][]
             ).map(([t, label]) => (
               <button
