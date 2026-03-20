@@ -440,7 +440,7 @@ export default async function LandingPage() {
                   letterSpacing: 2,
                   color: "#00d4ff",
                 }}>
-                  FREE WITH SIGNUP
+                  FREE — NO SIGNUP REQUIRED
                 </span>
               </div>
             </div>
@@ -891,10 +891,10 @@ export default async function LandingPage() {
               margin: "0 0 32px",
             }}
           >
-            Free access to market scores, rankings, and the interactive map.
+            Free access to market scores, rankings, and the interactive map. No signup required.
           </p>
           <Link
-            href="/login?mode=signup"
+            href="/dashboard"
             style={{
               display: "inline-block",
               padding: "14px 36px",
@@ -909,7 +909,7 @@ export default async function LandingPage() {
               transition: "opacity 0.15s",
             }}
           >
-            Sign up free
+            Explore the dashboard
           </Link>
         </div>
       </section>
