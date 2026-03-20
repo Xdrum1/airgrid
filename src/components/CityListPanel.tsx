@@ -20,6 +20,7 @@ export default function CityListPanel({
   isAuthenticated,
   isWatched,
   watchData,
+  scoreDeltas,
 }: {
   cities: City[];
   filtered: City[];
@@ -35,6 +36,7 @@ export default function CityListPanel({
   isAuthenticated: boolean;
   isWatched: (cityId: string) => boolean;
   watchData?: Record<string, { watchStatus: string }>;
+  scoreDeltas?: Record<string, { delta: number }>;
 }) {
   return (
     <div
@@ -175,6 +177,7 @@ export default function CityListPanel({
               isSelected={selected?.id === city.id}
               onClick={() => onSelect(city)}
               watchStatus={watchData?.[city.id]?.watchStatus}
+              scoreDelta={scoreDeltas?.[city.id]?.delta}
               starNode={
                 <WatchlistStar
                   cityId={city.id}

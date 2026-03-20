@@ -86,6 +86,16 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
     }
   }, [searchParams, router]);
 
+  // Score deltas (recent changes)
+  const [scoreDeltas, setScoreDeltas] = useState<Record<string, { delta: number; previousScore: number; currentScore: number; changedAt: string }>>({});
+
+  useEffect(() => {
+    fetch("/api/score-deltas")
+      .then((r) => r.json())
+      .then((json) => setScoreDeltas(json.data ?? {}))
+      .catch(() => {});
+  }, []);
+
   // Market Watch data
   const [watchData, setWatchData] = useState<Record<string, { watchStatus: string; outlook: string; analystNote: string | null }>>({});
 
@@ -258,6 +268,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
             isAuthenticated={isAuthenticated}
             isWatched={isWatched}
             watchData={watchData}
+            scoreDeltas={scoreDeltas}
           />
         )}
 
@@ -409,6 +420,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
               watchedCityIds={watchedCityIds}
               onToggleWatch={toggleWatch}
               isAuthenticated={isAuthenticated}
+              scoreDeltas={scoreDeltas}
             />
           )}
         </div>

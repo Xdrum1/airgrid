@@ -13,6 +13,7 @@ export default function CityCard({
   rank,
   starNode,
   watchStatus,
+  scoreDelta,
 }: {
   city: City;
   isSelected: boolean;
@@ -20,6 +21,7 @@ export default function CityCard({
   rank: number;
   starNode?: React.ReactNode;
   watchStatus?: string;
+  scoreDelta?: number;
 }) {
   const color = getScoreColor(city.score ?? 0);
   const posture = getPostureConfig(city.regulatoryPosture);
@@ -101,6 +103,18 @@ export default function CityCard({
           >
             {posture.label}
           </span>
+          {scoreDelta && scoreDelta !== 0 && (
+            <span
+              style={{
+                color: scoreDelta > 0 ? "#00ff88" : "#ff4444",
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: 0.3,
+              }}
+            >
+              {scoreDelta > 0 ? "+" : ""}{scoreDelta}
+            </span>
+          )}
           <span
             style={{
               color,
