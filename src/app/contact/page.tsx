@@ -220,10 +220,11 @@ function ContactForm() {
       >
         {state === "submitting" ? "SENDING..." : isPro ? "JOIN WAITLIST" : "GET IN TOUCH"}
       </button>
-      <p style={{ color: "#555", fontSize: 9, marginTop: 12, textAlign: "center" }}>
+      <p style={{ color: "#555", fontSize: 9, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>
         By submitting, you agree to our{" "}
         <a href="/terms" style={{ color: "#00d4ff", textDecoration: "none" }}>Terms of Service</a> and{" "}
-        <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>.
+        <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>, and to receive
+        market updates and the weekly UAM Market Pulse newsletter. You can unsubscribe at any time.
       </p>
       {state === "error" && (
         <div style={{ color: "#ff4444", fontSize: 11, marginTop: 12, textAlign: "center" }}>
