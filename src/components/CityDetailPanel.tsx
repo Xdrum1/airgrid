@@ -288,225 +288,335 @@ export default function CityDetailPanel({
       </div>
 
       {/* Score Breakdown */}
-      <BreakdownPanel breakdown={selected.breakdown} scoreColor={scoreColor} />
+      <BreakdownPanel
+        breakdown={selected.breakdown}
+        scoreColor={scoreColor}
+        gated={!hasProAccess(userTier)}
+      />
 
-      {/* Active Operators */}
-      {selected.activeOperators.length > 0 && (
-        <div
-          style={{
-            padding: "14px 20px",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <div
-            style={{
-              color: "#777",
-              fontSize: 8,
-              letterSpacing: 2,
-              marginBottom: 10,
-            }}
-          >
-            ACTIVE OPERATORS
-          </div>
-          {selected.activeOperators.map((opId) => {
-            const op = OPERATORS_MAP[opId];
-            return op ? (
+      {/* Gated sections — operators, vertiports, corridors */}
+      {hasProAccess(userTier) ? (
+        <>
+          {/* Active Operators */}
+          {selected.activeOperators.length > 0 && (
+            <div
+              style={{
+                padding: "14px 20px",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
               <div
-                key={opId}
-                onClick={() => { trackEvent("operator_click", "operator", opId); plausible("Operator Click", { operator: opId }); }}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginBottom: 7,
-                  cursor: "pointer",
+                  color: "#777",
+                  fontSize: 8,
+                  letterSpacing: 2,
+                  marginBottom: 10,
                 }}
               >
-                <div
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    background: op.color,
-                    boxShadow: `0 0 4px ${op.color}`,
-                    flexShrink: 0,
-                  }}
-                />
+                ACTIVE OPERATORS
+              </div>
+              {selected.activeOperators.map((opId) => {
+                const op = OPERATORS_MAP[opId];
+                return op ? (
+                  <div
+                    key={opId}
+                    onClick={() => { trackEvent("operator_click", "operator", opId); plausible("Operator Click", { operator: opId }); }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      marginBottom: 7,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        background: op.color,
+                        boxShadow: `0 0 4px ${op.color}`,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <div>
+                      <div style={{ color: "#ccc", fontSize: 11 }}>
+                        {op.name}
+                      </div>
+                      <div style={{ color: "#777", fontSize: 9 }}>
+                        {op.faaCertStatus === "operational"
+                          ? "Operational"
+                          : "FAA cert in progress"}{" "}
+                        · {op.aircraft[0]}
+                      </div>
+                    </div>
+                  </div>
+                ) : null;
+              })}
+            </div>
+          )}
+
+          {/* Vertiports */}
+          {vertiports.length > 0 && (
+            <div
+              style={{
+                padding: "14px 20px",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              <div
+                style={{
+                  color: "#777",
+                  fontSize: 8,
+                  letterSpacing: 2,
+                  marginBottom: 10,
+                }}
+              >
+                VERTIPORTS
+              </div>
+              {vertiports.map((v) => {
+                const statusColor = VERTIPORT_STATUS_COLORS[v.status] ?? "#888";
+                const isVpSelected = selectedVertiport?.id === v.id;
+                return (
+                  <div
+                    key={v.id}
+                    onClick={() => onVertiportSelect(isVpSelected ? null : v)}
+                    style={{
+                      background: isVpSelected
+                        ? "rgba(0,212,255,0.06)"
+                        : "rgba(255,255,255,0.02)",
+                      border: isVpSelected
+                        ? "1px solid rgba(0,212,255,0.3)"
+                        : "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: 6,
+                      padding: "10px 12px",
+                      marginBottom: 6,
+                      cursor: "pointer",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: 4,
+                      }}
+                    >
+                      <span style={{ color: "#ccc", fontSize: 11, fontWeight: 700 }}>
+                        {v.name}
+                      </span>
+                      <span
+                        style={{
+                          color: statusColor,
+                          fontSize: 7,
+                          letterSpacing: 1,
+                          border: `1px solid ${statusColor}44`,
+                          borderRadius: 3,
+                          padding: "2px 6px",
+                        }}
+                      >
+                        {v.status.replace("_", " ").toUpperCase()}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", gap: 10, color: "#888", fontSize: 9 }}>
+                      <span>{v.siteType.replace("_", " ")}</span>
+                      {v.padCount != null && <span>{v.padCount} pads</span>}
+                      {v.expectedOpenDate && <span>Opens {v.expectedOpenDate}</span>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Corridors */}
+          {corridors.length > 0 && (
+            <div
+              style={{
+                padding: "14px 20px",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              <div
+                style={{
+                  color: "#777",
+                  fontSize: 8,
+                  letterSpacing: 2,
+                  marginBottom: 10,
+                }}
+              >
+                CORRIDORS
+              </div>
+              {corridors.map((c) => {
+                const statusColor = CORRIDOR_STATUS_COLORS[c.status] ?? "#888";
+                const isCorSelected = selectedCorridor?.id === c.id;
+                return (
+                  <div
+                    key={c.id}
+                    onClick={() => {
+                      onCorridorSelect(isCorSelected ? null : c);
+                      if (!isCorSelected) { trackEvent("corridor_click", "corridor", c.id); plausible("Corridor Click", { corridor: c.id }); }
+                    }}
+                    style={{
+                      background: isCorSelected
+                        ? "rgba(0,212,255,0.06)"
+                        : "rgba(255,255,255,0.02)",
+                      border: isCorSelected
+                        ? "1px solid rgba(0,212,255,0.3)"
+                        : "1px solid rgba(255,255,255,0.05)",
+                      borderRadius: 6,
+                      padding: "10px 12px",
+                      marginBottom: 6,
+                      cursor: "pointer",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginBottom: 4,
+                      }}
+                    >
+                      <span style={{ color: "#ccc", fontSize: 11, fontWeight: 700 }}>
+                        {c.name}
+                      </span>
+                      <span
+                        style={{
+                          color: statusColor,
+                          fontSize: 7,
+                          letterSpacing: 1,
+                          border: `1px solid ${statusColor}44`,
+                          borderRadius: 3,
+                          padding: "2px 6px",
+                        }}
+                      >
+                        {c.status.toUpperCase()}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ display: "flex", gap: 10, color: "#888", fontSize: 9 }}>
+                        <span>{c.distanceKm} km</span>
+                        <span>{c.estimatedFlightMinutes} min</span>
+                        <span>{c.maxAltitudeFt} ft</span>
+                      </div>
+                      <Link
+                        href={`/corridor/${c.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ color: "#00d4ff", fontSize: 7, letterSpacing: 1, textDecoration: "none" }}
+                      >
+                        DETAILS →
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      ) : (
+        /* Blurred teaser for operators/vertiports/corridors */
+        (selected.activeOperators.length > 0 || vertiports.length > 0 || corridors.length > 0) && (
+          <div
+            style={{
+              padding: "14px 20px",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              position: "relative",
+            }}
+          >
+            {/* Blurred placeholder content */}
+            <div
+              style={{
+                filter: "blur(5px)",
+                opacity: 0.4,
+                pointerEvents: "none",
+                userSelect: "none",
+              }}
+            >
+              {selected.activeOperators.length > 0 && (
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 10 }}>
+                    ACTIVE OPERATORS
+                  </div>
+                  {selected.activeOperators.slice(0, 2).map((opId) => {
+                    const op = OPERATORS_MAP[opId];
+                    return op ? (
+                      <div key={opId} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
+                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: op.color, flexShrink: 0 }} />
+                        <div style={{ color: "#ccc", fontSize: 11 }}>{op.name}</div>
+                      </div>
+                    ) : null;
+                  })}
+                </div>
+              )}
+              {vertiports.length > 0 && (
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 10 }}>
+                    VERTIPORTS
+                  </div>
+                  <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 6, padding: "10px 12px", marginBottom: 6, border: "1px solid rgba(255,255,255,0.05)" }}>
+                    <span style={{ color: "#ccc", fontSize: 11 }}>{vertiports[0]?.name}</span>
+                  </div>
+                </div>
+              )}
+              {corridors.length > 0 && (
                 <div>
-                  <div style={{ color: "#ccc", fontSize: 11 }}>
-                    {op.name}
+                  <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 10 }}>
+                    CORRIDORS
                   </div>
-                  <div style={{ color: "#777", fontSize: 9 }}>
-                    {op.faaCertStatus === "operational"
-                      ? "Operational"
-                      : "FAA cert in progress"}{" "}
-                    · {op.aircraft[0]}
+                  <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 6, padding: "10px 12px", border: "1px solid rgba(255,255,255,0.05)" }}>
+                    <span style={{ color: "#ccc", fontSize: 11 }}>{corridors[0]?.name}</span>
                   </div>
                 </div>
-              </div>
-            ) : null;
-          })}
-        </div>
-      )}
+              )}
+            </div>
 
-      {/* Vertiports */}
-      {vertiports.length > 0 && (
-        <div
-          style={{
-            padding: "14px 20px",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <div
-            style={{
-              color: "#777",
-              fontSize: 8,
-              letterSpacing: 2,
-              marginBottom: 10,
-            }}
-          >
-            VERTIPORTS
-          </div>
-          {vertiports.map((v) => {
-            const statusColor = VERTIPORT_STATUS_COLORS[v.status] ?? "#888";
-            const isVpSelected = selectedVertiport?.id === v.id;
-            return (
+            {/* Overlay CTA */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+              }}
+            >
               <div
-                key={v.id}
-                onClick={() => onVertiportSelect(isVpSelected ? null : v)}
                 style={{
-                  background: isVpSelected
-                    ? "rgba(0,212,255,0.06)"
-                    : "rgba(255,255,255,0.02)",
-                  border: isVpSelected
-                    ? "1px solid rgba(0,212,255,0.3)"
-                    : "1px solid rgba(255,255,255,0.05)",
-                  borderRadius: 6,
-                  padding: "10px 12px",
-                  marginBottom: 6,
-                  cursor: "pointer",
-                  transition: "all 0.15s",
+                  color: "#bbb",
+                  fontSize: 11,
+                  textAlign: "center",
+                  maxWidth: 200,
+                  lineHeight: 1.6,
+                  fontFamily: "'Inter', sans-serif",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: 4,
-                  }}
-                >
-                  <span style={{ color: "#ccc", fontSize: 11, fontWeight: 700 }}>
-                    {v.name}
-                  </span>
-                  <span
-                    style={{
-                      color: statusColor,
-                      fontSize: 7,
-                      letterSpacing: 1,
-                      border: `1px solid ${statusColor}44`,
-                      borderRadius: 3,
-                      padding: "2px 6px",
-                    }}
-                  >
-                    {v.status.replace("_", " ").toUpperCase()}
-                  </span>
-                </div>
-                <div style={{ display: "flex", gap: 10, color: "#888", fontSize: 9 }}>
-                  <span>{v.siteType.replace("_", " ")}</span>
-                  {v.padCount != null && <span>{v.padCount} pads</span>}
-                  {v.expectedOpenDate && <span>Opens {v.expectedOpenDate}</span>}
-                </div>
+                {selected.activeOperators.length} operator{selected.activeOperators.length !== 1 ? "s" : ""}, {vertiports.length} vertiport{vertiports.length !== 1 ? "s" : ""}, {corridors.length} corridor{corridors.length !== 1 ? "s" : ""}
               </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Corridors */}
-      {corridors.length > 0 && (
-        <div
-          style={{
-            padding: "14px 20px",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <div
-            style={{
-              color: "#777",
-              fontSize: 8,
-              letterSpacing: 2,
-              marginBottom: 10,
-            }}
-          >
-            CORRIDORS
-          </div>
-          {corridors.map((c) => {
-            const statusColor = CORRIDOR_STATUS_COLORS[c.status] ?? "#888";
-            const isCorSelected = selectedCorridor?.id === c.id;
-            return (
-              <div
-                key={c.id}
-                onClick={() => {
-                  onCorridorSelect(isCorSelected ? null : c);
-                  if (!isCorSelected) { trackEvent("corridor_click", "corridor", c.id); plausible("Corridor Click", { corridor: c.id }); }
-                }}
+              <Link
+                href="/pricing"
                 style={{
-                  background: isCorSelected
-                    ? "rgba(0,212,255,0.06)"
-                    : "rgba(255,255,255,0.02)",
-                  border: isCorSelected
-                    ? "1px solid rgba(0,212,255,0.3)"
-                    : "1px solid rgba(255,255,255,0.05)",
-                  borderRadius: 6,
-                  padding: "10px 12px",
-                  marginBottom: 6,
-                  cursor: "pointer",
-                  transition: "all 0.15s",
+                  display: "inline-block",
+                  padding: "7px 18px",
+                  background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
+                  borderRadius: 5,
+                  color: "#000",
+                  fontSize: 9,
+                  fontWeight: 700,
+                  fontFamily: "'Inter', sans-serif",
+                  letterSpacing: "0.06em",
+                  textDecoration: "none",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: 4,
-                  }}
-                >
-                  <span style={{ color: "#ccc", fontSize: 11, fontWeight: 700 }}>
-                    {c.name}
-                  </span>
-                  <span
-                    style={{
-                      color: statusColor,
-                      fontSize: 7,
-                      letterSpacing: 1,
-                      border: `1px solid ${statusColor}44`,
-                      borderRadius: 3,
-                      padding: "2px 6px",
-                    }}
-                  >
-                    {c.status.toUpperCase()}
-                  </span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <div style={{ display: "flex", gap: 10, color: "#888", fontSize: 9 }}>
-                    <span>{c.distanceKm} km</span>
-                    <span>{c.estimatedFlightMinutes} min</span>
-                    <span>{c.maxAltitudeFt} ft</span>
-                  </div>
-                  <Link
-                    href={`/corridor/${c.id}`}
-                    onClick={(e) => e.stopPropagation()}
-                    style={{ color: "#00d4ff", fontSize: 7, letterSpacing: 1, textDecoration: "none" }}
-                  >
-                    DETAILS →
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                UNLOCK WITH PRO
+              </Link>
+            </div>
+          </div>
+        )
       )}
 
       {/* Key Milestones */}
