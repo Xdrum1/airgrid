@@ -1,8 +1,8 @@
 /**
  * UAM Market Pulse — Newsletter Sender
  *
- * Sends the weekly newsletter PDF to all users (or a test recipient).
- * Attaches the PDF and includes an HTML email body with a summary.
+ * Sends the full newsletter as inline HTML with PDF attached as bonus.
+ * Reads the generated HTML from public/docs/ and wraps it in an email-safe template.
  *
  * Usage:
  *   npx tsx scripts/send-newsletter.ts --issue=2 --week="March 20, 2026" --test=alan@airindex.io
@@ -17,7 +17,7 @@ config({ path: ".env.local" });
 import { createHmac, createHash } from "crypto";
 import { readFileSync, existsSync } from "fs";
 import { PrismaClient } from "@prisma/client";
-import { buildUnsubscribeUrl } from "../src/lib/newsletter-token";
+import { buildUnsubscribeUrl, buildTrackingPixelUrl, buildClickTrackUrl } from "../src/lib/newsletter-token";
 
 const prisma = new PrismaClient();
 
@@ -76,61 +76,59 @@ function signRequest(body: string, region: string, accessKeyId: string, secretAc
   };
 }
 
-function buildRawEmail(to: string, pdfBase64: string, unsubscribeUrl: string): string {
+function buildRawEmail(to: string, pdfBase64: string, newsletterHtml: string, unsubscribeUrl: string): string {
   const boundary = `----=_Part_${Date.now()}`;
   const mixedBoundary = `----=_Mixed_${Date.now()}`;
+
+  // Extract the inner content from the generated newsletter HTML (between <body> tags)
+  const bodyMatch = newsletterHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  let innerContent = bodyMatch ? bodyMatch[1] : newsletterHtml;
+
+  // Wrap links with click tracking (href="https://..." → tracked redirect)
+  const dashboardClickUrl = buildClickTrackUrl(to, issueNum, `${SITE}/dashboard`);
+  const siteClickUrl = buildClickTrackUrl(to, issueNum, SITE);
+  const twitterClickUrl = buildClickTrackUrl(to, issueNum, "https://twitter.com/AirIndexHQ");
+
+  // Track links inside the newsletter content (airindex.io links only)
+  innerContent = innerContent.replace(
+    /href="(https?:\/\/(?:www\.)?airindex\.io[^"]*)"/g,
+    (_match, url) => `href="${buildClickTrackUrl(to, issueNum, url)}"`
+  );
+
+  // Tracking pixel
+  const pixelUrl = buildTrackingPixelUrl(to, issueNum);
 
   const html = `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
-  <div style="max-width:600px;margin:0 auto;background:#ffffff;padding:0;">
-    <!-- Header -->
-    <div style="background:#0a0a12;padding:32px 24px;text-align:center;">
-      <h1 style="color:#ffffff;font-size:24px;margin:0 0 4px 0;font-weight:700;">UAM MARKET PULSE</h1>
-      <p style="color:#888;font-size:13px;margin:0;">by AirIndex &middot; Issue ${issueNum} &middot; Week of ${weekLabel}</p>
-    </div>
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:'Inter',Arial,Helvetica,sans-serif;">
+  <div style="max-width:680px;margin:0 auto;background:#ffffff;padding:0;">
 
-    <!-- Body -->
-    <div style="padding:32px 24px;">
-      <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 16px 0;">
-        Welcome to <strong>UAM Market Pulse</strong> &mdash; a weekly intelligence briefing tracking the cities, regulations, and operators shaping commercial eVTOL in the United States.
-      </p>
+    <!-- Newsletter Content (inline) -->
+    ${innerContent}
 
-      <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 16px 0;">
-        This week&rsquo;s highlights:
-      </p>
-
-      <ul style="color:#333;font-size:15px;line-height:1.8;padding-left:20px;margin:0 0 24px 0;">
-        <li><strong>3 markets climb</strong> &mdash; Phoenix, Chicago, and Columbus rise on state legislation and operator signals</li>
-        <li><strong>46 regulatory signals</strong> classified this week &mdash; Joby dominates Bay Area coverage</li>
-        <li><strong>Arizona AAM bills</strong> &mdash; three bills advancing through committee could push Phoenix higher</li>
-        <li><strong>Score changes now live</strong> &mdash; the AirIndex dashboard now shows real-time deltas on every market</li>
-      </ul>
-
-      <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 24px 0;">
-        The full briefing is attached as a PDF. You can also explore live data at <a href="${SITE}" style="color:#00c2ff;text-decoration:none;">${SITE}</a>.
-      </p>
-
-      <!-- CTA -->
-      <div style="text-align:center;margin:32px 0;">
-        <a href="${SITE}" style="display:inline-block;background:#00c2ff;color:#000;font-weight:700;font-size:14px;padding:12px 32px;text-decoration:none;border-radius:4px;">VIEW LIVE DASHBOARD</a>
-      </div>
+    <!-- CTA -->
+    <div style="text-align:center;padding:24px 24px 32px;">
+      <a href="${dashboardClickUrl}" style="display:inline-block;background:#00c2ff;color:#000;font-weight:700;font-size:14px;padding:12px 32px;text-decoration:none;border-radius:4px;">VIEW LIVE DASHBOARD</a>
+      <p style="color:#888;font-size:12px;margin:12px 0 0;">PDF version attached for offline reading</p>
     </div>
 
     <!-- Footer -->
     <div style="background:#f8f8f8;padding:24px;border-top:1px solid #eee;">
       <p style="color:#888;font-size:12px;line-height:1.6;margin:0 0 8px 0;text-align:center;">
         AirIndex by Vertical Data Group, LLC<br>
-        <a href="${SITE}" style="color:#00c2ff;text-decoration:none;">airindex.io</a> &middot;
-        <a href="https://twitter.com/AirIndexHQ" style="color:#00c2ff;text-decoration:none;">@AirIndexHQ</a>
+        <a href="${siteClickUrl}" style="color:#00c2ff;text-decoration:none;">airindex.io</a> &middot;
+        <a href="${twitterClickUrl}" style="color:#00c2ff;text-decoration:none;">@AirIndexHQ</a>
       </p>
       <p style="color:#aaa;font-size:11px;line-height:1.5;margin:0;text-align:center;">
         You&rsquo;re receiving this because you signed up at airindex.io.<br>
         <a href="${unsubscribeUrl}" style="color:#888;text-decoration:underline;">Unsubscribe</a> from future newsletters.
       </p>
     </div>
+
+    <!-- Tracking pixel -->
+    <img src="${pixelUrl}" width="1" height="1" alt="" style="display:none;width:1px;height:1px;border:0;" />
   </div>
 </body>
 </html>`;
@@ -206,10 +204,18 @@ async function sendRawEmail(rawMessage: string): Promise<void> {
 
 // ── Main ────────────────────────────────────────────────────────
 async function main() {
+  // Validate newsletter HTML exists
+  const HTML_PATH = `public/docs/UAM_Market_Pulse_Issue${issueNum}.html`;
+  if (!existsSync(HTML_PATH)) {
+    console.error(`Newsletter HTML not found: ${HTML_PATH}`);
+    console.error(`Generate it first: npx tsx scripts/generate-newsletter.ts --issue=${issueNum} --week="${weekLabel}"`);
+    process.exit(1);
+  }
+
   // Validate PDF exists
   if (!existsSync(PDF_PATH)) {
     console.error(`PDF not found: ${PDF_PATH}`);
-    console.error(`Generate it first: open public/docs/UAM_Market_Pulse_Issue${issueNum}.html in browser → Cmd+P → Save as PDF`);
+    console.error(`Generate it first: open ${HTML_PATH} in browser → Cmd+P → Save as PDF`);
     process.exit(1);
   }
 
@@ -217,7 +223,12 @@ async function main() {
   console.log(`  Week of ${weekLabel}`);
   console.log(`  Subject: ${SUBJECT}\n`);
 
-  // Load PDF
+  // Load newsletter HTML (rendered inline in email body)
+  console.log(`Loading HTML: ${HTML_PATH}`);
+  const newsletterHtml = readFileSync(HTML_PATH, "utf-8");
+  console.log(`  HTML size: ${(Buffer.byteLength(newsletterHtml) / 1024).toFixed(1)} KB`);
+
+  // Load PDF (attached as bonus)
   console.log(`Loading PDF: ${PDF_PATH}`);
   const pdfBuffer = readFileSync(PDF_PATH);
   const pdfBase64 = pdfBuffer.toString("base64");
@@ -227,7 +238,7 @@ async function main() {
     // Test mode: send to one email
     console.log(`SENDING TEST to: ${testEmail}`);
     const unsubUrl = buildUnsubscribeUrl(testEmail);
-    const raw = buildRawEmail(testEmail, pdfBase64, unsubUrl);
+    const raw = buildRawEmail(testEmail, pdfBase64, newsletterHtml, unsubUrl);
     await sendRawEmail(raw);
     console.log(`  Sent successfully.\n`);
   } else if (sendAll) {
@@ -243,7 +254,7 @@ async function main() {
       console.log(`  ${u.email}...`);
       try {
         const unsubUrl = buildUnsubscribeUrl(u.email);
-        const raw = buildRawEmail(u.email, pdfBase64, unsubUrl);
+        const raw = buildRawEmail(u.email, pdfBase64, newsletterHtml, unsubUrl);
         await sendRawEmail(raw);
         console.log(`    Sent.`);
       } catch (err) {
