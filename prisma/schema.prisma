@@ -485,3 +485,20 @@ model EmergingMarketSignal {
   @@index([signalType])
   @@index([relevant, ingestedAt])
 }
+
+// ── Newsletter Tracking ──────────────────────────────────
+
+model NewsletterEvent {
+  id        String   @id @default(cuid())
+  email     String
+  issue     Int
+  event     String   // "open" | "click"
+  url       String?  // destination URL for click events
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([email, issue])
+  @@index([issue, event])
+  @@index([createdAt])
+}

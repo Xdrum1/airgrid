@@ -28,3 +28,30 @@ export function buildUnsubscribeUrl(email: string): string {
   const base = process.env.APP_URL || "https://www.airindex.io";
   return `${base}/newsletter/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`;
 }
+
+// ── Tracking tokens ─────────────────────────────────────
+
+export function generateTrackingToken(email: string, issue: number): string {
+  const hmac = createHmac("sha256", getSecret())
+    .update(`newsletter-track:${email}:${issue}`)
+    .digest("hex")
+    .slice(0, 32);
+  return hmac;
+}
+
+export function verifyTrackingToken(email: string, issue: number, token: string): boolean {
+  const expected = generateTrackingToken(email, issue);
+  return token === expected;
+}
+
+export function buildTrackingPixelUrl(email: string, issue: number): string {
+  const token = generateTrackingToken(email, issue);
+  const base = process.env.APP_URL || "https://www.airindex.io";
+  return `${base}/api/newsletter/track?e=${encodeURIComponent(email)}&i=${issue}&t=${token}`;
+}
+
+export function buildClickTrackUrl(email: string, issue: number, destinationUrl: string): string {
+  const token = generateTrackingToken(email, issue);
+  const base = process.env.APP_URL || "https://www.airindex.io";
+  return `${base}/api/newsletter/click?e=${encodeURIComponent(email)}&i=${issue}&t=${token}&url=${encodeURIComponent(destinationUrl)}`;
+}
