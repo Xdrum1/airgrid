@@ -78,18 +78,27 @@ async function main() {
     });
     if (!current) continue;
 
-    // Get the oldest snapshot within the lookback window to compare against
-    const weekAgo = await prisma.scoreSnapshot.findFirst({
+    // Get the stable score before the lookback window (mode of last 3 pre-window snapshots)
+    // to avoid anomalies from transient auto-review false positives.
+    const preWindowSnaps = await prisma.scoreSnapshot.findMany({
       where: { cityId, capturedAt: { lte: SINCE } },
       orderBy: { capturedAt: "desc" },
+      take: 3,
       select: { score: true },
     });
+
+    let prevScore: number | null = null;
+    if (preWindowSnaps.length > 0) {
+      const freq = new Map<number, number>();
+      for (const s of preWindowSnaps) freq.set(s.score, (freq.get(s.score) ?? 0) + 1);
+      prevScore = [...freq.entries()].sort((a, b) => b[1] - a[1])[0][0];
+    }
 
     scores.push({
       cityId,
       score: current.score,
       tier: current.tier ?? "",
-      prevScore: weekAgo?.score ?? null,
+      prevScore,
     });
   }
 
