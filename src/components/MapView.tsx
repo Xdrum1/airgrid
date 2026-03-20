@@ -619,6 +619,7 @@ export default function MapView({
   const [corridorPopup, setCorridorPopup] = useState<Corridor | null>(null);
   const [hasNavigated, setHasNavigated] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -928,11 +929,14 @@ export default function MapView({
               isSelected={selected?.id === city.id}
               onClick={() => handleMarkerClick(city)}
               onHover={!isMobile ? () => {
+                if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
                 setPopup({ city, longitude: city.lng, latitude: city.lat });
                 setVertiportPopup(null);
                 setCorridorPopup(null);
               } : undefined}
-              onHoverEnd={!isMobile ? () => setPopup(null) : undefined}
+              onHoverEnd={!isMobile ? () => {
+                hoverTimeoutRef.current = setTimeout(() => setPopup(null), 300);
+              } : undefined}
             />
           </Marker>
         ))}
@@ -963,25 +967,34 @@ export default function MapView({
             onClose={() => setPopup(null)}
             closeOnClick={false}
           >
-            <CityPopup
-              city={popup.city}
-              onClose={() => setPopup(null)}
-              onSelect={(city) => {
-                onCitySelect(city);
-                setPopup(null);
+            <div
+              onMouseEnter={() => {
+                if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
               }}
-              starNode={
-                !isMobile && onToggleWatch ? (
-                  <WatchlistStar
-                    cityId={popup.city.id}
-                    isWatched={watchedCityIds.includes(popup.city.id)}
-                    onToggle={onToggleWatch}
-                    isAuthenticated={isAuthenticated}
-                    size="sm"
-                  />
-                ) : undefined
-              }
-            />
+              onMouseLeave={() => {
+                hoverTimeoutRef.current = setTimeout(() => setPopup(null), 300);
+              }}
+            >
+              <CityPopup
+                city={popup.city}
+                onClose={() => setPopup(null)}
+                onSelect={(city) => {
+                  onCitySelect(city);
+                  setPopup(null);
+                }}
+                starNode={
+                  !isMobile && onToggleWatch ? (
+                    <WatchlistStar
+                      cityId={popup.city.id}
+                      isWatched={watchedCityIds.includes(popup.city.id)}
+                      onToggle={onToggleWatch}
+                      isAuthenticated={isAuthenticated}
+                      size="sm"
+                    />
+                  ) : undefined
+                }
+              />
+            </div>
           </Popup>
         )}
 
