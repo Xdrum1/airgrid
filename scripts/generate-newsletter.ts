@@ -333,7 +333,7 @@ function buildHtml(
         <tbody>${leaderboardRows}</tbody>
       </table>
       <p style="color:#666;font-size:12px;margin-top:12px;text-align:center;">
-        Average score across all ${scores.length} tracked markets: ${avg} · Full index at airindex.io
+        Average score across all tracked U.S. metro markets: ${avg} · Full index at airindex.io
       </p>
     </div>
 
@@ -404,7 +404,7 @@ function buildHtml(
     <div style="border-top:2px solid #e5e7eb;padding-top:24px;margin-top:40px;">
       <div style="color:#888;font-size:12px;font-weight:600;letter-spacing:0.5px;margin-bottom:8px;">ABOUT AIRINDEX</div>
       <p style="color:#888;font-size:12px;line-height:1.6;margin-bottom:12px;">
-        AirIndex is a UAM market intelligence platform scoring ${scores.length} U.S. cities on their readiness for commercial eVTOL operations.
+        AirIndex is a UAM market intelligence platform scoring U.S. metro markets on their readiness for commercial eVTOL operations.
         Scores are updated automatically when qualifying regulatory, legislative, or operator events are detected.
       </p>
       <p style="color:#666;font-size:12px;">
