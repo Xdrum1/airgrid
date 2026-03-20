@@ -204,10 +204,12 @@ function LoginForm() {
                 ? "No password needed — we\u2019ll email you a magic link to get started."
                 : "No password needed — we\u2019ll email you a sign-in link."}
             </p>
-            <p style={{ color: "#555", fontSize: 9, marginTop: 12 }}>
-              By signing in, you agree to our{" "}
+            <p style={{ color: "#555", fontSize: 9, marginTop: 12, lineHeight: 1.5 }}>
+              By creating an account, you agree to our{" "}
               <a href="/terms" style={{ color: "#00d4ff", textDecoration: "none" }}>Terms of Service</a> and{" "}
-              <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>.
+              <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>, and to receive
+              market updates and the weekly UAM Market Pulse newsletter. You can{" "}
+              <a href="/privacy#your-rights" style={{ color: "#00d4ff", textDecoration: "none" }}>unsubscribe</a> at any time.
             </p>
           </>
         ) : (

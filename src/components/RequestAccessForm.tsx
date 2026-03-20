@@ -186,7 +186,8 @@ export default function RequestAccessForm() {
       )}
 
       <p style={{ fontSize: 10, color: "#777", textAlign: "center", margin: 0, lineHeight: 1.6 }}>
-        Free during early access. No credit card required.
+        Free during early access. No credit card required. By requesting access, you agree to receive
+        market updates and the weekly UAM Market Pulse newsletter. You can unsubscribe at any time.
       </p>
     </form>
   );
