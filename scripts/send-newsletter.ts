@@ -5,8 +5,8 @@
  * Attaches the PDF and includes an HTML email body with a summary.
  *
  * Usage:
- *   npx tsx scripts/send-newsletter.ts --test=alan@airindex.io     # Test to one email
- *   npx tsx scripts/send-newsletter.ts --send                       # Send to all users (except admin)
+ *   npx tsx scripts/send-newsletter.ts --issue=2 --week="March 20, 2026" --test=alan@airindex.io
+ *   npx tsx scripts/send-newsletter.ts --issue=2 --week="March 20, 2026" --send
  *
  * Requires: SES_ACCESS_KEY_ID, SES_SECRET_ACCESS_KEY, SES_REGION in .env
  */
@@ -15,31 +15,37 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 
 import { createHmac, createHash } from "crypto";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { PrismaClient } from "@prisma/client";
 import { buildUnsubscribeUrl } from "../src/lib/newsletter-token";
 
 const prisma = new PrismaClient();
 
-// ── Config ──────────────────────────────────────────────────────
-const FROM = "AirIndex <hello@airindex.io>";
-const SUBJECT = "UAM Market Pulse — Issue 1 | Week of March 10, 2026";
-const PDF_PATH = "public/docs/UAM Market Pulse — Issue 1.pdf";
-const PDF_FILENAME = "UAM_Market_Pulse_Issue1.pdf";
-const ADMIN_EMAIL = "alan@airindex.io";
-const SITE = "https://www.airindex.io";
-
 // ── Args ────────────────────────────────────────────────────────
+const issueNum = parseInt(
+  process.argv.find((a) => a.startsWith("--issue="))?.split("=")[1] ?? "0",
+  10
+);
+const weekLabel =
+  process.argv.find((a) => a.startsWith("--week="))?.split("=")[1] ?? "";
 const testArg = process.argv.find((a) => a.startsWith("--test="));
 const testEmail = testArg?.split("=")[1];
 const sendAll = process.argv.includes("--send");
 
-if (!testEmail && !sendAll) {
+if (!issueNum || !weekLabel || (!testEmail && !sendAll)) {
   console.log("Usage:");
-  console.log("  npx tsx scripts/send-newsletter.ts --test=alan@airindex.io");
-  console.log("  npx tsx scripts/send-newsletter.ts --send");
+  console.log('  npx tsx scripts/send-newsletter.ts --issue=2 --week="March 20, 2026" --test=alan@airindex.io');
+  console.log('  npx tsx scripts/send-newsletter.ts --issue=2 --week="March 20, 2026" --send');
   process.exit(0);
 }
+
+// ── Config (derived from args) ──────────────────────────────────
+const FROM = "AirIndex <hello@airindex.io>";
+const SUBJECT = `UAM Market Pulse — Issue ${issueNum} | Week of ${weekLabel}`;
+const PDF_PATH = `public/docs/UAM_Market_Pulse_Issue${issueNum}.pdf`;
+const PDF_FILENAME = `UAM_Market_Pulse_Issue${issueNum}.pdf`;
+const ADMIN_EMAIL = "alan@airindex.io";
+const SITE = "https://www.airindex.io";
 
 // ── SES helpers ─────────────────────────────────────────────────
 function sha256(data: string) {
@@ -83,7 +89,7 @@ function buildRawEmail(to: string, pdfBase64: string, unsubscribeUrl: string): s
     <!-- Header -->
     <div style="background:#0a0a12;padding:32px 24px;text-align:center;">
       <h1 style="color:#ffffff;font-size:24px;margin:0 0 4px 0;font-weight:700;">UAM MARKET PULSE</h1>
-      <p style="color:#888;font-size:13px;margin:0;">by AirIndex &middot; Issue 1 &middot; Week of March 10, 2026</p>
+      <p style="color:#888;font-size:13px;margin:0;">by AirIndex &middot; Issue ${issueNum} &middot; Week of ${weekLabel}</p>
     </div>
 
     <!-- Body -->
@@ -97,10 +103,10 @@ function buildRawEmail(to: string, pdfBase64: string, unsubscribeUrl: string): s
       </p>
 
       <ul style="color:#333;font-size:15px;line-height:1.8;padding-left:20px;margin:0 0 24px 0;">
-        <li><strong>Miami hits 100/100</strong> &mdash; the third U.S. city to achieve a perfect UAM readiness score</li>
-        <li><strong>4 high-confidence signals</strong> detected across Miami, Dallas, and New York</li>
-        <li><strong>32 regulatory signals</strong> classified from 1,340 ingested filings</li>
-        <li><strong>Full leaderboard</strong> &mdash; all 21 markets ranked and tiered</li>
+        <li><strong>3 markets climb</strong> &mdash; Phoenix, Chicago, and Columbus rise on state legislation and operator signals</li>
+        <li><strong>46 regulatory signals</strong> classified this week &mdash; Joby dominates Bay Area coverage</li>
+        <li><strong>Arizona AAM bills</strong> &mdash; three bills advancing through committee could push Phoenix higher</li>
+        <li><strong>Score changes now live</strong> &mdash; the AirIndex dashboard now shows real-time deltas on every market</li>
       </ul>
 
       <p style="color:#333;font-size:15px;line-height:1.6;margin:0 0 24px 0;">
@@ -200,6 +206,17 @@ async function sendRawEmail(rawMessage: string): Promise<void> {
 
 // ── Main ────────────────────────────────────────────────────────
 async function main() {
+  // Validate PDF exists
+  if (!existsSync(PDF_PATH)) {
+    console.error(`PDF not found: ${PDF_PATH}`);
+    console.error(`Generate it first: open public/docs/UAM_Market_Pulse_Issue${issueNum}.html in browser → Cmd+P → Save as PDF`);
+    process.exit(1);
+  }
+
+  console.log(`\n  UAM Market Pulse — Issue ${issueNum}`);
+  console.log(`  Week of ${weekLabel}`);
+  console.log(`  Subject: ${SUBJECT}\n`);
+
   // Load PDF
   console.log(`Loading PDF: ${PDF_PATH}`);
   const pdfBuffer = readFileSync(PDF_PATH);

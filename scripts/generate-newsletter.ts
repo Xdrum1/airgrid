@@ -106,17 +106,27 @@ async function getScores(): Promise<CityScore[]> {
     });
     if (!current) continue;
 
-    const weekAgo = await prisma.scoreSnapshot.findFirst({
+    // Get the stable score before the lookback window.
+    // Use the most common score from the 3 most recent pre-window snapshots
+    // to avoid anomalies from transient auto-review false positives.
+    const preWindowSnaps = await prisma.scoreSnapshot.findMany({
       where: { cityId, capturedAt: { lte: SINCE } },
       orderBy: { capturedAt: "desc" },
+      take: 3,
       select: { score: true },
     });
 
     let change = "—";
-    const prev = weekAgo?.score ?? null;
-    if (prev !== null && prev !== current.score) {
-      const delta = current.score - prev;
-      change = delta > 0 ? `↑ +${delta}` : `↓ ${delta}`;
+    let prev: number | null = null;
+    if (preWindowSnaps.length > 0) {
+      // Use the most frequent score (mode) as the stable baseline
+      const freq = new Map<number, number>();
+      for (const s of preWindowSnaps) freq.set(s.score, (freq.get(s.score) ?? 0) + 1);
+      prev = [...freq.entries()].sort((a, b) => b[1] - a[1])[0][0];
+      if (prev !== current.score) {
+        const delta = current.score - prev;
+        change = delta > 0 ? `↑ +${delta}` : `↓ ${delta}`;
+      }
     }
 
     scores.push({
@@ -295,8 +305,7 @@ function buildHtml(
         <h2 style="color:#111;font-size:22px;font-weight:700;">${fmt(leadMover.cityId)} Hits ${leadMover.score} — ${leadMover.score === 100 ? "A Perfect UAM Readiness Score" : "Score Moves " + leadMover.change}</h2>
       </div>
       <p style="color:#333;font-size:14px;line-height:1.7;margin-bottom:16px;">
-        ${fmt(leadMover.cityId)} ${leadMover.score === 100 ? `became one of the U.S. cities to achieve a perfect score on the AirIndex UAM Market Readiness Index this week, jumping from ${leadMover.prevScore} to ${leadMover.score}.` : `saw its readiness score change from ${leadMover.prevScore} to ${leadMover.score} this week.`}
-        ${fmt(leadMover.cityId)} now holds all seven readiness factors: an active pilot program, an approved vertiport, active operator presence, vertiport zoning, a favorable regulatory posture, state legislation, and full LAANC airspace coverage.
+        ${fmt(leadMover.cityId)} ${leadMover.score === 100 ? `became one of the U.S. cities to achieve a perfect score on the AirIndex UAM Market Readiness Index this week, jumping from ${leadMover.prevScore} to ${leadMover.score}. ${fmt(leadMover.cityId)} now holds all seven readiness factors: an active pilot program, an approved vertiport, active operator presence, vertiport zoning, a favorable regulatory posture, state legislation, and full LAANC airspace coverage.` : `saw its readiness score move from ${leadMover.prevScore} to ${leadMover.score} this week, gaining ground on key readiness factors tracked by the AirIndex UAM Market Readiness Index.`}
       </p>
       <div style="background:#f9fafb;border-left:3px solid #d97706;padding:14px 18px;border-radius:0 6px 6px 0;">
         <p style="color:#ccc;font-size:13px;line-height:1.6;"><strong style="color:#111;">Why it matters:</strong> Markets achieving top-tier readiness scores carry a credibility advantage in operator route planning and infrastructure investment decisions.</p>
