@@ -3,7 +3,7 @@
  * No login required — the token proves the email owner clicked the link.
  */
 
-import { createHmac } from "crypto";
+import { createHmac, timingSafeEqual } from "crypto";
 
 function getSecret(): string {
   const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
@@ -20,7 +20,8 @@ export function generateUnsubscribeToken(email: string): string {
 
 export function verifyUnsubscribeToken(email: string, token: string): boolean {
   const expected = generateUnsubscribeToken(email);
-  return token === expected;
+  if (token.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(token), Buffer.from(expected));
 }
 
 export function buildUnsubscribeUrl(email: string): string {
@@ -34,14 +35,14 @@ export function buildUnsubscribeUrl(email: string): string {
 export function generateTrackingToken(email: string, issue: number): string {
   const hmac = createHmac("sha256", getSecret())
     .update(`newsletter-track:${email}:${issue}`)
-    .digest("hex")
-    .slice(0, 32);
+    .digest("hex");
   return hmac;
 }
 
 export function verifyTrackingToken(email: string, issue: number, token: string): boolean {
   const expected = generateTrackingToken(email, issue);
-  return token === expected;
+  if (token.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(token), Buffer.from(expected));
 }
 
 export function buildTrackingPixelUrl(email: string, issue: number): string {

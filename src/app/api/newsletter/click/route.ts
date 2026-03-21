@@ -27,15 +27,17 @@ export async function GET(req: NextRequest) {
 
   // Redirect to destination (or fallback to homepage)
   const destination = url || "https://www.airindex.io";
+  const fallback = "https://www.airindex.io";
 
-  // Validate the URL to prevent open redirect
+  // Validate URL — HMAC token proves this URL was generated server-side,
+  // but still block dangerous protocols (javascript:, data:, etc.)
   try {
     const parsed = new URL(destination);
     if (!["https:", "http:"].includes(parsed.protocol)) {
-      return NextResponse.redirect("https://www.airindex.io");
+      return NextResponse.redirect(fallback);
     }
   } catch {
-    return NextResponse.redirect("https://www.airindex.io");
+    return NextResponse.redirect(fallback);
   }
 
   return NextResponse.redirect(destination);
