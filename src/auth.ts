@@ -98,7 +98,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 24px;">
                 Subscribe to alerts on any city page to get notified when filings, legislation, or FAA updates drop.
               </p>
-              <a href="${appUrl}/dashboard" style="display:inline-block;padding:12px 28px;background:#00d4ff;color:#050508;font-size:13px;font-weight:700;text-decoration:none;border-radius:6px;">
+              <a href="${appUrl}/dashboard?utm_source=email&utm_medium=transactional&utm_campaign=welcome" style="display:inline-block;padding:12px 28px;background:#00d4ff;color:#050508;font-size:13px;font-weight:700;text-decoration:none;border-radius:6px;">
                 Open Dashboard
               </a>
               <p style="color:#bbb;font-size:11px;margin-top:32px;line-height:1.6;">
