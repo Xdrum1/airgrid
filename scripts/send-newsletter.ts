@@ -85,14 +85,18 @@ function buildRawEmail(to: string, pdfBase64: string, newsletterHtml: string, un
   let innerContent = bodyMatch ? bodyMatch[1] : newsletterHtml;
 
   // Wrap links with click tracking (href="https://..." → tracked redirect)
-  const dashboardClickUrl = buildClickTrackUrl(to, issueNum, `${SITE}/dashboard`);
-  const siteClickUrl = buildClickTrackUrl(to, issueNum, SITE);
+  const dashboardClickUrl = buildClickTrackUrl(to, issueNum, `${SITE}/dashboard?utm_source=newsletter&utm_medium=email&utm_campaign=issue-${issueNum}`);
+  const siteClickUrl = buildClickTrackUrl(to, issueNum, `${SITE}?utm_source=newsletter&utm_medium=email&utm_campaign=issue-${issueNum}`);
   const twitterClickUrl = buildClickTrackUrl(to, issueNum, "https://twitter.com/AirIndexHQ");
 
   // Track links inside the newsletter content (airindex.io links only)
   innerContent = innerContent.replace(
     /href="(https?:\/\/(?:www\.)?airindex\.io[^"]*)"/g,
-    (_match, url) => `href="${buildClickTrackUrl(to, issueNum, url)}"`
+    (_match, url: string) => {
+      const sep = url.includes("?") ? "&" : "?";
+      const tagged = `${url}${sep}utm_source=newsletter&utm_medium=email&utm_campaign=issue-${issueNum}`;
+      return `href="${buildClickTrackUrl(to, issueNum, tagged)}"`;
+    }
   );
 
   // Tracking pixel
