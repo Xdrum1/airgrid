@@ -6,6 +6,7 @@ import { sendSesEmail } from "@/lib/ses";
 import { rateLimit } from "@/lib/rate-limit";
 import { createLogger } from "@/lib/logger";
 import { getUserTier } from "@/lib/billing";
+import { recordLoginEvent } from "@/lib/login-events";
 
 const logger = createLogger("auth");
 
@@ -137,6 +138,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { id: user.id },
           data: { lastActiveAt: new Date() },
         }).catch((err) => logger.error("Failed to update lastActiveAt:", err));
+      }
+
+      // Record login event + new device notification
+      if (user.id && user.email) {
+        try {
+          const { headers } = await import("next/headers");
+          const headersList = await headers();
+          const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+          const userAgent = headersList.get("user-agent") ?? null;
+
+          recordLoginEvent({
+            userId: user.id,
+            email: user.email,
+            ip,
+            userAgent,
+          }).catch((err) => logger.error("Login event failed:", err));
+        } catch (err) {
+          logger.error("Could not read headers in signIn event:", err);
+        }
       }
 
       if (!process.env.SES_ACCESS_KEY_ID) return;
