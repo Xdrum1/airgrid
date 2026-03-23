@@ -77,6 +77,60 @@ export default function PricingPage() {
         <PricingTiers />
       </section>
 
+      {/* Who uses AirIndex */}
+      <section style={{ maxWidth: 800, margin: "0 auto", padding: "0 20px 64px" }}>
+        <div style={{
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          borderRadius: 12,
+          padding: "32px 36px",
+        }}>
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: 16,
+              color: "#ccc",
+              margin: "0 0 20px",
+            }}
+          >
+            Who uses AirIndex
+          </h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "14px 32px" }}>
+            {[
+              { type: "eVTOL operators", desc: "Market entry timing and corridor readiness" },
+              { type: "City planners & airport authorities", desc: "Benchmarking against peer markets" },
+              { type: "Infrastructure developers", desc: "Site selection and gap analysis" },
+              { type: "Defense & aerospace", desc: "AAM landscape intelligence for strategic planning" },
+              { type: "Investment & finance", desc: "Due diligence on market-level readiness" },
+              { type: "Policy & government", desc: "Federal program alignment and legislative tracking" },
+            ].map((item) => (
+              <div key={item.type} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                <span style={{ color: "#00d4ff", fontSize: 8, marginTop: 5, flexShrink: 0 }}>&#9646;</span>
+                <div>
+                  <div style={{ color: "#c0c8d8", fontSize: 12, fontWeight: 600 }}>{item.type}</div>
+                  <div style={{ color: "#666", fontSize: 11, lineHeight: 1.5 }}>{item.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: "center", marginTop: 24 }}>
+            <Link
+              href="/contact?tier=pro"
+              style={{
+                color: "#00d4ff",
+                fontSize: 12,
+                fontWeight: 600,
+                textDecoration: "none",
+                borderBottom: "1px solid rgba(0,212,255,0.3)",
+              }}
+            >
+              Schedule a walkthrough to see how it fits your workflow
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section style={{ maxWidth: 640, margin: "0 auto", padding: "0 20px 80px" }}>
         <h3
@@ -109,7 +163,7 @@ export default function PricingPage() {
           },
           {
             q: "What data sources does AirIndex use?",
-            a: "AirIndex ingests from verified primary sources including the FAA, Federal Register, LegiScan state legislation databases, and SEC EDGAR. Every score is auditable and traceable to its origin records.",
+            a: "AirIndex aggregates verified primary sources — federal agencies, regulatory databases, legislative records, and operator disclosures. Every score is auditable and traceable to its origin records.",
           },
         ].map((faq) => (
           <div
