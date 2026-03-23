@@ -78,8 +78,8 @@ const TIERS: Tier[] = [
   {
     name: "Institutional",
     tagline: "Data access for teams and organizations embedding UAM intelligence into their workflows.",
-    monthly: 499,
-    annual: 4990,
+    monthly: null,
+    annual: null,
     accent: "#7a8fa8",
     highlight: false,
     features: [
@@ -88,8 +88,7 @@ const TIERS: Tier[] = [
       "Data export (JSON)",
       "Priority support & onboarding",
     ],
-    cta: "stripe",
-    stripeTier: "institutional",
+    cta: "contact",
   },
   {
     name: "Enterprise",
@@ -190,6 +189,8 @@ export default function PricingTiers() {
       <style>{`
         .pricing-cta { transition: border-color 0.2s, color 0.2s, background 0.2s; }
         .pricing-cta:hover { border-color: rgba(0,212,255,0.35) !important; color: #00d4ff !important; background: rgba(0,212,255,0.06) !important; }
+        .pricing-secondary { transition: color 0.2s; }
+        .pricing-secondary:hover { color: #00d4ff !important; }
       `}</style>
       {/* Tier cards */}
       <div
@@ -322,7 +323,7 @@ export default function PricingTiers() {
               ))}
             </ul>
 
-            {/* CTA */}
+            {/* CTA — dual path: walkthrough primary, self-serve secondary */}
             {tier.cta === "free" ? (
               <Link
                 href="/login?mode=signup"
@@ -361,7 +362,7 @@ export default function PricingTiers() {
                   color: "#999",
                 }}
               >
-                Inquire
+                Schedule a Walkthrough
               </Link>
             ) : tier.cta === "coming_soon" ? (
               <div
@@ -382,49 +383,59 @@ export default function PricingTiers() {
                 Coming soon
               </div>
             ) : (
-              /* Stripe checkout ready — activate by setting STRIPE_*_PRICE_ID env vars */
-              process.env.NEXT_PUBLIC_STRIPE_LIVE === "true" ? (
-              <button
-                onClick={() => handleCheckout(tier)}
-                disabled={loadingTier === tier.stripeTier}
-                className="pricing-cta"
-                style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "center",
-                  padding: "12px 0",
-                  borderRadius: 6,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.04em",
-                  background: tier.highlight ? "rgba(0,212,255,0.08)" : "rgba(255,255,255,0.04)",
-                  border: tier.highlight ? "1px solid rgba(0,212,255,0.2)" : "1px solid rgba(255,255,255,0.08)",
-                  color: tier.highlight ? "#00d4ff" : "#999",
-                  cursor: loadingTier === tier.stripeTier ? "wait" : "pointer",
-                  opacity: loadingTier === tier.stripeTier ? 0.6 : 1,
-                }}
-              >
-                {loadingTier === tier.stripeTier ? "Redirecting..." : "Subscribe"}
-              </button>
-              ) : (
-              <div
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  padding: "12px 0",
-                  borderRadius: 6,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.04em",
-                  background: tier.highlight ? "rgba(0,212,255,0.08)" : "rgba(255,255,255,0.03)",
-                  border: tier.highlight ? "1px solid rgba(0,212,255,0.2)" : "1px solid rgba(255,255,255,0.06)",
-                  color: tier.highlight ? "#00d4ff" : "#555",
-                  cursor: "default",
-                }}
-              >
-                Coming April 2026
+              /* Paid tiers: walkthrough primary, self-serve secondary */
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <Link
+                  href={`/contact?tier=${tier.stripeTier}`}
+                  className="pricing-cta"
+                  style={{
+                    display: "block",
+                    textAlign: "center",
+                    padding: "12px 0",
+                    borderRadius: 6,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.04em",
+                    textDecoration: "none",
+                    background: tier.highlight ? "rgba(0,212,255,0.08)" : "rgba(255,255,255,0.04)",
+                    border: tier.highlight ? "1px solid rgba(0,212,255,0.2)" : "1px solid rgba(255,255,255,0.08)",
+                    color: tier.highlight ? "#00d4ff" : "#999",
+                  }}
+                >
+                  Schedule a Walkthrough
+                </Link>
+                {process.env.NEXT_PUBLIC_STRIPE_LIVE === "true" ? (
+                  <button
+                    onClick={() => handleCheckout(tier)}
+                    disabled={loadingTier === tier.stripeTier}
+                    className="pricing-secondary"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      padding: "4px 0",
+                      fontSize: 10,
+                      color: "#555",
+                      cursor: loadingTier === tier.stripeTier ? "wait" : "pointer",
+                      letterSpacing: "0.02em",
+                      opacity: loadingTier === tier.stripeTier ? 0.6 : 1,
+                    }}
+                  >
+                    {loadingTier === tier.stripeTier ? "Redirecting..." : "or subscribe now →"}
+                  </button>
+                ) : (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "4px 0",
+                      fontSize: 10,
+                      color: "#444",
+                      letterSpacing: "0.02em",
+                    }}
+                  >
+                    Self-serve available April 2026
+                  </div>
+                )}
               </div>
-              )
             )}
           </div>
         ))}

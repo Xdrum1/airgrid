@@ -93,7 +93,7 @@ export default function UpgradeGate({ feature }: UpgradeGateProps) {
         </p>
 
         <Link
-          href="/pricing"
+          href="/contact?tier=pro&ref=upgrade"
           style={{
             display: "inline-block",
             padding: "13px 32px",
@@ -109,12 +109,23 @@ export default function UpgradeGate({ feature }: UpgradeGateProps) {
             transition: "opacity 0.15s",
           }}
         >
-          VIEW PLANS
+          SCHEDULE A WALKTHROUGH
         </Link>
 
-        <p style={{ color: "#666", fontSize: 9, marginTop: 20 }}>
-          Pro includes full access to all platform intelligence.
-        </p>
+        <div style={{ marginTop: 16, display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+          <Link
+            href="/pricing"
+            style={{
+              color: "#555",
+              fontSize: 10,
+              textDecoration: "none",
+              borderBottom: "1px solid rgba(255,255,255,0.08)",
+              transition: "color 0.15s",
+            }}
+          >
+            or view plans →
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -598,7 +598,7 @@ export default function CityDetailPanel({
                 {selected.activeOperators.length} operator{selected.activeOperators.length !== 1 ? "s" : ""}, {vertiports.length} vertiport{vertiports.length !== 1 ? "s" : ""}, {corridors.length} corridor{corridors.length !== 1 ? "s" : ""}
               </div>
               <Link
-                href="/pricing"
+                href="/contact?tier=pro&ref=detail"
                 style={{
                   display: "inline-block",
                   padding: "7px 18px",
@@ -612,7 +612,19 @@ export default function CityDetailPanel({
                   textDecoration: "none",
                 }}
               >
-                UNLOCK WITH PRO
+                SCHEDULE A WALKTHROUGH
+              </Link>
+              <Link
+                href="/pricing"
+                style={{
+                  color: "#555",
+                  fontSize: 8,
+                  textDecoration: "none",
+                  fontFamily: "'Inter', sans-serif",
+                  marginTop: 4,
+                }}
+              >
+                or view plans →
               </Link>
             </div>
           </div>
