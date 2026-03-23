@@ -29,6 +29,7 @@ model User {
   watchlist             Watchlist?
   events                UserEvent[]
   apiKeys               ApiKey[]
+  loginEvents           LoginEvent[]
   newsletterOptOut      Boolean   @default(false)
   lastActiveAt          DateTime?
   createdAt             DateTime  @default(now())
@@ -484,6 +485,27 @@ model EmergingMarketSignal {
   @@index([source])
   @@index([signalType])
   @@index([relevant, ingestedAt])
+}
+
+// ── Login Device Tracking ────────────────────────────────
+
+model LoginEvent {
+  id              String    @id @default(cuid())
+  userId          String
+  ip              String
+  userAgent       String?
+  fingerprintHash String    // SHA-256 of (userAgent + IP /24 subnet)
+  deviceType      String?   // "Desktop" | "Mobile" | "Tablet" | "Unknown"
+  browser         String?   // "Chrome 120" | "Safari 17" etc.
+  os              String?   // "macOS 14" | "Windows 11" etc.
+  isNewDevice     Boolean   @default(false)
+  notifiedAt      DateTime? // when notification email was sent
+  createdAt       DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, fingerprintHash])
+  @@index([userId, createdAt])
 }
 
 // ── Newsletter Tracking ──────────────────────────────────
