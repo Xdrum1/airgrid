@@ -176,6 +176,36 @@ export default async function LandingPage() {
           daily across 7 verified factors — built on a systematic pipeline monitoring federal regulatory
           filings, state legislation, operator disclosures, and infrastructure data.
         </p>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexWrap: "wrap",
+            gap: "6px 16px",
+            marginBottom: 40,
+          }}
+        >
+          {[
+            "Infrastructure Developers",
+            "Operators & OEMs",
+            "City Planners",
+            "Investors & Analysts",
+            "Defense & Aerospace",
+            "Policy & Government",
+          ].map((buyer, i) => (
+            <span
+              key={buyer}
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 10,
+                letterSpacing: 1,
+                color: "#555",
+              }}
+            >
+              {buyer}{i < 5 ? <span style={{ color: "#333", margin: "0 0 0 16px" }}>/</span> : ""}
+            </span>
+          ))}
+        </div>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
             href="/dashboard"
