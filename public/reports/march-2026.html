@@ -201,7 +201,7 @@ a:hover { text-decoration: underline; }
        COVER
        ═══════════════════════════════════════════════════════ -->
   <section style="padding: 80px 0 48px; text-align: center; border-bottom: none;">
-    <div class="label" style="margin-bottom: 16px;">MONTHLY MARKET REPORT</div>
+    <div class="label" style="margin-bottom: 16px;">ISSUE NO. 2 &bull; MONTHLY MARKET REPORT</div>
     <h1 style="font-size: clamp(28px, 5vw, 42px); font-weight: 800; margin-bottom: 12px; line-height: 1.2;">
       March 2026
     </h1>
@@ -210,9 +210,9 @@ a:hover { text-decoration: underline; }
     </div>
     <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
       <div><span style="color: var(--accent-cyan); font-weight: 700; font-size: 18px;">21</span><br><span class="label">MARKETS</span></div>
-      <div><span style="color: var(--accent-green); font-weight: 700; font-size: 18px;">857</span><br><span class="label">RECORDS</span></div>
+      <div><span style="color: var(--accent-green); font-weight: 700; font-size: 18px;">1,797</span><br><span class="label">RECORDS</span></div>
       <div><span style="color: var(--accent-amber); font-weight: 700; font-size: 18px;">9</span><br><span class="label">CORRIDORS</span></div>
-      <div><span style="color: var(--accent-purple); font-weight: 700; font-size: 18px;">5</span><br><span class="label">OPERATORS</span></div>
+      <div><span style="color: var(--accent-purple); font-weight: 700; font-size: 18px;">4</span><br><span class="label">OPERATORS</span></div>
     </div>
   </section>
 
@@ -222,16 +222,16 @@ a:hover { text-decoration: underline; }
   <section>
     <h2>Executive Summary</h2>
     <p style="margin-bottom: 16px;">
-      March 2026 marks a pivotal month for the US eVTOL industry. <strong>The White House announced a federal eVTOL pilot program selecting Florida, New York, and Texas</strong> as the first three states for commercial powered-lift integration &mdash; with both Joby and Archer accepted into the FAA's Enterprise Integration Pilot Program (eIPP). Joby simultaneously announced its <strong>Uber Air Taxi booking integration</strong>, enabling ride-hail style eVTOL booking directly through the Uber app &mdash; the first consumer-facing air taxi marketplace at scale.
+      March 2026 brought the most significant structural changes to the AirIndex platform since launch. <strong>Scoring methodology v1.3</strong> replaced the binary LAANC Coverage factor with a graduated Weather Infrastructure assessment and rebalanced factor weights to elevate State Legislation as the single highest-weighted factor (20 points). The result: no US market currently achieves a perfect 100 &mdash; Los Angeles and Dallas lead at 95, reflecting the reality that full weather infrastructure for eVTOL operations remains an industry-wide gap.
     </p>
     <p style="margin-bottom: 16px;">
-      Meanwhile, the <strong>Archer vs. Joby legal battle escalated</strong> with Archer filing a countersuit alleging Joby's undisclosed China supply chain dependencies. While the litigation introduces uncertainty around individual operators, it paradoxically validates the competitive intensity of the market &mdash; both companies are racing to be first.
+      The month's biggest mover was <strong>San Francisco, surging from 40 to 75 (+35)</strong> after Joby Aviation's Electric Skies Tour brought a piloted eVTOL demonstration flight across San Francisco Bay &mdash; confirming active pilot program status and operator presence in a market previously scored on infrastructure alone.
     </p>
     <p style="margin-bottom: 16px;">
-      On the data integrity front, AirIndex completed a <strong>comprehensive scoring audit on March 7</strong>, correcting four markets (Las Vegas, Phoenix, Austin, Houston) where scoring factors were not supported by verifiable public records. This reflects our commitment to treating readiness scores as a ratings product &mdash; precision over promotion.
+      <strong>Joby Aviation completed its acquisition of Blade Air Mobility</strong>, consolidating Blade's NYC heliport network, LA terminal operations, and Miami presence under Joby's brand. The operator count drops from five to four, but Joby's market footprint expands significantly &mdash; inheriting Blade's operational helicopter routes as future eVTOL conversion corridors.
     </p>
     <p>
-      The platform now tracks <strong>857 total ingested records</strong> across Federal Register, LegiScan (50 states + DC), SEC EDGAR, and operator news. Our new <strong>auto-discovery pipeline</strong> automatically identifies UAM signals for cities outside our tracked 21 markets, with Cincinnati, OH as the first auto-detected lead.
+      On the data front, AirIndex ingested <strong>5,647 FAA-registered heliports</strong> from the NASR 5010 database, mapping them to all 21 tracked metros. This new infrastructure intelligence layer surfaces existing helicopter infrastructure that represents potential vertiport conversion sites &mdash; a data point now visible on every city profile. The ingestion pipeline reached <strong>1,797 total records</strong> across four data sources, with classifier accuracy at ~85% under prompt v6.
     </p>
   </section>
 
@@ -242,36 +242,115 @@ a:hover { text-decoration: underline; }
     <h2>Key Metrics</h2>
     <div class="stat-grid">
       <div class="stat-card">
-        <div class="stat-value" style="color: var(--accent-green);">4</div>
+        <div class="stat-value" style="color: var(--accent-green);">5</div>
         <div class="stat-label">ADVANCED MARKETS</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" style="color: var(--accent-cyan);">1</div>
+        <div class="stat-value" style="color: var(--accent-cyan);">5</div>
         <div class="stat-label">MODERATE MARKETS</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" style="color: var(--accent-amber);">7</div>
+        <div class="stat-value" style="color: var(--accent-amber);">1</div>
         <div class="stat-label">EARLY MARKETS</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" style="color: var(--accent-red);">9</div>
+        <div class="stat-value" style="color: var(--accent-red);">10</div>
         <div class="stat-label">NASCENT MARKETS</div>
       </div>
     </div>
 
     <div class="card" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; text-align: center;">
       <div>
-        <div style="color: var(--accent-cyan); font-size: 20px; font-weight: 700;">27</div>
-        <div class="label">NEW RECORDS (MARCH)</div>
+        <div style="color: var(--accent-cyan); font-size: 20px; font-weight: 700;">76</div>
+        <div class="label">SIGNALS DETECTED (30D)</div>
       </div>
       <div>
-        <div style="color: var(--accent-purple); font-size: 20px; font-weight: 700;">6</div>
-        <div class="label">TOTAL USERS</div>
+        <div style="color: var(--accent-purple); font-size: 20px; font-weight: 700;">5,647</div>
+        <div class="label">FAA HELIPORTS INGESTED</div>
       </div>
       <div>
-        <div style="color: var(--accent-amber); font-size: 20px; font-weight: 700;">4</div>
-        <div class="label">SCORE CORRECTIONS</div>
+        <div style="color: var(--accent-amber); font-size: 20px; font-weight: 700;">v1.3</div>
+        <div class="label">SCORING METHODOLOGY</div>
       </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       METHODOLOGY UPDATE
+       ═══════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Scoring Methodology v1.3</h2>
+    <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 13px;">
+      Effective March 24, 2026. The most significant scoring update since launch &mdash; rebalances factor weights and replaces the binary LAANC factor with a graduated Weather Infrastructure assessment.
+    </p>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>FACTOR</th>
+            <th style="width: 80px;">v1.2 WEIGHT</th>
+            <th style="width: 80px;">v1.3 WEIGHT</th>
+            <th>CHANGE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">State Legislation</td>
+            <td>10</td>
+            <td style="color: var(--accent-green); font-weight: 700;">20</td>
+            <td style="color: var(--accent-green); font-size: 11px;">+10 &mdash; Elevated to highest-weighted factor. Graduated: enacted (20), actively moving (15), none (0)</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Active Pilot Program</td>
+            <td>20</td>
+            <td style="color: var(--accent-amber); font-weight: 700;">15</td>
+            <td style="font-size: 11px; color: var(--text-muted);">-5</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Approved Vertiport</td>
+            <td>20</td>
+            <td style="color: var(--accent-amber); font-weight: 700;">15</td>
+            <td style="font-size: 11px; color: var(--text-muted);">-5</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Active Operators</td>
+            <td>15</td>
+            <td style="font-weight: 700;">15</td>
+            <td style="font-size: 11px; color: var(--text-muted);">No change</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Vertiport Zoning</td>
+            <td>15</td>
+            <td style="font-weight: 700;">15</td>
+            <td style="font-size: 11px; color: var(--text-muted);">No change</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Regulatory Posture</td>
+            <td>10</td>
+            <td style="font-weight: 700;">10</td>
+            <td style="font-size: 11px; color: var(--text-muted);">No change. Graduated: friendly (10), neutral (5), restrictive (0)</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Weather Infrastructure</td>
+            <td style="color: var(--text-muted);">&mdash;</td>
+            <td style="color: var(--accent-green); font-weight: 700;">10</td>
+            <td style="color: var(--accent-green); font-size: 11px;">NEW &mdash; Replaces LAANC Coverage. Graduated: full (10), basic (7), minimal (3)</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);"><s>LAANC Coverage</s></td>
+            <td>10</td>
+            <td style="color: var(--accent-red); font-weight: 700;">&mdash;</td>
+            <td style="color: var(--accent-red); font-size: 11px;">REMOVED &mdash; Binary yes/no was too coarse; most markets had LAANC</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-cyan); margin-top: 16px;">
+      <p style="font-size: 13px;">
+        <strong>Why this matters:</strong> v1.2 over-indexed on pilot programs and vertiports (40 of 100 points combined), making it possible for a market with no legislation to score HIGH. v1.3 makes legislation the single most important factor &mdash; reflecting the reality that without a legal framework, no amount of operator interest can produce commercial operations. No US market currently scores 100 because no market has full weather infrastructure for eVTOL operations yet.
+      </p>
     </div>
   </section>
 
@@ -281,9 +360,55 @@ a:hover { text-decoration: underline; }
   <section>
     <h2>Score Movements</h2>
     <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 13px;">
-      Four markets were corrected on March 7 following a data audit that removed scoring factors not supported by verifiable public records.
+      Two events drove score changes in March: the data integrity audit (March 7) and the v1.3 methodology update (March 24). Signal-driven changes from pipeline detections are shown separately.
     </p>
 
+    <h3 style="color: var(--accent-green); margin-top: 24px;">Signal-Driven Changes</h3>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>MARKET</th>
+            <th>PREVIOUS</th>
+            <th>CURRENT</th>
+            <th>CHANGE</th>
+            <th>SIGNAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">San Francisco, CA</td>
+            <td>40</td>
+            <td style="color: var(--accent-green); font-weight: 700;">75</td>
+            <td style="color: var(--accent-green);">+35</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Joby Electric Skies Tour demo flight across SF Bay &mdash; pilot program + operator presence confirmed</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Phoenix, AZ</td>
+            <td>35</td>
+            <td style="color: var(--accent-green); font-weight: 700;">50</td>
+            <td style="color: var(--accent-green);">+15</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Joby operator presence confirmed; AZ legislation actively moving</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Houston, TX</td>
+            <td>30</td>
+            <td style="color: var(--accent-green); font-weight: 700;">50</td>
+            <td style="color: var(--accent-green);">+20</td>
+            <td style="font-size: 11px; color: var(--text-muted);">FAA selects Texas air taxi networks for eIPP &mdash; pilot program activated</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Austin, TX</td>
+            <td>30</td>
+            <td style="color: var(--accent-green); font-weight: 700;">50</td>
+            <td style="color: var(--accent-green);">+20</td>
+            <td style="font-size: 11px; color: var(--text-muted);">FAA selects Texas air taxi networks for eIPP &mdash; pilot program activated</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color: var(--accent-amber); margin-top: 24px;">Methodology-Driven Changes (v1.3)</h3>
     <div class="card">
       <table>
         <thead>
@@ -297,35 +422,41 @@ a:hover { text-decoration: underline; }
         </thead>
         <tbody>
           <tr>
-            <td style="font-weight: 600; color: var(--text-heading);">Las Vegas, NV</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Los Angeles, CA</td>
+            <td>100</td>
+            <td>95</td>
+            <td style="color: var(--accent-amber);">-5</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Weather Infrastructure 7/10 (basic) replaces LAANC 10/10</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Dallas, TX</td>
+            <td>100</td>
+            <td>95</td>
+            <td style="color: var(--accent-amber);">-5</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Weather Infrastructure 7/10 (basic) replaces LAANC 10/10</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Orlando, FL</td>
             <td>85</td>
-            <td>35</td>
-            <td style="color: var(--accent-red);">-50</td>
-            <td style="font-size: 11px; color: var(--text-muted);">Removed unverified pilot program, zoning, legislation, and regulatory posture claims</td>
+            <td>80</td>
+            <td style="color: var(--accent-amber);">-5</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Weight rebalancing (Pilot 20&rarr;15, Legislation 10&rarr;20)</td>
           </tr>
           <tr>
-            <td style="font-weight: 600; color: var(--text-heading);">Phoenix, AZ</td>
-            <td>65</td>
-            <td>35</td>
-            <td style="color: var(--accent-red);">-30</td>
-            <td style="font-size: 11px; color: var(--text-muted);">Removed unverified zoning, legislation, and regulatory posture claims</td>
-          </tr>
-          <tr>
-            <td style="font-weight: 600; color: var(--text-heading);">Austin, TX</td>
-            <td>45</td>
-            <td>30</td>
+            <td style="font-weight: 600; color: var(--text-heading);">New York, NY</td>
+            <td>70</td>
+            <td>55</td>
             <td style="color: var(--accent-red);">-15</td>
-            <td style="font-size: 11px; color: var(--text-muted);">Removed unverified operator presence</td>
-          </tr>
-          <tr>
-            <td style="font-weight: 600; color: var(--text-heading);">Houston, TX</td>
-            <td>45</td>
-            <td>30</td>
-            <td style="color: var(--accent-red);">-15</td>
-            <td style="font-size: 11px; color: var(--text-muted);">Removed unverified operator presence</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Legislation weight doubled (0 &times; 20 = 0); Pilot/Vertiport weights reduced</td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-purple); margin-top: 16px;">
+      <p style="font-size: 13px;">
+        <strong>New York&rsquo;s -15 is the clearest validation of v1.3&rsquo;s design thesis.</strong> Under v1.2, NY scored 70 despite having zero state legislation and zero vertiport zoning &mdash; two factors that are prerequisites for actual commercial operations. v1.3 correctly penalizes this gap. New York has the operators. It needs the policy.
+      </p>
     </div>
   </section>
 
@@ -335,7 +466,7 @@ a:hover { text-decoration: underline; }
   <section class="page-break">
     <h2>Full Market Rankings</h2>
     <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 13px;">
-      All 21 tracked US markets, ranked by AirIndex Readiness Score (0&ndash;100).
+      All 21 tracked US markets, ranked by AirIndex Readiness Score (0&ndash;100). Scoring methodology v1.3 &mdash; 7 factors, max 100.
     </p>
 
     <div class="card" style="padding: 0; overflow: hidden;">
@@ -346,160 +477,185 @@ a:hover { text-decoration: underline; }
             <th>MARKET</th>
             <th style="width: 60px;">SCORE</th>
             <th style="width: 100px;">TIER</th>
+            <th style="width: 60px;">CHG</th>
             <th style="width: 200px;">READINESS</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td style="color: var(--text-muted);">1</td>
-            <td style="font-weight: 600; color: var(--text-heading);">Los Angeles, CA</td>
-            <td style="font-weight: 700; color: var(--accent-green);">100</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Dallas, TX</td>
+            <td style="font-weight: 700; color: var(--accent-green);">95</td>
             <td><span class="pill pill-green">ADVANCED</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 100%; background: var(--accent-green);"></div></div></td>
+            <td style="color: var(--accent-amber); font-size: 11px;">&darr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 95%; background: var(--accent-green);"></div></div></td>
           </tr>
           <tr>
-            <td style="color: var(--text-muted);">2</td>
-            <td style="font-weight: 600; color: var(--text-heading);">Dallas, TX</td>
-            <td style="font-weight: 700; color: var(--accent-green);">100</td>
+            <td style="color: var(--text-muted);">1</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Los Angeles, CA</td>
+            <td style="font-weight: 700; color: var(--accent-green);">95</td>
             <td><span class="pill pill-green">ADVANCED</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 100%; background: var(--accent-green);"></div></div></td>
+            <td style="color: var(--accent-amber); font-size: 11px;">&darr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 95%; background: var(--accent-green);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">3</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Miami, FL</td>
+            <td style="font-weight: 700; color: var(--accent-green);">80</td>
+            <td><span class="pill pill-green">ADVANCED</span></td>
+            <td style="color: var(--text-muted); font-size: 11px;">&mdash;</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 80%; background: var(--accent-green);"></div></div></td>
           </tr>
           <tr>
             <td style="color: var(--text-muted);">3</td>
             <td style="font-weight: 600; color: var(--text-heading);">Orlando, FL</td>
-            <td style="font-weight: 700; color: var(--accent-green);">85</td>
-            <td><span class="pill pill-green">ADVANCED</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 85%; background: var(--accent-green);"></div></div></td>
-          </tr>
-          <tr>
-            <td style="color: var(--text-muted);">4</td>
-            <td style="font-weight: 600; color: var(--text-heading);">Miami, FL</td>
             <td style="font-weight: 700; color: var(--accent-green);">80</td>
             <td><span class="pill pill-green">ADVANCED</span></td>
+            <td style="color: var(--accent-amber); font-size: 11px;">&darr;5</td>
             <td><div class="score-bar"><div class="score-bar-fill" style="width: 80%; background: var(--accent-green);"></div></div></td>
           </tr>
           <tr>
             <td style="color: var(--text-muted);">5</td>
-            <td style="font-weight: 600; color: var(--text-heading);">New York, NY</td>
-            <td style="font-weight: 700; color: var(--accent-cyan);">70</td>
-            <td><span class="pill pill-cyan">MODERATE</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 70%; background: var(--accent-cyan);"></div></div></td>
+            <td style="font-weight: 600; color: var(--text-heading);">San Francisco, CA</td>
+            <td style="font-weight: 700; color: var(--accent-green);">75</td>
+            <td><span class="pill pill-green">ADVANCED</span></td>
+            <td style="color: var(--accent-green); font-size: 11px;">&uarr;35</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 75%; background: var(--accent-green);"></div></div></td>
           </tr>
           <tr>
             <td style="color: var(--text-muted);">6</td>
-            <td style="font-weight: 600; color: var(--text-heading);">San Diego, CA</td>
-            <td style="font-weight: 700; color: var(--accent-amber);">45</td>
-            <td><span class="pill pill-amber">EARLY</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 45%; background: var(--accent-amber);"></div></div></td>
+            <td style="font-weight: 600; color: var(--text-heading);">New York, NY</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">55</td>
+            <td><span class="pill pill-cyan">MODERATE</span></td>
+            <td style="color: var(--accent-red); font-size: 11px;">&darr;15</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 55%; background: var(--accent-cyan);"></div></div></td>
           </tr>
           <tr>
             <td style="color: var(--text-muted);">7</td>
-            <td style="font-weight: 600; color: var(--text-heading);">San Francisco, CA</td>
-            <td style="font-weight: 700; color: var(--accent-amber);">40</td>
-            <td><span class="pill pill-amber">EARLY</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 40%; background: var(--accent-amber);"></div></div></td>
+            <td style="font-weight: 600; color: var(--text-heading);">Austin, TX</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">50</td>
+            <td><span class="pill pill-cyan">MODERATE</span></td>
+            <td style="color: var(--accent-green); font-size: 11px;">&uarr;20</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 50%; background: var(--accent-cyan);"></div></div></td>
           </tr>
           <tr>
-            <td style="color: var(--text-muted);">8</td>
-            <td style="font-weight: 600; color: var(--text-heading);">Las Vegas, NV</td>
-            <td style="font-weight: 700; color: var(--accent-amber);">35</td>
-            <td><span class="pill pill-amber">EARLY</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 35%; background: var(--accent-amber);"></div></div></td>
-          </tr>
-          <tr>
-            <td style="color: var(--text-muted);">9</td>
-            <td style="font-weight: 600; color: var(--text-heading);">Phoenix, AZ</td>
-            <td style="font-weight: 700; color: var(--accent-amber);">35</td>
-            <td><span class="pill pill-amber">EARLY</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 35%; background: var(--accent-amber);"></div></div></td>
-          </tr>
-          <tr>
-            <td style="color: var(--text-muted);">10</td>
+            <td style="color: var(--text-muted);">7</td>
             <td style="font-weight: 600; color: var(--text-heading);">Houston, TX</td>
-            <td style="font-weight: 700; color: var(--accent-amber);">30</td>
-            <td><span class="pill pill-amber">EARLY</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 30%; background: var(--accent-amber);"></div></div></td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">50</td>
+            <td><span class="pill pill-cyan">MODERATE</span></td>
+            <td style="color: var(--accent-green); font-size: 11px;">&uarr;20</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 50%; background: var(--accent-cyan);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">7</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Phoenix, AZ</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">50</td>
+            <td><span class="pill pill-cyan">MODERATE</span></td>
+            <td style="color: var(--accent-green); font-size: 11px;">&uarr;15</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 50%; background: var(--accent-cyan);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">7</td>
+            <td style="font-weight: 600; color: var(--text-heading);">San Diego, CA</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">50</td>
+            <td><span class="pill pill-cyan">MODERATE</span></td>
+            <td style="color: var(--accent-green); font-size: 11px;">&uarr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 50%; background: var(--accent-cyan);"></div></div></td>
           </tr>
           <tr>
             <td style="color: var(--text-muted);">11</td>
-            <td style="font-weight: 600; color: var(--text-heading);">Austin, TX</td>
-            <td style="font-weight: 700; color: var(--accent-amber);">30</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Chicago, IL</td>
+            <td style="font-weight: 700; color: var(--accent-amber);">35</td>
             <td><span class="pill pill-amber">EARLY</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 30%; background: var(--accent-amber);"></div></div></td>
+            <td style="color: var(--accent-green); font-size: 11px;">&uarr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 35%; background: var(--accent-amber);"></div></div></td>
           </tr>
           <tr>
             <td style="color: var(--text-muted);">12</td>
-            <td style="font-weight: 600; color: var(--text-heading);">Chicago, IL</td>
-            <td style="font-weight: 700; color: var(--accent-amber);">30</td>
-            <td><span class="pill pill-amber">EARLY</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 30%; background: var(--accent-amber);"></div></div></td>
-          </tr>
-          <tr>
-            <td style="color: var(--text-muted);">13</td>
             <td style="font-weight: 600; color: var(--text-heading);">Columbus, OH</td>
-            <td style="font-weight: 700; color: var(--accent-red);">20</td>
+            <td style="font-weight: 700; color: var(--accent-red);">25</td>
             <td><span class="pill pill-red">NASCENT</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 20%; background: var(--accent-red);"></div></div></td>
+            <td style="color: var(--accent-green); font-size: 11px;">&uarr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 25%; background: var(--accent-red);"></div></div></td>
           </tr>
           <tr>
-            <td style="color: var(--text-muted);">14</td>
-            <td style="font-weight: 600; color: var(--text-heading);">Atlanta, GA</td>
-            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td style="color: var(--text-muted);">12</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Las Vegas, NV</td>
+            <td style="font-weight: 700; color: var(--accent-red);">25</td>
             <td><span class="pill pill-red">NASCENT</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+            <td style="color: var(--accent-red); font-size: 11px;">&darr;10</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 25%; background: var(--accent-red);"></div></div></td>
           </tr>
           <tr>
-            <td style="color: var(--text-muted);">14</td>
-            <td style="font-weight: 600; color: var(--text-heading);">Nashville, TN</td>
-            <td style="font-weight: 700; color: var(--accent-red);">15</td>
-            <td><span class="pill pill-red">NASCENT</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
-          </tr>
-          <tr>
-            <td style="color: var(--text-muted);">14</td>
+            <td style="color: var(--text-muted);">12</td>
             <td style="font-weight: 600; color: var(--text-heading);">Charlotte, NC</td>
-            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td style="font-weight: 700; color: var(--accent-red);">25</td>
             <td><span class="pill pill-red">NASCENT</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+            <td style="color: var(--accent-green); font-size: 11px;">&uarr;10</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 25%; background: var(--accent-red);"></div></div></td>
           </tr>
           <tr>
-            <td style="color: var(--text-muted);">14</td>
+            <td style="color: var(--text-muted);">15</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Atlanta, GA</td>
+            <td style="font-weight: 700; color: var(--accent-red);">10</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td style="color: var(--accent-red); font-size: 11px;">&darr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 10%; background: var(--accent-red);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">15</td>
+            <td style="font-weight: 600; color: var(--text-heading);">Nashville, TN</td>
+            <td style="font-weight: 700; color: var(--accent-red);">10</td>
+            <td><span class="pill pill-red">NASCENT</span></td>
+            <td style="color: var(--accent-red); font-size: 11px;">&darr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 10%; background: var(--accent-red);"></div></div></td>
+          </tr>
+          <tr>
+            <td style="color: var(--text-muted);">15</td>
             <td style="font-weight: 600; color: var(--text-heading);">Denver, CO</td>
-            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td style="font-weight: 700; color: var(--accent-red);">10</td>
             <td><span class="pill pill-red">NASCENT</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+            <td style="color: var(--accent-red); font-size: 11px;">&darr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 10%; background: var(--accent-red);"></div></div></td>
           </tr>
           <tr>
-            <td style="color: var(--text-muted);">14</td>
+            <td style="color: var(--text-muted);">15</td>
             <td style="font-weight: 600; color: var(--text-heading);">Seattle, WA</td>
-            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td style="font-weight: 700; color: var(--accent-red);">10</td>
             <td><span class="pill pill-red">NASCENT</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+            <td style="color: var(--accent-red); font-size: 11px;">&darr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 10%; background: var(--accent-red);"></div></div></td>
           </tr>
           <tr>
-            <td style="color: var(--text-muted);">14</td>
+            <td style="color: var(--text-muted);">15</td>
             <td style="font-weight: 600; color: var(--text-heading);">Boston, MA</td>
-            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td style="font-weight: 700; color: var(--accent-red);">10</td>
             <td><span class="pill pill-red">NASCENT</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+            <td style="color: var(--accent-red); font-size: 11px;">&darr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 10%; background: var(--accent-red);"></div></div></td>
           </tr>
           <tr>
-            <td style="color: var(--text-muted);">14</td>
+            <td style="color: var(--text-muted);">15</td>
             <td style="font-weight: 600; color: var(--text-heading);">Minneapolis, MN</td>
-            <td style="font-weight: 700; color: var(--accent-red);">15</td>
+            <td style="font-weight: 700; color: var(--accent-red);">10</td>
             <td><span class="pill pill-red">NASCENT</span></td>
-            <td><div class="score-bar"><div class="score-bar-fill" style="width: 15%; background: var(--accent-red);"></div></div></td>
+            <td style="color: var(--accent-red); font-size: 11px;">&darr;5</td>
+            <td><div class="score-bar"><div class="score-bar-fill" style="width: 10%; background: var(--accent-red);"></div></div></td>
           </tr>
           <tr>
             <td style="color: var(--text-muted);">21</td>
             <td style="font-weight: 600; color: var(--text-heading);">Washington D.C.</td>
             <td style="font-weight: 700; color: var(--accent-red);">0</td>
             <td><span class="pill pill-red">NASCENT</span></td>
+            <td style="color: var(--text-muted); font-size: 11px;">&mdash;</td>
             <td><div class="score-bar"><div class="score-bar-fill" style="width: 0%; background: var(--accent-red);"></div></div></td>
           </tr>
         </tbody>
       </table>
     </div>
+    <p style="color: var(--text-muted); font-size: 11px; margin-top: 8px; text-align: center;">
+      Average score: 41 &bull; Full interactive index at airindex.io/dashboard
+    </p>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════
@@ -509,35 +665,43 @@ a:hover { text-decoration: underline; }
     <h2>Top Stories &mdash; March 2026</h2>
 
     <div class="card" style="border-left: 3px solid var(--accent-green); margin-bottom: 16px;">
-      <h3 style="color: var(--accent-green);">White House eVTOL Pilot Program &mdash; FL, NY, TX Selected</h3>
+      <h3 style="color: var(--accent-green);">San Francisco Surges to ADVANCED &mdash; Joby Electric Skies Tour</h3>
       <p style="font-size: 13px; margin-bottom: 8px;">
-        The White House announced a federal eVTOL integration pilot program selecting Florida, New York, and Texas as the first three states for commercial powered-lift operations. Both Joby Aviation and Archer Aviation were accepted into the FAA's Enterprise Integration Pilot Program (eIPP), replacing the original UAS Integration Pilot Program. This is the strongest federal signal yet that eVTOL commercial service is moving from testing to deployment &mdash; and it directly validates three of AirIndex's top-5 scoring states. Joby's selection covers multi-state operations, while Archer's application includes corridors in all three states.
+        Joby Aviation brought its Electric Skies Tour to the Bay Area, completing a piloted eVTOL demonstration flight across San Francisco Bay. The flight confirmed active operator presence and pilot program status in a market that previously scored 40 (EARLY) based on California&rsquo;s strong legislative framework alone. San Francisco jumps to 75, entering the ADVANCED tier and becoming the fifth market to clear the 75-point threshold. This validates the v1.3 methodology: legislation creates the foundation, but operator activity is what elevates a market.
       </p>
-      <div class="label">IMPACT: FLORIDA &bull; NEW YORK &bull; TEXAS &bull; FEDERAL MILESTONE</div>
+      <div class="label">IMPACT: SAN FRANCISCO +35 &bull; ADVANCED TIER &bull; JOBY MARKET EXPANSION</div>
     </div>
 
     <div class="card" style="border-left: 3px solid var(--accent-cyan); margin-bottom: 16px;">
-      <h3 style="color: var(--accent-cyan);">Uber Air Taxi Booking Platform Revealed</h3>
+      <h3 style="color: var(--accent-cyan);">Joby Acquires Blade Air Mobility</h3>
       <p style="font-size: 13px; margin-bottom: 8px;">
-        Joby and Uber unveiled the consumer-facing air taxi booking platform, allowing riders to book eVTOL flights directly through the Uber app. This is the first time a major ride-hail platform has integrated air taxi service at a product level. While initially launching in markets where Joby has commercial authorization, the Uber integration represents the most significant consumer distribution channel for eVTOL services globally.
+        Joby Aviation completed its acquisition of Blade Air Mobility (~$125M), consolidating Blade&rsquo;s Manhattan Heliport operations, Los Angeles terminal network, and Miami helicopter routes under Joby&rsquo;s brand. The operator count drops from five to four, but Joby&rsquo;s geographic footprint expands significantly. Blade&rsquo;s existing helicopter routes &mdash; particularly the NYC heliport-to-airport corridors &mdash; become natural eVTOL conversion pathways as Joby secures FAA type certification. AirIndex has consolidated all Blade market presence data under Joby across the platform.
       </p>
-      <div class="label">IMPACT: LOS ANGELES &bull; NEW YORK &bull; MIAMI</div>
+      <div class="label">IMPACT: JOBY MARKET FOOTPRINT &bull; NY/LA/MIAMI OPERATOR LANDSCAPE &bull; EVTOL TRANSITION</div>
     </div>
 
     <div class="card" style="border-left: 3px solid var(--accent-amber); margin-bottom: 16px;">
-      <h3 style="color: var(--accent-amber);">Archer vs. Joby Legal Escalation</h3>
+      <h3 style="color: var(--accent-amber);">FAA Selects Texas for eIPP &mdash; Houston and Austin Activate</h3>
       <p style="font-size: 13px; margin-bottom: 8px;">
-        Archer Aviation filed a countersuit against Joby Aviation, alleging that Joby defrauded the U.S. government by concealing its reliance on Chinese supply chain components. Joby's response is pending. While this introduces operator-level risk, it also signals the competitive intensity of the market &mdash; both companies are fighting over first-mover advantage in a market they believe is imminent.
+        The FAA selected Texas air taxi networks for the Advanced Air Mobility Enterprise Integration Pilot Program (eIPP), activating pilot program status for Houston and Austin. Both markets jump from 30 to 50, entering the MODERATE tier. Combined with Dallas (already at 95), Texas now has three markets in the top 10 &mdash; the strongest state-level concentration in the index. The eIPP selection covers multi-city operations across DFW, Houston, and Austin corridors.
       </p>
-      <div class="label">IMPACT: OPERATOR RISK &bull; REGULATORY UNCERTAINTY</div>
+      <div class="label">IMPACT: HOUSTON +20 &bull; AUSTIN +20 &bull; TEXAS 3 MARKETS IN TOP 10</div>
     </div>
 
     <div class="card" style="border-left: 3px solid var(--accent-purple); margin-bottom: 16px;">
-      <h3 style="color: var(--accent-purple);">AirIndex Data Audit &mdash; 4 Markets Corrected</h3>
+      <h3 style="color: var(--accent-purple);">FAA 5010 Heliport Infrastructure Layer</h3>
       <p style="font-size: 13px; margin-bottom: 8px;">
-        AirIndex completed a comprehensive data audit on March 7, correcting Las Vegas (-50 pts), Phoenix (-30 pts), Austin (-15 pts), and Houston (-15 pts). Scoring factors that could not be verified against primary public records were removed. This is consistent with our ratings agency model &mdash; we err on the side of under-scoring rather than over-promoting markets.
+        AirIndex ingested 5,647 FAA-registered operational heliports from the NASR 5010 database, mapping each facility to its nearest tracked metro area. Los Angeles leads with 146 heliports, followed by Dallas (69), Houston (68), Phoenix (48), and Orlando (44). Heliport counts are now visible on every city profile as infrastructure intelligence &mdash; existing helicopter facilities represent the most likely near-term vertiport conversion sites. This data feeds into the upcoming infrastructure audit product and provides a quantitative foundation for the gap analysis engine.
       </p>
-      <div class="label">IMPACT: LAS VEGAS &bull; PHOENIX &bull; AUSTIN &bull; HOUSTON</div>
+      <div class="label">IMPACT: 5,647 FACILITIES &bull; 21 MARKETS &bull; INFRASTRUCTURE INTELLIGENCE</div>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-red); margin-bottom: 16px;">
+      <h3 style="color: var(--accent-red);">Archer vs. Joby Legal Escalation</h3>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        Archer Aviation filed a countersuit against Joby Aviation, alleging that Joby defrauded the U.S. government by concealing its reliance on Chinese supply chain components. Joby&rsquo;s response is pending. While this introduces operator-level risk, it also signals the competitive intensity of the market &mdash; both companies are fighting over first-mover advantage in a market they believe is imminent.
+      </p>
+      <div class="label">IMPACT: OPERATOR RISK &bull; REGULATORY UNCERTAINTY</div>
     </div>
   </section>
 
@@ -547,7 +711,7 @@ a:hover { text-decoration: underline; }
   <section>
     <h2>Corridor Intelligence</h2>
     <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 13px;">
-      9 corridors tracked across 6 metro areas. No corridor status changes in March.
+      9 corridors tracked across 7 metro areas. 1 authorized, 8 proposed. No corridor status changes in March.
     </p>
 
     <div class="card" style="padding: 0; overflow: hidden;">
@@ -556,6 +720,7 @@ a:hover { text-decoration: underline; }
           <tr>
             <th>CORRIDOR</th>
             <th>METRO</th>
+            <th>OPERATOR</th>
             <th>STATUS</th>
             <th style="width: 60px;">DIST</th>
           </tr>
@@ -564,60 +729,211 @@ a:hover { text-decoration: underline; }
           <tr>
             <td style="font-weight: 600; color: var(--text-heading);">DFW &ndash; Downtown Dallas</td>
             <td>Dallas, TX</td>
+            <td>Wisk Aero</td>
             <td><span class="pill pill-green">AUTHORIZED</span></td>
-            <td>28 km</td>
+            <td>18 km</td>
           </tr>
           <tr>
             <td style="font-weight: 600; color: var(--text-heading);">LAX &ndash; DTLA</td>
             <td>Los Angeles, CA</td>
-            <td><span class="pill pill-amber">PROPOSED</span></td>
-            <td>25 km</td>
-          </tr>
-          <tr>
-            <td style="font-weight: 600; color: var(--text-heading);">LAX &ndash; Santa Monica</td>
-            <td>Los Angeles, CA</td>
-            <td><span class="pill pill-amber">PROPOSED</span></td>
-            <td>14 km</td>
-          </tr>
-          <tr>
-            <td style="font-weight: 600; color: var(--text-heading);">JFK &ndash; Manhattan</td>
-            <td>New York, NY</td>
+            <td>Joby</td>
             <td><span class="pill pill-amber">PROPOSED</span></td>
             <td>22 km</td>
           </tr>
           <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">LAX &ndash; Santa Monica</td>
+            <td>Los Angeles, CA</td>
+            <td>Archer</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>10 km</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">JFK &ndash; Manhattan</td>
+            <td>New York, NY</td>
+            <td>Joby</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>24 km</td>
+          </tr>
+          <tr>
             <td style="font-weight: 600; color: var(--text-heading);">MIA &ndash; Fort Lauderdale</td>
             <td>Miami, FL</td>
+            <td>Archer</td>
             <td><span class="pill pill-amber">PROPOSED</span></td>
             <td>43 km</td>
           </tr>
           <tr>
             <td style="font-weight: 600; color: var(--text-heading);">MCO &ndash; Lake Nona</td>
             <td>Orlando, FL</td>
-            <td><span class="pill pill-amber">PROPOSED</span></td>
-            <td>15 km</td>
-          </tr>
-          <tr>
-            <td style="font-weight: 600; color: var(--text-heading);">LAS &ndash; Convention Center</td>
-            <td>Las Vegas, NV</td>
+            <td>&mdash;</td>
             <td><span class="pill pill-amber">PROPOSED</span></td>
             <td>8 km</td>
           </tr>
           <tr>
-            <td style="font-weight: 600; color: var(--text-heading);">O'Hare &ndash; Downtown Chicago</td>
-            <td>Chicago, IL</td>
+            <td style="font-weight: 600; color: var(--text-heading);">LAS &ndash; Convention Center</td>
+            <td>Las Vegas, NV</td>
+            <td>&mdash;</td>
             <td><span class="pill pill-amber">PROPOSED</span></td>
-            <td>24 km</td>
+            <td>6 km</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">O&rsquo;Hare &ndash; Downtown Chicago</td>
+            <td>Chicago, IL</td>
+            <td>Archer</td>
+            <td><span class="pill pill-amber">PROPOSED</span></td>
+            <td>25 km</td>
           </tr>
           <tr>
             <td style="font-weight: 600; color: var(--text-heading);">ATL &ndash; Midtown Atlanta</td>
             <td>Atlanta, GA</td>
+            <td>&mdash;</td>
             <td><span class="pill pill-amber">PROPOSED</span></td>
-            <td>12 km</td>
+            <td>18 km</td>
           </tr>
         </tbody>
       </table>
     </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       OPERATOR TRACKER
+       ═══════════════════════════════════════════════════════ -->
+  <section class="page-break">
+    <h2>Operator Tracker</h2>
+    <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 13px;">
+      4 active operators tracked. Blade Air Mobility acquired by Joby Aviation &mdash; consolidated under Joby.
+    </p>
+
+    <div class="card" style="border-left: 3px solid var(--accent-green); margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <h3 style="color: var(--accent-green);">Joby Aviation</h3>
+        <span class="label">JOBY &bull; NYSE</span>
+      </div>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        FAA Part 135 air carrier certification in progress. Joby S4 type certification advancing. Commercially operational in Dubai as of February 2026 via Uber Air integration &mdash; first commercial eVTOL revenue service globally. US commercial launch expected in LA or Dallas pending FAA type certificate. Acquired Blade Air Mobility in March, inheriting NYC Manhattan Heliport operations, LA terminal network, and Miami helicopter routes. Electric Skies Tour brought piloted demo flights to San Francisco Bay Area.
+      </p>
+      <div class="label">MARKETS: LOS ANGELES &bull; DALLAS &bull; NEW YORK &bull; MIAMI &bull; SAN FRANCISCO &bull; PHOENIX</div>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-cyan); margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <h3 style="color: var(--accent-cyan);">Archer Aviation</h3>
+        <span class="label">ACHR &bull; NYSE</span>
+      </div>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        FAA Part 135 air carrier certification in progress. Midnight aircraft in flight test program. United Airlines partnership active with announced routes: MIA&rarr;FLL and O&rsquo;Hare&rarr;Downtown Chicago. Active in Los Angeles, Miami, Chicago, and New York markets. Manufacturing facility in San Jose operational. Filed countersuit against Joby alleging undisclosed China supply chain dependencies.
+      </p>
+      <div class="label">MARKETS: LOS ANGELES &bull; NEW YORK &bull; MIAMI &bull; CHICAGO</div>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-amber); margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <h3 style="color: var(--accent-amber);">Wisk Aero</h3>
+        <span class="label">BOEING SUBSIDIARY</span>
+      </div>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        Autonomous eVTOL program &mdash; the only tracked operator pursuing fully autonomous operations from day one. Boeing-owned. Gen 6 aircraft completed test flights. Only authorized corridor operator in the dataset (DFW&ndash;Downtown Dallas, authorized under Texas HB 1735). Dallas-focused market strategy.
+      </p>
+      <div class="label">MARKETS: DALLAS</div>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-purple); margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <h3 style="color: var(--accent-purple);">Volocopter</h3>
+        <span class="label">PRIVATE &bull; POST-INSOLVENCY</span>
+      </div>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        Acquired by Wanfeng Group / Diamond Aircraft following insolvency filing in March 2025. VoloCity and VoloXPro aircraft programs continue under new ownership. No active US market operations. FAA certification status pending under new corporate structure. Monitoring for US market re-entry signals.
+      </p>
+      <div class="label">MARKETS: NONE (MONITORING)</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       HELIPORT INFRASTRUCTURE
+       ═══════════════════════════════════════════════════════ -->
+  <section>
+    <h2>Heliport Infrastructure &mdash; Top 10 Metros</h2>
+    <p style="margin-bottom: 20px; color: var(--text-muted); font-size: 13px;">
+      FAA NASR 5010 data. 5,647 operational heliports nationwide, 742 mapped to AirIndex metro areas. Heliport density is a leading indicator of vertiport conversion potential.
+    </p>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>METRO</th>
+            <th style="width: 100px;">HELIPORTS</th>
+            <th style="width: 100px;">PUBLIC USE</th>
+            <th>NOTES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Los Angeles, CA</td>
+            <td style="font-weight: 700; color: var(--accent-green);">146</td>
+            <td>0</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Highest concentration; hospital + corporate campuses</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Dallas, TX</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">69</td>
+            <td>2</td>
+            <td style="font-size: 11px; color: var(--text-muted);">DFW metro; includes Collin/Denton counties</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Houston, TX</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">68</td>
+            <td>0</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Medical center cluster; industrial sites</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Phoenix, AZ</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">48</td>
+            <td>0</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Desert sprawl; wide spacing</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Orlando, FL</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">44</td>
+            <td>0</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Tourism corridor; theme park adjacency</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">New York, NY</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">39</td>
+            <td>3</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Manhattan Heliport (Joby/ex-Blade); JFK/LGA/EWR</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Miami, FL</td>
+            <td style="font-weight: 700; color: var(--accent-cyan);">37</td>
+            <td>0</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Airport-centric; Broward/Palm Beach counties</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Denver, CO</td>
+            <td style="font-weight: 700;">28</td>
+            <td>0</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Mountain region; altitude considerations</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Atlanta, GA</td>
+            <td style="font-weight: 700;">27</td>
+            <td>0</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Busiest airport region</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; color: var(--text-heading);">Chicago, IL</td>
+            <td style="font-weight: 700;">25</td>
+            <td>0</td>
+            <td style="font-size: 11px; color: var(--text-muted);">Urban core cluster; O&rsquo;Hare corridor</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color: var(--text-muted); font-size: 11px; margin-top: 8px; text-align: center;">
+      Source: FAA NASR 28-Day Subscription, APT_BASE.csv &bull; Ingested March 25, 2026 &bull; Re-run each NASR cycle
+    </p>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════
@@ -626,17 +942,24 @@ a:hover { text-decoration: underline; }
   <section>
     <h2>Markets to Watch</h2>
 
-    <div class="card" style="border-left: 3px solid var(--accent-cyan);">
-      <h3>Columbus, OH <span class="pill pill-cyan" style="margin-left: 8px;">NEW MARKET</span></h3>
+    <div class="card" style="border-left: 3px solid var(--accent-green);">
+      <h3>San Francisco, CA <span class="pill pill-green" style="margin-left: 8px;">BIGGEST MOVER</span></h3>
       <p style="font-size: 13px; margin-bottom: 8px;">
-        Added as AirIndex's 21st tracked market in March. Ohio has arguably the most organized state-level AAM strategy in the US &mdash; ODOT created a dedicated AAM Division, DriveOhio published the nation's first state AAM framework, and Ohio submitted a multi-state eIPP proposal with BETA Technologies, Joby, and DHL. Joby operates a propeller blade manufacturing facility in Dayton with plans for 700K+ sq ft expansion. HB 251 (vertiport infrastructure definition) has passed the Ohio House. Current score: 20 (NASCENT).
+        The month&rsquo;s most dramatic score change. Joby&rsquo;s Bay Area demo flight transformed SF from an infrastructure-only market to a confirmed operator market. At 75 (ADVANCED), SF now has the potential to challenge Miami (80) if Joby commits to a permanent Bay Area base of operations. Watch for: Joby SFO corridor filing, Bay Area vertiport site announcements, California AB 1228 implementation guidance.
+      </p>
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent-cyan); margin-top: 12px;">
+      <h3>Phoenix, AZ <span class="pill pill-cyan" style="margin-left: 8px;">LEGISLATION WATCH</span></h3>
+      <p style="font-size: 13px; margin-bottom: 8px;">
+        Arizona has UAM legislation actively moving through the state legislature. If enacted, Phoenix could swing +20 points and enter the ADVANCED tier. Combined with Joby&rsquo;s confirmed operator presence and the existing pilot program, Phoenix is 12&ndash;18 months from being a top-5 market. Watch for: AZ SB 1457 (or successor) committee vote, Joby Phoenix operations timeline.
       </p>
     </div>
 
     <div class="card" style="border-left: 3px solid var(--accent-amber); margin-top: 12px;">
-      <h3>Cincinnati, OH <span class="pill pill-purple" style="margin-left: 8px;">AUTO-DISCOVERED</span></h3>
+      <h3>New York, NY <span class="pill pill-amber" style="margin-left: 8px;">POLICY GAP</span></h3>
       <p style="font-size: 13px;">
-        First market automatically detected by the new auto-discovery pipeline. Currently under research. Ohio's statewide AAM framework and eIPP proposal cover multiple Ohio metros, making Cincinnati a natural candidate for future tracking.
+        New York&rsquo;s drop from 70 to 55 under v1.3 is the index&rsquo;s clearest policy gap story. Three operators (Joby, Archer, and the inherited Blade network), an FAA-approved test program, and the Manhattan Heliport as a qualifying vertiport &mdash; yet zero state legislation and zero vertiport zoning. Any bill advancing through Albany would be the single most impactful legislative event in the index.
       </p>
     </div>
   </section>
@@ -649,27 +972,27 @@ a:hover { text-decoration: underline; }
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
       <div class="card">
-        <h3>Auto-Discovery Pipeline</h3>
+        <h3>Scoring v1.3 Methodology</h3>
         <p style="font-size: 12px; color: var(--text-muted);">
-          3-layer detection system automatically identifies UAM signals for cities outside our tracked markets. Uses NLP classifier, rules engine state-gap detection, and operator news scanning with UAM keyword co-occurrence.
+          State Legislation elevated to 20pts (highest factor). Weather Infrastructure replaces LAANC (graduated: 10/7/3). Pilot/Vertiport reduced from 20 to 15 each. Full methodology at airindex.io/methodology.
         </p>
       </div>
       <div class="card">
-        <h3>Data Quality Improvements</h3>
+        <h3>FAA 5010 Heliport Data</h3>
         <p style="font-size: 12px; color: var(--text-muted);">
-          Tightened LegiScan filters to require aviation context. Added ceremonial bill pre-filter. Backfilled 90 days of historical snapshots. Cleaned override queue of unactionable entries.
+          5,647 operational heliports ingested from NASR database. Facility-level data stored for future audit product. Aggregate counts visible on all 21 city profiles. Re-runnable each 28-day NASR cycle.
         </p>
       </div>
       <div class="card">
-        <h3>90-Day Score History</h3>
+        <h3>Classifier v6 &mdash; ~85% Accuracy</h3>
         <p style="font-size: 12px; color: var(--text-muted);">
-          Backfilled 1,728 daily snapshots across all 21 markets, enabling score trajectory visualization and trend analysis dating back to December 2025.
+          Cross-state boundary enforcement (AZ bills no longer bleed to NV). City assignment at needs_review confidence (fewer empty classifications). 1,797 total records across 4 sources.
         </p>
       </div>
       <div class="card">
-        <h3>Stripe Integration</h3>
+        <h3>Blade/Joby Consolidation</h3>
         <p style="font-size: 12px; color: var(--text-muted);">
-          Vertical Data Group LLC Stripe account connected to Mercury banking. Pro and Institutional products configured and ready for April activation.
+          Blade Air Mobility fully consolidated under Joby across all cities, corridors, and vertiports. Operator count adjusted from 5 to 4. Historical data preserved with acquisition attribution.
         </p>
       </div>
     </div>
@@ -681,39 +1004,31 @@ a:hover { text-decoration: underline; }
   <section>
     <h2>April Outlook</h2>
     <ul style="padding-left: 20px; font-size: 13px; line-height: 2;">
-      <li>Monitor eIPP program developments &mdash; both Joby and Archer will begin formal integration testing</li>
-      <li>Track Uber Air Taxi booking platform expansion to additional markets</li>
-      <li>Watch for Archer vs. Joby litigation outcomes and potential regulatory implications</li>
-      <li>Ohio HB 251 (vertiport infrastructure) expected Senate vote &mdash; could elevate Columbus score</li>
-      <li>Paid tier activation (Pro at $149/mo, Institutional at $499/mo) targeted for mid-April</li>
-      <li>Continue monitoring auto-discovered market leads for potential 22nd+ market additions</li>
+      <li>Arizona UAM legislation &mdash; if enacted, Phoenix could jump to ADVANCED tier (+20 pts potential)</li>
+      <li>New York State Legislature session &mdash; any UAM bill out of committee would be the index&rsquo;s most impactful event</li>
+      <li>Joby FAA type certificate progress &mdash; any stage gate completion triggers scoring reviews across all Joby markets</li>
+      <li>Archer vs. Joby litigation outcomes &mdash; potential regulatory implications for both operators</li>
+      <li>Orlando and Las Vegas operator announcements &mdash; both markets are infrastructure-ready but operator-absent</li>
+      <li>Dynamic gap analysis engine &mdash; sub-indicator enrichment layer for zoning readiness (ordinances, AAM terminology, permitting clarity)</li>
+      <li>Operator detail pages &mdash; per-operator market footprint, corridors, filings, and certification status</li>
+      <li>Paid tier activation (Pro $149/mo, Institutional $499/mo) targeted for April</li>
     </ul>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════
-       FOOTER
+       CTA + FOOTER
        ═══════════════════════════════════════════════════════ -->
-  <!-- CTA -->
   <section style="text-align: center; padding: 48px 0; border-bottom: none;">
     <div class="card" style="background: linear-gradient(135deg, rgba(0,212,255,0.06) 0%, rgba(124,58,237,0.06) 100%); border: 1px solid rgba(0,212,255,0.15); padding: 32px;">
       <p style="font-size: 14px; color: var(--text-heading); margin-bottom: 8px; font-weight: 600;">
         Full factor-level breakdowns, score history, and corridor intelligence for all 21 markets.
       </p>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
         Pro access opens April 2026. Free dashboard available now.
       </p>
-      <a href="https://www.airindex.io/dashboard" style="
-        display: inline-block;
-        padding: 12px 32px;
-        background: var(--accent-cyan);
-        color: #050508;
-        font-family: var(--font-display);
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        text-decoration: none;
-        border-radius: 6px;
-      ">EXPLORE THE DASHBOARD</a>
+      <p style="font-family: var(--font-mono); font-size: 13px; color: var(--accent-cyan); letter-spacing: 0.5px;">
+        airindex.io/dashboard
+      </p>
     </div>
   </section>
 
@@ -722,7 +1037,13 @@ a:hover { text-decoration: underline; }
       <strong>AIRINDEX</strong> &mdash; UAM Market Readiness Intelligence
     </div>
     <div>
+      Source: AirIndex UAM Market Readiness Index, v1.3 (airindex.io/methodology)
+    </div>
+    <div style="margin-top: 8px;">
       &copy; 2026 Vertical Data Group, LLC &bull; <a href="https://www.airindex.io">airindex.io</a> &bull; <a href="mailto:hello@airindex.io">hello@airindex.io</a>
+    </div>
+    <div style="margin-top: 4px; color: var(--text-muted);">
+      ISSUE NO. 2 &bull; MARCH 2026
     </div>
   </div>
 

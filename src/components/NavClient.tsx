@@ -14,17 +14,8 @@ const linkStyle: React.CSSProperties = {
   borderRadius: 4,
 };
 
-const SOLUTIONS = [
-  { label: "Infrastructure Developers", href: "/#infrastructure-developers", id: "infrastructure-developers" },
-  { label: "Operators & OEMs", href: "/#operators", id: "operators" },
-  { label: "Investors & Analysts", href: "/#investors", id: "investors" },
-  { label: "City Planners & Policy", href: "/#city-planners", id: "city-planners" },
-  { label: "Research & Academic", href: "/#research", id: "research" },
-  { label: "Press & Media", href: "/#press", id: "press" },
-];
-
 const NAV_LINKS = [
-  { label: "Data", href: "/methodology" },
+  { label: "Methodology", href: "/methodology" },
   { label: "Intel", href: "/feed" },
   { label: "API", href: "/api" },
   { label: "Pricing", href: "/pricing" },
@@ -33,34 +24,6 @@ const NAV_LINKS = [
 export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-  const isHome = pathname === "/";
-
-  // Scroll-spy for landing page sections
-  useEffect(() => {
-    if (!isHome) return;
-
-    const sectionIds = SOLUTIONS.map((s) => s.id);
-    const observers: IntersectionObserver[] = [];
-
-    for (const id of sectionIds) {
-      const el = document.getElementById(id);
-      if (!el) continue;
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setActiveSection(id);
-          }
-        },
-        { rootMargin: "-40% 0px -50% 0px" }
-      );
-      observer.observe(el);
-      observers.push(observer);
-    }
-
-    return () => observers.forEach((o) => o.disconnect());
-  }, [isHome]);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -78,46 +41,15 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
 
   const isActive = useCallback(
     (href: string) => {
-      if (href.startsWith("/#")) return false;
       return pathname === href || pathname.startsWith(href + "/");
     },
     [pathname]
   );
 
-  const solutionsActive = isHome && activeSection !== null;
-
   return (
     <>
       {/* Desktop nav */}
       <div className="nav-desktop" style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        {/* Solutions dropdown */}
-        <div className="nav-dropdown-wrapper">
-          <span
-            style={{
-              ...linkStyle,
-              cursor: "default",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-              color: solutionsActive ? "#fff" : "#888",
-            }}
-          >
-            Solutions
-            <span style={{ fontSize: 8, opacity: 0.5 }}>&#9662;</span>
-          </span>
-          <div className="nav-dropdown">
-            {SOLUTIONS.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                style={activeSection === item.id ? { color: "#00d4ff" } : undefined}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-
         {NAV_LINKS.map((link) => (
           <Link
             key={link.label}
@@ -221,31 +153,6 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
             overflowY: "auto",
           }}
         >
-          {/* Solutions section */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: 3, color: "#555", marginBottom: 12 }}>
-              SOLUTIONS
-            </div>
-            {SOLUTIONS.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                style={{
-                  display: "block",
-                  padding: "12px 0",
-                  color: activeSection === item.id ? "#00d4ff" : "#aaa",
-                  fontSize: 14,
-                  textDecoration: "none",
-                  borderBottom: "1px solid rgba(255,255,255,0.04)",
-                  transition: "color 0.15s",
-                }}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-
           {/* Main links */}
           <div style={{ marginBottom: 24 }}>
             {NAV_LINKS.map((link) => (
