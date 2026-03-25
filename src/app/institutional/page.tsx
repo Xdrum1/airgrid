@@ -416,8 +416,8 @@ export default async function InstitutionalPage() {
             margin: 0,
           }}
         >
-          Trusted by professionals from the Vertical Flight Society,
-          TruWeather Solutions, and Leonardo.
+          Built for teams in eVTOL operations, infrastructure development,
+          government, and investment.
         </p>
       </section>
 

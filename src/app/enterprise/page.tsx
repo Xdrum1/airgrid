@@ -350,7 +350,7 @@ export default async function EnterprisePage() {
             margin: 0,
           }}
         >
-          Serving organizations across eVTOL operations, infrastructure
+          Built for organizations in eVTOL operations, infrastructure
           development, government, and financial services.
         </p>
       </section>
