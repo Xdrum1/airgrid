@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import PreCheckoutModal from "./PreCheckoutModal";
 
@@ -118,7 +119,24 @@ export default function PricingTiers() {
   const [interval, setInterval] = useState<Interval>("annual");
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [checkoutTier, setCheckoutTier] = useState<Tier | null>(null);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const searchParams = useSearchParams();
+
+  // Auto-open checkout modal when returning from login with ?checkout=tier
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    const tierParam = searchParams.get("checkout");
+    const intervalParam = searchParams.get("interval");
+    if (!tierParam) return;
+    const tier = TIERS.find((t) => t.stripeTier === tierParam);
+    if (!tier) return;
+    if (intervalParam === "monthly" || intervalParam === "annual") {
+      setInterval(intervalParam);
+    }
+    setCheckoutTier(tier);
+    // Clean up URL params
+    window.history.replaceState({}, "", "/pricing");
+  }, [status, searchParams]);
 
   function getDisplayPrice(tier: Tier): string {
     if (tier.monthly === null) return "";
@@ -149,7 +167,8 @@ export default function PricingTiers() {
 
   function handleCheckout(tier: Tier) {
     if (!session?.user) {
-      window.location.href = `/login?mode=signup&redirect=/pricing`;
+      const callbackUrl = `/pricing?checkout=${tier.stripeTier}&interval=${interval}`;
+      window.location.href = `/login?mode=signup&callbackUrl=${encodeURIComponent(callbackUrl)}`;
       return;
     }
     // Open pre-checkout modal instead of going straight to Stripe

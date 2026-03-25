@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import SiteNav from "@/components/SiteNav";
@@ -74,7 +75,7 @@ export default function PricingPage() {
 
       {/* Tiers */}
       <section style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 20px clamp(60px, 8vw, 100px)" }}>
-        <PricingTiers />
+        <Suspense><PricingTiers /></Suspense>
       </section>
 
       {/* Who uses AirIndex */}
