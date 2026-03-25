@@ -438,6 +438,35 @@ model MarketLead {
   @@index([priority])
 }
 
+// ── FAA Heliport Data (NASR 5010) ────────────────────────
+
+model Heliport {
+  id              String   @id // FAA Location Identifier (e.g. "0LA1")
+  facilityName    String
+  city            String
+  state           String
+  county          String?
+  ownershipType   String   // "PU" (public) | "PR" (private) | "MA" (Air Force) | "MN" (Navy) | "MR" (Army)
+  useType         String   // "PU" (public use) | "PR" (private use)
+  lat             Float
+  lng             Float
+  elevation       Float?   // feet MSL
+  statusCode      String   // "O" (operational) | "CI" (closed indefinitely) | "CP" (closed permanently)
+  certTypeDate    String?  // certification type
+  airportOfEntry  String?
+  federalAgreement String?
+  airspaceAnalysis String?
+  basedAircraft   Int?
+  annualOps       Int?
+  cityId          String?  // mapped AirIndex market ID (null if not in tracked metro)
+  ingestedAt      DateTime @default(now())
+
+  @@index([cityId])
+  @@index([state])
+  @@index([ownershipType])
+  @@index([statusCode])
+}
+
 // ── Event-Driven Signal Layer (Phase 2) ─────────────────
 
 model SignalEvent {

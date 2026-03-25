@@ -230,6 +230,21 @@ export default function CityDetailPanel({
               {selected.weatherInfraLevel === "full" ? "WEATHER" : "WX PARTIAL"}
             </span>
           )}
+          {(selected.heliportCount ?? 0) > 0 && (
+            <span
+              style={{
+                color: "#8b9dc3",
+                fontSize: 8,
+                border: "1px solid rgba(139,157,195,0.25)",
+                borderRadius: 3,
+                padding: "3px 7px",
+                letterSpacing: 1,
+              }}
+              title={`${selected.heliportCount} FAA-registered heliports in metro area (FAA NASR 5010)`}
+            >
+              {selected.heliportCount} HELIPORTS
+            </span>
+          )}
         </div>
 
         {/* Watch Status + Outlook */}

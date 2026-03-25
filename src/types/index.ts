@@ -64,6 +64,10 @@ export interface City {
   stateLegislationStatus: LegislationStatus;
   weatherInfraLevel: WeatherInfraLevel;
 
+  // Heliport infrastructure (FAA 5010)
+  heliportCount?: number;       // total heliports in metro
+  heliportPublicCount?: number; // public-use heliports in metro
+
   // Computed
   score?: number;
   breakdown?: ScoreBreakdown;
