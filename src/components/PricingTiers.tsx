@@ -51,7 +51,7 @@ const TIERS: Tier[] = [
       "Monitor up to 3 markets",
       "Monthly market summary",
     ],
-    cta: "coming_soon",
+    cta: "stripe",
     stripeTier: "alert",
   },
   {
