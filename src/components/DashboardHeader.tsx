@@ -78,19 +78,29 @@ export default function DashboardHeader({
         {!isMobile && (
           <>
           <Link
-            href="/about"
+            href="/updates"
             style={{
-              color: "#999",
+              color: "#00d4ff",
               fontSize: 9,
               letterSpacing: 1,
               textDecoration: "none",
-              opacity: 0.8,
+              opacity: 0.7,
               transition: "opacity 0.15s",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 5,
             }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.7")}
           >
-            ABOUT
+            <span style={{
+              width: 5,
+              height: 5,
+              borderRadius: "50%",
+              background: "#00d4ff",
+              flexShrink: 0,
+            }} />
+            WHAT&apos;S NEW
           </Link>
           <Link
             href="/methodology"

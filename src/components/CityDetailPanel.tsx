@@ -8,6 +8,7 @@ import { hasProAccess } from "@/lib/billing-shared";
 import { OPERATORS_MAP } from "@/data/seed";
 import ScoreBar from "./ScoreBar";
 import BreakdownPanel from "./BreakdownPanel";
+import GapAnalysisPanel from "./GapAnalysisPanel";
 
 import WatchlistStar from "./WatchlistStar";
 import { trackEvent } from "@/lib/track";
@@ -308,6 +309,39 @@ export default function CityDetailPanel({
         scoreColor={scoreColor}
         gated={!hasProAccess(userTier)}
       />
+
+      {/* Gap Analysis — Pro only */}
+      {hasProAccess(userTier) && (
+        <>
+          <GapAnalysisPanel city={selected} scoreColor={scoreColor} />
+          <div
+            style={{
+              padding: "10px 20px 14px",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+            }}
+          >
+            <Link
+              href={`/reports/gap/${selected.id}`}
+              style={{
+                display: "block",
+                textAlign: "center",
+                padding: "8px 16px",
+                background: "rgba(0,212,255,0.08)",
+                border: "1px solid rgba(0,212,255,0.2)",
+                borderRadius: 6,
+                color: "#00d4ff",
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                textDecoration: "none",
+                transition: "all 0.15s",
+              }}
+            >
+              DOWNLOAD GAP REPORT
+            </Link>
+          </div>
+        </>
+      )}
 
       {/* Gated sections — operators, vertiports, corridors */}
       {hasProAccess(userTier) ? (

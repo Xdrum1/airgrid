@@ -1,13 +1,16 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { verifyAdminCookie, COOKIE_NAME } from "@/lib/admin-auth";
+import Link from "next/link";
+import { auth } from "@/auth";
+import { getUserTier } from "@/lib/billing";
+import { hasProAccess } from "@/lib/billing-shared";
 import { getCitiesWithOverrides } from "@/data/seed";
 import { OPERATORS_MAP } from "@/data/seed";
 import { analyzeGaps, getPeerContext } from "@/lib/gap-analysis";
 import { getScoreHistoryFull } from "@/lib/score-history";
 import { getCorridorsForCity } from "@/lib/corridors";
+import PrintButton from "./PrintButton";
 
 export const metadata: Metadata = {
   robots: "noindex, nofollow",
@@ -20,11 +23,14 @@ export default async function GapReportPage({
 }) {
   const { cityId } = await params;
 
-  // Admin gate
-  const cookieStore = await cookies();
-  const adminCookie = cookieStore.get(COOKIE_NAME)?.value;
-  if (!adminCookie || !verifyAdminCookie(adminCookie)) {
-    redirect("/admin/review");
+  // Pro gate (also allows admin)
+  const session = await auth();
+  if (!session?.user?.id) {
+    redirect("/login");
+  }
+  const tier = await getUserTier(session.user.id);
+  if (!hasProAccess(tier)) {
+    redirect("/pricing");
   }
 
   // Data fetching
@@ -116,6 +122,34 @@ export default async function GapReportPage({
         }}
       >
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
+
+          {/* ======== TOOLBAR (screen only) ======== */}
+          <div
+            className="screen-only"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 24,
+              padding: "12px 0",
+            }}
+          >
+            <Link
+              href="/dashboard"
+              style={{
+                color: "#888",
+                fontSize: 12,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                transition: "color 0.15s",
+              }}
+            >
+              &larr; Back to Dashboard
+            </Link>
+            <PrintButton />
+          </div>
 
           {/* ======== SECTION 1: COVER ======== */}
           <div
