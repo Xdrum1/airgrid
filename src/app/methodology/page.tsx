@@ -227,6 +227,13 @@ export default function MethodologyPage() {
             The methodology is published in full to enable independent validation and to support
             its adoption as an industry reference standard.
           </p>
+          <p style={{ color: "#777", fontSize: 15, lineHeight: 1.7, maxWidth: 600, marginTop: 12 }}>
+            Factor weights and scoring thresholds are validated through ongoing consultation with
+            infrastructure developers, weather intelligence providers, and vertiport operators
+            active in multiple US markets. The v1.3 methodology reflects field-validated insights
+            on legislative prerequisites and weather infrastructure requirements for commercial
+            eVTOL operations.
+          </p>
         </div>
 
         {/* Section 1: What the Score Measures */}

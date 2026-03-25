@@ -81,6 +81,14 @@ export default function AboutPage() {
           </p>
 
           <p>
+            Our scoring methodology is developed in consultation with infrastructure
+            developers, weather intelligence providers, and industry organizations
+            active across multiple US markets. Factor weights and thresholds are
+            field-validated against real capital allocation decisions — not theoretical
+            models.
+          </p>
+
+          <p>
             AirIndex does not represent operators, municipalities, or investors.
             Our ratings are independent. That independence is the foundation of
             their value.

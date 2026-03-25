@@ -104,6 +104,8 @@ export default function PricingPage() {
               { type: "Defense & aerospace", desc: "AAM landscape intelligence for strategic planning" },
               { type: "Investment & finance", desc: "Due diligence on market-level readiness" },
               { type: "Policy & government", desc: "Federal program alignment and legislative tracking" },
+              { type: "Economic development alliances", desc: "Regional readiness benchmarking and investment attraction" },
+              { type: "Weather & sensor companies", desc: "Market coverage mapping and infrastructure gap identification" },
             ].map((item) => (
               <div key={item.type} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <span style={{ color: "#00d4ff", fontSize: 8, marginTop: 5, flexShrink: 0 }}>&#9646;</span>
@@ -114,7 +116,20 @@ export default function PricingPage() {
               </div>
             ))}
           </div>
-          <div style={{ textAlign: "center", marginTop: 24 }}>
+          <div
+            style={{
+              marginTop: 20,
+              paddingTop: 16,
+              borderTop: "1px solid rgba(255,255,255,0.04)",
+              textAlign: "center",
+            }}
+          >
+            <p style={{ color: "#555", fontSize: 11, margin: "0 0 16px", letterSpacing: 0.3 }}>
+              Trusted by professionals from organizations including the Vertical Flight Society,
+              TruWeather Solutions, and Leonardo.
+            </p>
+          </div>
+          <div style={{ textAlign: "center", marginTop: 8 }}>
             <Link
               href="/contact?tier=pro"
               style={{
