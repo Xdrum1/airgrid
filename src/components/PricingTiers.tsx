@@ -324,7 +324,7 @@ export default function PricingTiers() {
               ))}
             </ul>
 
-            {/* CTA — dual path: walkthrough primary, self-serve secondary */}
+            {/* CTA */}
             {tier.cta === "free" ? (
               <Link
                 href="/login?mode=signup"
@@ -335,15 +335,15 @@ export default function PricingTiers() {
                   padding: "12px 0",
                   borderRadius: 6,
                   fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.04em",
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
                   textDecoration: "none",
                   background: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.08)",
                   color: "#999",
                 }}
               >
-                Create free account
+                Get Free
               </Link>
             ) : tier.cta === "contact" ? (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -356,15 +356,15 @@ export default function PricingTiers() {
                     padding: "12px 0",
                     borderRadius: 6,
                     fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "0.04em",
+                    fontWeight: 700,
+                    letterSpacing: "0.06em",
                     textDecoration: "none",
                     background: "rgba(255,255,255,0.04)",
                     border: "1px solid rgba(255,255,255,0.08)",
                     color: "#999",
                   }}
                 >
-                  Schedule a Walkthrough
+                  Contact Sales
                 </Link>
                 <Link
                   href={`/${tier.name.toLowerCase()}`}
@@ -382,46 +382,29 @@ export default function PricingTiers() {
                 </Link>
               </div>
             ) : (
-              /* Paid tiers: walkthrough primary, self-serve secondary */
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <Link
-                  href={`/contact?tier=${tier.stripeTier}`}
-                  className="pricing-cta"
-                  style={{
-                    display: "block",
-                    textAlign: "center",
-                    padding: "12px 0",
-                    borderRadius: 6,
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "0.04em",
-                    textDecoration: "none",
-                    background: tier.highlight ? "rgba(0,212,255,0.08)" : "rgba(255,255,255,0.04)",
-                    border: tier.highlight ? "1px solid rgba(0,212,255,0.2)" : "1px solid rgba(255,255,255,0.08)",
-                    color: tier.highlight ? "#00d4ff" : "#999",
-                  }}
-                >
-                  Schedule a Walkthrough
-                </Link>
-                <button
-                  onClick={() => handleCheckout(tier)}
-                  disabled={loadingTier === tier.stripeTier}
-                  className="pricing-secondary"
-                  style={{
-                    background: "none",
-                    border: "none",
-                    padding: "4px 0",
-                    fontSize: 10,
-                    color: "#555",
-                    cursor: loadingTier === tier.stripeTier ? "wait" : "pointer",
-                    letterSpacing: "0.02em",
-                    opacity: loadingTier === tier.stripeTier ? 0.6 : 1,
-                    fontFamily: "'Inter', sans-serif",
-                  }}
-                >
-                  {loadingTier === tier.stripeTier ? "Redirecting..." : "or subscribe now →"}
-                </button>
-              </div>
+              <button
+                onClick={() => handleCheckout(tier)}
+                disabled={loadingTier === tier.stripeTier}
+                className="pricing-cta"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "center",
+                  padding: "12px 0",
+                  borderRadius: 6,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  fontFamily: "'Inter', sans-serif",
+                  cursor: loadingTier === tier.stripeTier ? "wait" : "pointer",
+                  opacity: loadingTier === tier.stripeTier ? 0.6 : 1,
+                  background: tier.highlight ? "#00d4ff" : "rgba(255,255,255,0.04)",
+                  border: tier.highlight ? "1px solid #00d4ff" : "1px solid rgba(255,255,255,0.08)",
+                  color: tier.highlight ? "#050508" : "#999",
+                }}
+              >
+                {loadingTier === tier.stripeTier ? "Redirecting..." : `Get ${tier.name}`}
+              </button>
             )}
           </div>
         ))}
