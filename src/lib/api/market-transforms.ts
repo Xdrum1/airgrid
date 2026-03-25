@@ -39,6 +39,7 @@ export function transformMarketSummary(city: City, watch?: WatchInfo | null) {
     postureLabel: posture.label,
     operatorCount: city.activeOperators.length,
     vertiportCount: cityVertiports.length,
+    heliportCount: city.heliportCount ?? 0,
     watchStatus: watch?.watchStatus ?? "STABLE",
     outlook: watch?.outlook ?? "STABLE",
     lastUpdated: city.lastUpdated,
