@@ -338,9 +338,9 @@ export default function PricingTiers() {
                   fontWeight: 700,
                   letterSpacing: "0.06em",
                   textDecoration: "none",
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  color: "#999",
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#fff",
                 }}
               >
                 Get Free
@@ -359,9 +359,9 @@ export default function PricingTiers() {
                     fontWeight: 700,
                     letterSpacing: "0.06em",
                     textDecoration: "none",
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    color: "#999",
+                    background: "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    color: "#fff",
                   }}
                 >
                   Contact Sales
@@ -398,9 +398,9 @@ export default function PricingTiers() {
                   fontFamily: "'Inter', sans-serif",
                   cursor: loadingTier === tier.stripeTier ? "wait" : "pointer",
                   opacity: loadingTier === tier.stripeTier ? 0.6 : 1,
-                  background: tier.highlight ? "#00d4ff" : "rgba(255,255,255,0.04)",
-                  border: tier.highlight ? "1px solid #00d4ff" : "1px solid rgba(255,255,255,0.08)",
-                  color: tier.highlight ? "#050508" : "#999",
+                  background: tier.highlight ? "#00d4ff" : `${tier.accent}18`,
+                  border: `1px solid ${tier.highlight ? "#00d4ff" : tier.accent}`,
+                  color: tier.highlight ? "#050508" : "#fff",
                 }}
               >
                 {loadingTier === tier.stripeTier ? "Redirecting..." : `Get ${tier.name}`}
