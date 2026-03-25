@@ -16,7 +16,7 @@ const FACTORS = [
   {
     key: "activePilotProgram",
     label: "Active Pilot Program",
-    weight: 20,
+    weight: 15,
     description:
       "Has the market launched or hosted an active UAM pilot program? Pilot programs demonstrate real-world operational commitment — not just regulatory intent, but aircraft flying in the airspace under FAA-approved conditions. This is the strongest signal of market readiness because it requires simultaneous coordination of regulatory approval, operator participation, infrastructure access, and community engagement.",
     qualifies:
@@ -30,7 +30,7 @@ const FACTORS = [
   {
     key: "approvedVertiport",
     label: "Approved Vertiport",
-    weight: 20,
+    weight: 15,
     description:
       "Does the market have at least one permitted, under-construction, or operational vertiport site? Vertiports are the physical infrastructure that makes commercial UAM possible. A market with approved vertiport sites has cleared the hardest regulatory and zoning hurdles — environmental review, community input, building permits, and FAA airspace coordination.",
     qualifies:
@@ -87,10 +87,10 @@ const FACTORS = [
   {
     key: "stateLegislation",
     label: "State Legislation",
-    weight: 10,
+    weight: 20,
     graduated: true,
     description:
-      "What is the state of UAM-enabling legislation? This factor uses a graduated three-tier model: Enacted (10 pts) — UAM-specific legislation signed into law; Actively Moving (5 pts) — UAM-specific bills in late legislative stages with real momentum; None (0 pts) — no meaningful UAM legislative activity. State-level legislation creates the legal framework that allows (or blocks) commercial UAM at scale. States with enacted legislation signal long-term institutional commitment. States with actively moving bills show community preparedness — a leading indicator of future enactment.",
+      "What is the state of UAM-enabling legislation? This factor uses a graduated three-tier model: Enacted (20 pts) — UAM-specific legislation signed into law; Actively Moving (10 pts) — UAM-specific bills in late legislative stages with real momentum; None (0 pts) — no meaningful UAM legislative activity. State-level legislation creates the legal framework that allows (or blocks) commercial UAM at scale. States with enacted legislation signal long-term institutional commitment. States with actively moving bills show community preparedness — a leading indicator of future enactment. This factor was doubled from 10 to 20 points in v1.3 based on field validation showing that legislation functions as a prerequisite — infrastructure developers require a legislative framework before committing capital.",
     qualifies:
       "Enacted (full points): State-level UAM or AAM legislation signed into law — enabling acts, task force creation with legislative mandate, state DOT integration directives, or dedicated AAM appropriations. Actively Moving (partial points): UAM-specific bills in late stages — transmit to house, second reading, ordered enrolled, governor's desk, or committee recommendation for passage. Must show coordinated legislative activity, not just a single early-stage referral.",
     doesNotQualify:
@@ -100,18 +100,19 @@ const FACTORS = [
     sources: "State legislature records (LegiScan), governor's office press releases, state DOT publications, legislative tracking services.",
   },
   {
-    key: "laancCoverage",
-    label: "LAANC Coverage",
+    key: "weatherInfrastructure",
+    label: "Weather Infrastructure",
     weight: 10,
+    graduated: true,
     description:
-      "Does the market have FAA LAANC (Low Altitude Authorization and Notification Capability) infrastructure in place? LAANC provides automated airspace authorization for UAS operations — a foundational infrastructure layer for UAM corridor management and real-time flight coordination. Markets without LAANC coverage face significantly higher friction for any low-altitude commercial operations.",
+      "Weather infrastructure readiness tracks low-altitude weather sensing at the city level. Weather data at or below 500 feet AGL is critical for eVTOL operations — standard airport weather stations (ASOS/AWOS) report conditions at runway level but do not capture the wind shear, turbulence, and microclimate data required for vertiport approach corridors. This factor uses a graduated three-tier model: Full (10 pts) — dedicated low-altitude sensing deployed in the market; Partial (5 pts) — standard airport weather infrastructure exists but lacks UAM-specific coverage; None (0 pts) — no meaningful weather infrastructure for low-altitude operations. As dedicated sensor networks expand across US markets, this factor will increasingly differentiate markets that have invested in operational weather infrastructure from those relying on general aviation coverage.",
     qualifies:
-      "LAANC is available at one or more airports within the metropolitan area, providing automated near-real-time airspace authorization for UAS operations below 400 feet AGL.",
+      "Full: Dedicated low-altitude weather sensors, eIPP (enhanced Instrument Performance Products) deployments, or UAM-specific weather observation networks operating within the metropolitan area. Partial: ASOS/AWOS weather stations at airports within the metro area providing surface-level observations applicable to nearby vertiport operations. None: No weather observation infrastructure relevant to low-altitude UAM operations.",
     doesNotQualify:
-      "Markets where LAANC is available only at distant airports outside the metropolitan area. Manual airspace authorization processes without LAANC integration.",
+      "Upper-atmosphere weather monitoring without surface/low-altitude component. Weather forecast services without local observation infrastructure. Radar-only coverage without surface wind data.",
     actionable:
-      "This factor is primarily FAA-driven. Airports can request LAANC facility activation through the FAA UAS Data Exchange. Municipal advocacy to the FAA for LAANC expansion can accelerate coverage.",
-    sources: "FAA LAANC facility map, FAA UAS Data Exchange, airport authority records.",
+      "Deploy dedicated low-altitude weather sensing at planned vertiport sites. Partner with weather technology providers (e.g., eIPP networks) to establish sub-500ft observation coverage. Heliports and vertiports are not currently required to have weather stations — proactive deployment is a competitive differentiator.",
+    sources: "FAA ASOS/AWOS station registry, eIPP deployment maps, airport authority records, weather technology provider deployment data.",
   },
 ];
 
@@ -119,7 +120,7 @@ const TIERS = [
   { label: "ADVANCED", range: "75\u2013100", color: "#00ff88", description: "Market has most or all infrastructure, regulatory, and operator requirements in place. Commercial UAM operations are imminent or active." },
   { label: "MODERATE", range: "50\u201374", color: "#00d4ff", description: "Significant progress across multiple factors. Key pieces are in place but gaps remain \u2014 typically missing infrastructure or operator commitment." },
   { label: "EARLY", range: "30\u201349", color: "#f59e0b", description: "Some foundational elements present. Regulatory posture may be favorable but physical infrastructure and operator activity are limited." },
-  { label: "NASCENT", range: "0\u201329", color: "#ff4444", description: "Minimal UAM readiness. Market may have LAANC coverage or early regulatory signals but lacks substantive infrastructure or operator engagement." },
+  { label: "NASCENT", range: "0\u201329", color: "#ff4444", description: "Minimal UAM readiness. Market may have partial weather infrastructure or early regulatory signals but lacks substantive infrastructure or operator engagement." },
 ];
 
 // -------------------------------------------------------
@@ -201,7 +202,7 @@ export default function MethodologyPage() {
               marginBottom: 16,
             }}
           >
-            Scoring Methodology &middot; v1.2 &middot; March 2026
+            Scoring Methodology &middot; v1.3 &middot; March 2026
           </div>
           <h1
             style={{
@@ -381,17 +382,18 @@ export default function MethodologyPage() {
             Binary Model
           </h3>
           <p style={{ marginBottom: 16 }}>
-            Five of seven factors use binary scoring: a factor is either present or it isn&apos;t.
+            Four of seven factors use binary scoring: a factor is either present or it isn&apos;t.
             This is a deliberate design choice. Binary scoring eliminates subjective grading,
             makes scores reproducible across analysts, and provides clear, actionable thresholds
             for city planners and operators. A market either has an approved vertiport or it
             doesn&apos;t &mdash; there is no partial credit for &ldquo;almost permitted.&rdquo;
           </p>
           <p style={{ marginBottom: 24 }}>
-            Two factors use graduated scoring: Regulatory Posture (Friendly / Neutral / Restrictive)
-            and State Legislation (Enacted / Actively Moving / None). Both reflect domains where a
-            binary model would lose meaningful signal &mdash; regulatory environments and legislative
-            progress exist on a spectrum. As reliable sub-indicators become available for other
+            Three factors use graduated scoring: Regulatory Posture (Friendly / Neutral / Restrictive),
+            State Legislation (Enacted / Actively Moving / None), and Weather Infrastructure
+            (Full / Partial / None). These reflect domains where a binary model would lose meaningful
+            signal &mdash; regulatory environments, legislative progress, and weather observation
+            infrastructure all exist on a spectrum. As reliable sub-indicators emerge for other
             factors, the graduated model may be extended.
           </p>
 
@@ -422,37 +424,38 @@ export default function MethodologyPage() {
           >
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ color: "#fff", fontSize: 13 }}>Infrastructure &amp; Operations</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", color: "#00d4ff", fontSize: 13, fontWeight: 700 }}>20 pts each</span>
+                <span style={{ color: "#fff", fontSize: 13 }}>Legislative Framework</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", color: "#00d4ff", fontSize: 13, fontWeight: 700 }}>20 pts</span>
               </div>
               <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
-                Pilot Program, Approved Vertiport &mdash; these are the hardest to achieve and closest to commercial readiness. They require real capital, real approvals, and real operations.
+                State Legislation &mdash; elevated to the highest weight in v1.3 based on field validation. Legislation creates the legal framework infrastructure developers require before committing capital. Community preparedness, reflected in legislative activity, precedes and enables operator engagement.
               </p>
               <div style={{ height: 1, background: "rgba(255,255,255,0.04)" }} />
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ color: "#fff", fontSize: 13 }}>Market Commitment</span>
+                <span style={{ color: "#fff", fontSize: 13 }}>Infrastructure &amp; Market Commitment</span>
                 <span style={{ fontFamily: "'Space Mono', monospace", color: "#00d4ff", fontSize: 13, fontWeight: 700 }}>15 pts each</span>
               </div>
               <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
-                Active Operator Presence, Vertiport Zoning &mdash; strong signals of intent that can be reversed or stalled. Operators can exit markets; zoning can be amended.
+                Pilot Program, Approved Vertiport, Active Operator Presence, Vertiport Zoning &mdash; the operational and infrastructure signals. These require real capital, real approvals, and real operator commitment.
               </p>
               <div style={{ height: 1, background: "rgba(255,255,255,0.04)" }} />
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ color: "#fff", fontSize: 13 }}>Regulatory Environment</span>
+                <span style={{ color: "#fff", fontSize: 13 }}>Regulatory &amp; Environmental Readiness</span>
                 <span style={{ fontFamily: "'Space Mono', monospace", color: "#00d4ff", fontSize: 13, fontWeight: 700 }}>10 pts each</span>
               </div>
               <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
-                Regulatory Posture, State Legislation, LAANC Coverage &mdash; necessary but not sufficient. A friendly regulatory environment without infrastructure or operators does not make a market ready.
+                Regulatory Posture, Weather Infrastructure &mdash; necessary but not sufficient. A friendly regulatory environment and weather sensing infrastructure support operations but do not alone make a market ready.
               </p>
             </div>
           </div>
           <p style={{ marginBottom: 24 }}>
-            This hierarchy reflects current market conditions rather than a fixed causal sequence.
-            Infrastructure and operational factors are the strongest signals of near-term commercial
-            readiness. However, state legislation functions as a prerequisite in practice &mdash;
-            infrastructure developers require a legislative framework before committing capital, and
-            community preparedness, reflected in legislative activity, often precedes and enables
-            operator engagement. The weight structure is under active review to reflect this finding.
+            This hierarchy reflects current market conditions and field-validated insights from
+            infrastructure developers and operators. Infrastructure and operational factors remain
+            the strongest signals of near-term commercial readiness. State legislation was elevated
+            to 20 points in v1.3 based on field validation showing that legislation functions as a
+            prerequisite &mdash; infrastructure developers require a legislative framework before
+            committing capital, and community preparedness, reflected in legislative activity, often
+            precedes and enables operator engagement.
           </p>
 
           {/* Weight distribution visualization */}
@@ -571,7 +574,7 @@ export default function MethodologyPage() {
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
             {[
-              { label: "FAA LAANC Database", desc: "Real-time facility maps, airspace authorization records, and UAS Data Exchange feeds for LAANC coverage verification." },
+              { label: "Weather Infrastructure Registry", desc: "FAA ASOS/AWOS station registry, eIPP deployment maps, airport authority weather records, and weather technology provider deployment data for low-altitude sensing verification." },
               { label: "Federal Register", desc: "Proposed and final rulemaking, airspace designations, notices of availability, and FAA advisory circulars related to UAM and vertiport operations." },
               { label: "SEC EDGAR", desc: "10-K/10-Q filings, 8-K disclosures, and S-1 registrations from publicly traded operators (Joby Aviation, Archer Aviation, Blade Air Mobility) for market commitments and partnership announcements." },
               { label: "State Legislative Records", desc: "Bill tracking via LegiScan and state legislature databases for UAM/AAM enabling legislation, task force creation, and appropriations across all 50 states." },
@@ -683,10 +686,11 @@ export default function MethodologyPage() {
           </h3>
           <p style={{ marginBottom: 16 }}>
             The Readiness Score measures structural conditions, not market dynamics. It does not
-            account for consumer demand, operator financial health, airspace complexity, weather
-            patterns, noise sensitivity, community opposition, or competitive intensity between
-            markets. These factors matter for commercial success but are outside the scope of a
-            readiness assessment.
+            account for consumer demand, operator financial health, airspace complexity, noise
+            sensitivity, community opposition, or competitive intensity between markets. These
+            factors matter for commercial success but are outside the scope of a readiness
+            assessment. Weather infrastructure is captured as a structural factor (presence of
+            observation equipment), not as a weather pattern or climate assessment.
           </p>
 
           <h3
@@ -709,10 +713,10 @@ export default function MethodologyPage() {
             support.
           </p>
           <p style={{ marginBottom: 16 }}>
-            Regulatory Posture and State Legislation already use graduated scoring (see v1.2.1).
-            As historical data accumulates and reliable sub-indicators emerge for other factors,
-            the graduated model will be extended. Any such changes will be published as a new
-            methodology version with a full changelog.
+            Regulatory Posture, State Legislation, and Weather Infrastructure all use graduated
+            scoring as of v1.3. As historical data accumulates and reliable sub-indicators emerge
+            for other factors, the graduated model will be extended. Any such changes will be
+            published as a new methodology version with a full changelog.
           </p>
 
           <h3
@@ -795,7 +799,7 @@ export default function MethodologyPage() {
               marginBottom: 16,
             }}
           >
-            Source: AirIndex UAM Market Readiness Index, v1.2 (airindex.io/methodology)
+            Source: AirIndex UAM Market Readiness Index, v1.3 (airindex.io/methodology)
           </div>
           <p style={{ color: "#999", fontSize: 13, marginBottom: 16 }}>
             A formal methodology paper with DOI assignment is forthcoming. Researchers requiring

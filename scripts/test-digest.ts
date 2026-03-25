@@ -10,7 +10,7 @@ const sampleEntries = [
     entityName: "Los Angeles",
     changeType: "faa_update",
     summary:
-      "FAA approves expanded LAANC authorization for eVTOL operations in LA Basin — ceiling raised to 1,500 ft AGL across 12 grid cells.",
+      "TruWeather deploys eIPP low-altitude weather sensors at LA Basin vertiport sites — sub-500ft wind shear monitoring now active across 12 locations.",
     sourceUrl: "https://www.faa.gov/uas/programs_partnerships/data_exchange",
   },
   {

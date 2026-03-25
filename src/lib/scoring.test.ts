@@ -6,8 +6,9 @@ import {
   getScoreTier,
   getPostureConfig,
   getLegislationConfig,
+  getWeatherConfig,
 } from "./scoring";
-import type { City, RegulatoryPosture, LegislationStatus } from "@/types";
+import type { City, RegulatoryPosture, LegislationStatus, WeatherInfraLevel } from "@/types";
 
 // Helper to build a minimal City with all factors on or off
 function makeCity(overrides: Partial<City> = {}): City {
@@ -25,7 +26,7 @@ function makeCity(overrides: Partial<City> = {}): City {
     activeOperators: [],
     regulatoryPosture: "restrictive",
     stateLegislationStatus: "none",
-    hasLaancCoverage: false,
+    weatherInfraLevel: "none",
     notes: "",
     keyMilestones: [],
     lastUpdated: "2025-01-01",
@@ -41,7 +42,7 @@ function allFactorsCity(): City {
     activeOperators: ["op_joby"],
     regulatoryPosture: "friendly",
     stateLegislationStatus: "enacted",
-    hasLaancCoverage: true,
+    weatherInfraLevel: "full",
   });
 }
 
@@ -109,18 +110,18 @@ describe("calculateReadinessScore", () => {
     expect(breakdown.regulatoryPosture).toBe(0);
   });
 
-  it("stateLegislation 'enacted' gives full weight", () => {
+  it("stateLegislation 'enacted' gives full weight (20)", () => {
     const { breakdown } = calculateReadinessScore(
       makeCity({ stateLegislationStatus: "enacted" })
     );
     expect(breakdown.stateLegislation).toBe(SCORE_WEIGHTS.stateLegislation);
   });
 
-  it("stateLegislation 'actively_moving' gives 5 points", () => {
+  it("stateLegislation 'actively_moving' gives 10 points", () => {
     const { breakdown } = calculateReadinessScore(
       makeCity({ stateLegislationStatus: "actively_moving" })
     );
-    expect(breakdown.stateLegislation).toBe(5);
+    expect(breakdown.stateLegislation).toBe(10);
   });
 
   it("stateLegislation 'none' gives 0 points", () => {
@@ -130,12 +131,33 @@ describe("calculateReadinessScore", () => {
     expect(breakdown.stateLegislation).toBe(0);
   });
 
+  it("weatherInfrastructure 'full' gives full weight (10)", () => {
+    const { breakdown } = calculateReadinessScore(
+      makeCity({ weatherInfraLevel: "full" })
+    );
+    expect(breakdown.weatherInfrastructure).toBe(SCORE_WEIGHTS.weatherInfrastructure);
+  });
+
+  it("weatherInfrastructure 'partial' gives 5 points", () => {
+    const { breakdown } = calculateReadinessScore(
+      makeCity({ weatherInfraLevel: "partial" })
+    );
+    expect(breakdown.weatherInfrastructure).toBe(5);
+  });
+
+  it("weatherInfrastructure 'none' gives 0 points", () => {
+    const { breakdown } = calculateReadinessScore(
+      makeCity({ weatherInfraLevel: "none" })
+    );
+    expect(breakdown.weatherInfrastructure).toBe(0);
+  });
+
   it("breakdown values sum to score", () => {
     const partial = makeCity({
       hasActivePilotProgram: true,
       vertiportCount: 2,
       regulatoryPosture: "neutral",
-      hasLaancCoverage: true,
+      weatherInfraLevel: "partial",
     });
     const { score, breakdown } = calculateReadinessScore(partial);
     const sum = Object.values(breakdown).reduce((a, b) => a + b, 0);
@@ -166,7 +188,7 @@ describe("calculateReadinessScore", () => {
     expect(score).toBe(
       SCORE_WEIGHTS.activePilotProgram +
         SCORE_WEIGHTS.vertiportZoning +
-        5
+        10
     );
   });
 });
@@ -254,6 +276,24 @@ describe("getLegislationConfig", () => {
 
   it("returns NONE config", () => {
     const cfg = getLegislationConfig("none");
+    expect(cfg).toEqual({ label: "NONE", color: "#ff4444" });
+  });
+});
+
+// ----- getWeatherConfig -----
+describe("getWeatherConfig", () => {
+  it("returns FULL config", () => {
+    const cfg = getWeatherConfig("full");
+    expect(cfg).toEqual({ label: "FULL", color: "#00ff88" });
+  });
+
+  it("returns PARTIAL config", () => {
+    const cfg = getWeatherConfig("partial");
+    expect(cfg).toEqual({ label: "PARTIAL", color: "#f59e0b" });
+  });
+
+  it("returns NONE config", () => {
+    const cfg = getWeatherConfig("none");
     expect(cfg).toEqual({ label: "NONE", color: "#ff4444" });
   });
 });

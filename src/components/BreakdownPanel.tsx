@@ -65,7 +65,7 @@ export default function BreakdownPanel({
     { label: "Vertiport Zoning", value: breakdown?.vertiportZoning ?? 0, max: SCORE_WEIGHTS.vertiportZoning },
     { label: "Regulatory Posture", value: breakdown?.regulatoryPosture ?? 0, max: SCORE_WEIGHTS.regulatoryPosture },
     { label: "State Legislation", value: breakdown?.stateLegislation ?? 0, max: SCORE_WEIGHTS.stateLegislation },
-    { label: "LAANC Coverage", value: breakdown?.laancCoverage ?? 0, max: SCORE_WEIGHTS.laancCoverage },
+    { label: "Weather Infrastructure", value: breakdown?.weatherInfrastructure ?? 0, max: SCORE_WEIGHTS.weatherInfrastructure },
   ];
 
   // Show first 2 rows unblurred, blur the rest

@@ -283,18 +283,18 @@ export default function CityDetail({
                 {city.stateLegislationStatus === "enacted" ? "STATE LAW" : "BILLS MOVING"}
               </span>
             )}
-            {city.hasLaancCoverage && (
+            {city.weatherInfraLevel !== "none" && (
               <span
                 style={{
-                  color: "#00d4ff",
+                  color: city.weatherInfraLevel === "full" ? "#00ff88" : "#f59e0b",
                   fontSize: 9,
-                  border: "1px solid rgba(0,212,255,0.25)",
+                  border: `1px solid ${city.weatherInfraLevel === "full" ? "rgba(0,255,136,0.25)" : "rgba(245,158,11,0.25)"}`,
                   borderRadius: 4,
                   padding: "4px 10px",
                   letterSpacing: 1,
                 }}
               >
-                LAANC
+                {city.weatherInfraLevel === "full" ? "WEATHER" : "WX PARTIAL"}
               </span>
             )}
             {city.hasActivePilotProgram && (

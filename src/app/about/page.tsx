@@ -58,7 +58,7 @@ export default function AboutPage() {
 
           <p>
             We track seven weighted factors across {MARKET_COUNT} markets: regulatory posture,
-            LAANC corridor coverage, operator presence, active pilot programs,
+            weather infrastructure, operator presence, active pilot programs,
             vertiport infrastructure, zoning policy, and state legislation. Every
             market receives a live 0–100 readiness score — updated continuously as
             conditions change. Not a forecast. Not a projection. A live index built

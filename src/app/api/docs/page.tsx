@@ -412,8 +412,8 @@ export default async function ApiDocsPage() {
         "active_operator_presence": 15,
         "vertiport_zoning": 15,
         "regulatory_posture": 10,
-        "state_legislation": 10,
-        "laanc_coverage": 10
+        "state_legislation": 20,
+        "weather_infrastructure": 10
       },
       "regulatory_posture": "friendly",
       "posture_label": "FRIENDLY",
@@ -538,8 +538,8 @@ export default async function ApiDocsPage() {
         "active_operator_presence": 15,
         "vertiport_zoning": 15,
         "regulatory_posture": 10,
-        "state_legislation": 10,
-        "laanc_coverage": 10
+        "state_legislation": 20,
+        "weather_infrastructure": 10
       },
       "captured_at": "2026-03-03T06:00:00Z",
       "triggering_event_id": null,

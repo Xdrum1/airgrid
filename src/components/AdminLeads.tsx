@@ -56,7 +56,7 @@ const FACTOR_LABELS: Record<string, string> = {
   regulatoryPosture: "Regulatory Posture",
   stateLegislationStatus: "State Legislation",
   hasStateLegislation: "State Legislation",
-  hasLaancCoverage: "LAANC Coverage",
+  weatherInfraLevel: "Weather Infrastructure",
 };
 
 const ALL_FACTORS = Object.keys(FACTOR_LABELS);

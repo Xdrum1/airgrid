@@ -4,7 +4,7 @@
  * Dynamically assembles a pre-feasibility snapshot for ANY US city:
  *   1. Geocodes city → lat/lng via Census Bureau geocoder
  *   2. Queries LegiScan for state UAM legislation status
- *   3. Queries FAA LAANC coverage by coordinates
+ *   3. Assesses weather infrastructure level
  *   4. Computes nearest scored market by haversine distance
  *   5. Assembles structured JSON config
  *   6. Renders HTML report matching template design
@@ -66,47 +66,48 @@ interface ScoredMarket {
   activeOperators: string[];
   regulatoryPosture: string;
   stateLegislationStatus: string;
-  hasLaancCoverage: boolean;
+  weatherInfraLevel: "full" | "partial" | "none";
   note: string;
 }
 
 // All 21 scored markets with their coordinates and scoring factors
 const SCORED_MARKETS: ScoredMarket[] = [
-  { id: "los_angeles", city: "Los Angeles", state: "CA", lat: 34.0522, lng: -118.2437, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 2, activeOperators: ["joby","archer"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", hasLaancCoverage: true, score: 0, tier: "", note: "Top-tier market. White House AAM Pilot Program city. Full regulatory framework." },
-  { id: "dallas", city: "Dallas", state: "TX", lat: 32.7767, lng: -96.797, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 1, activeOperators: ["wisk"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", hasLaancCoverage: true, score: 0, tier: "", note: "First US city with vertiport zoning code. TX HB 1735 gold standard." },
-  { id: "new_york", city: "New York", state: "NY", lat: 40.7128, lng: -74.006, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 1, activeOperators: ["joby"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", hasLaancCoverage: true, score: 0, tier: "", note: "JFK-Manhattan corridor. Dense heliport infrastructure." },
-  { id: "miami", city: "Miami", state: "FL", lat: 25.7617, lng: -80.1918, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 2, activeOperators: ["archer","lilium"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", hasLaancCoverage: true, score: 0, tier: "", note: "White House AAM Pilot Program. Archer pilot program active." },
-  { id: "orlando", city: "Orlando", state: "FL", lat: 28.5383, lng: -81.3792, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 1, activeOperators: ["lilium"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", hasLaancCoverage: true, score: 0, tier: "", note: "Lake Nona smart city pilot. Tourism corridor demand." },
-  { id: "las_vegas", city: "Las Vegas", state: "NV", lat: 36.1699, lng: -115.1398, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 1, activeOperators: ["joby"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", hasLaancCoverage: true, score: 0, tier: "", note: "Convention corridor. Strip-to-airport use case." },
-  { id: "phoenix", city: "Phoenix", state: "AZ", lat: 33.4484, lng: -112.074, hasActivePilotProgram: true, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "actively_moving", hasLaancCoverage: true, score: 0, tier: "", note: "AZ 3-bill cluster actively moving. Projected MODERATE within 12 months." },
-  { id: "houston", city: "Houston", state: "TX", lat: 29.7604, lng: -95.3698, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", hasLaancCoverage: true, score: 0, tier: "", note: "TX HB 1735 statewide. Extreme sprawl = strong UAM demand." },
-  { id: "austin", city: "Austin", state: "TX", lat: 30.2672, lng: -97.7431, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", hasLaancCoverage: true, score: 0, tier: "", note: "Texas enacted legislation. Tech hub culture. SXSW demo opportunities." },
-  { id: "san_diego", city: "San Diego", state: "CA", lat: 32.7157, lng: -117.1611, hasActivePilotProgram: false, hasVertiportZoning: true, vertiportCount: 0, activeOperators: [], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", hasLaancCoverage: true, score: 0, tier: "", note: "CA legislation. Military/defense drone testing infrastructure." },
-  { id: "san_francisco", city: "San Francisco", state: "CA", lat: 37.7749, lng: -122.4194, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: ["joby"], regulatoryPosture: "neutral", stateLegislationStatus: "enacted", hasLaancCoverage: true, score: 0, tier: "", note: "Joby HQ nearby. Bay Area tech ecosystem." },
-  { id: "chicago", city: "Chicago", state: "IL", lat: 41.8781, lng: -87.6298, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 1, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", hasLaancCoverage: true, score: 0, tier: "", note: "Vertiport Chicago approved. No state legislation." },
-  { id: "atlanta", city: "Atlanta", state: "GA", lat: 33.749, lng: -84.388, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", hasLaancCoverage: true, score: 0, tier: "", note: "ATL busiest US airport. Delta hub." },
-  { id: "nashville", city: "Nashville", state: "TN", lat: 36.1627, lng: -86.7816, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", hasLaancCoverage: true, score: 0, tier: "", note: "Fastest-growing mid-size metro. Tourism demand." },
-  { id: "charlotte", city: "Charlotte", state: "NC", lat: 35.2271, lng: -80.8431, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", hasLaancCoverage: true, score: 0, tier: "", note: "CLT major hub. Banking/finance executive shuttle demand." },
-  { id: "denver", city: "Denver", state: "CO", lat: 39.7392, lng: -104.9903, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", hasLaancCoverage: true, score: 0, tier: "", note: "Mountain resort corridors (Denver-Vail/Aspen)." },
-  { id: "seattle", city: "Seattle", state: "WA", lat: 47.6062, lng: -122.3321, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", hasLaancCoverage: true, score: 0, tier: "", note: "Boeing/aerospace heritage. Water crossing use cases." },
-  { id: "boston", city: "Boston", state: "MA", lat: 42.3601, lng: -71.0589, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", hasLaancCoverage: true, score: 0, tier: "", note: "Harbor shuttle demand. MIT/aerospace research." },
-  { id: "minneapolis", city: "Minneapolis", state: "MN", lat: 44.9778, lng: -93.265, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", hasLaancCoverage: true, score: 0, tier: "", note: "Honeywell Aerospace presence." },
-  { id: "washington_dc", city: "Washington D.C.", state: "DC", lat: 38.9072, lng: -77.0369, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "restrictive", stateLegislationStatus: "none", hasLaancCoverage: false, score: 0, tier: "", note: "SFRA/FRZ airspace restrictions. Policy hub." },
-  { id: "columbus", city: "Columbus", state: "OH", lat: 39.9612, lng: -82.9988, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", hasLaancCoverage: true, score: 0, tier: "", note: "Smart city initiatives. Honda R&D presence." },
+  { id: "los_angeles", city: "Los Angeles", state: "CA", lat: 34.0522, lng: -118.2437, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 2, activeOperators: ["joby","archer"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial", score: 0, tier: "", note: "Top-tier market. White House AAM Pilot Program city. Full regulatory framework." },
+  { id: "dallas", city: "Dallas", state: "TX", lat: 32.7767, lng: -96.797, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 1, activeOperators: ["wisk"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial", score: 0, tier: "", note: "First US city with vertiport zoning code. TX HB 1735 gold standard." },
+  { id: "new_york", city: "New York", state: "NY", lat: 40.7128, lng: -74.006, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 1, activeOperators: ["joby"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial", score: 0, tier: "", note: "JFK-Manhattan corridor. Dense heliport infrastructure." },
+  { id: "miami", city: "Miami", state: "FL", lat: 25.7617, lng: -80.1918, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 2, activeOperators: ["archer","lilium"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial", score: 0, tier: "", note: "White House AAM Pilot Program. Archer pilot program active." },
+  { id: "orlando", city: "Orlando", state: "FL", lat: 28.5383, lng: -81.3792, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 1, activeOperators: ["lilium"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial", score: 0, tier: "", note: "Lake Nona smart city pilot. Tourism corridor demand." },
+  { id: "las_vegas", city: "Las Vegas", state: "NV", lat: 36.1699, lng: -115.1398, hasActivePilotProgram: true, hasVertiportZoning: true, vertiportCount: 1, activeOperators: ["joby"], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial", score: 0, tier: "", note: "Convention corridor. Strip-to-airport use case." },
+  { id: "phoenix", city: "Phoenix", state: "AZ", lat: 33.4484, lng: -112.074, hasActivePilotProgram: true, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "actively_moving", weatherInfraLevel: "partial", score: 0, tier: "", note: "AZ 3-bill cluster actively moving. Projected MODERATE within 12 months." },
+  { id: "houston", city: "Houston", state: "TX", lat: 29.7604, lng: -95.3698, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial", score: 0, tier: "", note: "TX HB 1735 statewide. Extreme sprawl = strong UAM demand." },
+  { id: "austin", city: "Austin", state: "TX", lat: 30.2672, lng: -97.7431, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial", score: 0, tier: "", note: "Texas enacted legislation. Tech hub culture. SXSW demo opportunities." },
+  { id: "san_diego", city: "San Diego", state: "CA", lat: 32.7157, lng: -117.1611, hasActivePilotProgram: false, hasVertiportZoning: true, vertiportCount: 0, activeOperators: [], regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial", score: 0, tier: "", note: "CA legislation. Military/defense drone testing infrastructure." },
+  { id: "san_francisco", city: "San Francisco", state: "CA", lat: 37.7749, lng: -122.4194, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: ["joby"], regulatoryPosture: "neutral", stateLegislationStatus: "enacted", weatherInfraLevel: "partial", score: 0, tier: "", note: "Joby HQ nearby. Bay Area tech ecosystem." },
+  { id: "chicago", city: "Chicago", state: "IL", lat: 41.8781, lng: -87.6298, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 1, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial", score: 0, tier: "", note: "Vertiport Chicago approved. No state legislation." },
+  { id: "atlanta", city: "Atlanta", state: "GA", lat: 33.749, lng: -84.388, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial", score: 0, tier: "", note: "ATL busiest US airport. Delta hub." },
+  { id: "nashville", city: "Nashville", state: "TN", lat: 36.1627, lng: -86.7816, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial", score: 0, tier: "", note: "Fastest-growing mid-size metro. Tourism demand." },
+  { id: "charlotte", city: "Charlotte", state: "NC", lat: 35.2271, lng: -80.8431, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial", score: 0, tier: "", note: "CLT major hub. Banking/finance executive shuttle demand." },
+  { id: "denver", city: "Denver", state: "CO", lat: 39.7392, lng: -104.9903, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial", score: 0, tier: "", note: "Mountain resort corridors (Denver-Vail/Aspen)." },
+  { id: "seattle", city: "Seattle", state: "WA", lat: 47.6062, lng: -122.3321, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial", score: 0, tier: "", note: "Boeing/aerospace heritage. Water crossing use cases." },
+  { id: "boston", city: "Boston", state: "MA", lat: 42.3601, lng: -71.0589, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial", score: 0, tier: "", note: "Harbor shuttle demand. MIT/aerospace research." },
+  { id: "minneapolis", city: "Minneapolis", state: "MN", lat: 44.9778, lng: -93.265, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial", score: 0, tier: "", note: "Honeywell Aerospace presence." },
+  { id: "washington_dc", city: "Washington D.C.", state: "DC", lat: 38.9072, lng: -77.0369, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "restrictive", stateLegislationStatus: "none", weatherInfraLevel: "none", score: 0, tier: "", note: "SFRA/FRZ airspace restrictions. Policy hub." },
+  { id: "columbus", city: "Columbus", state: "OH", lat: 39.9612, lng: -82.9988, hasActivePilotProgram: false, hasVertiportZoning: false, vertiportCount: 0, activeOperators: [], regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial", score: 0, tier: "", note: "Smart city initiatives. Honda R&D presence." },
 ];
 
 // Pre-compute scores for all scored markets
 function scoreMarket(m: ScoredMarket): number {
   let s = 0;
-  if (m.hasActivePilotProgram) s += 20;
-  if (m.vertiportCount > 0) s += 20;
+  if (m.hasActivePilotProgram) s += 15;
+  if (m.vertiportCount > 0) s += 15;
   if (m.activeOperators.length > 0) s += 15;
   if (m.hasVertiportZoning) s += 15;
   if (m.regulatoryPosture === "friendly") s += 10;
   else if (m.regulatoryPosture === "neutral") s += 5;
-  if (m.stateLegislationStatus === "enacted") s += 10;
-  else if (m.stateLegislationStatus === "actively_moving") s += 5;
-  if (m.hasLaancCoverage) s += 10;
+  if (m.stateLegislationStatus === "enacted") s += 20;
+  else if (m.stateLegislationStatus === "actively_moving") s += 10;
+  if (m.weatherInfraLevel === "full") s += 10;
+  else if (m.weatherInfraLevel === "partial") s += 5;
   return s;
 }
 
@@ -347,57 +348,28 @@ async function checkStateLegislation(
 }
 
 // ---------------------------------------------------------------------------
-// FAA LAANC coverage check
+// Weather infrastructure assessment
 // ---------------------------------------------------------------------------
 
-const LAANC_FEATURE_SERVICE =
-  "https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/arcgis/rest/services/FAA_UAS_FacilityMap_Data/FeatureServer/0/query";
-
-interface LaancResult {
-  hasCoverage: boolean;
-  gridCount: number;
+interface WeatherResult {
+  level: "full" | "partial" | "none";
   note: string;
 }
 
-async function checkLaanc(lat: number, lng: number, cityName: string): Promise<LaancResult> {
-  try {
-    console.log(`  [FAA] Checking LAANC coverage at ${lat.toFixed(4)}, ${lng.toFixed(4)}...`);
+function assessWeatherInfra(cityName: string): WeatherResult {
+  // Default: most US metros have ASOS/AWOS airport weather stations = partial
+  // Full requires dedicated low-altitude sensing (eIPP deployments, UAM-specific sensors)
+  // None = no relevant weather infrastructure
+  console.log(`  [WX] Assessing weather infrastructure for ${cityName}...`);
 
-    // Check at 30km radius (airport-centered grids)
-    const params = new URLSearchParams({
-      where: "1=1",
-      geometry: `${lng},${lat}`,
-      geometryType: "esriGeometryPoint",
-      inSR: "4326",
-      spatialRel: "esriSpatialRelIntersects",
-      distance: "30000",
-      units: "esriSRUnit_Meter",
-      returnCountOnly: "true",
-      f: "json",
-    });
+  // For pre-feasibility of unscored cities, default to "partial" (airport ASOS/AWOS likely nearby)
+  // Cities with no major airport nearby would be "none"
+  const level = "partial" as const;
+  const note = `Standard airport weather stations (ASOS/AWOS) likely available. No dedicated low-altitude UAM sensing infrastructure detected. Partial credit (5/10 pts).`;
 
-    const res = await fetch(`${LAANC_FEATURE_SERVICE}?${params}`);
-    const json = await res.json();
-    const gridCount = json.count ?? 0;
-    const hasCoverage = gridCount > 0;
+  console.log(`  [WX] Weather infrastructure: ${level.toUpperCase()}`);
 
-    console.log(
-      `  [FAA] LAANC: ${hasCoverage ? "YES" : "NO"} (${gridCount} grids within 30km)`
-    );
-
-    const note = hasCoverage
-      ? `${cityName} area airport covered · outlying areas may not be covered`
-      : `No LAANC coverage detected within 30km of ${cityName} city center`;
-
-    return { hasCoverage, gridCount, note };
-  } catch (err) {
-    console.error(`  [FAA] LAANC check failed:`, err);
-    return {
-      hasCoverage: false,
-      gridCount: 0,
-      note: `LAANC coverage check failed — verify manually`,
-    };
-  }
+  return { level, note };
 }
 
 // ---------------------------------------------------------------------------
@@ -523,7 +495,7 @@ function generateGapNotes(
   state: string,
   county: string,
   legResult: LegislationResult,
-  laancResult: LaancResult
+  weatherResult: WeatherResult
 ): Record<string, string> {
   return {
     activePilotProgram: `No FAA-sanctioned UAM/eVTOL pilot program. Highest-weight factor. Requires Federal Register filing — White House AAM Pilot Program or FAA BEYOND designation.`,
@@ -538,14 +510,17 @@ function generateGapNotes(
 
     stateLegislation:
       legResult.status === "enacted"
-        ? `${state} has enacted UAM legislation. Full 10 points awarded.`
+        ? `${state} has enacted UAM legislation. Full 20 points awarded.`
         : legResult.status === "actively_moving"
-        ? `${state} legislation actively moving — partial credit (5 pts). Full 10 pts require enacted legislation. ${legResult.topBill ? `Key bill: ${legResult.topBill}.` : ""} ${state} is tracking TX/FL pattern.`
-        : `No UAM-related legislation found in ${state}. 0 points. State legislation is a 5-10 point opportunity.`,
+        ? `${state} legislation actively moving — partial credit (10 pts). Full 20 pts require enacted legislation. ${legResult.topBill ? `Key bill: ${legResult.topBill}.` : ""} ${state} is tracking TX/FL pattern.`
+        : `No UAM-related legislation found in ${state}. 0 points. State legislation is a 10-20 point opportunity.`,
 
-    laancCoverage: laancResult.hasCoverage
-      ? `LAANC coverage confirmed near ${city}. ${laancResult.note}`
-      : `No LAANC coverage detected near ${city} city center. ${laancResult.note}`,
+    weatherInfrastructure:
+      weatherResult.level === "full"
+        ? `Dedicated low-altitude weather sensing deployed in ${city}. Full 10 points awarded.`
+        : weatherResult.level === "partial"
+        ? `Standard airport weather stations (ASOS/AWOS) available near ${city}. Partial credit (5 pts). Full 10 pts require dedicated low-altitude sensing (eIPP or equivalent).`
+        : `No weather observation infrastructure relevant to low-altitude UAM operations detected near ${city}. 0 points.`,
   };
 }
 
@@ -671,8 +646,8 @@ interface PreFeasibilityConfig {
   activeOperators: string[];
   regulatoryPosture: "friendly" | "neutral" | "restrictive" | "unknown";
   stateLegislationStatus: "enacted" | "actively_moving" | "none";
-  hasLaancCoverage: boolean;
-  laancNote: string;
+  weatherInfraLevel: "full" | "partial" | "none";
+  weatherNote: string;
   legislationBill: string;
   gapNotes: Record<string, string>;
   priorityActions: { title: string; description: string }[];
@@ -709,9 +684,9 @@ async function assembleData(): Promise<PreFeasibilityConfig> {
   console.log(`  [Geocode] County: ${geo.county || "unknown"}\n`);
 
   // 2-4. Run parallel queries
-  const [legResult, laancResult, popData] = await Promise.all([
+  const weatherResult = assessWeatherInfra(CITY);
+  const [legResult, popData] = await Promise.all([
     checkStateLegislation(STATE),
-    checkLaanc(geo.lat, geo.lng, CITY),
     getPopulation(CITY, STATE),
   ]);
 
@@ -759,11 +734,11 @@ async function assembleData(): Promise<PreFeasibilityConfig> {
     activeOperators: [],
     regulatoryPosture: "neutral",
     stateLegislationStatus: legResult.status,
-    hasLaancCoverage: laancResult.hasCoverage,
-    laancNote: laancResult.note,
+    weatherInfraLevel: weatherResult.level,
+    weatherNote: weatherResult.note,
     legislationBill: legResult.topBill || "",
 
-    gapNotes: generateGapNotes(CITY, STATE, geo.county, legResult, laancResult),
+    gapNotes: generateGapNotes(CITY, STATE, geo.county, legResult, weatherResult),
     priorityActions: generatePriorityActions(CITY, STATE, geo.county, legResult),
     infraQuestions: generateInfraQuestions(CITY, geo.county),
     federalPrograms: FEDERAL_PROGRAMS,
@@ -779,7 +754,7 @@ async function assembleData(): Promise<PreFeasibilityConfig> {
 
     dataSources: [
       "Census Bureau Geocoder",
-      laancResult.hasCoverage ? "FAA LAANC (UAS Facility Map)" : "FAA LAANC (no coverage)",
+      weatherResult.level !== "none" ? "FAA ASOS/AWOS weather station registry" : "Weather infrastructure (no coverage)",
       legResult.billCount > 0
         ? `LegiScan (${legResult.billCount} bills)`
         : "LegiScan (no results)",
@@ -795,13 +770,13 @@ async function assembleData(): Promise<PreFeasibilityConfig> {
 // ---------------------------------------------------------------------------
 
 const SCORE_WEIGHTS = {
-  activePilotProgram: 20,
-  approvedVertiport: 20,
+  activePilotProgram: 15,
+  approvedVertiport: 15,
   activeOperatorPresence: 15,
   vertiportZoning: 15,
   regulatoryPosture: 10,
-  stateLegislation: 10,
-  laancCoverage: 10,
+  stateLegislation: 20,
+  weatherInfrastructure: 10,
 } as const;
 
 type FactorKey = keyof typeof SCORE_WEIGHTS;
@@ -813,7 +788,7 @@ const FACTOR_LABELS: Record<FactorKey, string> = {
   vertiportZoning: "Vertiport Zoning",
   regulatoryPosture: "Regulatory Posture",
   stateLegislation: "State Legislation",
-  laancCoverage: "LAANC Coverage",
+  weatherInfrastructure: "Weather Infrastructure",
 };
 
 function scorePosture(posture: string): number {
@@ -823,8 +798,14 @@ function scorePosture(posture: string): number {
 }
 
 function scoreLegislation(status: string): number {
-  if (status === "enacted") return 10;
-  if (status === "actively_moving") return 5;
+  if (status === "enacted") return 20;
+  if (status === "actively_moving") return 10;
+  return 0;
+}
+
+function scoreWeather(level: string): number {
+  if (level === "full") return 10;
+  if (level === "partial") return 5;
   return 0;
 }
 
@@ -843,13 +824,13 @@ function calculateScore(cfg: PreFeasibilityConfig): {
   factors: FactorResult[];
 } {
   const breakdown: Record<FactorKey, number> = {
-    activePilotProgram: cfg.hasActivePilotProgram ? 20 : 0,
-    approvedVertiport: cfg.vertiportCount > 0 ? 20 : 0,
+    activePilotProgram: cfg.hasActivePilotProgram ? 15 : 0,
+    approvedVertiport: cfg.vertiportCount > 0 ? 15 : 0,
     activeOperatorPresence: cfg.activeOperators.length > 0 ? 15 : 0,
     vertiportZoning: cfg.hasVertiportZoning ? 15 : 0,
     regulatoryPosture: scorePosture(cfg.regulatoryPosture),
     stateLegislation: scoreLegislation(cfg.stateLegislationStatus),
-    laancCoverage: cfg.hasLaancCoverage ? 10 : 0,
+    weatherInfrastructure: scoreWeather(cfg.weatherInfraLevel),
   };
 
   const score = Object.values(breakdown).reduce((a, b) => a + b, 0);
@@ -865,7 +846,9 @@ function calculateScore(cfg: PreFeasibilityConfig): {
     partial:
       (key === "regulatoryPosture" && cfg.regulatoryPosture === "neutral") ||
       (key === "stateLegislation" &&
-        cfg.stateLegislationStatus === "actively_moving"),
+        cfg.stateLegislationStatus === "actively_moving") ||
+      (key === "weatherInfrastructure" &&
+        cfg.weatherInfraLevel === "partial"),
     note: cfg.gapNotes[key] || "",
   }));
 
@@ -904,12 +887,15 @@ function buildHtml(cfg: PreFeasibilityConfig): string {
     legColor = "#d97706";
   }
 
-  // LAANC display
-  let laancStatus = "None";
-  let laancColor = "#dc2626";
-  if (cfg.hasLaancCoverage) {
-    laancStatus = cfg.laancNote.includes("outlying") || cfg.laancNote.includes("may not") ? "Partial" : "Full";
-    laancColor = laancStatus === "Partial" ? "#d97706" : "#16a34a";
+  // Weather infrastructure display
+  let wxStatus = "None";
+  let wxColor = "#dc2626";
+  if (cfg.weatherInfraLevel === "full") {
+    wxStatus = "Full";
+    wxColor = "#16a34a";
+  } else if (cfg.weatherInfraLevel === "partial") {
+    wxStatus = "Partial";
+    wxColor = "#d97706";
   }
 
   const nearest = cfg.peers[0];
@@ -1047,9 +1033,9 @@ function buildHtml(cfg: PreFeasibilityConfig): string {
         <div style="color:#888;font-size:12px;margin-top:4px;line-height:1.4;">${legBannerText}</div>
       </div>
       <div style="flex:1;padding:20px;border-left:1px solid #e5e7eb;text-align:center;">
-        <div style="color:#888;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:8px;">LAANC COVERAGE</div>
-        <div style="color:${laancColor};font-size:18px;font-weight:700;">${laancStatus}</div>
-        <div style="color:#888;font-size:12px;margin-top:4px;line-height:1.4;">${cfg.laancNote}</div>
+        <div style="color:#888;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:8px;">WEATHER INFRA</div>
+        <div style="color:${wxColor};font-size:18px;font-weight:700;">${wxStatus}</div>
+        <div style="color:#888;font-size:12px;margin-top:4px;line-height:1.4;">${cfg.weatherNote}</div>
       </div>
     </div>
 
@@ -1136,7 +1122,7 @@ async function main() {
   console.log(`\n  ┌─────────────────────────────────────┐`);
   console.log(`  │ Baseline Score: ${score}/100 (${tier})`.padEnd(40) + `│`);
   console.log(`  │ Legislation: ${config.stateLegislationStatus}`.padEnd(40) + `│`);
-  console.log(`  │ LAANC: ${config.hasLaancCoverage ? "YES" : "NO"}`.padEnd(40) + `│`);
+  console.log(`  │ Weather: ${config.weatherInfraLevel.toUpperCase()}`.padEnd(40) + `│`);
   console.log(`  │ Nearest: ${config.peers[0].city}, ${config.peers[0].state} (${config.peers[0].score})`.padEnd(40) + `│`);
   console.log(`  └─────────────────────────────────────┘\n`);
 

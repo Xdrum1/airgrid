@@ -113,7 +113,7 @@ const VALID_CITY_IDS = new Set([
 const VALID_FIELDS = new Set([
   "hasActivePilotProgram", "hasVertiportZoning", "approvedVertiport",
   "activeOperatorPresence", "regulatoryPosture", "hasStateLegislation",
-  "hasLaancCoverage",
+  "weatherInfraLevel",
 ]);
 
 // -------------------------------------------------------
@@ -130,8 +130,8 @@ Each market is scored on 7 binary factors:
 3. **activeOperatorPresence** (15 pts) — At least one eVTOL operator active in the market
 4. **hasVertiportZoning** (15 pts) — Local zoning ordinance allows vertiport construction
 5. **regulatoryPosture** (10 pts) — City/state regulatory stance: "friendly" (10), "neutral" (5), "restrictive" (0)
-6. **hasStateLegislation** (10 pts) — State has signed UAM-enabling legislation
-7. **hasLaancCoverage** (10 pts) — FAA LAANC low-altitude authorization coverage exists
+6. **hasStateLegislation** (20 pts) — State has signed UAM-enabling legislation
+7. **weatherInfraLevel** (10 pts) — Dedicated low-altitude weather sensing infrastructure: "full" (10), "partial" (5), "none" (0)
 
 ## Tracked Markets (20 US cities)
 
@@ -179,7 +179,7 @@ Return a JSON array. For each record, output one object:
   "eventType": "string — one of the event types above",
   "factorsAffected": [
     {
-      "field": "string — one of: hasActivePilotProgram, approvedVertiport, activeOperatorPresence, hasVertiportZoning, regulatoryPosture, hasStateLegislation, hasLaancCoverage",
+      "field": "string — one of: hasActivePilotProgram, approvedVertiport, activeOperatorPresence, hasVertiportZoning, regulatoryPosture, hasStateLegislation, weatherInfraLevel",
       "value": "the new value (true/false for booleans, 'friendly'/'neutral'/'restrictive' for regulatoryPosture)",
       "reason": "string — brief explanation of why this factor is affected"
     }

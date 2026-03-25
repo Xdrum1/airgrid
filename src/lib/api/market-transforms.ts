@@ -129,7 +129,7 @@ const FACTOR_LABELS: Record<string, string> = {
   vertiportZoning: "Vertiport Zoning",
   regulatoryPosture: "Regulatory Posture",
   stateLegislation: "State Legislation",
-  laancCoverage: "LAANC Coverage",
+  weatherInfrastructure: "Weather Infrastructure",
 };
 
 function humanFactorName(key: string): string {
