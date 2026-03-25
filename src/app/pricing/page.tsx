@@ -125,8 +125,8 @@ export default function PricingPage() {
             }}
           >
             <p style={{ color: "#555", fontSize: 11, margin: "0 0 16px", letterSpacing: 0.3 }}>
-              Trusted by professionals from organizations including the Vertical Flight Society,
-              TruWeather Solutions, and Leonardo.
+              Used by professionals in eVTOL operations, vertiport development,
+              city planning, and aerospace investment.
             </p>
           </div>
           <div style={{ textAlign: "center", marginTop: 8 }}>
