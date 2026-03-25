@@ -22,7 +22,7 @@ async function getPrisma() {
 // Constants
 // -------------------------------------------------------
 
-const PROMPT_VERSION = "v5";
+const PROMPT_VERSION = "v6";
 const MODEL = "claude-haiku-4-5-20251001";
 const BATCH_SIZE = 10;
 const MAX_TOKENS = 4096;
@@ -41,9 +41,9 @@ const SYSTEM_PROMPT = `You are a regulatory intelligence classifier for AirIndex
 
 ## Scoring Model (7 factors, 0–100 scale)
 
-Each market is scored on 7 binary factors:
-1. **hasActivePilotProgram** (20 pts) — Active eVTOL testing or pilot program in the city. Requires a specific city-level program, not just an operator having FAA certification.
-2. **approvedVertiport** (20 pts) — At least one approved/built vertiport in this specific city.
+Each market is scored on 7 factors (v1.3 weights):
+1. **hasActivePilotProgram** (15 pts) — Active eVTOL testing or pilot program in the city. Requires a specific city-level program, not just an operator having FAA certification.
+2. **approvedVertiport** (15 pts) — At least one approved/built vertiport in this specific city.
 3. **activeOperatorPresence** (15 pts) — At least one eVTOL operator has announced or begun operations in this specific market (city). General corporate news (earnings, stock offerings, fundraising) does NOT count.
 4. **hasVertiportZoning** (15 pts) — Local zoning ordinance specifically allows vertiport construction in this city.
 5. **regulatoryPosture** (10 pts) — City/state regulatory stance: "friendly" (10), "neutral" (5), "restrictive" (0). Requires explicit city or state policy action.
@@ -111,9 +111,10 @@ Return a JSON array. For each record, output one object:
 
 1. If a record is \`not_relevant\`, set \`factorsAffected\` to an empty array and \`affectedCityIds\` to an empty array.
 2. **CRITICAL**: If you cannot identify at least one specific city affected, classify as \`not_relevant\`. A classification without affected cities has no value — it cannot be applied to any market's score. General federal news, industry trends, and corporate financials without city-specific impact are \`not_relevant\`.
-3. For state-level legislation, map to ALL cities in that state using the table above.
+3. For state-level legislation, map to ALL cities in that state using the table above. NEVER assign cities from a different state — an Arizona bill cannot affect \`las_vegas\` (Nevada) or \`dallas\` (Texas).
 4. For SEC/operator filings, try to identify which specific markets/cities the content mentions. General corporate filings (earnings, stock offerings, capital raises) are \`not_relevant\` unless they mention specific city expansions.
 5. For \`affectedCityIds\`, only output valid city IDs from the table above. If the document mentions UAM activity in a city NOT in the table, add it to \`untrackedCities\` instead (with city name, state, and reason). Set \`untrackedCities\` to an empty array if no untracked cities are mentioned.
+6b. When you can identify a likely city but are uncertain, prefer assigning it at \`needs_review\` confidence over leaving \`affectedCityIds\` empty. An override with a city at \`needs_review\` can be manually verified; one with no city cannot be applied at all.
 6. Each \`factorsAffected\` entry MUST use a field that is valid for the event type (see event type definitions above). Do not set \`hasStateLegislation\` for federal actions or certification milestones.
 7. Return ONLY the JSON array — no markdown, no explanation, no wrapping.
 

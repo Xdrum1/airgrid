@@ -3,6 +3,35 @@
  *
  * Fetches operator-related news via Google News RSS feeds.
  * No API key required — standard RSS over HTTPS.
+ *
+ * ## Curation Criteria
+ *
+ * ### What we ingest
+ * - Google News RSS for each tracked operator by exact name match
+ * - Industry-wide feed for "eVTOL" OR "vertiport" OR "advanced air mobility"
+ * - Rolling 30-day window (configurable via daysBack param)
+ *
+ * ### What passes to AI classification (classifier.ts)
+ * ALL ingested articles go to the Claude classifier. The classifier decides
+ * relevance — the ingestion layer is intentionally broad to avoid false
+ * negatives. Better to classify noise as not_relevant than to miss a signal.
+ *
+ * ### What gets filtered out by the classifier
+ * - Pure stock/earnings articles (no city-specific signal)
+ * - General industry commentary without regulatory or market impact
+ * - Analyst ratings, price targets, trading signals
+ * - International news without US market implications
+ *
+ * ### What becomes a scoring signal
+ * Only articles the classifier maps to a specific tracked city with a
+ * specific factor change become ScoringOverride candidates. The chain:
+ *   RSS → IngestedRecord → ClassificationResult → ScoringOverride (needs_review)
+ *   → Auto-reviewer or admin approval → score change
+ *
+ * ### Feed maintenance
+ * - Add new operator feeds when operators enter tracked markets
+ * - Industry feed query should match terminology used in methodology
+ * - Operator feeds use exact-match quotes to reduce noise
  */
 
 import type { IngestedRecord } from "@/lib/ingestion";
