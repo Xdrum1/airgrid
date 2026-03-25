@@ -346,25 +346,41 @@ export default function PricingTiers() {
                 Create free account
               </Link>
             ) : tier.cta === "contact" ? (
-              <Link
-                href="/contact?tier=enterprise"
-                className="pricing-cta"
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  padding: "12px 0",
-                  borderRadius: 6,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.04em",
-                  textDecoration: "none",
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  color: "#999",
-                }}
-              >
-                Schedule a Walkthrough
-              </Link>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <Link
+                  href={`/contact?tier=${tier.name.toLowerCase()}`}
+                  className="pricing-cta"
+                  style={{
+                    display: "block",
+                    textAlign: "center",
+                    padding: "12px 0",
+                    borderRadius: 6,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.04em",
+                    textDecoration: "none",
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    color: "#999",
+                  }}
+                >
+                  Schedule a Walkthrough
+                </Link>
+                <Link
+                  href={`/${tier.name.toLowerCase()}`}
+                  className="pricing-secondary"
+                  style={{
+                    textAlign: "center",
+                    padding: "4px 0",
+                    fontSize: 10,
+                    color: "#555",
+                    textDecoration: "none",
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  learn more →
+                </Link>
+              </div>
             ) : (
               /* Paid tiers: walkthrough primary, self-serve secondary */
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
