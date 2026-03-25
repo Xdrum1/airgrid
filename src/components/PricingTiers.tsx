@@ -19,7 +19,7 @@ interface Tier {
   accent: string;
   highlight: boolean;
   features: string[];
-  cta: "free" | "stripe" | "coming_soon" | "contact";
+  cta: "free" | "stripe" | "contact";
   stripeTier?: "alert" | "pro" | "institutional";
 }
 
@@ -70,6 +70,7 @@ const TIERS: Tier[] = [
       "Operator tracker & SEC filings",
       "Market Watch status & analyst outlook",
       "Intel feed & deep-dives",
+      "Gap analysis & downloadable city reports",
       "Full monthly market report",
     ],
     cta: "stripe",
@@ -364,24 +365,6 @@ export default function PricingTiers() {
               >
                 Schedule a Walkthrough
               </Link>
-            ) : tier.cta === "coming_soon" ? (
-              <div
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  padding: "12px 0",
-                  borderRadius: 6,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.04em",
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  color: "#555",
-                  cursor: "default",
-                }}
-              >
-                Coming soon
-              </div>
             ) : (
               /* Paid tiers: walkthrough primary, self-serve secondary */
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -404,37 +387,24 @@ export default function PricingTiers() {
                 >
                   Schedule a Walkthrough
                 </Link>
-                {process.env.NEXT_PUBLIC_STRIPE_LIVE === "true" ? (
-                  <button
-                    onClick={() => handleCheckout(tier)}
-                    disabled={loadingTier === tier.stripeTier}
-                    className="pricing-secondary"
-                    style={{
-                      background: "none",
-                      border: "none",
-                      padding: "4px 0",
-                      fontSize: 10,
-                      color: "#555",
-                      cursor: loadingTier === tier.stripeTier ? "wait" : "pointer",
-                      letterSpacing: "0.02em",
-                      opacity: loadingTier === tier.stripeTier ? 0.6 : 1,
-                    }}
-                  >
-                    {loadingTier === tier.stripeTier ? "Redirecting..." : "or subscribe now →"}
-                  </button>
-                ) : (
-                  <div
-                    style={{
-                      textAlign: "center",
-                      padding: "4px 0",
-                      fontSize: 10,
-                      color: "#444",
-                      letterSpacing: "0.02em",
-                    }}
-                  >
-                    Self-serve available April 2026
-                  </div>
-                )}
+                <button
+                  onClick={() => handleCheckout(tier)}
+                  disabled={loadingTier === tier.stripeTier}
+                  className="pricing-secondary"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: "4px 0",
+                    fontSize: 10,
+                    color: "#555",
+                    cursor: loadingTier === tier.stripeTier ? "wait" : "pointer",
+                    letterSpacing: "0.02em",
+                    opacity: loadingTier === tier.stripeTier ? 0.6 : 1,
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                >
+                  {loadingTier === tier.stripeTier ? "Redirecting..." : "or subscribe now →"}
+                </button>
               </div>
             )}
           </div>
