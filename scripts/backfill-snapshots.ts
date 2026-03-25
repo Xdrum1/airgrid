@@ -23,24 +23,24 @@ const dryRun = process.argv.includes("--dry-run");
 //   Las Vegas: 85, Phoenix: 65, Austin: 45, Houston: 45
 const PRE_CORRECTION_OVERRIDES: Record<string, Partial<typeof CITIES[0]>> = {
   las_vegas: {
-    // 85 = pilot(20) + zoning(15) + vertiport(20) + friendly(10) + legislation(10) + laanc(10)
+    // 85 = pilot(20) + zoning(15) + vertiport(20) + friendly(10) + legislation(10) + weather(5)
     hasActivePilotProgram: true,
     hasVertiportZoning: true,
     regulatoryPosture: "friendly" as const,
     stateLegislationStatus: "enacted" as const,
   },
   phoenix: {
-    // 65 = pilot(20) + zoning(15) + friendly(10) + legislation(10) + laanc(10)
+    // 65 = pilot(20) + zoning(15) + friendly(10) + legislation(10) + weather(5)
     hasVertiportZoning: true,
     regulatoryPosture: "friendly" as const,
     stateLegislationStatus: "enacted" as const,
   },
   austin: {
-    // 45 = operator(15) + friendly(10) + legislation(10) + laanc(10)
+    // 45 = operator(15) + friendly(10) + legislation(10) + weather(5)
     activeOperators: ["op_placeholder" as never],
   },
   houston: {
-    // 45 = operator(15) + friendly(10) + legislation(10) + laanc(10)
+    // 45 = operator(15) + friendly(10) + legislation(10) + weather(5)
     activeOperators: ["op_placeholder" as never],
   },
 };

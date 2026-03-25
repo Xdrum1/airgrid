@@ -6,6 +6,8 @@ export type RegulatoryPosture = "friendly" | "neutral" | "restrictive" | "unknow
 
 export type LegislationStatus = "enacted" | "actively_moving" | "none";
 
+export type WeatherInfraLevel = "full" | "partial" | "none";
+
 export type OperatorType =
   | "evtol_manufacturer"
   | "air_taxi_service"
@@ -40,7 +42,7 @@ export interface ScoreBreakdown {
   activeOperatorPresence: number;
   regulatoryPosture: number;
   stateLegislation: number;
-  laancCoverage: number;
+  weatherInfrastructure: number;
 }
 
 // --- City / Market ---
@@ -60,7 +62,7 @@ export interface City {
   activeOperators: string[];           // Operator IDs
   regulatoryPosture: RegulatoryPosture;
   stateLegislationStatus: LegislationStatus;
-  hasLaancCoverage: boolean;
+  weatherInfraLevel: WeatherInfraLevel;
 
   // Computed
   score?: number;

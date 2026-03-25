@@ -126,7 +126,7 @@ const SCORING_FACTORS = [
   "activeOperators",
   "regulatoryPosture",
   "stateLegislationStatus",
-  "hasLaancCoverage",
+  "weatherInfraLevel",
 ] as const;
 
 // -------------------------------------------------------
@@ -225,8 +225,8 @@ Each market is scored on 7 binary factors:
 3. **activeOperatorPresence** (15 pts) — At least one eVTOL operator active
 4. **hasVertiportZoning** (15 pts) — Local zoning ordinance allows vertiport construction
 5. **regulatoryPosture** (10 pts) — "friendly" (10), "neutral" (5), "restrictive" (0)
-6. **stateLegislationStatus** (10 pts) — State legislation: "enacted" (10 pts, signed into law), "actively_moving" (5 pts, bill in late stages), "none" (0 pts)
-7. **hasLaancCoverage** (10 pts) — FAA LAANC low-altitude authorization coverage
+6. **stateLegislationStatus** (20 pts) — State legislation: "enacted" (20 pts, signed into law), "actively_moving" (10 pts, bill in late stages), "none" (0 pts)
+7. **weatherInfraLevel** (10 pts) — Dedicated low-altitude weather sensing: "full" (10 pts), "partial" (5 pts), "none" (0 pts)
 
 ## Review Guidelines
 
@@ -299,8 +299,8 @@ Each market is scored on 7 binary/enum factors:
 3. **vertiportCount** (number, 20 pts if > 0) — Number of approved/operational vertiports
 4. **activeOperators** (string[], 15 pts if non-empty) — IDs of eVTOL operators active in the city
 5. **regulatoryPosture** ("friendly" | "neutral" | "restrictive", 10 pts) — City/state regulatory stance toward UAM
-6. **stateLegislationStatus** ("enacted" | "actively_moving" | "none", 10 pts) — State legislation: enacted (10 pts), actively_moving (5 pts), none (0 pts)
-7. **hasLaancCoverage** (boolean, 10 pts) — FAA LAANC low-altitude authorization coverage
+6. **stateLegislationStatus** ("enacted" | "actively_moving" | "none", 20 pts) — State legislation: enacted (20 pts), actively_moving (10 pts), none (0 pts)
+7. **weatherInfraLevel** ("full" | "partial" | "none", 10 pts) — Dedicated low-altitude weather sensing: full (10 pts), partial (5 pts), none (0 pts)
 
 ## Guidelines
 
@@ -316,7 +316,7 @@ Score-changing factor confirmations require methodology-grade sources:
 - **hasActivePilotProgram**: Requires Federal Register filing or direct FAA/DOT documentation. News coverage of FAA programs is signal (elevated activity / watch list trigger) but does NOT qualify for automatic hasActivePilotProgram promotion. If the source is news coverage rather than an official filing, set confidence below 0.90 and note the source limitation in your reasoning.
 - **stateLegislationStatus**: LegiScan or official state legislature records are primary sources. News coverage alone is insufficient.
 - **hasVertiportZoning**: Requires official city/county zoning records or council minutes.
-- Other factors (activeOperators, regulatoryPosture, hasLaancCoverage): News coverage from credible outlets is acceptable.
+- Other factors (activeOperators, regulatoryPosture, weatherInfraLevel): News coverage from credible outlets is acceptable.
 
 ## Output
 
@@ -355,7 +355,7 @@ function buildRecommendationPrompt(
     parts.push(`- activeOperators: ${JSON.stringify(city.activeOperators)}`);
     parts.push(`- regulatoryPosture: "${city.regulatoryPosture}"`);
     parts.push(`- stateLegislationStatus: "${city.stateLegislationStatus}"`);
-    parts.push(`- hasLaancCoverage: ${city.hasLaancCoverage}`);
+    parts.push(`- weatherInfraLevel: "${city.weatherInfraLevel}"`);
   } else {
     parts.push(`(City data not found — use your best judgment)`);
   }

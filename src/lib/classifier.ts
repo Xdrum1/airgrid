@@ -47,8 +47,8 @@ Each market is scored on 7 binary factors:
 3. **activeOperatorPresence** (15 pts) — At least one eVTOL operator has announced or begun operations in this specific market (city). General corporate news (earnings, stock offerings, fundraising) does NOT count.
 4. **hasVertiportZoning** (15 pts) — Local zoning ordinance specifically allows vertiport construction in this city.
 5. **regulatoryPosture** (10 pts) — City/state regulatory stance: "friendly" (10), "neutral" (5), "restrictive" (0). Requires explicit city or state policy action.
-6. **stateLegislationStatus** (10 pts) — State legislation status: "enacted" (10 pts, signed into law), "actively_moving" (5 pts, bill in late stages — transmit to house, second reading, ordered enrolled, governor's desk), "none" (0 pts). Federal FAA actions do NOT count. Field name in output remains "hasStateLegislation" for compatibility.
-7. **hasLaancCoverage** (10 pts) — FAA LAANC low-altitude authorization coverage exists in this specific area.
+6. **stateLegislationStatus** (20 pts) — State legislation status: "enacted" (20 pts, signed into law), "actively_moving" (10 pts, bill in late stages — transmit to house, second reading, ordered enrolled, governor's desk), "none" (0 pts). Federal FAA actions do NOT count. Field name in output remains "hasStateLegislation" for compatibility.
+7. **weatherInfraLevel** (10 pts) — Dedicated low-altitude weather sensing infrastructure for AAM operations: "full" (10 pts), "partial" (5 pts, airport weather stations only), "none" (0 pts).
 
 ## Tracked Markets (${CITIES.length} US cities)
 
@@ -67,7 +67,7 @@ ${OPERATOR_TABLE}
 Classify each record into exactly one event type:
 - \`state_legislation_signed\` — A specific STATE bill signed/enacted that enables UAM operations. Only factors affected: hasStateLegislation. NOT for federal actions.
 - \`vertiport_zoning_approved\` — Zoning ordinance for vertiport construction approved in a specific city. Only factors affected: hasVertiportZoning, approvedVertiport.
-- \`faa_corridor_filing\` — FAA filing related to air corridors, airspace design, or powered-lift operations. Only factors affected: hasLaancCoverage (if LAANC-specific), or regulatoryPosture.
+- \`faa_corridor_filing\` — FAA filing related to air corridors, airspace design, or powered-lift operations. Only factors affected: regulatoryPosture.
 - \`faa_certification_milestone\` — FAA type certificate, airworthiness, or Part 135 milestone for an operator. This does NOT directly affect any city scoring factor unless it mentions a specific city launch. If no city is mentioned, classify as not_relevant.
 - \`operator_market_expansion\` — Operator announcing expansion into a specific new city/market. Only factors affected: activeOperatorPresence, hasActivePilotProgram.
 - \`regulatory_posture_change\` — Change in city/state regulatory stance toward UAM. Only factors affected: regulatoryPosture.
@@ -83,7 +83,7 @@ Return a JSON array. For each record, output one object:
   "eventType": "string — one of the event types above",
   "factorsAffected": [
     {
-      "field": "string — one of: hasActivePilotProgram, approvedVertiport, activeOperatorPresence, hasVertiportZoning, regulatoryPosture, hasStateLegislation, hasLaancCoverage",
+      "field": "string — one of: hasActivePilotProgram, approvedVertiport, activeOperatorPresence, hasVertiportZoning, regulatoryPosture, hasStateLegislation, weatherInfraLevel",
       "value": "the new value (true/false for booleans, 'friendly'/'neutral'/'restrictive' for regulatoryPosture)",
       "reason": "string — brief explanation of why this factor is affected"
     }
@@ -267,7 +267,7 @@ const VALID_CITY_IDS = new Set(CITIES.map((c) => c.id));
 const VALID_FIELDS = new Set([
   "hasActivePilotProgram", "hasVertiportZoning", "approvedVertiport",
   "activeOperatorPresence", "regulatoryPosture", "hasStateLegislation",
-  "hasLaancCoverage",
+  "weatherInfraLevel",
 ]);
 
 function mapToOverrideCandidates(

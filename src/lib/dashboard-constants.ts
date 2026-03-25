@@ -70,7 +70,7 @@ export const SCORE_COMPONENT_COLORS: Record<string, string> = {
   vertiportZoning: "#7c3aed",
   regulatoryPosture: "#ff6b35",
   stateLegislation: "#ff4444",
-  laancCoverage: "#10b981",
+  weatherInfrastructure: "#10b981",
 };
 
 export const SCORE_COMPONENT_LABELS: Record<string, string> = {
@@ -80,7 +80,7 @@ export const SCORE_COMPONENT_LABELS: Record<string, string> = {
   vertiportZoning: "Zoning",
   regulatoryPosture: "Regulatory",
   stateLegislation: "Legislation",
-  laancCoverage: "LAANC",
+  weatherInfrastructure: "Weather",
 };
 
 export function formatRelativeTime(timestamp: string): string {

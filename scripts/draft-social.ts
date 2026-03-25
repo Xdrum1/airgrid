@@ -204,7 +204,7 @@ const FACTOR_LABELS: Record<string, string> = {
   regulatoryPosture: "regulatory posture",
   stateLegislationStatus: "state legislation",
   hasStateLegislation: "state legislation",
-  hasLaancCoverage: "LAANC coverage",
+  weatherInfraLevel: "weather infrastructure",
 };
 
 function formatEventType(et: string): string {
@@ -237,7 +237,7 @@ function draftScoreMovePosts(moves: ScoreMove[]) {
       "",
       `Our scoring model detected a ${Math.abs(delta)}-point ${m.direction === "up" ? "increase" : "decrease"} in ${m.cityName}'s readiness score, moving it to the ${m.tier} tier.`,
       "",
-      `AirIndex tracks ${Object.keys(CITY_NAMES).length} US markets across 7 readiness factors — pilot programs, vertiport infrastructure, operator presence, zoning, legislation, regulatory posture, and LAANC coverage.`,
+      `AirIndex tracks ${Object.keys(CITY_NAMES).length} US markets across 7 readiness factors — pilot programs, vertiport infrastructure, operator presence, zoning, legislation, regulatory posture, and weather infrastructure.`,
       "",
       `When the data moves, we publish. No speculation, no hype — just the score.`,
       "",

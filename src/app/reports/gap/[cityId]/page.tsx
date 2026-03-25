@@ -623,7 +623,7 @@ export default async function GapReportPage({
                 color: "#ccc",
               }}
             >
-              &ldquo;{city.city} has been assessed at Readiness Tier {gap.tier} ({gap.score}/100) by AirIndex, an independent UAM market intelligence platform tracking 20+ US metropolitan areas across seven standardized readiness factors including pilot programs, vertiport infrastructure, operator presence, zoning frameworks, regulatory posture, state legislation, and FAA LAANC coverage. {city.city} currently meets {gap.achievedCount} of 7 factors.{peers.pointsToNextTier ? ` An investment of ${peers.pointsToNextTier} additional readiness points would advance the market to ${peers.nextTier} tier, positioning it among markets such as ${peers.nextTierCities.slice(0, 2).map((c) => c.city).join(" and ") || "leading UAM-ready cities"}.` : ""}&rdquo;
+              &ldquo;{city.city} has been assessed at Readiness Tier {gap.tier} ({gap.score}/100) by AirIndex, an independent UAM market intelligence platform tracking 20+ US metropolitan areas across seven standardized readiness factors including pilot programs, vertiport infrastructure, operator presence, zoning frameworks, regulatory posture, state legislation, and weather infrastructure. {city.city} currently meets {gap.achievedCount} of 7 factors.{peers.pointsToNextTier ? ` An investment of ${peers.pointsToNextTier} additional readiness points would advance the market to ${peers.nextTier} tier, positioning it among markets such as ${peers.nextTierCities.slice(0, 2).map((c) => c.city).join(" and ") || "leading UAM-ready cities"}.` : ""}&rdquo;
             </div>
           </div>
 

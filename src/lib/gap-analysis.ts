@@ -60,8 +60,8 @@ const RECOMMENDATIONS: Record<keyof ScoreBreakdown, string> = {
     "Signal regulatory openness by issuing an executive order, forming a UAM task force, or publishing a supportive policy statement. Moving from neutral to friendly posture adds 5 points. Texas and Arizona set the standard — their governors publicly endorsed AAM as economic development priority, which gave operators confidence to invest. A mayor's executive order or city council resolution costs nothing and immediately changes the market signal.",
   stateLegislation:
     "Advocate for state-level UAM legislation. Texas HB 1735 is the gold standard — it created a statewide legal framework that gave Dallas, Houston, Austin, and San Antonio all immediate credibility with operators. California followed with SB 944, Florida with the Advanced Air Mobility Act. State legislation provides the legal certainty operators need before committing capital to a market.",
-  laancCoverage:
-    "Ensure FAA LAANC (Low Altitude Authorization and Notification Capability) authorization is active for the metro area's airspace. Most major metros already have LAANC coverage — verify with the FAA UAS Data Exchange. This is typically the easiest factor to confirm and resolve.",
+  weatherInfrastructure:
+    "Deploy dedicated low-altitude weather sensing infrastructure for AAM operations. Airport weather stations provide regional coverage but don't measure conditions at the altitudes eVTOLs operate (200-2,000 ft AGL). Performance-based weather standards are being developed — cities that invest in dedicated sensing infrastructure now will be better positioned when operators require real-time weather data for vertiport operations.",
 };
 
 // -------------------------------------------------------
