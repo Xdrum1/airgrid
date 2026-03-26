@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import SiteNav from "@/components/SiteNav";
@@ -35,8 +34,8 @@ export default function PricingPage() {
           Intelligence access for every stage of the market
         </h1>
         <p style={{ color: "#999", fontSize: 15, margin: "0 auto", lineHeight: 1.7, maxWidth: 620 }}>
-          From individual analysts to institutional data partners — structured access to
-          the industry&apos;s authoritative UAM readiness index.
+          The dashboard and scores are free. Professional intelligence — score history, factor breakdowns,
+          corridor tracking, and market reports — is available through our sales team.
         </p>
       </section>
 
@@ -50,8 +49,8 @@ export default function PricingPage() {
           gap: 14,
         }}>
           {[
-            { role: "Analysts and consultants", action: "use Pro to track market trajectories and produce client deliverables." },
-            { role: "City planners", action: "use Pro to benchmark against peer markets and identify gap closure pathways." },
+            { role: "Analysts and consultants", action: "use Professional to track market trajectories and produce client deliverables." },
+            { role: "City planners", action: "use Professional to benchmark against peer markets and identify gap closure pathways." },
             { role: "Infrastructure developers", action: "use Institutional to integrate readiness data into site selection workflows." },
             { role: "Operators", action: "use Institutional API to monitor market conditions before making entry decisions." },
             { role: "Data partnerships", action: "are negotiated directly —", link: true },
@@ -75,7 +74,7 @@ export default function PricingPage() {
 
       {/* Tiers */}
       <section style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 20px clamp(60px, 8vw, 100px)" }}>
-        <Suspense><PricingTiers /></Suspense>
+        <PricingTiers />
       </section>
 
       {/* Who uses AirIndex */}
@@ -171,7 +170,7 @@ export default function PricingPage() {
           },
           {
             q: "How is AirIndex data licensed?",
-            a: "Self-serve tiers are month-to-month subscriptions. Institutional and API access is available under annual data license agreements. Enterprise and custom arrangements are negotiated directly.",
+            a: "Professional access is available under annual license agreements, billed monthly or annually. Institutional, API, and enterprise arrangements are negotiated directly with our team.",
           },
           {
             q: "What's included in the API?",

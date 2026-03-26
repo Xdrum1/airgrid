@@ -222,7 +222,7 @@ export default function DashboardHeader({
                     </button>
                   ) : (
                     <a
-                      href="/pricing"
+                      href="/contact?tier=pro"
                       style={{
                         display: "block",
                         padding: "8px 18px",
@@ -234,7 +234,7 @@ export default function DashboardHeader({
                       onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
                       onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                     >
-                      Upgrade Plan
+                      Request Access
                     </a>
                   )}
                 </div>
