@@ -160,10 +160,10 @@ export default function KeysTab({
             lineHeight: 1.7,
             marginBottom: 20,
           }}>
-            API keys are available on Pro, Institutional, and Enterprise plans.
+            API keys are available on Professional, Institutional, and Enterprise plans.
           </p>
           <a
-            href="/pricing"
+            href="/contact?tier=institutional&ref=api"
             style={{
               display: "inline-block",
               padding: "12px 28px",
@@ -177,7 +177,7 @@ export default function KeysTab({
               textDecoration: "none",
             }}
           >
-            View Plans
+            Contact Sales
           </a>
         </div>
       </div>

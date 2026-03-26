@@ -1,35 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
-import PreCheckoutModal from "./PreCheckoutModal";
 
 // -------------------------------------------------------
 // Tier data
 // -------------------------------------------------------
 
-type Interval = "monthly" | "annual";
-
 interface Tier {
   name: string;
   tagline: string;
-  monthly: number | null;
-  annual: number | null;
+  price: string;
+  priceNote: string;
   accent: string;
   highlight: boolean;
   features: string[];
-  cta: "free" | "stripe" | "contact";
-  stripeTier?: "alert" | "pro" | "institutional";
+  cta: { label: string; href: string };
+  learnMore?: string;
 }
 
 const TIERS: Tier[] = [
   {
     name: "Free",
     tagline: "The score is free. Explore the index.",
-    monthly: 0,
-    annual: 0,
+    price: "$0",
+    priceNote: "Free forever.",
     accent: "#00d4ff",
     highlight: false,
     features: [
@@ -38,32 +32,17 @@ const TIERS: Tier[] = [
       "City rankings",
       "Basic market overview per city",
     ],
-    cta: "free",
-  },
-  {
-    name: "Alert",
-    tagline: "Systematic monitoring for markets you're tracking.",
-    monthly: 25,
-    annual: 249,
-    accent: "#f59e0b",
-    highlight: false,
-    features: [
-      "Everything in Free, plus:",
-      "Monitor up to 3 markets",
-      "Monthly market summary",
-    ],
-    cta: "stripe",
-    stripeTier: "alert",
+    cta: { label: "Explore Dashboard", href: "/dashboard" },
   },
   {
     name: "Professional",
     tagline: "The full intelligence layer for analysts, consultants, and city planners making UAM decisions.",
-    monthly: 149,
-    annual: 1490,
+    price: "Contact us",
+    priceNote: "Annual license, billed monthly or annually.",
     accent: "#00d4ff",
     highlight: true,
     features: [
-      "Everything in Alert, plus:",
+      "Everything in Free, plus:",
       "Full dashboard — all 20+ markets",
       "Score history & trend analysis",
       "Factor-level breakdown behind each score",
@@ -73,30 +52,32 @@ const TIERS: Tier[] = [
       "Intel feed & deep-dives",
       "Gap analysis & downloadable city reports",
       "Full monthly market report",
+      "Email alerts & market subscriptions",
     ],
-    cta: "stripe",
-    stripeTier: "pro",
+    cta: { label: "Request Access", href: "/contact?tier=pro" },
   },
   {
     name: "Institutional",
     tagline: "Data access for teams and organizations embedding UAM intelligence into their workflows.",
-    monthly: null,
-    annual: null,
+    price: "Contact us",
+    priceNote: "Annual data license agreement.",
     accent: "#7a8fa8",
     highlight: false,
     features: [
       "Everything in Professional, plus:",
       "API access with dedicated rate limits",
       "Data export (JSON)",
+      "Multi-seat access",
       "Priority support & onboarding",
     ],
-    cta: "contact",
+    cta: { label: "Contact Sales", href: "/contact?tier=institutional" },
+    learnMore: "/institutional",
   },
   {
     name: "Enterprise",
     tagline: "For organizations requiring custom data infrastructure, licensing, or integration.",
-    monthly: null,
-    annual: null,
+    price: "Custom",
+    priceNote: "Custom data license for your organization.",
     accent: "#7a8fa8",
     highlight: false,
     features: [
@@ -107,7 +88,8 @@ const TIERS: Tier[] = [
       "Direct data feeds",
       "Custom SLA & data license",
     ],
-    cta: "contact",
+    cta: { label: "Contact Sales", href: "/contact?tier=enterprise" },
+    learnMore: "/enterprise",
   },
 ];
 
@@ -116,88 +98,6 @@ const TIERS: Tier[] = [
 // -------------------------------------------------------
 
 export default function PricingTiers() {
-  const [interval, setInterval] = useState<Interval>("monthly");
-  const [loadingTier, setLoadingTier] = useState<string | null>(null);
-  const [checkoutTier, setCheckoutTier] = useState<Tier | null>(null);
-  const { data: session, status } = useSession();
-  const searchParams = useSearchParams();
-
-  // Auto-open checkout modal when returning from login with ?checkout=tier
-  useEffect(() => {
-    if (status !== "authenticated") return;
-    const tierParam = searchParams.get("checkout");
-    const intervalParam = searchParams.get("interval");
-    if (!tierParam) return;
-    const tier = TIERS.find((t) => t.stripeTier === tierParam);
-    if (!tier) return;
-    if (intervalParam === "monthly" || intervalParam === "annual") {
-      setInterval(intervalParam);
-    }
-    setCheckoutTier(tier);
-    // Clean up URL params
-    window.history.replaceState({}, "", "/pricing");
-  }, [status, searchParams]);
-
-  function getDisplayPrice(tier: Tier): string {
-    if (tier.monthly === null) return "";
-    if (tier.monthly === 0) return "$0";
-    if (interval === "annual") {
-      const perMonth = Math.round(tier.annual! / 12);
-      return `$${perMonth}`;
-    }
-    return `$${tier.monthly}`;
-  }
-
-  function getPeriod(tier: Tier): string {
-    if (tier.monthly === null || tier.monthly === 0) return "";
-    return "/mo";
-  }
-
-  function getBillingNote(tier: Tier): string {
-    if (tier.monthly === 0) return "Free forever.";
-    if (tier.monthly === null) return "";
-    if (interval === "annual" && tier.annual) {
-      return `Billed $${tier.annual.toLocaleString()}/year`;
-    }
-    if (interval === "monthly" && tier.annual) {
-      return `Save with annual — $${tier.annual.toLocaleString()}/year`;
-    }
-    return "";
-  }
-
-  function handleCheckout(tier: Tier) {
-    if (!session?.user) {
-      const callbackUrl = `/pricing?checkout=${tier.stripeTier}&interval=${interval}`;
-      window.location.href = `/login?mode=signup&callbackUrl=${encodeURIComponent(callbackUrl)}`;
-      return;
-    }
-    // Open pre-checkout modal instead of going straight to checkout
-    setCheckoutTier(tier);
-  }
-
-  async function proceedToStripe(profileData: { organization: string; jobTitle: string }) {
-    if (!checkoutTier) return;
-    const tier = checkoutTier;
-    setCheckoutTier(null);
-    setLoadingTier(tier.stripeTier ?? null);
-    try {
-      // Save profile data first
-      await fetch("/api/user/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          organization: profileData.organization,
-          jobTitle: profileData.jobTitle,
-        }),
-      });
-      // Navigate to embedded checkout page
-      window.location.href = `/checkout?tier=${tier.stripeTier}&interval=${interval}`;
-    } catch (err) {
-      console.error("[pricing] Checkout error:", err);
-      setLoadingTier(null);
-    }
-  }
-
   return (
     <>
       <style>{`
@@ -205,84 +105,20 @@ export default function PricingTiers() {
         .pricing-cta:hover { border-color: rgba(0,212,255,0.35) !important; color: #00d4ff !important; background: rgba(0,212,255,0.06) !important; }
         .pricing-secondary { transition: color 0.2s; }
         .pricing-secondary:hover { color: #00d4ff !important; }
+        @media (max-width: 900px) {
+          .pricing-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+        @media (max-width: 560px) {
+          .pricing-grid { grid-template-columns: 1fr !important; }
+        }
       `}</style>
-
-      {/* Billing toggle — prominent above cards */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 4,
-          marginBottom: 40,
-        }}
-      >
-        <button
-          onClick={() => setInterval("monthly")}
-          style={{
-            padding: "10px 24px",
-            borderRadius: "8px 0 0 8px",
-            fontSize: 13,
-            fontWeight: 600,
-            fontFamily: "'Inter', sans-serif",
-            letterSpacing: "0.02em",
-            cursor: "pointer",
-            border: interval === "monthly"
-              ? "1px solid #00d4ff"
-              : "1px solid rgba(255,255,255,0.1)",
-            background: interval === "monthly"
-              ? "rgba(0,212,255,0.1)"
-              : "rgba(255,255,255,0.02)",
-            color: interval === "monthly" ? "#00d4ff" : "#666",
-            transition: "all 0.2s",
-          }}
-        >
-          Monthly
-        </button>
-        <button
-          onClick={() => setInterval("annual")}
-          style={{
-            padding: "10px 24px",
-            borderRadius: "0 8px 8px 0",
-            fontSize: 13,
-            fontWeight: 600,
-            fontFamily: "'Inter', sans-serif",
-            letterSpacing: "0.02em",
-            cursor: "pointer",
-            border: interval === "annual"
-              ? "1px solid #00d4ff"
-              : "1px solid rgba(255,255,255,0.1)",
-            background: interval === "annual"
-              ? "rgba(0,212,255,0.1)"
-              : "rgba(255,255,255,0.02)",
-            color: interval === "annual" ? "#00d4ff" : "#666",
-            transition: "all 0.2s",
-          }}
-        >
-          Annual
-          <span
-            style={{
-              marginLeft: 8,
-              fontSize: 10,
-              fontWeight: 700,
-              color: interval === "annual" ? "#050508" : "#00d4ff",
-              background: interval === "annual" ? "#00d4ff" : "rgba(0,212,255,0.15)",
-              padding: "2px 6px",
-              borderRadius: 4,
-              letterSpacing: "0.04em",
-            }}
-          >
-            SAVE 17%
-          </span>
-        </button>
-      </div>
 
       {/* Tier cards */}
       <div
         className="pricing-grid"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(5, 1fr)",
+          gridTemplateColumns: "repeat(4, 1fr)",
           gap: 16,
           alignItems: "stretch",
         }}
@@ -344,44 +180,23 @@ export default function PricingTiers() {
               {tier.tagline}
             </div>
 
-            {/* Price or Contact prompt */}
-            {tier.monthly !== null ? (
-              <>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
-                  <span
-                    style={{
-                      fontFamily: "'Space Grotesk', sans-serif",
-                      fontWeight: 700,
-                      fontSize: 32,
-                      color: "#fff",
-                    }}
-                  >
-                    {getDisplayPrice(tier)}
-                  </span>
-                  <span style={{ color: "#666", fontSize: 13 }}>{getPeriod(tier)}</span>
-                </div>
-                <div style={{ color: "#555", fontSize: 10, marginBottom: 24, minHeight: 14 }}>
-                  {getBillingNote(tier)}
-                </div>
-              </>
-            ) : (
-              <div style={{ marginBottom: 24 }}>
-                <div
-                  style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    fontWeight: 700,
-                    fontSize: 18,
-                    color: "#fff",
-                    marginBottom: 4,
-                  }}
-                >
-                  Let&apos;s talk
-                </div>
-                <div style={{ color: "#555", fontSize: 10, minHeight: 14 }}>
-                  Custom data license for your organization
-                </div>
+            {/* Price */}
+            <div style={{ marginBottom: 24 }}>
+              <div
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: tier.price === "$0" ? 32 : 18,
+                  color: "#fff",
+                  marginBottom: 4,
+                }}
+              >
+                {tier.price}
               </div>
-            )}
+              <div style={{ color: "#555", fontSize: 10, minHeight: 14 }}>
+                {tier.priceNote}
+              </div>
+            </div>
 
             {/* Features */}
             <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px", flex: 1 }}>
@@ -409,9 +224,9 @@ export default function PricingTiers() {
             </ul>
 
             {/* CTA */}
-            {tier.cta === "free" ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <Link
-                href="/login?mode=signup"
+                href={tier.cta.href}
                 className="pricing-cta"
                 style={{
                   display: "block",
@@ -422,36 +237,18 @@ export default function PricingTiers() {
                   fontWeight: 700,
                   letterSpacing: "0.06em",
                   textDecoration: "none",
-                  background: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  color: "#fff",
+                  background: tier.highlight ? "#00d4ff" : "rgba(255,255,255,0.08)",
+                  border: tier.highlight
+                    ? "1px solid #00d4ff"
+                    : "1px solid rgba(255,255,255,0.15)",
+                  color: tier.highlight ? "#050508" : "#fff",
                 }}
               >
-                Get Free
+                {tier.cta.label}
               </Link>
-            ) : tier.cta === "contact" ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {tier.learnMore && (
                 <Link
-                  href={`/contact?tier=${tier.name.toLowerCase()}`}
-                  className="pricing-cta"
-                  style={{
-                    display: "block",
-                    textAlign: "center",
-                    padding: "12px 0",
-                    borderRadius: 6,
-                    fontSize: 11,
-                    fontWeight: 700,
-                    letterSpacing: "0.06em",
-                    textDecoration: "none",
-                    background: "rgba(255,255,255,0.08)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    color: "#fff",
-                  }}
-                >
-                  Contact Sales
-                </Link>
-                <Link
-                  href={`/${tier.name.toLowerCase()}`}
+                  href={tier.learnMore}
                   className="pricing-secondary"
                   style={{
                     textAlign: "center",
@@ -464,46 +261,11 @@ export default function PricingTiers() {
                 >
                   learn more →
                 </Link>
-              </div>
-            ) : (
-              <button
-                onClick={() => handleCheckout(tier)}
-                disabled={loadingTier === tier.stripeTier}
-                className="pricing-cta"
-                style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "center",
-                  padding: "12px 0",
-                  borderRadius: 6,
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "0.06em",
-                  fontFamily: "'Inter', sans-serif",
-                  cursor: loadingTier === tier.stripeTier ? "wait" : "pointer",
-                  opacity: loadingTier === tier.stripeTier ? 0.6 : 1,
-                  background: tier.highlight ? "#00d4ff" : `${tier.accent}18`,
-                  border: `1px solid ${tier.highlight ? "#00d4ff" : tier.accent}`,
-                  color: tier.highlight ? "#050508" : "#fff",
-                }}
-              >
-                {loadingTier === tier.stripeTier ? "Redirecting..." : `Get ${tier.name}`}
-              </button>
-            )}
+              )}
+            </div>
           </div>
         ))}
       </div>
-
-
-      {checkoutTier && session?.user?.email && (
-        <PreCheckoutModal
-          tier={checkoutTier.stripeTier ?? "pro"}
-          interval={interval}
-          userEmail={session.user.email}
-          onSubmit={proceedToStripe}
-          onCancel={() => setCheckoutTier(null)}
-        />
-      )}
     </>
   );
 }

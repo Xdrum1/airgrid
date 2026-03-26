@@ -171,7 +171,7 @@ export default function CorridorSubscribeForm({
     return (
       <div>
         <Link
-          href="/pricing"
+          href="/contact?tier=pro&ref=corridors"
           style={{
             width: "100%",
             background: "rgba(0,212,255,0.04)",
@@ -188,7 +188,7 @@ export default function CorridorSubscribeForm({
           }}
         >
           <span style={{ color: "#00d4ff", fontSize: 9, letterSpacing: 1, fontWeight: 700 }}>
-            UPGRADE TO TRACK
+            REQUEST ACCESS TO TRACK
           </span>
         </Link>
       </div>

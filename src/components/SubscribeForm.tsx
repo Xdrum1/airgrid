@@ -150,7 +150,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
             ALERT SUBSCRIPTIONS
           </div>
           <Link
-            href="/pricing"
+            href="/contact?tier=pro&ref=alerts"
             style={{
               width: "100%",
               background: "rgba(0,255,136,0.04)",
@@ -166,7 +166,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
             }}
           >
             <span style={{ color: "#888", fontSize: 10 }}>
-              Upgrade to Pro for alerts
+              Available on Professional
             </span>
             <span
               style={{
@@ -176,7 +176,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
                 fontFamily: "'Inter', sans-serif",
               }}
             >
-              VIEW PLANS
+              REQUEST ACCESS
             </span>
           </Link>
         </div>

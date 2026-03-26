@@ -208,8 +208,8 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
         }}
       >
         You&apos;re tracking 3 markets.{" "}
-        <a href="/pricing" style={{ color: "#1a1a1a", textDecoration: "underline", fontWeight: 700 }}>
-          Upgrade to Pro
+        <a href="/contact?tier=pro" style={{ color: "#1a1a1a", textDecoration: "underline", fontWeight: 700 }}>
+          Request Professional access
         </a>{" "}
         to monitor all 21+ and unlock the full dashboard.
       </div>

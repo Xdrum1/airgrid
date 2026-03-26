@@ -135,7 +135,7 @@ export default function BreakdownPanel({
               See the full factor breakdown with source evidence.
             </div>
             <Link
-              href="/pricing"
+              href="/contact?tier=pro&ref=breakdown"
               style={{
                 display: "inline-block",
                 padding: "8px 20px",
@@ -149,7 +149,7 @@ export default function BreakdownPanel({
                 textDecoration: "none",
               }}
             >
-              UPGRADE TO PRO
+              REQUEST ACCESS
             </Link>
           </div>
         </div>

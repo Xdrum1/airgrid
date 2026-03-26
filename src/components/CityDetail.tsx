@@ -434,10 +434,10 @@ export default function CityDetail({
                 }}
               >
                 <div style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>
-                  Factor trend analysis is available on Pro.
+                  Factor trend analysis is available on Professional.
                 </div>
                 <Link
-                  href="/pricing"
+                  href="/contact?tier=pro&ref=trends"
                   style={{
                     color: "#00ff88",
                     fontSize: 10,
@@ -446,7 +446,7 @@ export default function CityDetail({
                     fontFamily: "'Inter', sans-serif",
                   }}
                 >
-                  VIEW PLANS →
+                  REQUEST ACCESS →
                 </Link>
               </div>
             </div>
@@ -634,10 +634,10 @@ export default function CityDetail({
                 }}
               >
                 <div style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>
-                  Score history timeline is available on Pro.
+                  Score history timeline is available on Professional.
                 </div>
                 <Link
-                  href="/pricing"
+                  href="/contact?tier=pro&ref=history"
                   style={{
                     color: "#00ff88",
                     fontSize: 10,
@@ -646,7 +646,7 @@ export default function CityDetail({
                     fontFamily: "'Inter', sans-serif",
                   }}
                 >
-                  VIEW PLANS →
+                  REQUEST ACCESS →
                 </Link>
               </div>
             </div>
