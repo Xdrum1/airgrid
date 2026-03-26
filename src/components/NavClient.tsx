@@ -18,7 +18,6 @@ const linkStyle: React.CSSProperties = {
 const NAV_LINKS = [
   { label: "Methodology", href: "/methodology" },
   { label: "Insights", href: "/insights" },
-  { label: "API", href: "/api" },
   { label: "Plans", href: "/pricing" },
 ];
 
