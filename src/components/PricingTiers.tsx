@@ -171,7 +171,7 @@ export default function PricingTiers() {
       window.location.href = `/login?mode=signup&callbackUrl=${encodeURIComponent(callbackUrl)}`;
       return;
     }
-    // Open pre-checkout modal instead of going straight to Stripe
+    // Open pre-checkout modal instead of going straight to checkout
     setCheckoutTier(tier);
   }
 
@@ -181,23 +181,17 @@ export default function PricingTiers() {
     setCheckoutTier(null);
     setLoadingTier(tier.stripeTier ?? null);
     try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
+      // Save profile data first
+      await fetch("/api/user/profile", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tier: tier.stripeTier,
-          interval,
           organization: profileData.organization,
           jobTitle: profileData.jobTitle,
         }),
       });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("[pricing] Checkout error:", data.error);
-        setLoadingTier(null);
-      }
+      // Navigate to embedded checkout page
+      window.location.href = `/checkout?tier=${tier.stripeTier}&interval=${interval}`;
     } catch (err) {
       console.error("[pricing] Checkout error:", err);
       setLoadingTier(null);
