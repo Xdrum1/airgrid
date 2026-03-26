@@ -239,6 +239,26 @@ export default function DashboardHeader({
                   )}
                 </div>
 
+                {/* Support link */}
+                <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "8px 0" }}>
+                  <a
+                    href="mailto:support@airindex.io"
+                    style={{
+                      display: "block",
+                      padding: "8px 18px",
+                      color: "#666",
+                      fontSize: 11,
+                      textDecoration: "none",
+                      fontFamily: "'Inter', sans-serif",
+                      transition: "background 0.15s",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  >
+                    Support
+                  </a>
+                </div>
+
                 {/* Sign out */}
                 <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "8px 0 4px" }}>
                   <button
