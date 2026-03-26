@@ -77,6 +77,7 @@ export async function POST(request: NextRequest) {
       customer: customerId,
       mode: "subscription",
       ui_mode: "embedded",
+      payment_method_types: ["card"],
       line_items: [{ price: priceId, quantity: 1 }],
       return_url: `${appUrl}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
       metadata: { userId: session.user.id, tier },
