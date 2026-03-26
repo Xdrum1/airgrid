@@ -4,7 +4,7 @@ import SiteNav from "@/components/SiteNav";
 import PricingTiers from "@/components/PricingTiers";
 
 export const metadata: Metadata = {
-  title: "Pricing — AirIndex",
+  title: "Plans — AirIndex",
   description: "Intelligence access for every stage of the market. From individual analysts to institutional data partners — structured access to the industry's authoritative UAM readiness index.",
 };
 
