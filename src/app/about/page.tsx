@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import TrackPageView from "@/components/TrackPageView";
 import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 import { MARKET_COUNT } from "@/data/seed";
+import { SCORE_WEIGHTS } from "@/lib/scoring";
 
 export const metadata: Metadata = {
   title: "About AirIndex — UAM Market Intelligence by Vertical Data Group",
@@ -10,208 +12,414 @@ export const metadata: Metadata = {
     "AirIndex is the independent market readiness rating system for Urban Air Mobility — the only platform that scores U.S. cities on the ground conditions that determine where commercial eVTOL operations launch.",
 };
 
-const sectionHeading: React.CSSProperties = {
-  fontFamily: "var(--font-syne), sans-serif",
-  fontWeight: 700,
-  fontSize: 20,
-  letterSpacing: "0.02em",
-  color: "#fff",
-  marginBottom: 20,
-  paddingBottom: 12,
-  borderBottom: "1px solid rgba(255,255,255,0.08)",
+const WEIGHT_LABELS: Record<string, { label: string; desc: string }> = {
+  stateLegislation: { label: "State Legislation", desc: "Enacted, in-progress, or absent UAM-enabling legislation" },
+  activePilotProgram: { label: "Active Pilot Program", desc: "FAA eIPP participation or equivalent demonstration flights" },
+  approvedVertiport: { label: "Approved Vertiport", desc: "Permitted or operational eVTOL-capable facilities" },
+  activeOperatorPresence: { label: "Operator Presence", desc: "eVTOL manufacturers with active market commitments" },
+  vertiportZoning: { label: "Vertiport Zoning", desc: "City-level zoning frameworks for vertiport development" },
+  regulatoryPosture: { label: "Regulatory Posture", desc: "Friendly, neutral, or restrictive municipal stance" },
+  weatherInfrastructure: { label: "Weather Infrastructure", desc: "Low-altitude weather sensing and ASOS/AWOS coverage" },
 };
+
+const AUDIENCES = [
+  { type: "eVTOL Operators", desc: "Market entry timing, corridor readiness, competitive landscape" },
+  { type: "Infrastructure Developers", desc: "Site selection, gap analysis, heliport conversion potential" },
+  { type: "City Planners & Airport Authorities", desc: "Peer benchmarking, readiness gap closure, policy guidance" },
+  { type: "Investment & Finance", desc: "Due diligence on market-level readiness and trajectory" },
+  { type: "Defense & Aerospace", desc: "AAM landscape intelligence for strategic planning" },
+  { type: "Policy & Government", desc: "Federal program alignment, legislative tracking, state comparisons" },
+  { type: "Economic Development Alliances", desc: "Regional readiness benchmarking and investment attraction" },
+  { type: "Weather & Sensor Companies", desc: "Market coverage mapping and infrastructure gap identification" },
+];
+
+const DATA_SOURCES = [
+  { name: "Federal Register", desc: "FAA rulemaking, powered lift SFARs, airspace actions" },
+  { name: "LegiScan", desc: "State-level UAM legislation across all 50 states" },
+  { name: "SEC EDGAR", desc: "Operator financial filings, 8-K disclosures, market signals" },
+  { name: "FAA NASR 5010", desc: "5,647 registered heliports mapped to all tracked metros" },
+  { name: "Operator Activity", desc: "Press releases, partnership announcements, certification milestones" },
+];
 
 export default function AboutPage() {
   return (
-    <main
-      className="min-h-screen bg-[#050508] text-white"
-      style={{ fontFamily: "'Inter', sans-serif" }}
+    <div
+      style={{
+        background: "#050508",
+        color: "#e0e0e0",
+        minHeight: "100vh",
+        fontFamily: "'Inter', sans-serif",
+      }}
     >
       <TrackPageView page="about" />
-
       <SiteNav />
 
-      {/* Content */}
-      <div className="max-w-2xl mx-auto px-6 py-16 space-y-10">
+      <main style={{ maxWidth: 760, margin: "0 auto", padding: "48px 24px 80px" }}>
 
-        {/* Tagline */}
-        <p className="text-sm uppercase tracking-[0.2em] text-[#00d4ff]">
-          Rate the Sky.
-        </p>
-
-        {/* Headline */}
-        <h1
-          className="text-3xl md:text-4xl font-bold leading-tight"
-          style={{ fontFamily: "var(--font-syne), sans-serif" }}
-        >
-          The eVTOL aircraft are ready. The question is where they&apos;ll fly first.
-        </h1>
-
-        {/* Body — existing copy */}
-        <div className="space-y-6 text-white/80 leading-relaxed">
-          <p>
-            AirIndex is the independent market readiness rating system for Urban
-            Air Mobility — the only platform that scores U.S. cities on the ground
-            conditions that determine where commercial eVTOL operations actually
-            launch, and when.
-          </p>
-
-          <p>
-            We track seven weighted factors across {MARKET_COUNT} markets: regulatory posture,
-            weather infrastructure, operator presence, active pilot programs,
-            vertiport infrastructure, zoning policy, and state legislation. Every
-            market receives a live 0–100 readiness score — updated continuously as
-            conditions change. Not a forecast. Not a projection. A live index built
-            on what is actually happening.
-          </p>
-
-          <p>
-            Our data comes from primary sources: FAA filings, SEC EDGAR, the
-            Federal Register, state legislative records, and operator activity.
-            Every score change is sourced, timestamped, and traceable. We do not
-            rate cities on press releases or announcements. We rate them on
-            verifiable facts.
-          </p>
-
-          <p>
-            Where others track the aircraft and the companies building them,
-            AirIndex tracks the geography — the regulatory, infrastructure, and
-            political conditions that determine which markets win the race to
-            commercial operations.
-          </p>
-
-          <p>
-            Our scoring methodology is developed in consultation with infrastructure
-            developers, weather intelligence providers, and industry organizations
-            active across multiple US markets. Factor weights and thresholds are
-            field-validated against real capital allocation decisions — not theoretical
-            models.
-          </p>
-
-          <p>
-            AirIndex does not represent operators, municipalities, or investors.
-            Our ratings are independent. That independence is the foundation of
-            their value.
-          </p>
-
-          <p>
-            For operators deciding where to launch. For investors evaluating market
-            timing. For city planners building toward readiness. AirIndex is the
-            benchmark.
+        {/* ═══ Hero ═══ */}
+        <div style={{ marginBottom: 56 }}>
+          <div style={{
+            fontSize: 9,
+            letterSpacing: 3,
+            color: "#00d4ff",
+            fontFamily: "'Space Mono', monospace",
+            marginBottom: 16,
+          }}>
+            RATE THE SKY.
+          </div>
+          <h1 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: "clamp(28px, 4vw, 40px)",
+            fontWeight: 700,
+            color: "#fff",
+            margin: "0 0 16px",
+            letterSpacing: "-0.02em",
+            lineHeight: 1.2,
+          }}>
+            The eVTOL aircraft are ready. The question is where they&apos;ll fly first.
+          </h1>
+          <p style={{ color: "#888", fontSize: 15, lineHeight: 1.7, maxWidth: 600 }}>
+            AirIndex is the independent market readiness rating system for Urban Air Mobility —
+            scoring {MARKET_COUNT} U.S. cities on the ground conditions that determine where commercial
+            eVTOL operations actually launch.
           </p>
         </div>
 
-        {/* CTA */}
-        <div className="flex flex-wrap gap-4 pt-4">
+        {/* ═══ Who We Are ═══ */}
+        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <h2 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: 22,
+            fontWeight: 700,
+            color: "#fff",
+            marginBottom: 20,
+          }}>
+            Who We Are
+          </h2>
+          <div style={{ color: "#999", fontSize: 14, lineHeight: 1.85 }}>
+            <p style={{ marginBottom: 14 }}>
+              AirIndex is built by{" "}
+              <a
+                href="https://verticaldatagroup.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#00d4ff", textDecoration: "none" }}
+              >
+                Vertical Data Group, LLC
+              </a>
+              , a South Carolina-based data intelligence company founded in 2026. We are not an
+              aviation company. We are not a software company. We are a data intelligence company
+              that builds systematic, auditable intelligence infrastructure for emerging markets.
+            </p>
+            <p style={{ marginBottom: 14 }}>
+              AirIndex is our first product — the UAM market readiness index we built because it
+              didn&apos;t exist and the industry needed it. Where others track the aircraft and the
+              companies building them, AirIndex tracks the geography — the regulatory, infrastructure,
+              and political conditions that determine which markets win the race to commercial operations.
+            </p>
+            <p style={{ marginBottom: 14 }}>
+              Our scoring methodology is developed in consultation with infrastructure developers,
+              weather intelligence providers, and industry organizations active across multiple US
+              markets. Factor weights and thresholds are field-validated against real capital allocation
+              decisions — not theoretical models.
+            </p>
+            <p>
+              AirIndex does not represent operators, municipalities, or investors.
+              Our ratings are independent. That independence is the foundation of their value.
+            </p>
+          </div>
+        </section>
+
+        {/* ═══ Our Mission ═══ */}
+        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <h2 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: 22,
+            fontWeight: 700,
+            color: "#fff",
+            marginBottom: 20,
+          }}>
+            Our Mission
+          </h2>
+          <div style={{ color: "#999", fontSize: 14, lineHeight: 1.85 }}>
+            <p style={{ marginBottom: 14 }}>
+              Urban air mobility is generating enormous quantities of fragmented public data — FAA
+              filings, state legislation, city planning documents, operator disclosures, SEC filings.
+              No single entity was aggregating it into organized, auditable intelligence.
+            </p>
+            <p style={{ marginBottom: 14 }}>
+              City planners were making infrastructure decisions without knowing what peer markets had
+              already done. Operators were evaluating market entry without systematic readiness data.
+              Investors were conducting due diligence on UAM companies without understanding the
+              regulatory landscape those companies would operate in.
+            </p>
+            <p>
+              AirIndex exists to close that gap. We approach UAM market intelligence the way a ratings
+              agency approaches credit markets — every score is standardized, every change is sourced
+              and timestamped, and the methodology is public. Not a forecast. Not a projection. A live
+              index built on what is actually happening.
+            </p>
+          </div>
+        </section>
+
+        {/* ═══ What We Track ═══ */}
+        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <h2 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: 22,
+            fontWeight: 700,
+            color: "#fff",
+            marginBottom: 8,
+          }}>
+            What We Track
+          </h2>
+          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 24 }}>
+            Every market receives a 0-100 readiness score computed from seven weighted factors.
+            Scores update continuously as conditions change. Methodology v1.3 is{" "}
+            <Link href="/methodology" style={{ color: "#00d4ff", textDecoration: "none" }}>
+              fully published
+            </Link>.
+          </p>
+
+          {/* 7-Factor Model */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 32 }}>
+            {Object.entries(SCORE_WEIGHTS).map(([key, weight]) => {
+              const info = WEIGHT_LABELS[key];
+              return (
+                <div key={key} style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "10px 16px",
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 6,
+                }}>
+                  <span style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: "#00d4ff",
+                    minWidth: 28,
+                  }}>
+                    {weight}
+                  </span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ color: "#ccc", fontSize: 13, fontWeight: 500 }}>
+                      {info?.label || key}
+                    </div>
+                    <div style={{ color: "#666", fontSize: 11, marginTop: 2 }}>
+                      {info?.desc}
+                    </div>
+                  </div>
+                  <div style={{ width: 80, height: 3, borderRadius: 2, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                    <div style={{
+                      height: "100%",
+                      width: `${weight * 5}%`,
+                      background: "rgba(0,212,255,0.4)",
+                      borderRadius: 2,
+                    }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Data Sources */}
+          <h3 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: 16,
+            fontWeight: 700,
+            color: "#fff",
+            marginBottom: 14,
+          }}>
+            Data Sources
+          </h3>
+          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 16 }}>
+            Our data comes from primary sources — every score change is sourced, timestamped, and
+            traceable. We do not rate cities on press releases or announcements. We rate them on
+            verifiable facts.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            {DATA_SOURCES.map((s) => (
+              <div key={s.name} style={{
+                padding: "12px 16px",
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 6,
+              }}>
+                <div style={{ color: "#ccc", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
+                  {s.name}
+                </div>
+                <div style={{ color: "#666", fontSize: 11, lineHeight: 1.5 }}>
+                  {s.desc}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 16 }}>
+            <div style={{
+              display: "flex",
+              gap: 16,
+              flexWrap: "wrap",
+            }}>
+              {[
+                { value: String(MARKET_COUNT), label: "Markets" },
+                { value: "1,797", label: "Records" },
+                { value: "5,647", label: "Heliports" },
+                { value: "v1.3", label: "Methodology" },
+              ].map((m) => (
+                <div key={m.label} style={{ textAlign: "center", minWidth: 80 }}>
+                  <div style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: "#00d4ff",
+                  }}>
+                    {m.value}
+                  </div>
+                  <div style={{ fontSize: 9, letterSpacing: 1.5, color: "#666", marginTop: 2 }}>
+                    {m.label.toUpperCase()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ Who We Serve ═══ */}
+        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <h2 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: 22,
+            fontWeight: 700,
+            color: "#fff",
+            marginBottom: 8,
+          }}>
+            Who We Serve
+          </h2>
+          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+            AirIndex serves professionals making decisions in the UAM ecosystem. The index is designed
+            to be the benchmark the industry cites — an open, auditable standard that grows more useful
+            as more people use it and challenge it.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {AUDIENCES.map((a) => (
+              <div key={a.type} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                <span style={{ color: "#00d4ff", fontSize: 8, marginTop: 5, flexShrink: 0 }}>&#9646;</span>
+                <div>
+                  <div style={{ color: "#ccc", fontSize: 12, fontWeight: 600 }}>{a.type}</div>
+                  <div style={{ color: "#666", fontSize: 11, lineHeight: 1.5 }}>{a.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ═══ CTAs ═══ */}
+        <section style={{
+          display: "flex",
+          gap: 12,
+          flexWrap: "wrap",
+          marginBottom: 48,
+        }}>
           <Link
             href="/dashboard"
-            className="px-6 py-3 rounded text-sm font-semibold bg-[#00d4ff] text-black hover:bg-[#00d4ff]/90 transition-colors"
+            style={{
+              display: "inline-block",
+              padding: "12px 24px",
+              background: "#00d4ff",
+              color: "#050508",
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              textDecoration: "none",
+              borderRadius: 6,
+            }}
           >
-            View the ratings
+            View the Ratings
           </Link>
           <Link
             href="/methodology"
-            className="px-6 py-3 rounded text-sm font-semibold border border-white/20 text-white/80 hover:border-white/40 hover:text-white transition-colors"
+            style={{
+              display: "inline-block",
+              padding: "12px 24px",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "#ccc",
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: "0.06em",
+              textDecoration: "none",
+              borderRadius: 6,
+            }}
           >
-            Read the methodology
+            Read the Methodology
           </Link>
-        </div>
+          <Link
+            href="/contact?ref=about"
+            style={{
+              display: "inline-block",
+              padding: "12px 24px",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "#ccc",
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: "0.06em",
+              textDecoration: "none",
+              borderRadius: 6,
+            }}
+          >
+            Talk to Us
+          </Link>
+        </section>
 
-        {/* ── The Company ── */}
-        <div className="pt-8">
-          <h2 style={sectionHeading}>The Company</h2>
-          <div className="space-y-6 text-white/80 leading-relaxed">
+        {/* ═══ Contact ═══ */}
+        <section style={{
+          padding: "24px 0",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+        }}>
+          <div style={{ color: "#666", fontSize: 12, lineHeight: 1.8 }}>
             <p>
-              <a href="https://verticaldatagroup.com" target="_blank" rel="noopener" className="text-[#00d4ff] hover:underline">Vertical Data Group, LLC</a> is a South Carolina-based data intelligence company
-              founded in March 2026. AirIndex is our first product — the UAM market readiness
-              index we built because it didn&apos;t exist and the industry needed it.
+              Research access, data partnerships, API inquiries:{" "}
+              <a href="mailto:info@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>info@airindex.io</a>
             </p>
             <p>
-              We are not an aviation company. We are not a software company. We are a data
-              intelligence company that builds systematic, auditable intelligence infrastructure
-              for emerging markets. AirIndex is the first application of that methodology.
-              The UAM industry is our starting point.
+              Platform and subscription questions:{" "}
+              <a href="mailto:hello@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>hello@airindex.io</a>
             </p>
             <p>
-              Vertical Data Group is an active member of the South Carolina Research Authority.
-              Our federal entity registration (UEI) is active in SAM.gov, enabling eligibility
-              for federal research partnerships and data contracts.
+              Legal and terms:{" "}
+              <a href="mailto:legal@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>legal@airindex.io</a>
             </p>
           </div>
-        </div>
+        </section>
 
-        {/* ── The Methodology ── */}
-        <div className="pt-4">
-          <h2 style={sectionHeading}>The Methodology</h2>
-          <div className="space-y-6 text-white/80 leading-relaxed">
-            <p>
-              The AirIndex scoring methodology is fully published and version-controlled.
-              Every score change is traceable to a specific source document, classification
-              result, and override decision. Two retrospective accuracy audits have been
-              conducted in March 2026, establishing ~89% classification accuracy. The
-              methodology has been refined across five prompt versions since launch, with
-              each change documented in the public version log.
-            </p>
-            <p>
-              Version history, accuracy audit results, data source specifications, and
-              classification logic are available in full at{" "}
-              <Link href="/methodology" className="text-[#00d4ff] hover:underline">
-                airindex.io/methodology
-              </Link>.
-            </p>
-          </div>
-        </div>
-
-        {/* ── Who Uses AirIndex ── */}
-        <div className="pt-4">
-          <h2 style={sectionHeading}>Who Uses AirIndex</h2>
-          <div className="space-y-6 text-white/80 leading-relaxed">
-            <p>
-              AirIndex serves professionals making decisions in the UAM ecosystem —
-              infrastructure developers evaluating site selection, operators prioritizing
-              market entry, investors tracking market readiness trajectories, city planners
-              benchmarking against peer markets, and researchers studying UAM
-              commercialization patterns.
-            </p>
-            <p>
-              The index is designed to be the benchmark the industry cites — not a proprietary
-              tool with a closed methodology, but an open, auditable standard that grows more
-              useful as more people use it and challenge it.
-            </p>
-          </div>
-        </div>
-
-        {/* ── Contact and Access ── */}
-        <div className="pt-4">
-          <h2 style={sectionHeading}>Contact &amp; Access</h2>
-          <div className="space-y-4 text-white/70 text-sm leading-relaxed">
-            <p>
-              For research access, data partnerships, API inquiries, or press requests:{" "}
-              <a href="mailto:info@airindex.io" className="text-[#00d4ff] hover:underline">info@airindex.io</a>
-            </p>
-            <p>
-              For subscription and platform questions:{" "}
-              <a href="mailto:hello@airindex.io" className="text-[#00d4ff] hover:underline">hello@airindex.io</a>
-            </p>
-            <p>
-              For legal and terms inquiries:{" "}
-              <a href="mailto:legal@airindex.io" className="text-[#00d4ff] hover:underline">legal@airindex.io</a>
-            </p>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="border-t border-white/10 pt-8 text-xs text-white/40 space-y-2">
-          <p><a href="https://verticaldatagroup.com" target="_blank" rel="noopener" className="text-white/40 hover:text-white/60 transition-colors">Vertical Data Group, LLC</a> &middot; PO Box 31172 &middot; Myrtle Beach, SC 29588</p>
+        {/* ═══ Footer meta ═══ */}
+        <div style={{
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+          paddingTop: 24,
+          marginTop: 8,
+          fontSize: 11,
+          color: "#444",
+          lineHeight: 1.6,
+        }}>
           <p>
-            <Link href="/" className="text-white/40 hover:text-white/60 transition-colors">airindex.io</Link>
+            <a href="https://verticaldatagroup.com" target="_blank" rel="noopener noreferrer" style={{ color: "#444", textDecoration: "none" }}>
+              Vertical Data Group, LLC
+            </a>{" "}
+            &middot; PO Box 31172 &middot; Myrtle Beach, SC 29588
+          </p>
+          <p style={{ marginTop: 4 }}>
+            <Link href="/" style={{ color: "#444", textDecoration: "none" }}>airindex.io</Link>
             {" "}&middot;{" "}
-            <Link href="/terms" className="text-white/40 hover:text-white/60 transition-colors">Terms</Link>
+            <Link href="/terms" style={{ color: "#444", textDecoration: "none" }}>Terms</Link>
             {" "}&middot;{" "}
-            <Link href="/privacy" className="text-white/40 hover:text-white/60 transition-colors">Privacy</Link>
+            <Link href="/privacy" style={{ color: "#444", textDecoration: "none" }}>Privacy</Link>
           </p>
         </div>
-      </div>
-    </main>
+      </main>
+
+      <SiteFooter />
+    </div>
   );
 }
