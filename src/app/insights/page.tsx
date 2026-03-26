@@ -165,6 +165,66 @@ export default function InsightsPage() {
           </p>
         </div>
 
+        {/* Featured report */}
+        <div style={{
+          marginBottom: 40,
+          padding: "24px 28px",
+          background: "rgba(0,212,255,0.04)",
+          border: "1px solid rgba(0,212,255,0.15)",
+          borderRadius: 10,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+            <span style={{
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: "0.1em",
+              color: "#00d4ff",
+              background: "rgba(0,212,255,0.1)",
+              border: "1px solid rgba(0,212,255,0.25)",
+              borderRadius: 3,
+              padding: "3px 10px",
+            }}>
+              MONTHLY REPORT
+            </span>
+            <span style={{
+              color: "#555",
+              fontSize: 12,
+              fontFamily: "'Space Mono', monospace",
+            }}>
+              March 2026
+            </span>
+          </div>
+          <Link
+            href="/reports/march-2026"
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: "clamp(18px, 2vw, 22px)",
+              fontWeight: 700,
+              color: "#fff",
+              textDecoration: "none",
+              display: "block",
+              marginBottom: 8,
+            }}
+          >
+            UAM Market Readiness Report — March 2026
+          </Link>
+          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 12 }}>
+            Score movements, methodology v1.3, corridor intelligence, and operator analysis across 21 US markets.
+          </p>
+          <Link
+            href="/reports/march-2026"
+            style={{
+              color: "#00d4ff",
+              fontSize: 12,
+              fontWeight: 600,
+              textDecoration: "none",
+              letterSpacing: "0.04em",
+            }}
+          >
+            Read the report &rarr;
+          </Link>
+        </div>
+
         {/* Articles */}
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
           {INSIGHTS.map((insight, i) => (

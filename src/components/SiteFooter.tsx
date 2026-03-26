@@ -40,6 +40,7 @@ export default function SiteFooter() {
           <Link href="/api" style={footerLinkStyle}>API</Link>
           <Link href="/pricing" style={footerLinkStyle}>PLANS</Link>
           <Link href="/updates" style={footerLinkStyle}>UPDATES</Link>
+          <Link href="/reports/march-2026" style={footerLinkStyle}>REPORTS</Link>
           <Link href="/contact" style={footerLinkStyle}>CONTACT</Link>
           <a
             href="https://x.com/AirIndexHQ"
