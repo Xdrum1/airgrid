@@ -367,8 +367,9 @@ export default function CityDetailPanel({
               {selected.activeOperators.map((opId) => {
                 const op = OPERATORS_MAP[opId];
                 return op ? (
-                  <div
+                  <a
                     key={opId}
+                    href={`/operator/${opId}`}
                     onClick={() => { trackEvent("operator_click", "operator", opId); plausible("Operator Click", { operator: opId }); }}
                     style={{
                       display: "flex",
@@ -376,6 +377,7 @@ export default function CityDetailPanel({
                       gap: 8,
                       marginBottom: 7,
                       cursor: "pointer",
+                      textDecoration: "none",
                     }}
                   >
                     <div
@@ -399,7 +401,7 @@ export default function CityDetailPanel({
                         · {op.aircraft[0]}
                       </div>
                     </div>
-                  </div>
+                  </a>
                 ) : null;
               })}
             </div>
