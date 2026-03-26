@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, email, company, role, tier, message, website } = body as {
+    const { name, email, company, role, tier, message, website, source } = body as {
       name: string;
       email: string;
       company?: string;
@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
       tier?: string;
       message?: string;
       website?: string;
+      source?: string;
     };
 
     // Honeypot — hidden field that only bots fill in
@@ -66,6 +67,7 @@ export async function POST(request: NextRequest) {
         role: role?.trim() || null,
         tier: tier || "pro",
         message: message?.trim() || null,
+        source: source?.trim().slice(0, 100) || null,
       },
     });
 

@@ -9,6 +9,7 @@ import { plausible } from "@/lib/plausible";
 function ContactForm() {
   const searchParams = useSearchParams();
   const tier = searchParams.get("tier") ?? "";
+  const ref = searchParams.get("ref") ?? "";
 
   const [form, setForm] = useState({
     name: "",
@@ -29,7 +30,7 @@ function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, source: ref || undefined }),
       });
       if (res.ok) {
         setState("success");

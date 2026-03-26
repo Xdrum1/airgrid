@@ -13,6 +13,7 @@ import AdminPipelineHealth from "./AdminPipelineHealth";
 import AdminLeads from "./AdminLeads";
 import AdminMarketWatch from "./AdminMarketWatch";
 import AdminFeed from "./AdminFeed";
+import AdminInquiries from "./AdminInquiries";
 
 // -------------------------------------------------------
 // Types
@@ -53,7 +54,7 @@ interface ClassificationResult {
   createdAt: string;
 }
 
-type TabKey = "overrides" | "classifications" | "corridors" | "events" | "billing" | "pipeline" | "watch" | "watchlist" | "reports" | "feed";
+type TabKey = "inquiries" | "overrides" | "classifications" | "corridors" | "events" | "billing" | "pipeline" | "watch" | "watchlist" | "reports" | "feed";
 
 // -------------------------------------------------------
 // Helpers
@@ -264,7 +265,7 @@ function AdminLogin({ onVerified }: { onVerified: () => void }) {
 // -------------------------------------------------------
 
 export default function AdminReview() {
-  const [tab, setTab] = useState<TabKey>("overrides");
+  const [tab, setTab] = useState<TabKey>("inquiries");
   const [overrides, setOverrides] = useState<PendingOverride[]>([]);
   const [classifications, setClassifications] = useState<ClassificationResult[]>([]);
   const [loading, setLoading] = useState(true);
@@ -470,8 +471,9 @@ export default function AdminReview() {
           padding: "0 24px",
         }}
       >
-        {(["overrides", "classifications", "corridors", "events", "billing", "pipeline", "watch", "watchlist", "reports", "feed"] as const).map((t) => {
+        {(["inquiries", "overrides", "classifications", "corridors", "events", "billing", "pipeline", "watch", "watchlist", "reports", "feed"] as const).map((t) => {
           const labels: Record<TabKey, string> = {
+            inquiries: "INQUIRIES",
             overrides: "PENDING OVERRIDES",
             classifications: "CLASSIFICATIONS",
             corridors: "CORRIDORS",
@@ -512,7 +514,9 @@ export default function AdminReview() {
 
       {/* Content */}
       <div style={{ padding: 24, maxWidth: 900, margin: "0 auto" }}>
-        {tab === "feed" ? (
+        {tab === "inquiries" ? (
+          <AdminInquiries showToast={showToast} />
+        ) : tab === "feed" ? (
           <AdminFeed showToast={showToast} />
         ) : tab === "reports" ? (
           <AdminReports />

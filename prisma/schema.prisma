@@ -242,10 +242,15 @@ model ContactInquiry {
   role      String?
   tier      String   // "pro" | "institutional" | "enterprise"
   message   String?
+  status    String   @default("new") // new | contacted | qualified | converted | closed
+  notes     String?  // admin notes for follow-up tracking
+  source    String?  // ref param from contact form (e.g. "breakdown", "alerts", "api")
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@index([tier])
   @@index([email])
+  @@index([status])
 }
 
 model ApiKey {
