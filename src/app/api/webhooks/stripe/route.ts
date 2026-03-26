@@ -164,6 +164,16 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
       where: { id: user.id },
       data: { tier: "free" },
     });
+
+    // Revoke all API keys on downgrade to free
+    const revoked = await prisma.apiKey.updateMany({
+      where: { userId: user.id, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+    if (revoked.count > 0) {
+      logger.info(`Revoked ${revoked.count} API key(s) for user ${user.id} on downgrade`);
+    }
+
     logger.info(`User ${user.id} reverted to free tier`);
   }
 }
