@@ -18,7 +18,7 @@ const linkStyle: React.CSSProperties = {
 const NAV_LINKS = [
   { label: "Methodology", href: "/methodology" },
   { label: "API", href: "/api" },
-  { label: "Pricing", href: "/pricing" },
+  { label: "Plans", href: "/pricing" },
 ];
 
 export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
