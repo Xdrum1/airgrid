@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { plausible } from "@/lib/plausible";
 
-const ALLOWED_PREFIXES = ["/dashboard", "/admin", "/pricing", "/api/docs"];
+const ALLOWED_PREFIXES = ["/dashboard", "/admin", "/pricing", "/api/docs", "/support"];
 
 function LoginForm() {
   const [email, setEmail] = useState("");
