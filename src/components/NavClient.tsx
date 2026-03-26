@@ -16,6 +16,8 @@ const linkStyle: React.CSSProperties = {
 };
 
 const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
   { label: "Methodology", href: "/methodology" },
   { label: "Insights", href: "/insights" },
   { label: "Plans", href: "/pricing" },
@@ -51,6 +53,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
 
   const isActive = useCallback(
     (href: string) => {
+      if (href === "/") return pathname === "/";
       return pathname === href || pathname.startsWith(href + "/");
     },
     [pathname]
