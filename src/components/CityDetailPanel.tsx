@@ -247,6 +247,15 @@ export default function CityDetailPanel({
             </span>
           )}
         </div>
+        {(selected.heliportCount ?? 0) > 0 && (
+          <p style={{ color: "#555", fontSize: 8, margin: "6px 0 0", lineHeight: 1.4 }}>
+            Per FAA Airport Master Record.{" "}
+            <a href="/contact?tier=enterprise&ref=heliport-audit" style={{ color: "#8b9dc3", textDecoration: "none" }}>
+              Ground-truth verification available
+            </a>
+            .
+          </p>
+        )}
 
         {/* Watch Status + Outlook */}
         {watchStatus && watchStatus !== "STABLE" && (
