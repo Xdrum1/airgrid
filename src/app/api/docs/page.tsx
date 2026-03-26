@@ -237,8 +237,10 @@ export default async function ApiDocsPage() {
       {/* Nav */}
       <nav
         style={{
-          position: "sticky",
+          position: "fixed",
           top: 0,
+          left: 0,
+          right: 0,
           zIndex: 100,
           background: "rgba(5,5,8,0.85)",
           backdropFilter: "blur(12px)",
@@ -257,6 +259,7 @@ export default async function ApiDocsPage() {
           <Link href="/dashboard" style={linkStyle}>DASHBOARD</Link>
         </div>
       </nav>
+      <div style={{ height: 64 }} />
 
       <main style={{ maxWidth: 760, margin: "0 auto", padding: "48px clamp(20px, 5vw, 32px) 80px" }}>
         {/* Header */}

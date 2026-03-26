@@ -249,8 +249,10 @@ export default function ContactPage() {
       {/* Nav */}
       <nav
         style={{
-          position: "sticky",
+          position: "fixed",
           top: 0,
+          left: 0,
+          right: 0,
           zIndex: 100,
           background: "rgba(5,5,8,0.85)",
           backdropFilter: "blur(12px)",
@@ -315,6 +317,7 @@ export default function ContactPage() {
           </div>
         </div>
       </nav>
+      <div style={{ height: 64 }} />
 
       {/* Header */}
       <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(48px, 6vw, 80px) 20px 40px", textAlign: "center" }}>
