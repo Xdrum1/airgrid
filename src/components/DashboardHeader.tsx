@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { City } from "@/types";
+import { hasProAccess } from "@/lib/billing-shared";
 
 export default function DashboardHeader({
   cities,
   userEmail,
+  userTier,
   isAdmin,
   isMobile,
   showSignOut,
@@ -16,6 +18,7 @@ export default function DashboardHeader({
 }: {
   cities: City[];
   userEmail: string | null | undefined;
+  userTier: string;
   isAdmin: boolean;
   isMobile: boolean;
   showSignOut: boolean;
@@ -167,50 +170,96 @@ export default function DashboardHeader({
                   background: "#0e0e16",
                   border: "1px solid rgba(255,255,255,0.1)",
                   borderRadius: 6,
-                  padding: "14px 18px",
+                  padding: "10px 0",
                   zIndex: 100,
-                  minWidth: 180,
+                  minWidth: 200,
                   fontFamily: "'Inter', sans-serif",
                 }}
               >
-                <div style={{ color: "#888", fontSize: 10, marginBottom: 12 }}>
-                  Sign out?
+                {/* Tier badge */}
+                <div style={{ padding: "6px 18px 12px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div style={{ fontSize: 9, color: "#555", letterSpacing: 1, marginBottom: 4 }}>PLAN</div>
+                  <div style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: userTier === "free" ? "#888" : "#00d4ff",
+                    textTransform: "capitalize",
+                  }}>
+                    {userTier === "grandfathered" ? "Pro (Founding)" : userTier}
+                  </div>
                 </div>
-                <div style={{ display: "flex", gap: 8 }}>
+
+                {/* Manage / Upgrade */}
+                <div style={{ padding: "8px 0" }}>
+                  {hasProAccess(userTier) ? (
+                    <button
+                      onClick={async () => {
+                        try {
+                          const res = await fetch("/api/billing/portal", { method: "POST" });
+                          const data = await res.json();
+                          if (data.url) window.location.href = data.url;
+                        } catch (err) {
+                          console.error("Portal error:", err);
+                        }
+                      }}
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        textAlign: "left",
+                        padding: "8px 18px",
+                        background: "transparent",
+                        border: "none",
+                        color: "#aaa",
+                        fontSize: 11,
+                        cursor: "pointer",
+                        fontFamily: "'Inter', sans-serif",
+                        transition: "background 0.15s",
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    >
+                      Manage Subscription
+                    </button>
+                  ) : (
+                    <a
+                      href="/pricing"
+                      style={{
+                        display: "block",
+                        padding: "8px 18px",
+                        color: "#00d4ff",
+                        fontSize: 11,
+                        textDecoration: "none",
+                        transition: "background 0.15s",
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    >
+                      Upgrade Plan
+                    </a>
+                  )}
+                </div>
+
+                {/* Sign out */}
+                <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "8px 0 4px" }}>
                   <button
-                    onClick={() => {
-                      signOut({ callbackUrl: "/" });
-                    }}
+                    onClick={() => signOut({ callbackUrl: "/" })}
                     style={{
-                      background: "rgba(255,68,68,0.1)",
-                      border: "1px solid rgba(255,68,68,0.3)",
-                      borderRadius: 4,
-                      padding: isMobile ? "8px 14px" : "6px 14px",
+                      display: "block",
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "8px 18px",
+                      background: "transparent",
+                      border: "none",
                       color: "#ff4444",
-                      fontSize: 9,
-                      letterSpacing: 1,
-                      fontWeight: 700,
+                      fontSize: 11,
                       cursor: "pointer",
                       fontFamily: "'Inter', sans-serif",
+                      transition: "background 0.15s",
                     }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,68,68,0.04)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
-                    YES
-                  </button>
-                  <button
-                    onClick={onToggleSignOut}
-                    style={{
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      borderRadius: 4,
-                      padding: isMobile ? "8px 14px" : "6px 14px",
-                      color: "#888",
-                      fontSize: 9,
-                      letterSpacing: 1,
-                      cursor: "pointer",
-                      fontFamily: "'Inter', sans-serif",
-                    }}
-                  >
-                    NO
+                    Sign Out
                   </button>
                 </div>
               </div>

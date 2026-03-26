@@ -41,7 +41,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ initialCities, adminEmail }: DashboardProps) {
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialTab = (searchParams.get("tab") as TabKey) || "map";
@@ -85,6 +85,14 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
       router.replace("/dashboard", { scroll: false });
     }
   }, [searchParams, router]);
+
+  // Refresh session tier on mount (catches Stripe webhook tier changes)
+  useEffect(() => {
+    if (session?.user) {
+      updateSession();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Score deltas (recent changes)
   const [scoreDeltas, setScoreDeltas] = useState<Record<string, { delta: number; previousScore: number; currentScore: number; changedAt: string }>>({});
@@ -221,6 +229,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
       <DashboardHeader
         cities={CITIES_RESOLVED}
         userEmail={session?.user?.email}
+        userTier={userTier}
         isAdmin={!!(adminEmail && session?.user?.email === adminEmail)}
         isMobile={isMobile}
         showSignOut={showSignOut}
