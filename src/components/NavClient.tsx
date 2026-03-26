@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 
 const linkStyle: React.CSSProperties = {
@@ -38,6 +39,16 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
 
   const isActive = useCallback(
     (href: string) => {
@@ -136,8 +147,8 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
         {mobileOpen ? "\u2715" : "\u2630"}
       </button>
 
-      {/* Mobile menu */}
-      {mobileOpen && (
+      {/* Mobile menu — portaled to body to escape sticky nav stacking context */}
+      {mobileOpen && createPortal(
         <div
           className="nav-mobile-menu"
           style={{
@@ -148,7 +159,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
             bottom: 0,
             background: "rgba(5,5,8,0.98)",
             backdropFilter: "blur(16px)",
-            zIndex: 999,
+            zIndex: 10000,
             padding: "24px 20px",
             overflowY: "auto",
           }}
@@ -236,7 +247,8 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
               </>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
