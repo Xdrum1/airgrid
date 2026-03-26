@@ -36,7 +36,7 @@ export default function SiteFooter() {
         <div className="landing-footer-links" style={{ display: "flex", gap: 24 }}>
           <Link href="/about" style={footerLinkStyle}>ABOUT</Link>
           <Link href="/methodology" style={footerLinkStyle}>METHODOLOGY</Link>
-          <Link href="/feed" style={footerLinkStyle}>INTEL</Link>
+          <Link href="/insights" style={footerLinkStyle}>INSIGHTS</Link>
           <Link href="/api" style={footerLinkStyle}>API</Link>
           <Link href="/pricing" style={footerLinkStyle}>PLANS</Link>
           <Link href="/updates" style={footerLinkStyle}>UPDATES</Link>
