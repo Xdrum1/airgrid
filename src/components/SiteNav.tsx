@@ -7,36 +7,42 @@ export default async function SiteNav() {
   const isAuthed = !!session?.user;
 
   return (
-    <nav
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 200,
-        background: "rgba(5,5,8,0.85)",
-        backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-      }}
-    >
-      <div
+    <>
+      <nav
         style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "0 20px",
-          height: 64,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 200,
+          background: "rgba(5,5,8,0.85)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img
-            src="/images/logo/airindex-wordmark.svg"
-            alt="AirIndex"
-            style={{ height: 28 }}
-          />
-        </Link>
-        <NavClient isAuthed={isAuthed} />
-      </div>
-    </nav>
+        <div
+          style={{
+            maxWidth: 1120,
+            margin: "0 auto",
+            padding: "0 20px",
+            height: 64,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <img
+              src="/images/logo/airindex-wordmark.svg"
+              alt="AirIndex"
+              style={{ height: 28 }}
+            />
+          </Link>
+          <NavClient isAuthed={isAuthed} />
+        </div>
+      </nav>
+      {/* Spacer to offset fixed nav height */}
+      <div style={{ height: 64 }} />
+    </>
   );
 }
