@@ -67,6 +67,12 @@ export async function POST(request: NextRequest) {
 
     const appUrl = process.env.APP_URL || "https://www.airindex.io";
 
+    const tierLabels: Record<PaidTier, string> = {
+      alert: "Alert",
+      pro: "Professional",
+      institutional: "Institutional",
+    };
+
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
@@ -77,6 +83,13 @@ export async function POST(request: NextRequest) {
       subscription_data: {
         metadata: { userId: session.user.id, tier },
       },
+      allow_promotion_codes: true,
+      custom_text: {
+        submit: {
+          message: `You're subscribing to AirIndex ${tierLabels[tier]}. Cancel anytime from your dashboard.`,
+        },
+      },
+      tax_id_collection: { enabled: true },
     });
 
     return NextResponse.json({ url: checkoutSession.url });
