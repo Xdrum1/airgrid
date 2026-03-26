@@ -192,10 +192,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.firstName = (user as { firstName?: string | null }).firstName;
         token.lastName = (user as { lastName?: string | null }).lastName;
       }
-      // Refresh tier on sign-in or when session update is triggered
+      // Refresh tier + billing status on sign-in or when session update is triggered
       if ((user || trigger === "update") && token.sub) {
         try {
           token.tier = await getUserTier(token.sub);
+          // Check for past_due subscriptions
+          const pastDueSub = await prisma.billingSubscription.findFirst({
+            where: { userId: token.sub, status: "past_due" },
+            select: { status: true },
+          });
+          token.billingStatus = pastDueSub ? "past_due" : "active";
         } catch (err) {
           logger.error("Failed to fetch user tier:", err);
           token.tier = token.tier ?? "free";
@@ -210,6 +216,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.firstName = token.firstName as string | null | undefined;
         session.user.lastName = token.lastName as string | null | undefined;
         session.user.tier = (token.tier as string) ?? "free";
+        session.user.billingStatus = token.billingStatus as string | undefined;
       }
       return session;
     },

@@ -237,6 +237,52 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
         onSignIn={() => router.push("/login")}
       />
 
+      {/* Past-due billing warning */}
+      {(session?.user as { billingStatus?: string } | undefined)?.billingStatus === "past_due" && (
+        <div
+          style={{
+            background: "rgba(255, 68, 68, 0.08)",
+            borderBottom: "1px solid rgba(255, 68, 68, 0.2)",
+            padding: "10px 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 12,
+            flexShrink: 0,
+          }}
+        >
+          <span style={{ color: "#ff6666", fontSize: 12, fontFamily: "'Inter', sans-serif" }}>
+            Your last payment failed. Please update your payment method to keep your subscription active.
+          </span>
+          <button
+            onClick={async () => {
+              try {
+                const res = await fetch("/api/billing/portal", { method: "POST" });
+                const data = await res.json();
+                if (data.url) window.location.href = data.url;
+              } catch (err) {
+                console.error("Portal error:", err);
+              }
+            }}
+            style={{
+              background: "#ff4444",
+              color: "#fff",
+              border: "none",
+              borderRadius: 4,
+              padding: "6px 16px",
+              fontSize: 11,
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: "'Inter', sans-serif",
+              letterSpacing: "0.04em",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Update Payment
+          </button>
+        </div>
+      )}
+
       {/* MAIN LAYOUT */}
       <div style={{ position: "relative", flex: 1, overflow: "hidden" }}>
 

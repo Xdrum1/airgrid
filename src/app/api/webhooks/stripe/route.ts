@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import { createLogger } from "@/lib/logger";
+import { sendSesEmail } from "@/lib/ses";
 import type Stripe from "stripe";
 
 const logger = createLogger("stripe-webhook");
@@ -181,4 +182,91 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string;
   logger.error(`Payment failed for customer ${customerId}, invoice ${invoice.id}`);
+
+  // Find the user
+  const user = await prisma.user.findUnique({
+    where: { stripeCustomerId: customerId },
+    select: { id: true, email: true, firstName: true, tier: true },
+  });
+
+  if (!user?.email) {
+    logger.error(`No user found for failed payment, customer ${customerId}`);
+    return;
+  }
+
+  const appUrl = process.env.APP_URL || "https://www.airindex.io";
+  const fromEmail = process.env.SES_FROM_EMAIL || "noreply@airindex.io";
+  const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
+  const firstName = user.firstName || "there";
+
+  // 1. Email the user
+  try {
+    await sendSesEmail({
+      to: user.email,
+      from: `AirIndex <${fromEmail}>`,
+      subject: "Action needed: Your AirIndex payment failed",
+      html: `
+        <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;margin:0 auto;padding:32px 20px;color:#333;">
+          <img src="${appUrl}/images/logo/airindex-wordmark.svg" alt="AirIndex" style="height:28px;margin-bottom:32px;" />
+          <h2 style="font-size:18px;margin:0 0 16px;color:#111;">Payment failed</h2>
+          <p style="font-size:14px;line-height:1.6;margin:0 0 16px;">
+            Hi ${firstName}, we were unable to process your latest payment for your AirIndex subscription.
+          </p>
+          <p style="font-size:14px;line-height:1.6;margin:0 0 24px;">
+            Please update your payment method to avoid any interruption to your service. Stripe will automatically retry the charge over the next few days.
+          </p>
+          <a href="${appUrl}/dashboard" style="display:inline-block;padding:12px 28px;background:#00d4ff;color:#050508;font-size:13px;font-weight:700;text-decoration:none;border-radius:6px;letter-spacing:0.04em;">
+            Update Payment Method
+          </a>
+          <p style="font-size:12px;line-height:1.6;margin:24px 0 0;color:#888;">
+            If you need help, reply to this email or contact us at <a href="mailto:support@airindex.io" style="color:#00d4ff;">support@airindex.io</a>.
+          </p>
+        </div>
+      `.trim(),
+    });
+    logger.info(`Payment failure email sent to ${user.email}`);
+  } catch (emailErr) {
+    logger.error("Failed to send payment failure email to user:", emailErr);
+  }
+
+  // 2. Alert admin
+  if (adminEmail) {
+    try {
+      await sendSesEmail({
+        to: adminEmail,
+        from: fromEmail,
+        subject: `[AirIndex] Payment failed — ${user.email} (${user.tier})`,
+        html: `
+          <div style="font-family:monospace;max-width:600px;padding:20px;">
+            <h2 style="color:#ff4444;margin:0 0 16px;">Payment Failure</h2>
+            <table style="border-collapse:collapse;width:100%;">
+              <tr><td style="padding:8px 12px;color:#999;border-bottom:1px solid #eee;">Time</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${new Date().toISOString()}</td></tr>
+              <tr><td style="padding:8px 12px;color:#999;border-bottom:1px solid #eee;">User</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${user.email}</td></tr>
+              <tr><td style="padding:8px 12px;color:#999;border-bottom:1px solid #eee;">Tier</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${user.tier}</td></tr>
+              <tr><td style="padding:8px 12px;color:#999;border-bottom:1px solid #eee;">Customer</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${customerId}</td></tr>
+              <tr><td style="padding:8px 12px;color:#999;border-bottom:1px solid #eee;">Invoice</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${invoice.id}</td></tr>
+            </table>
+            <p style="color:#999;font-size:11px;margin-top:20px;">Sent from AirIndex billing monitoring</p>
+          </div>
+        `.trim(),
+      });
+    } catch (emailErr) {
+      logger.error("Failed to send payment failure admin alert:", emailErr);
+    }
+  }
+
+  // 3. Update subscription status to past_due if not already
+  if (user.id) {
+    await prisma.billingSubscription.updateMany({
+      where: {
+        userId: user.id,
+        status: "active",
+      },
+      data: {
+        status: "past_due",
+      },
+    }).catch((err) => {
+      logger.error("Failed to mark subscription past_due:", err);
+    });
+  }
 }
