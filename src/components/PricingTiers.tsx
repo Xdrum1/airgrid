@@ -116,7 +116,7 @@ const TIERS: Tier[] = [
 // -------------------------------------------------------
 
 export default function PricingTiers() {
-  const [interval, setInterval] = useState<Interval>("annual");
+  const [interval, setInterval] = useState<Interval>("monthly");
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [checkoutTier, setCheckoutTier] = useState<Tier | null>(null);
   const { data: session, status } = useSession();
@@ -212,6 +212,77 @@ export default function PricingTiers() {
         .pricing-secondary { transition: color 0.2s; }
         .pricing-secondary:hover { color: #00d4ff !important; }
       `}</style>
+
+      {/* Billing toggle — prominent above cards */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 4,
+          marginBottom: 40,
+        }}
+      >
+        <button
+          onClick={() => setInterval("monthly")}
+          style={{
+            padding: "10px 24px",
+            borderRadius: "8px 0 0 8px",
+            fontSize: 13,
+            fontWeight: 600,
+            fontFamily: "'Inter', sans-serif",
+            letterSpacing: "0.02em",
+            cursor: "pointer",
+            border: interval === "monthly"
+              ? "1px solid #00d4ff"
+              : "1px solid rgba(255,255,255,0.1)",
+            background: interval === "monthly"
+              ? "rgba(0,212,255,0.1)"
+              : "rgba(255,255,255,0.02)",
+            color: interval === "monthly" ? "#00d4ff" : "#666",
+            transition: "all 0.2s",
+          }}
+        >
+          Monthly
+        </button>
+        <button
+          onClick={() => setInterval("annual")}
+          style={{
+            padding: "10px 24px",
+            borderRadius: "0 8px 8px 0",
+            fontSize: 13,
+            fontWeight: 600,
+            fontFamily: "'Inter', sans-serif",
+            letterSpacing: "0.02em",
+            cursor: "pointer",
+            border: interval === "annual"
+              ? "1px solid #00d4ff"
+              : "1px solid rgba(255,255,255,0.1)",
+            background: interval === "annual"
+              ? "rgba(0,212,255,0.1)"
+              : "rgba(255,255,255,0.02)",
+            color: interval === "annual" ? "#00d4ff" : "#666",
+            transition: "all 0.2s",
+          }}
+        >
+          Annual
+          <span
+            style={{
+              marginLeft: 8,
+              fontSize: 10,
+              fontWeight: 700,
+              color: interval === "annual" ? "#050508" : "#00d4ff",
+              background: interval === "annual" ? "#00d4ff" : "rgba(0,212,255,0.15)",
+              padding: "2px 6px",
+              borderRadius: 4,
+              letterSpacing: "0.04em",
+            }}
+          >
+            SAVE 17%
+          </span>
+        </button>
+      </div>
+
       {/* Tier cards */}
       <div
         className="pricing-grid"
@@ -429,55 +500,6 @@ export default function PricingTiers() {
         ))}
       </div>
 
-      {/* Billing toggle — de-emphasized below cards */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 12,
-          marginTop: 32,
-        }}
-      >
-        <span style={{ fontSize: 11, color: interval === "monthly" ? "#999" : "#444" }}>
-          Monthly
-        </span>
-        <button
-          onClick={() => setInterval((v) => (v === "monthly" ? "annual" : "monthly"))}
-          style={{
-            width: 40,
-            height: 20,
-            borderRadius: 10,
-            border: "1px solid rgba(255,255,255,0.1)",
-            background: "rgba(255,255,255,0.04)",
-            cursor: "pointer",
-            position: "relative",
-            transition: "background 0.2s",
-            padding: 0,
-          }}
-        >
-          <div
-            style={{
-              width: 14,
-              height: 14,
-              borderRadius: "50%",
-              background: interval === "annual" ? "#00d4ff" : "#555",
-              position: "absolute",
-              top: 2,
-              left: interval === "annual" ? 22 : 2,
-              transition: "left 0.2s, background 0.2s",
-            }}
-          />
-        </button>
-        <span style={{ fontSize: 11, color: interval === "annual" ? "#999" : "#444" }}>
-          Annual
-        </span>
-        {interval === "annual" && (
-          <span style={{ fontSize: 9, color: "#555", letterSpacing: "0.04em" }}>
-            Save ~17%
-          </span>
-        )}
-      </div>
 
       {checkoutTier && session?.user?.email && (
         <PreCheckoutModal
