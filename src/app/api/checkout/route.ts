@@ -90,6 +90,7 @@ export async function POST(request: NextRequest) {
         },
       },
       tax_id_collection: { enabled: true },
+      customer_update: { name: "auto" },
     });
 
     return NextResponse.json({ url: checkoutSession.url });
