@@ -148,7 +148,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
             bottom: 0,
             background: "rgba(5,5,8,0.98)",
             backdropFilter: "blur(16px)",
-            zIndex: 150,
+            zIndex: 999,
             padding: "24px 20px",
             overflowY: "auto",
           }}

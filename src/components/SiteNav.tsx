@@ -11,7 +11,7 @@ export default async function SiteNav() {
       style={{
         position: "sticky",
         top: 0,
-        zIndex: 100,
+        zIndex: 200,
         background: "rgba(5,5,8,0.85)",
         backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(255,255,255,0.06)",
