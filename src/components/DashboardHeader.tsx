@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { City } from "@/types";
-import { hasProAccess } from "@/lib/billing-shared";
+
 
 export default function DashboardHeader({
   cities,
@@ -187,56 +187,6 @@ export default function DashboardHeader({
                   }}>
                     {userTier === "grandfathered" ? "Pro (Founding)" : userTier}
                   </div>
-                </div>
-
-                {/* Manage / Upgrade */}
-                <div style={{ padding: "8px 0" }}>
-                  {hasProAccess(userTier) ? (
-                    <button
-                      onClick={async () => {
-                        try {
-                          const res = await fetch("/api/billing/portal", { method: "POST" });
-                          const data = await res.json();
-                          if (data.url) window.location.href = data.url;
-                        } catch (err) {
-                          console.error("Portal error:", err);
-                        }
-                      }}
-                      style={{
-                        display: "block",
-                        width: "100%",
-                        textAlign: "left",
-                        padding: "8px 18px",
-                        background: "transparent",
-                        border: "none",
-                        color: "#aaa",
-                        fontSize: 11,
-                        cursor: "pointer",
-                        fontFamily: "'Inter', sans-serif",
-                        transition: "background 0.15s",
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                    >
-                      Manage Subscription
-                    </button>
-                  ) : (
-                    <a
-                      href="/contact?tier=pro"
-                      style={{
-                        display: "block",
-                        padding: "8px 18px",
-                        color: "#00d4ff",
-                        fontSize: 11,
-                        textDecoration: "none",
-                        transition: "background 0.15s",
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                    >
-                      Request Access
-                    </a>
-                  )}
                 </div>
 
                 {/* Support link */}
