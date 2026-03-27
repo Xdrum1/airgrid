@@ -1,7 +1,11 @@
 /**
  * Congress.gov API Integration
  *
- * Searches for bills mentioning AAM/UAM/eVTOL/vertiport/powered-lift.
+ * Tracks curated federal bills related to AAM/UAM/eVTOL/vertiport/powered-lift.
+ * The Congress.gov API v3 does not support text search — the `query` parameter
+ * on /bill and /summaries endpoints is effectively ignored. Instead, we maintain
+ * a curated list of known relevant bills and poll their latest status.
+ *
  * Results feed into the existing Haiku classification pipeline as FeedItems.
  * Enriches: Legislation (20%), Regulatory Posture (10%).
  *
@@ -16,18 +20,87 @@ const logger = createLogger("congress-api");
 
 const CONGRESS_BASE = "https://api.congress.gov/v3";
 
-const SEARCH_TERMS = [
-  "advanced air mobility",
-  "urban air mobility",
-  "eVTOL",
-  "vertiport",
-  "powered lift",
+/**
+ * Curated list of federal bills relevant to UAM/AAM.
+ * Add new bills here as they're introduced.
+ * Last reviewed: 2026-03-27
+ */
+const TRACKED_BILLS: TrackedBill[] = [
+  // ── 119th Congress (2025-2026) — Active ──
+  {
+    congress: 119,
+    type: "s",
+    number: 3866,
+    label: "AAM Type Certification Updates",
+    relevance: "FAA type certification process updates for advanced air mobility aircraft",
+  },
+  {
+    congress: 119,
+    type: "hr",
+    number: 7553,
+    label: "Aviation Innovation and Global Competitiveness Act",
+    relevance: "FAA type certification for powered-lift and novel aviation technologies",
+  },
+
+  // ── 118th Congress (2023-2024) — Reference / Enacted ──
+  {
+    congress: 118,
+    type: "hr",
+    number: 3935,
+    label: "FAA Reauthorization Act of 2024",
+    relevance: "Enacted. Sections 951-961 cover powered-lift rules, vertiport design standards, AAM infrastructure pilot program",
+  },
+  {
+    congress: 118,
+    type: "hr",
+    number: 3560,
+    label: "National Drone and Advanced Air Mobility R&D Act",
+    relevance: "Establishes AAM R&D programs, interagency working group, NASA research institutes",
+  },
+  {
+    congress: 118,
+    type: "s",
+    number: 1888,
+    label: "Advanced Aviation Integration Act",
+    relevance: "Creates Office of Advanced Integration within FAA, stakeholder portal for certification tracking",
+  },
+  {
+    congress: 118,
+    type: "hr",
+    number: 220,
+    label: "Advanced Aviation Act",
+    relevance: "Redesignates Office of NextGen as Office of Advanced Aviation",
+  },
+  {
+    congress: 118,
+    type: "hr",
+    number: 4719,
+    label: "Advanced Air Mobility Tax Exemption Parity Act",
+    relevance: "Tax treatment for advanced air mobility aircraft",
+  },
+
+  // ── 117th Congress (enacted) ──
+  {
+    congress: 117,
+    type: "s",
+    number: 516,
+    label: "Advanced Air Mobility Coordination and Leadership Act",
+    relevance: "Enacted as P.L. 117-203. Established interagency AAM working group",
+  },
 ];
+
+interface TrackedBill {
+  congress: number;
+  type: string;    // "hr", "s", "hres", "sres", etc.
+  number: number;
+  label: string;
+  relevance: string;
+}
 
 export interface CongressBill {
   congress: number;
-  billType: string;
-  billNumber: number;
+  type: string;
+  number: number;
   title: string;
   introducedDate: string;
   latestAction: {
@@ -36,24 +109,38 @@ export interface CongressBill {
   };
   url: string;
   policyArea?: { name: string };
+  originChamber?: string;
+  // Enriched from our curated list
+  label?: string;
+  relevance?: string;
 }
 
-interface CongressSearchResult {
-  bills: CongressBill[];
-  pagination: {
-    count: number;
-    next?: string;
+interface CongressBillResponse {
+  bill: {
+    congress: number;
+    type: string;
+    number: string;
+    title: string;
+    introducedDate: string;
+    latestAction: {
+      actionDate: string;
+      text: string;
+    };
+    originChamber?: string;
+    policyArea?: { name: string };
   };
 }
 
 /**
- * Search Congress.gov for bills matching UAM-related terms.
- * Returns deduplicated results across all search terms.
+ * Fetch latest status of all tracked AAM-related bills from Congress.gov.
+ * Returns enriched bill data with our curated labels and relevance notes.
  */
 export async function searchCongressBills(
   options: {
-    congress?: number;      // e.g., 119 for current
-    limit?: number;         // per-term limit, default 25
+    /** Only return bills from this congress. Omit for all tracked. */
+    congress?: number;
+    /** Only return bills with latest action after this date (ISO). */
+    updatedAfter?: string;
   } = {},
 ): Promise<CongressBill[]> {
   const apiKey = process.env.CONGRESS_API_KEY;
@@ -62,56 +149,76 @@ export async function searchCongressBills(
     return [];
   }
 
-  const { congress = 119, limit = 25 } = options;
-  const seen = new Set<string>();
-  const results: CongressBill[] = [];
+  const { congress, updatedAfter } = options;
+  const bills: CongressBill[] = [];
 
-  for (const term of SEARCH_TERMS) {
+  const tracked = congress
+    ? TRACKED_BILLS.filter((b) => b.congress === congress)
+    : TRACKED_BILLS;
+
+  logger.info(`Fetching ${tracked.length} tracked AAM bills from Congress.gov`);
+
+  for (const tb of tracked) {
     try {
-      const params = new URLSearchParams({
-        query: term,
-        limit: String(limit),
-        api_key: apiKey,
-      });
-
-      const url = `${CONGRESS_BASE}/bill/${congress}?${params}`;
+      const url = `${CONGRESS_BASE}/bill/${tb.congress}/${tb.type}/${tb.number}?api_key=${apiKey}`;
       const res = await fetch(url, {
         headers: { Accept: "application/json" },
       });
 
       if (!res.ok) {
-        logger.error(`Congress.gov API error: ${res.status} for term "${term}"`);
+        logger.error(`Congress.gov API error: ${res.status} for ${tb.congress}-${tb.type}-${tb.number}`);
         continue;
       }
 
-      const data: CongressSearchResult = await res.json();
-      for (const bill of data.bills ?? []) {
-        const key = `${bill.congress}-${bill.billType}-${bill.billNumber}`;
-        if (!seen.has(key)) {
-          seen.add(key);
-          results.push(bill);
-        }
+      const data: CongressBillResponse = await res.json();
+      const b = data.bill;
+
+      // Filter by updatedAfter if specified
+      if (updatedAfter && b.latestAction?.actionDate < updatedAfter) {
+        continue;
       }
 
-      logger.info(`Congress.gov: "${term}" returned ${data.bills?.length ?? 0} bills`);
+      bills.push({
+        congress: b.congress,
+        type: b.type,
+        number: parseInt(b.number, 10),
+        title: b.title,
+        introducedDate: b.introducedDate,
+        latestAction: b.latestAction,
+        url: `https://www.congress.gov/bill/${b.congress}th-congress/${tb.type === "s" ? "senate-bill" : "house-bill"}/${tb.number}`,
+        policyArea: b.policyArea,
+        originChamber: b.originChamber,
+        label: tb.label,
+        relevance: tb.relevance,
+      });
+
+      logger.info(`${tb.congress}-${tb.type.toUpperCase()}-${tb.number}: ${b.latestAction?.actionDate} — ${b.latestAction?.text?.slice(0, 80)}`);
     } catch (err) {
-      logger.error(`Congress.gov fetch failed for "${term}":`, err);
+      logger.error(`Congress.gov fetch failed for ${tb.congress}-${tb.type}-${tb.number}:`, err);
     }
   }
 
-  logger.info(`Congress.gov total: ${results.length} unique bills across ${SEARCH_TERMS.length} terms`);
-  return results;
+  logger.info(`Congress.gov: ${bills.length} bills fetched (${tracked.length} tracked)`);
+  return bills;
 }
 
 /**
  * Convert a Congress bill to FeedItem shape for the classification pipeline.
  */
 export function congressBillToFeedItem(bill: CongressBill) {
+  const typeLabel = bill.type === "S" || bill.type === "s" ? "S" : "HR";
   return {
     source: "congress_gov" as const,
-    title: bill.title,
+    title: `${typeLabel} ${bill.number}: ${bill.title}`,
     url: bill.url,
-    publishedAt: bill.introducedDate,
-    summary: `${bill.billType.toUpperCase()} ${bill.billNumber} (${bill.congress}th Congress) — ${bill.latestAction?.text ?? "No action recorded"}`,
+    publishedAt: bill.latestAction?.actionDate ?? bill.introducedDate,
+    summary: `${typeLabel} ${bill.number} (${bill.congress}th Congress) — ${bill.latestAction?.text ?? "No action recorded"}${bill.relevance ? `. Relevance: ${bill.relevance}` : ""}`,
   };
+}
+
+/**
+ * Returns the curated bill list for reference/display.
+ */
+export function getTrackedBills(): TrackedBill[] {
+  return [...TRACKED_BILLS];
 }
