@@ -28,6 +28,7 @@ export default function CityDetailPanel({
   onToggleWatch,
   isAuthenticated,
   userTier = "free",
+  isAdmin = false,
   watchStatus,
   outlook,
   analystNote,
@@ -45,6 +46,7 @@ export default function CityDetailPanel({
   onToggleWatch: (cityId: string) => void;
   isAuthenticated: boolean;
   userTier?: string;
+  isAdmin?: boolean;
   watchStatus?: string;
   outlook?: string;
   analystNote?: string | null;
@@ -322,7 +324,7 @@ export default function CityDetailPanel({
       {/* Gap Analysis — Pro only */}
       {hasProAccess(userTier) && (
         <>
-          <GapAnalysisPanel city={selected} scoreColor={scoreColor} />
+          <GapAnalysisPanel city={selected} scoreColor={scoreColor} showSubIndicators={isAdmin} />
           <div
             style={{
               padding: "10px 20px 14px",
