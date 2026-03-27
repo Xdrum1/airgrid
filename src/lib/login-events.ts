@@ -121,49 +121,49 @@ async function sendNewDeviceNotification(params: {
   const deviceStr = [browser, os].filter(Boolean).join(" on ") || deviceType || "Unknown device";
 
   const html = `
-    <div style="background:#0a0a12;color:#e0e0e0;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;border:1px solid #1a1a2e;">
+    <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:520px;margin:0 auto;">
       <div style="margin-bottom:32px;">
-        <span style="font-family:'Courier New',monospace;font-weight:800;font-size:15px;color:#ffffff;letter-spacing:0.12em;">AIR</span><span style="font-family:'Courier New',monospace;font-weight:400;font-size:15px;color:#00d4ff;letter-spacing:0.12em;">INDEX</span>
+        <span style="font-family:'Courier New',monospace;font-weight:800;font-size:15px;color:#0a0a1a;letter-spacing:0.12em;">AIR</span><span style="font-family:'Courier New',monospace;font-weight:400;font-size:15px;color:#0077aa;letter-spacing:0.12em;">INDEX</span>
       </div>
-      <p style="color:#ff6b6b;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 16px;">
+      <p style="color:#d94040;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 16px;">
         New Device Login Detected
       </p>
-      <p style="color:#c0c0c0;font-size:14px;line-height:1.7;margin:0 0 24px;">
+      <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 24px;">
         Your AirIndex account was accessed from a device we don't recognize.
       </p>
-      <div style="background:#12121f;border:1px solid #1e1e3a;border-radius:8px;padding:20px;margin:0 0 24px;">
+      <div style="background:#f8f9fa;border:1px solid #e5e7eb;border-radius:8px;padding:20px;margin:0 0 24px;">
         <table style="width:100%;border-collapse:collapse;">
           <tr>
             <td style="color:#888;font-size:12px;padding:6px 0;vertical-align:top;width:100px;">Account</td>
-            <td style="color:#00d4ff;font-size:13px;padding:6px 0;">${to}</td>
+            <td style="color:#0077aa;font-size:13px;padding:6px 0;">${to}</td>
           </tr>
           <tr>
             <td style="color:#888;font-size:12px;padding:6px 0;vertical-align:top;">Method</td>
-            <td style="color:#e0e0e0;font-size:13px;padding:6px 0;">Magic Link</td>
+            <td style="color:#333;font-size:13px;padding:6px 0;">Magic Link</td>
           </tr>
           <tr>
             <td style="color:#888;font-size:12px;padding:6px 0;vertical-align:top;">Device</td>
-            <td style="color:#e0e0e0;font-size:13px;padding:6px 0;">${deviceStr}</td>
+            <td style="color:#333;font-size:13px;padding:6px 0;">${deviceStr}</td>
           </tr>
           <tr>
             <td style="color:#888;font-size:12px;padding:6px 0;vertical-align:top;">IP Address</td>
-            <td style="color:#e0e0e0;font-size:13px;padding:6px 0;">${ip}</td>
+            <td style="color:#333;font-size:13px;padding:6px 0;">${ip}</td>
           </tr>
           <tr>
             <td style="color:#888;font-size:12px;padding:6px 0;vertical-align:top;">Time</td>
-            <td style="color:#e0e0e0;font-size:13px;padding:6px 0;">${timeStr}</td>
+            <td style="color:#333;font-size:13px;padding:6px 0;">${timeStr}</td>
           </tr>
         </table>
       </div>
-      <div style="background:#1a1215;border:1px solid #3a1a1a;border-radius:8px;padding:16px 20px;margin:0 0 24px;">
-        <p style="color:#ff6b6b;font-size:13px;font-weight:600;margin:0 0 8px;">If this wasn't you</p>
-        <p style="color:#c0a0a0;font-size:12px;line-height:1.6;margin:0;">
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:16px 20px;margin:0 0 24px;">
+        <p style="color:#d94040;font-size:13px;font-weight:600;margin:0 0 8px;">If this wasn't you</p>
+        <p style="color:#777;font-size:12px;line-height:1.6;margin:0;">
           Someone may have accessed your account. Contact us immediately at
-          <a href="mailto:support@airindex.io" style="color:#00d4ff;text-decoration:none;">support@airindex.io</a>
+          <a href="mailto:support@airindex.io" style="color:#0077aa;text-decoration:none;">support@airindex.io</a>
           and we'll secure your account.
         </p>
       </div>
-      <p style="color:#555;font-size:11px;line-height:1.6;margin:0;">
+      <p style="color:#999;font-size:11px;line-height:1.6;margin:0;">
         This is an automated security notification from AirIndex. You received this because a sign-in was detected from an unrecognized device.
       </p>
     </div>
