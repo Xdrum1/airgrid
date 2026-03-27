@@ -20,7 +20,6 @@ const NAV_LINKS = [
   { label: "About", href: "/about" },
   { label: "Methodology", href: "/methodology" },
   { label: "Insights", href: "/insights" },
-  { label: "Plans", href: "/pricing" },
 ];
 
 export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
