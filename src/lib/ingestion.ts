@@ -1,6 +1,8 @@
 import { fetchFederalRegisterUAM, fetchStateBills, fetchOperatorFilings, OPERATOR_CIKS } from "@/lib/faa-api";
 import type { FederalFiling, StateBill, SecFiling } from "@/lib/faa-api";
 import { fetchAllOperatorNews } from "@/lib/operator-news";
+import { searchCongressBills, type CongressBill } from "@/lib/congress-api";
+import { searchRegulations, type RegulationDocument } from "@/lib/regulations-api";
 import { addChangelogEntries } from "@/lib/changelog";
 import { notifySubscribers } from "@/lib/notifications";
 import { evaluateRulesV2 } from "@/lib/rules-engine";
@@ -22,7 +24,7 @@ async function getPrisma() {
 
 export interface IngestedRecord {
   id: string;
-  source: "federal_register" | "legiscan" | "sec_edgar" | "operator_news";
+  source: "federal_register" | "legiscan" | "sec_edgar" | "operator_news" | "congress_gov" | "regulations_gov";
   sourceId: string;
   title: string;
   summary: string;
@@ -161,6 +163,37 @@ function normalizeSecFiling(f: SecFiling, operatorId: string): IngestedRecord {
     date: f.filingDate,
     url: `https://www.sec.gov/Archives/edgar/data/${OPERATOR_CIKS[operatorId]}/${f.accessionNo.replace(/-/g, "")}/${f.primaryDocument}`,
     raw: { ...f, operatorId } as unknown as Record<string, unknown>,
+    ingestedAt: new Date().toISOString(),
+  };
+}
+
+function normalizeCongressBill(b: CongressBill): IngestedRecord {
+  return {
+    id: `congress_gov_${b.congress}_${b.billType}_${b.billNumber}`,
+    source: "congress_gov",
+    sourceId: `${b.congress}-${b.billType}-${b.billNumber}`,
+    title: b.title,
+    summary: `${b.billType.toUpperCase()} ${b.billNumber} (${b.congress}th Congress) — ${b.latestAction?.text ?? "No action recorded"}`,
+    status: b.latestAction?.text ?? "introduced",
+    date: b.latestAction?.actionDate ?? b.introducedDate,
+    url: b.url,
+    raw: b as unknown as Record<string, unknown>,
+    ingestedAt: new Date().toISOString(),
+  };
+}
+
+function normalizeRegulation(doc: RegulationDocument): IngestedRecord {
+  const attrs = doc.attributes;
+  return {
+    id: `regulations_gov_${doc.id}`,
+    source: "regulations_gov",
+    sourceId: doc.id,
+    title: attrs.title,
+    summary: `${attrs.documentType} — Docket ${attrs.docketId} (${attrs.agencyId})${attrs.commentEndDate ? `. Comment period ends ${attrs.commentEndDate}` : ""}`,
+    status: attrs.documentType,
+    date: attrs.postedDate,
+    url: `https://www.regulations.gov/document/${doc.id}`,
+    raw: doc as unknown as Record<string, unknown>,
     ingestedAt: new Date().toISOString(),
   };
 }
@@ -340,7 +373,7 @@ export async function runIngestion(): Promise<{
     // 1-4. Fetch all sources in parallel
     const SEC_FORM_TYPES = ["8-K", "10-K", "10-Q"];
 
-    const [federalFilings, legiscanResults, secEdgarResults, operatorNews] = await Promise.all([
+    const [federalFilings, legiscanResults, secEdgarResults, operatorNews, congressBills, regulationDocs] = await Promise.all([
       // 1. Federal Register
       fetchFederalRegisterUAM(90),
       // 2. LegiScan for all target states (batched to avoid rate limits)
@@ -356,6 +389,16 @@ export async function runIngestion(): Promise<{
       ),
       // 4. Operator news via Google News RSS
       fetchAllOperatorNews(30),
+      // 5. Congress.gov federal bills (skips gracefully if no API key)
+      searchCongressBills().catch((err) => {
+        console.warn("[ingestion] Congress.gov fetch failed:", err);
+        return [] as CongressBill[];
+      }),
+      // 6. Regulations.gov FAA dockets (skips gracefully if no API key)
+      searchRegulations({ postedAfter: new Date(Date.now() - 90 * 86400000).toISOString().split("T")[0] }).catch((err) => {
+        console.warn("[ingestion] Regulations.gov fetch failed:", err);
+        return [] as RegulationDocument[];
+      }),
     ]);
 
     const allBills = legiscanResults;
@@ -364,13 +407,17 @@ export async function runIngestion(): Promise<{
     console.log(`[ingestion] Federal Register: ${federalFilings.length} filings`);
     console.log(`[ingestion] LegiScan: ${allBills.length} bills`);
     console.log(`[ingestion] SEC EDGAR: ${allSecFilings.length} filings (${SEC_FORM_TYPES.join(", ")})`);
+    console.log(`[ingestion] Congress.gov: ${congressBills.length} bills`);
+    console.log(`[ingestion] Regulations.gov: ${regulationDocs.length} documents`);
 
-    // 5. Normalize and merge all sources
+    // 7. Normalize and merge all sources
     const incomingRecords: IngestedRecord[] = [
       ...federalFilings.map(normalizeFederalFiling),
       ...allBills.map(normalizeStateBill),
       ...allSecFilings,
       ...operatorNews,
+      ...congressBills.map(normalizeCongressBill),
+      ...regulationDocs.map(normalizeRegulation),
     ];
 
     // 5. Diff against existing
@@ -421,7 +468,7 @@ export async function runIngestion(): Promise<{
 
     for (const r of diff.newRecords) {
       changelogBatch.push({
-        changeType: r.source === "legiscan" ? "new_law" : "new_filing",
+        changeType: (r.source === "legiscan" || r.source === "congress_gov") ? "new_law" : "new_filing",
         relatedEntityType: "filing",
         relatedEntityId: r.id,
         summary: r.title,

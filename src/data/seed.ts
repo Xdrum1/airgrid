@@ -1,4 +1,4 @@
-import { Operator, City, Vertiport, Corridor } from "@/types";
+import { Operator, City, Vertiport, Corridor, SubIndicator } from "@/types";
 import { calculateReadinessScore } from "@/lib/scoring";
 
 // ============================================================
@@ -382,6 +382,42 @@ const RAW_CITIES: City[] = [
       stateLegislation: { citation: "CA SB 944 — Advanced Air Mobility Act signed into law", date: "2024-09", url: "https://leginfo.legislature.ca.gov/" },
       weatherInfrastructure: { citation: "Major airport weather stations (LAX, BUR, SNA) provide regional coverage; no dedicated low-altitude AAM sensing deployed", date: "2026-03" },
     },
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "achieved", citation: "CA SB 944 — Advanced Air Mobility Act", citationDate: "2024-09", citationUrl: "https://leginfo.legislature.ca.gov/" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "CA UAM Task Force ongoing regulatory development", citationDate: "2025-01" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "SB 944 designed to complement federal framework", citationDate: "2024-09" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "achieved", citation: "Joby and Archer targeting LA commercial launch", citationDate: "2025-01" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "achieved", citation: "Joby Dubai commercial ops active; Archer Abu Dhabi flight tests", citationDate: "2026-02" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "achieved", citation: "LA Metro AAM Infrastructure Study", citationDate: "2024-09" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "achieved", citation: "Joby LAX Adjacent Vertiport permit filed", citationDate: "2024-08" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "partial", citation: "LAX Adjacent in permitting phase, not yet under construction", citationDate: "2024-08" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "achieved", citation: "Archer Santa Monica + DTLA sites planned", citationDate: "2025-02" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "achieved", citation: "Joby and Archer confirmed LA operations", citationDate: "2026-03" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "achieved", citation: "Joby commercially operational in Dubai, LA is next US market", citationDate: "2026-02" },
+        { id: "op_multiple", label: "Multiple operators present", status: "achieved", citation: "Joby and Archer both active", citationDate: "2026-03" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "achieved", citation: "LA Metro vertiport zoning provisions in place", citationDate: "2024-09" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "partial", citation: "Referenced in Metro study; municipal code integration in progress", citationDate: "2024-09" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "achieved", citation: "LAX Adjacent permit filed through established pathway", citationDate: "2024-08" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "achieved", citation: "CA Governor Executive Order on Advanced Air Mobility", citationDate: "2023-10" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "achieved", citation: "California actively supporting AAM development", citationDate: "2023-10" },
+        { id: "reg_engagement", label: "Community engagement process", status: "partial", citation: "LA Metro conducting community outreach; formal process developing", citationDate: "2024-09" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "LAX, BUR, SNA ASOS stations provide regional coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing", citation: "No dedicated low-altitude AAM weather sensing deployed", citationDate: "2026-03" },
+      ],
+    },
     notes: "Primary US launch market for Joby and Archer. Joby commercially operational in Dubai (Feb 2026) via Uber Air partnership — LA is the confirmed next US market. Joby acquired Blade's passenger business (Aug 2025), consolidating LA operator presence under two brands. Archer completed Abu Dhabi Midnight flight test campaign. LA Metro actively planning vertiport integration with transit hubs.",
     keyMilestones: ["Joby launches Uber Air in Dubai (Feb 2026)", "Joby acquires Blade passenger business (Aug 2025)", "Archer completes Abu Dhabi Midnight flight tests", "Joby/Archer targeting 2026 LA commercial ops", "CA UAM Task Force active"],
     lastUpdated: "2026-03-03",
@@ -399,6 +435,42 @@ const RAW_CITIES: City[] = [
       activeOperatorPresence: { citation: "Joby and Archer planning or operating in NYC", date: "2026-03" },
       regulatoryPosture: { citation: "NYC complex airspace — FAA Class B restrictions around JFK/LGA/EWR", date: "2024-12" },
       weatherInfrastructure: { citation: "Major airport weather stations (JFK, LGA, EWR) provide regional coverage; no dedicated low-altitude AAM sensing deployed", date: "2026-03" },
+    },
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing", citation: "No NY state UAM legislation enacted", citationDate: "2026-03" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "unknown" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "partial", citation: "NYC local noise/heliport restrictions may conflict with federal preemption", citationDate: "2026-03" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "achieved", citation: "Joby operating NYC air taxi via Blade acquisition", citationDate: "2026-03" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "partial", citation: "Helicopter operations active; eVTOL flights pending certification", citationDate: "2026-03" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "missing", citation: "No formal NYC municipal UAM commitment", citationDate: "2026-03" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "achieved", citation: "Manhattan Heliport operational (West Side)", citationDate: "2026-03" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "achieved", citation: "Manhattan Heliport operational for air taxi", citationDate: "2026-03" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "partial", citation: "JFK corridor sites under evaluation", citationDate: "2026-03" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "achieved", citation: "Joby and Archer targeting NYC", citationDate: "2026-03" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "achieved", citation: "Joby operating NYC helicopter routes (ex-Blade)", citationDate: "2026-03" },
+        { id: "op_multiple", label: "Multiple operators present", status: "achieved", citation: "Joby and Archer both planning NYC operations", citationDate: "2026-03" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing", citation: "No NYC vertiport zoning code", citationDate: "2026-03" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing", citation: "NYC codes reference helicopters, not eVTOL/AAM", citationDate: "2026-03" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing", citation: "Helicopter permitting exists but no eVTOL-specific pathway", citationDate: "2026-03" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing", citation: "No NYC UAM task force or executive order", citationDate: "2026-03" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "missing", citation: "NYC posture is neutral — complex airspace challenges", citationDate: "2024-12" },
+        { id: "reg_engagement", label: "Community engagement process", status: "missing", citation: "No formal UAM community engagement process", citationDate: "2026-03" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "JFK, LGA, EWR ASOS stations provide coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing", citation: "No dedicated low-altitude AAM sensing deployed", citationDate: "2026-03" },
+      ],
     },
     notes: "Joby acquired Blade's passenger business (Aug 2025), gaining NYC terminal network including JFK, Newark, Manhattan West Side, East Side, and Wall Street lounges. Dense airspace creates integration challenges but demand signal is enormous. JFK-Manhattan corridor is a natural first eVTOL route.",
     keyMilestones: ["Joby acquires Blade NYC terminals (Aug 2025)", "Joby NYC helicopter ops active (ex-Blade)", "Joby targeting JFK/Manhattan eVTOL corridor", "Archer/United partnership announced"],
@@ -420,6 +492,42 @@ const RAW_CITIES: City[] = [
       stateLegislation: { citation: "TX HB 1735 — landmark UAM legislation signed into law", date: "2023-06", url: "https://capitol.texas.gov/BillLookup/History.aspx?LegSess=88R&Bill=HB1735" },
       weatherInfrastructure: { citation: "Major airport weather stations (DFW, DAL) provide regional coverage; no dedicated low-altitude AAM sensing deployed", date: "2026-03" },
     },
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "achieved", citation: "TX HB 1735 — landmark UAM legislation", citationDate: "2023-06", citationUrl: "https://capitol.texas.gov/BillLookup/History.aspx?LegSess=88R&Bill=HB1735" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "TX HB 1735 enacted; federal air taxi pilot program selected Texas (2026)", citationDate: "2026-03" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "HB 1735 designed to complement federal UAM framework", citationDate: "2023-06" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "achieved", citation: "Wisk Aero autonomous flight testing partnership near DFW", citationDate: "2024-11" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "achieved", citation: "Wisk Gen 6 first flight completed Dec 2025", citationDate: "2025-12" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "achieved", citation: "City of Dallas vertiport zoning + DFW feasibility study", citationDate: "2024-06" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "achieved", citation: "DFW Vertiport Texas permit filed", citationDate: "2024-03" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "achieved", citation: "DFW Vertiport Texas under construction", citationDate: "2024-03" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "achieved", citation: "Wisk Corridor Vertiport in planning", citationDate: "2024-11" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "achieved", citation: "Wisk Aero conducting DFW test operations", citationDate: "2024-11" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "achieved", citation: "Wisk actively flight testing autonomous eVTOL", citationDate: "2025-12" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing", citation: "Only Wisk active in DFW currently", citationDate: "2026-03" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "achieved", citation: "City of Dallas vertiport zoning code amendment", citationDate: "2024-06" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "achieved", citation: "Zoning amendment specifically references vertiport/eVTOL operations", citationDate: "2024-06" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "achieved", citation: "DFW Vertiport Texas permitted through established pathway", citationDate: "2024-03" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "achieved", citation: "Texas pro-innovation aviation regulatory framework", citationDate: "2023-06" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "achieved", citation: "Texas actively supporting AAM development", citationDate: "2023-06" },
+        { id: "reg_engagement", label: "Community engagement process", status: "partial", citation: "DFW vertiport process included public comment; broader engagement developing", citationDate: "2024-06" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "DFW and DAL ASOS stations provide coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing", citation: "No dedicated low-altitude AAM sensing deployed", citationDate: "2026-03" },
+      ],
+    },
     notes: "Texas passed landmark UAM-friendly legislation (HB 1735) in 2023. Wisk completed first flight of Gen 6 autonomous eVTOL (Dec 2025) — the first FAA type certification candidate for autonomous passenger eVTOL. Joby commercially operational in Dubai (Feb 2026). Dallas is a primary US target market.",
     keyMilestones: ["Wisk Gen 6 autonomous eVTOL first flight (Dec 2025)", "Joby commercially operational in Dubai (Feb 2026)", "TX HB 1735 passed 2023", "DFW vertiport feasibility study complete"],
     lastUpdated: "2026-03-03",
@@ -438,6 +546,42 @@ const RAW_CITIES: City[] = [
       regulatoryPosture: { citation: "Florida pro-aviation regulatory posture, FDOT supporting AAM", date: "2024-06" },
       stateLegislation: { citation: "Florida Advanced Air Mobility Act signed into law", date: "2024-05" },
       weatherInfrastructure: { citation: "Major airport weather stations (MIA, FLL) provide regional coverage; no dedicated low-altitude AAM sensing deployed", date: "2026-03" },
+    },
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "achieved", citation: "Florida Advanced Air Mobility Act", citationDate: "2024-05" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "FL AAM Act enacted; FDOT actively supporting implementation", citationDate: "2024-06" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "FL AAM Act designed to complement federal framework", citationDate: "2024-05" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "partial", citation: "Joby operating Miami routes (ex-Blade); no formal municipal MOU", citationDate: "2026-03" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing", citation: "No eVTOL demo flights in Miami market", citationDate: "2026-03" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "partial", citation: "Miami-Dade vertiport feasibility study conducted", citationDate: "2024-07" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "achieved", citation: "Joby Miami helipad operational for air taxi", citationDate: "2026-03" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "achieved", citation: "Miami helipad operational (ex-Blade facility)", citationDate: "2026-03" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "partial", citation: "MIA-FLL corridor sites under evaluation", citationDate: "2026-03" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "achieved", citation: "Joby and Archer targeting Miami", citationDate: "2026-03" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "achieved", citation: "Joby operating Miami air taxi routes", citationDate: "2026-03" },
+        { id: "op_multiple", label: "Multiple operators present", status: "achieved", citation: "Joby operating + Archer planning MIA-FLL", citationDate: "2026-03" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "achieved", citation: "Miami-Dade vertiport network provisions", citationDate: "2024-07" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "partial", citation: "Referenced in feasibility study; formal code integration pending", citationDate: "2024-07" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "partial", citation: "Heliport permitting active; eVTOL-specific pathway developing", citationDate: "2026-03" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "achieved", citation: "FDOT actively supporting AAM infrastructure", citationDate: "2024-06" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "achieved", citation: "Florida pro-aviation regulatory posture", citationDate: "2024-06" },
+        { id: "reg_engagement", label: "Community engagement process", status: "unknown" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "MIA, FLL ASOS stations provide coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing", citation: "No dedicated low-altitude AAM sensing deployed", citationDate: "2026-03" },
+      ],
     },
     notes: "Florida is one of the most UAM-progressive states. Joby now operates Miami routes via Blade acquisition (Aug 2025). Archer targeting MIA–FLL corridor with United Airlines. Strong tourism demand case — MIA to South Beach and Key Biscayne corridors obvious.",
     keyMilestones: ["Joby acquires Blade's Miami operations (Aug 2025)", "Archer/United MIA–FLL corridor proposed", "FL UAM Act signed", "Miami Dade vertiport network study"],
@@ -458,6 +602,42 @@ const RAW_CITIES: City[] = [
       stateLegislation: { citation: "Florida Advanced Air Mobility Act applies statewide", date: "2024-05" },
       weatherInfrastructure: { citation: "Major airport weather stations (MCO, SFB) provide regional coverage; no dedicated low-altitude AAM sensing deployed", date: "2026-03" },
     },
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "achieved", citation: "Florida Advanced Air Mobility Act", citationDate: "2024-05" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "FL AAM Act enacted statewide", citationDate: "2024-05" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "FL AAM Act complements federal framework", citationDate: "2024-05" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "partial", citation: "Lake Nona smart city pilot; no specific operator MOU confirmed", citationDate: "2024-10" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "unknown" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "achieved", citation: "Lake Nona smart city UAM pilot program", citationDate: "2024-10" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "achieved", citation: "Lake Nona Vertiport permitted", citationDate: "2024-11" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "partial", citation: "Lake Nona Vertiport in development", citationDate: "2024-11" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "partial", citation: "MCO vertiport feasibility study underway", citationDate: "2024-11" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing", citation: "No operator publicly committed to Orlando market", citationDate: "2026-03" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "achieved", citation: "Orange County vertiport zoning provisions", citationDate: "2024-08" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "partial", citation: "Referenced in zoning provisions", citationDate: "2024-08" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "achieved", citation: "Lake Nona Vertiport permitted through pathway", citationDate: "2024-11" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "achieved", citation: "FDOT actively supporting AAM infrastructure", citationDate: "2024-06" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "achieved", citation: "Florida pro-aviation regulatory posture", citationDate: "2024-06" },
+        { id: "reg_engagement", label: "Community engagement process", status: "unknown" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "MCO, SFB ASOS stations provide coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing", citation: "No dedicated low-altitude AAM sensing deployed", citationDate: "2026-03" },
+      ],
+    },
     notes: "Lake Nona smart city district is an active UAM testbed. Tourism corridor (MCO to Disney/Universal) is a natural premium route. FL legislation applies.",
     keyMilestones: ["Lake Nona UAM pilot live", "MCO vertiport study funded by FDOT"],
     lastUpdated: "2025-02-01",
@@ -474,6 +654,42 @@ const RAW_CITIES: City[] = [
       regulatoryPosture: { citation: "Nevada has general drone regulation (NV SB 115) but no UAM-specific legislation", date: "2023-06" },
       weatherInfrastructure: { citation: "LAS airport weather station provides regional coverage; no dedicated low-altitude AAM sensing deployed", date: "2026-03" },
     },
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing", citation: "NV SB 115 is drone regulation, not UAM-specific", citationDate: "2023-06" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "unknown" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "unknown" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "missing" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "missing" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "partial", citation: "LVCC Rooftop Vertiport concept approved, design phase", citationDate: "2024-01" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "missing" },
+        { id: "reg_engagement", label: "Community engagement process", status: "missing" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "LAS ASOS station provides coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Tourism and convention economy creates premium shuttle demand. Strip to LAS airport is an obvious first corridor. NV SB 115 is a drone regulation update, not UAM-specific. Clark County vertiport overlay zone not verified in public record. NBAA-BACE conference activity is not a sustained pilot program.",
     keyMilestones: ["LVCC vertiport concept in design phase", "NV SB 115 drone regulation (not UAM-specific)"],
     lastUpdated: "2025-02-01",
@@ -488,6 +704,42 @@ const RAW_CITIES: City[] = [
     scoreSources: {
       stateLegislation: { citation: "AZ SB1827 (Office of Advanced Air Mobility) transmit to House; SB1819 (Vertiports; design; zoning) on consent calendar; SB1826 (AAM appropriation) House 2nd reading", date: "2026-03", url: "https://www.azleg.gov/" },
     },
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing", citation: "AZ bills actively moving but not yet enacted", citationDate: "2026-03" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "AZ SB1827, SB1826, SB1819 — coordinated AAM legislative package", citationDate: "2026-03", citationUrl: "https://www.azleg.gov/" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "AZ bills designed to complement federal framework", citationDate: "2026-03" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "achieved", citation: "Joby conducting autonomous flight testing in Arizona", citationDate: "2026-03" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "achieved", citation: "Joby autonomous flight technology testing active", citationDate: "2026-03" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "partial", citation: "Chandler/Tempe testing corridor; no formal city-level commitment", citationDate: "2026-03" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing", citation: "No approved vertiport sites in Phoenix metro", citationDate: "2026-03" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing", citation: "No vertiport construction in Phoenix metro", citationDate: "2026-03" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "achieved", citation: "Joby conducting Arizona flight testing", citationDate: "2026-03" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "achieved", citation: "Joby actively flight testing in AZ", citationDate: "2026-03" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing", citation: "Only Joby active in Phoenix market", citationDate: "2026-03" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing", citation: "No vertiport zoning ordinance in Phoenix", citationDate: "2026-03" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "partial", citation: "AZ SB1819 would add vertiport zoning language if enacted", citationDate: "2026-03" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing", citation: "No eVTOL-specific permitting pathway", citationDate: "2026-03" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "partial", citation: "AZ SB1827 would create Office of AAM; not yet enacted", citationDate: "2026-03" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "partial", citation: "Neutral overall but legislative activity shows momentum", citationDate: "2026-03" },
+        { id: "reg_engagement", label: "Community engagement process", status: "unknown" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "PHX, DVT, SDL ASOS/AWOS stations provide coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing", citation: "No dedicated low-altitude AAM sensing deployed", citationDate: "2026-03" },
+      ],
+    },
     notes: "Arizona has three coordinated AAM bills actively moving through the legislature — SB1827 (Office of Advanced Air Mobility), SB1826 (AAM appropriation), and SB1819 (Vertiports; design; zoning). This coordinated multi-bill pattern mirrors Texas and Florida before their legislation passed. Joby Aviation conducting autonomous flight technology testing in Arizona (2026). Chandler/Tempe testing corridor activity exists. Excellent weather for year-round operations.",
     keyMilestones: ["Joby autonomous flight testing in Arizona (2026)", "AZ SB1827 Office of AAM transmit to House (Mar 2026)", "AZ SB1819 Vertiport zoning on consent calendar", "AZ SB1826 AAM appropriation in House", "Chandler/Tempe drone testing activity"],
     lastUpdated: "2026-03-20",
@@ -499,6 +751,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial",
     heliportCount: 68, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "achieved", citation: "TX HB 1735 applies statewide", citationDate: "2023-06" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "Federal air taxi pilot program selected Texas", citationDate: "2026-03" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "HB 1735 complements federal framework", citationDate: "2023-06" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "partial", citation: "Federal air taxi pilot program; no Houston-specific operator MOU", citationDate: "2026-03" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "partial", citation: "IAH exploring vertiport feasibility", citationDate: "2026-03" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "partial", citation: "IAH exploring vertiport feasibility", citationDate: "2026-03" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing", citation: "No local vertiport zoning code adopted", citationDate: "2026-03" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "achieved", citation: "TxDOT active AAM work", citationDate: "2026-03" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "achieved", citation: "Texas pro-innovation aviation framework", citationDate: "2023-06" },
+        { id: "reg_engagement", label: "Community engagement process", status: "unknown" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "IAH, HOU ASOS stations provide coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Texas HB 1735 creates statewide favorable environment and TxDOT has active AAM work, but Houston has no local vertiport zoning code adopted. Extreme sprawl and lack of mass transit creates one of the strongest UAM demand cases in the country. Texas selected for federal air taxi pilot program (2026).",
     keyMilestones: ["Federal air taxi pilot program (2026)", "TX HB 1735 applies statewide", "No local vertiport zoning adopted", "IAH exploring vertiport feasibility"],
     lastUpdated: "2026-03-20",
@@ -510,6 +798,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial",
     heliportCount: 21, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "achieved", citation: "TX HB 1735 applies statewide", citationDate: "2023-06" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "Federal air taxi pilot program selected Texas", citationDate: "2026-03" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "HB 1735 complements federal framework", citationDate: "2023-06" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "partial", citation: "Federal air taxi pilot program; no Austin-specific operator MOU", citationDate: "2026-03" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "partial", citation: "AUS airport mobility study initiated", citationDate: "2026-03" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "achieved", citation: "TxDOT active AAM work", citationDate: "2026-03" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "achieved", citation: "Texas pro-innovation aviation framework", citationDate: "2023-06" },
+        { id: "reg_engagement", label: "Community engagement process", status: "unknown" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "AUS ASOS station provides coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Tech hub culture + Texas legislation = high potential but no local vertiport zoning code adopted. SXSW creates annual demo opportunities. AUS airport actively studying UAM. Strong VC community for early adoption. Texas selected for federal air taxi pilot program (2026).",
     keyMilestones: ["Federal air taxi pilot program (2026)", "TX HB 1735 applies", "No local vertiport zoning adopted", "AUS airport mobility study initiated"],
     lastUpdated: "2026-03-20",
@@ -521,6 +845,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "friendly", stateLegislationStatus: "enacted", weatherInfraLevel: "partial",
     heliportCount: 16, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "achieved", citation: "CA SB 944 applies statewide", citationDate: "2024-09" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "CA UAM Task Force ongoing", citationDate: "2025-01" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "SB 944 complements federal framework", citationDate: "2024-09" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "missing" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "unknown" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "achieved", citation: "San Diego vertiport zoning provisions", citationDate: "2025-02" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "unknown" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "unknown" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "achieved", citation: "CA Governor Executive Order on AAM", citationDate: "2023-10" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "achieved", citation: "California actively supporting AAM", citationDate: "2023-10" },
+        { id: "reg_engagement", label: "Community engagement process", status: "unknown" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "SAN ASOS station provides coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "CA legislation applies. Military/defense presence creates drone testing infrastructure. SAN-LAX corridor is a compelling regional air mobility use case.",
     keyMilestones: ["CA UAM task force active", "Miramar UAM testing discussions reported"],
     lastUpdated: "2025-02-01",
@@ -532,6 +892,42 @@ const RAW_CITIES: City[] = [
     activeOperators: ["op_joby"],
     regulatoryPosture: "neutral", stateLegislationStatus: "enacted", weatherInfraLevel: "partial",
     heliportCount: 17, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "achieved", citation: "CA SB 944 applies statewide", citationDate: "2024-09" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "CA UAM Task Force ongoing", citationDate: "2025-01" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "SB 944 complements federal framework", citationDate: "2024-09" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "achieved", citation: "Joby conducting SF Bay demo flights", citationDate: "2026-03" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "achieved", citation: "Joby Golden Gate eVTOL demonstration flight", citationDate: "2026-03" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "partial", citation: "SFO studying eVTOL integration; no formal city commitment", citationDate: "2026-03" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "achieved", citation: "Joby targeting SF Bay Area", citationDate: "2026-03" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "achieved", citation: "Joby completed SF Bay demo flights", citationDate: "2026-03" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing", citation: "Only Joby active in SF market", citationDate: "2026-03" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "achieved", citation: "SF vertiport zoning provisions", citationDate: "2026-03" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "unknown" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "unknown" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "achieved", citation: "CA Governor Executive Order on AAM", citationDate: "2023-10" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "partial", citation: "CA supportive but SF dense airspace creates challenges", citationDate: "2026-03" },
+        { id: "reg_engagement", label: "Community engagement process", status: "unknown" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "SFO, OAK ASOS stations provide coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Joby Aviation completed multiple piloted eVTOL demonstration flights across San Francisco Bay including the Golden Gate flight (2026). Dense airspace and political headwinds slow progress despite being the tech capital. Strong VC interest. SFO to downtown SF is an obvious corridor once regulations allow.",
     keyMilestones: ["Joby Golden Gate eVTOL demonstration flight (2026)", "CA UAM task force active", "SFO studying eVTOL integration"],
     lastUpdated: "2026-03-20",
@@ -543,6 +939,42 @@ const RAW_CITIES: City[] = [
     activeOperators: ["op_archer"],
     regulatoryPosture: "neutral", stateLegislationStatus: "actively_moving", weatherInfraLevel: "partial",
     heliportCount: 25, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing", citation: "No IL UAM bill enacted", citationDate: "2026-03" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "IL HB3190 on 2nd reading calendar", citationDate: "2026-03", citationUrl: "https://legiscan.com/IL/bill/HB3190/2025" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "unknown" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "achieved", citation: "Archer/United Airlines targeting Chicago", citationDate: "2026-03" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "partial", citation: "Archer Abu Dhabi flight tests completed (not in Chicago)", citationDate: "2026-03" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "missing" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "partial", citation: "ORD downtown corridor concept proposed", citationDate: "2026-03" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "achieved", citation: "Archer publicly committed to Chicago launch", citationDate: "2026-03" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "partial", citation: "Archer has United partnership but no Chicago-specific operations yet", citationDate: "2026-03" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "missing" },
+        { id: "reg_engagement", label: "Community engagement process", status: "missing" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "ORD, MDW ASOS stations provide coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Archer targeting Chicago as a launch city with United Airlines partnership. ORD to downtown corridor proposed. Archer completed Abu Dhabi flight test campaign and has NVIDIA/Starlink partnerships accelerating autonomy development. IL HB3190 (AERONAUTICS-UNMANNED AIRCRAFT) on calendar for 2nd reading.",
     keyMilestones: ["Archer/United O'Hare corridor announced", "Archer Abu Dhabi flight tests completed", "United Airlines investment in Archer confirmed", "IL HB3190 aeronautics bill on 2nd reading calendar"],
     scoreSources: { stateLegislation: { citation: "IL HB3190 (AERONAUTICS-UNMANNED AIRCRAFT) placed on calendar for 2nd reading", date: "2026-03", url: "https://legiscan.com/IL/bill/HB3190/2025" } },
@@ -555,6 +987,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial",
     heliportCount: 27, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "unknown" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "unknown" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "missing" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "missing" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "partial", citation: "ATL long-range plan studying UAM infrastructure", citationDate: "2025-02" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "partial", citation: "Delta invested in Joby; no formal Atlanta commitment", citationDate: "2025-02" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "missing" },
+        { id: "reg_engagement", label: "Community engagement process", status: "missing" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "ATL ASOS station provides coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "World's busiest airport + Delta HQ (Joby investor) creates compelling airline partnership angle. Massive traffic congestion creates strong demand case.",
     keyMilestones: ["Delta invested in Joby Aviation", "ATL long-range plan studying UAM infrastructure"],
     lastUpdated: "2025-02-01",
@@ -566,6 +1034,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial",
     heliportCount: 10, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "unknown" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "unknown" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "missing" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "missing" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "missing" },
+        { id: "reg_engagement", label: "Community engagement process", status: "missing" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "BNA ASOS station provides coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Rapid population growth and severe traffic congestion creates strong demand signal. BNA expansion plan references future mobility. Strong music/tourism economy for premium services.",
     keyMilestones: ["Nashville 2040 plan references UAM", "BNA expansion includes future mobility study"],
     lastUpdated: "2025-02-01",
@@ -577,6 +1081,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial",
     heliportCount: 11, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "unknown" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "unknown" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "partial", citation: "NC DOT FAA AAM Integration Pilot Program; no operator-specific MOU", citationDate: "2026-03" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "achieved", citation: "Charlotte Future Mobility Task Force formed", citationDate: "2026-03" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "achieved", citation: "Charlotte Future Mobility Task Force", citationDate: "2026-03" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "partial", citation: "NC DOT participating in FAA pilot; city-level stance neutral", citationDate: "2026-03" },
+        { id: "reg_engagement", label: "Community engagement process", status: "unknown" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "CLT ASOS station provides coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "NC DOT joined FAA Advanced Air Mobility Integration Pilot Program for electric aircraft testing (2026). CLT is a major US hub. Dense banking/finance HQs create executive shuttle demand. Fastest-growing major city in Southeast creates infrastructure urgency.",
     keyMilestones: ["NC DOT joins FAA AAM Integration Pilot Program (2026)", "CLT airport long-range plan references UAM", "Charlotte Future Mobility Task Force formed"],
     lastUpdated: "2026-03-20",
@@ -588,6 +1128,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial",
     heliportCount: 28, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "unknown" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "unknown" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "missing" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "missing" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "missing" },
+        { id: "reg_engagement", label: "Community engagement process", status: "missing" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "DEN ASOS station provides coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Mountain resort corridors (Denver to Vail/Aspen/Breckenridge) represent a compelling regional air mobility use case unlike any other US market.",
     keyMilestones: ["DEN airport studying future mobility infrastructure", "CO aerospace corridor designation"],
     lastUpdated: "2025-02-01",
@@ -599,6 +1175,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial",
     heliportCount: 21, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "unknown" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "unknown" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "missing" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "missing" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "missing" },
+        { id: "reg_engagement", label: "Community engagement process", status: "missing" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "SEA ASOS station provides coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Boeing and Amazon presence creates a unique innovation ecosystem. Puget Sound water crossing corridors are a compelling geographic opportunity not available elsewhere.",
     keyMilestones: ["Amazon Prime Air BVLOS ops nearby", "Boeing invested in multiple eVTOL companies"],
     lastUpdated: "2025-02-01",
@@ -610,6 +1222,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial",
     heliportCount: 11, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "unknown" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "unknown" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "missing" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "partial", citation: "MassPort studying UAM integration at Logan", citationDate: "2025-02" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "missing" },
+        { id: "reg_engagement", label: "Community engagement process", status: "missing" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "BOS ASOS station provides coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Logan to downtown harbor crossing is a natural first route — currently takes 45+ min by car. MIT/Harvard research ecosystem. MassPort exploring UAM at Logan.",
     keyMilestones: ["MassPort studying UAM integration at Logan", "MIT UAM research lab established"],
     lastUpdated: "2025-02-01",
@@ -621,6 +1269,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "neutral", stateLegislationStatus: "none", weatherInfraLevel: "partial",
     heliportCount: 10, heliportPublicCount: 0,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "unknown" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "unknown" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "missing" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "missing" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "unknown" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "missing" },
+        { id: "reg_engagement", label: "Community engagement process", status: "missing" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "MSP ASOS station provides coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Cold weather testing ground — any operator validated here works everywhere. MSP is a major Delta hub. Twin Cities sprawl creates transit gaps UAM could address.",
     keyMilestones: ["University of MN UAM research program active"],
     lastUpdated: "2025-02-01",
@@ -632,6 +1316,42 @@ const RAW_CITIES: City[] = [
     activeOperators: [],
     regulatoryPosture: "restrictive", stateLegislationStatus: "none", weatherInfraLevel: "none",
     heliportCount: 25, heliportPublicCount: 1,
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "unknown" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "missing", citation: "SFRA restrictions create unique federal/local conflict", citationDate: "2025-02" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "missing" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "missing" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "missing" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "partial", citation: "DCA/IAD corridor study initiated", citationDate: "2025-02" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "missing" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "missing" },
+        { id: "op_multiple", label: "Multiple operators present", status: "missing" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "missing" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "missing", citation: "Restrictive — SFRA heavily constrains operations", citationDate: "2025-02" },
+        { id: "reg_engagement", label: "Community engagement process", status: "missing" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "missing", citation: "Restricted airspace limits utility of standard weather stations for UAM", citationDate: "2025-02" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing" },
+      ],
+    },
     notes: "Heavily restricted airspace (SFRA) around DC makes UAM operations extremely challenging in the near term. FAA is studying potential exceptions but timeline unclear.",
     keyMilestones: ["FAA studying SFRA exceptions for eVTOL", "DCA/IAD corridor study initiated"],
     lastUpdated: "2025-02-01",
@@ -647,6 +1367,42 @@ const RAW_CITIES: City[] = [
       regulatoryPosture: { citation: "ODOT created dedicated AAM Division (Mar 2025); DriveOhio published nation's first state AAM framework", date: "2025-03", url: "https://www.urbanairmobilitynews.com/uam-infrastructure/ohio-publishes-advanced-air-mobility-framework/" },
       stateLegislation: { citation: "OH HR304 adopted — legislature formally supports vertical takeoff and air mobility; HB 251 (vertiports as aviation infrastructure) passed House, in Senate committee", date: "2026-03" },
       weatherInfrastructure: { citation: "CMH and LCK airport weather stations provide regional coverage; Ohio eIPP proposal includes weather component", date: "2026-03" },
+    },
+    subIndicators: {
+      stateLegislation: [
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "partial", citation: "OH HR304 adopted (non-binding resolution); HB 251 passed House, in Senate committee", citationDate: "2026-03" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "HB 251 (vertiports as aviation infrastructure) in Senate committee", citationDate: "2026-03" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "Ohio framework designed to complement federal standards", citationDate: "2026-03" },
+      ],
+      activePilotProgram: [
+        { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "achieved", citation: "Ohio multi-state eIPP proposal with BETA/Joby/DHL", citationDate: "2026-01" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "partial", citation: "SkyVision UAS test site operational; eVTOL flights pending", citationDate: "2026-03" },
+        { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "achieved", citation: "ODOT created dedicated AAM Division; DriveOhio AAM framework", citationDate: "2025-03" },
+      ],
+      approvedVertiport: [
+        { id: "vp_approved_sites", label: "Approved vertiport site(s)", status: "missing" },
+        { id: "vp_construction", label: "Vertiport under construction or built", status: "missing" },
+        { id: "vp_planning", label: "Additional sites in planning pipeline", status: "partial", citation: "DriveOhio AAM framework includes vertiport recommendations", citationDate: "2025-03" },
+      ],
+      activeOperatorPresence: [
+        { id: "op_committed", label: "Operator publicly committed to market", status: "partial", citation: "Joby manufacturing in Dayton; eIPP proposal includes Columbus operations", citationDate: "2026-01" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "achieved", citation: "Joby Dayton propeller facility operational (Oct 2025)", citationDate: "2025-10" },
+        { id: "op_multiple", label: "Multiple operators present", status: "partial", citation: "BETA Technologies in eIPP proposal; Joby manufacturing", citationDate: "2026-01" },
+      ],
+      vertiportZoning: [
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "partial", citation: "HB 251 would define vertiports as aviation infrastructure", citationDate: "2026-03" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing" },
+      ],
+      regulatoryPosture: [
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "achieved", citation: "ODOT AAM Division created; DriveOhio framework published", citationDate: "2025-03", citationUrl: "https://www.urbanairmobilitynews.com/uam-infrastructure/ohio-publishes-advanced-air-mobility-framework/" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "achieved", citation: "Ohio has nation's most organized state AAM strategy", citationDate: "2025-03" },
+        { id: "reg_engagement", label: "Community engagement process", status: "partial", citation: "State-level engagement strong; local Columbus process developing", citationDate: "2026-03" },
+      ],
+      weatherInfrastructure: [
+        { id: "wx_asos", label: "ASOS/AWOS station coverage", status: "achieved", citation: "CMH, LCK ASOS stations provide coverage", citationDate: "2026-03" },
+        { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "partial", citation: "Ohio eIPP proposal includes weather component", citationDate: "2026-03" },
+      ],
     },
     notes: "Ohio has arguably the most organized state-level AAM strategy in the US. DriveOhio published the nation's first AAM framework covering route planning, vertiport recommendations, and a strategic roadmap. ODOT created a dedicated AAM Division (Mar 2025) led by Robert Tanner, co-located with the National Advanced Air Mobility Center of Excellence in Springfield. Ohio submitted a multi-state eIPP proposal (Jan 2026) with BETA Technologies, Joby, and DHL for medical cargo between Indianapolis, Columbus, and Akron. Joby operates a propeller blade manufacturing facility in Dayton (opened Oct 2025) with plans for 700K+ sq ft expansion to support 500 aircraft/year production. HB 251 — defining vertiports as aviation infrastructure under Ohio law — passed the House and is in Senate committee. SkyVision FAA-designated UAS test site at Springfield-Beckley provides BVLOS testing capability. State estimates $13B AAM economic impact through 2045.",
     keyMilestones: [

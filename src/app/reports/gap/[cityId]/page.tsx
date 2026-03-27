@@ -7,14 +7,33 @@ import { getUserTier } from "@/lib/billing";
 import { hasProAccess } from "@/lib/billing-shared";
 import { getCitiesWithOverrides } from "@/data/seed";
 import { OPERATORS_MAP } from "@/data/seed";
-import { analyzeGaps, getPeerContext } from "@/lib/gap-analysis";
+import { getEnhancedGapAnalysis } from "@/lib/gap-analysis";
 import { getScoreHistoryFull } from "@/lib/score-history";
 import { getCorridorsForCity } from "@/lib/corridors";
+import { SUB_INDICATOR_DEFS } from "@/lib/sub-indicators";
 import PrintButton from "./PrintButton";
+import type { SubIndicator } from "@/types";
 
 export const metadata: Metadata = {
   robots: "noindex, nofollow",
 };
+
+const STATUS_ICONS: Record<string, { icon: string; color: string; printColor: string }> = {
+  achieved: { icon: "\u2713", color: "#00ff88", printColor: "#16a34a" },
+  partial: { icon: "\u25CF", color: "#f59e0b", printColor: "#d97706" },
+  missing: { icon: "\u2717", color: "#ff4444", printColor: "#dc2626" },
+  unknown: { icon: "?", color: "#555", printColor: "#9ca3af" },
+};
+
+function SubIndicatorBadge({ si, forPrint = false }: { si: SubIndicator; forPrint?: boolean }) {
+  const { icon, color, printColor } = STATUS_ICONS[si.status] ?? STATUS_ICONS.unknown;
+  const c = forPrint ? printColor : color;
+  return (
+    <span style={{ color: c, fontSize: 12, fontWeight: 700 }} title={`${si.label}: ${si.status}`}>
+      {icon}
+    </span>
+  );
+}
 
 export default async function GapReportPage({
   params,
@@ -23,7 +42,7 @@ export default async function GapReportPage({
 }) {
   const { cityId } = await params;
 
-  // Pro gate (also allows admin)
+  // Admin-only gate (enterprise deliverable)
   const session = await auth();
   if (!session?.user?.id) {
     redirect("/login");
@@ -38,8 +57,8 @@ export default async function GapReportPage({
   const city = allCities.find((c) => c.id === cityId);
   if (!city) notFound();
 
-  const gap = analyzeGaps(city);
-  const peers = getPeerContext(city, allCities);
+  const enhanced = getEnhancedGapAnalysis(city, allCities);
+  const { peers } = enhanced;
 
   let rawHistory: Awaited<ReturnType<typeof getScoreHistoryFull>> = [];
   try {
@@ -74,11 +93,18 @@ export default async function GapReportPage({
   });
 
   const tierThresholds: Record<string, string> = {
-    ADVANCED: "75–100",
-    MODERATE: "50–74",
-    EARLY: "30–49",
-    NASCENT: "0–29",
+    ADVANCED: "75\u2013100",
+    MODERATE: "50\u201374",
+    EARLY: "30\u201349",
+    NASCENT: "0\u201329",
   };
+
+  // Group sub-indicator defs by factor for maturity matrix
+  const factorGroups = enhanced.factors.map((f) => ({
+    label: f.label,
+    key: f.key,
+    subIndicators: f.subIndicators,
+  }));
 
   return (
     <>
@@ -213,12 +239,12 @@ export default async function GapReportPage({
                 width: 120,
                 height: 120,
                 borderRadius: "50%",
-                border: `3px solid ${gap.tierColor}`,
+                border: `3px solid ${enhanced.tierColor}`,
                 margin: "0 0 16px",
               }}
             >
-              <span style={{ fontSize: 40, fontWeight: 700, color: gap.tierColor }}>
-                {gap.score}
+              <span style={{ fontSize: 40, fontWeight: 700, color: enhanced.tierColor }}>
+                {enhanced.score}
               </span>
             </div>
 
@@ -227,7 +253,7 @@ export default async function GapReportPage({
                 className="tier-badge"
                 style={{
                   display: "inline-block",
-                  background: gap.tierColor,
+                  background: enhanced.tierColor,
                   color: "#050508",
                   padding: "6px 20px",
                   borderRadius: 4,
@@ -236,7 +262,7 @@ export default async function GapReportPage({
                   letterSpacing: "0.1em",
                 }}
               >
-                {gap.tier}
+                {enhanced.tier}
               </span>
             </div>
 
@@ -284,12 +310,13 @@ export default async function GapReportPage({
               Executive Summary
             </h2>
             <p style={{ fontSize: 14, lineHeight: 1.8, margin: "0 0 12px" }}>
-              {city.city}, {city.state} is classified as <strong style={{ color: gap.tierColor }}>{gap.tier}</strong> ({tierThresholds[gap.tier]}) on the AirIndex UAM Readiness Index with a score of <strong>{gap.score}/100</strong>.
+              {city.city}, {city.state} is classified as <strong style={{ color: enhanced.tierColor }}>{enhanced.tier}</strong> ({tierThresholds[enhanced.tier]}) on the AirIndex UAM Readiness Index with a score of <strong>{enhanced.score}/100</strong>.
             </p>
             <p style={{ fontSize: 14, lineHeight: 1.8, margin: "0 0 12px" }}>
-              <strong>{gap.achievedCount} of {gap.totalFactors}</strong> readiness factors are fully achieved.
-              {gap.gaps.length > 0 && (
-                <> Closing the top gap — <strong>{gap.gaps[0].label}</strong> — alone would add <strong>{gap.gaps[0].max - gap.gaps[0].earned} points</strong> to the score.</>
+              <strong>{enhanced.achievedCount} of {enhanced.totalFactors}</strong> readiness factors are fully achieved.
+              {" "}<strong>{enhanced.subIndicatorSummary.achieved} of {enhanced.subIndicatorSummary.total}</strong> diagnostic sub-indicators are met.
+              {enhanced.gaps.length > 0 && (
+                <> Closing the top gap &mdash; <strong>{enhanced.gaps[0].label}</strong> &mdash; alone would add <strong>{enhanced.gaps[0].max - enhanced.gaps[0].earned} points</strong> to the score.</>
               )}
             </p>
             {operatorNames.length > 0 && (
@@ -304,7 +331,7 @@ export default async function GapReportPage({
             )}
           </div>
 
-          {/* ======== SECTION 3: FACTOR BREAKDOWN ======== */}
+          {/* ======== SECTION 3: FACTOR BREAKDOWN (with sub-indicators) ======== */}
           <div
             className="section-card"
             style={{
@@ -343,37 +370,60 @@ export default async function GapReportPage({
                 </tr>
               </thead>
               <tbody>
-                {gap.factors.map((f) => (
-                  <tr key={f.key} style={{ borderBottom: "1px solid #0f0f1a" }}>
-                    <td style={{ padding: "10px 4px", fontWeight: 600 }}>{f.label}</td>
-                    <td style={{ textAlign: "center", padding: "10px 4px", color: "#888" }}>{f.max}</td>
-                    <td style={{ textAlign: "center", padding: "10px 4px" }}>
-                      <span style={{ color: f.achieved ? "#00ff88" : f.partial ? "#f59e0b" : "#ff4444" }}>
-                        {f.earned}
-                      </span>
-                    </td>
-                    <td style={{ textAlign: "center", padding: "10px 4px" }}>
-                      {f.achieved ? (
-                        <span style={{ color: "#00ff88" }}>&#10003;</span>
-                      ) : f.partial ? (
-                        <span style={{ color: "#f59e0b" }}>&#9679;</span>
-                      ) : (
-                        <span style={{ color: "#ff4444" }}>&#10007;</span>
-                      )}
-                    </td>
-                    <td style={{ padding: "10px 4px", color: "#888", fontSize: 12 }}>
-                      {f.citation
-                        ? `${f.citation}${f.citationDate ? ` (${f.citationDate})` : ""}`
-                        : "—"}
-                    </td>
-                  </tr>
+                {enhanced.factors.map((f) => (
+                  <>
+                    <tr key={f.key} style={{ borderBottom: "1px solid #0f0f1a" }}>
+                      <td style={{ padding: "10px 4px", fontWeight: 600 }}>{f.label}</td>
+                      <td style={{ textAlign: "center", padding: "10px 4px", color: "#888" }}>{f.max}</td>
+                      <td style={{ textAlign: "center", padding: "10px 4px" }}>
+                        <span style={{ color: f.achieved ? "#00ff88" : f.partial ? "#f59e0b" : "#ff4444" }}>
+                          {f.earned}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: "center", padding: "10px 4px" }}>
+                        {f.achieved ? (
+                          <span style={{ color: "#00ff88" }}>&#10003;</span>
+                        ) : f.partial ? (
+                          <span style={{ color: "#f59e0b" }}>&#9679;</span>
+                        ) : (
+                          <span style={{ color: "#ff4444" }}>&#10007;</span>
+                        )}
+                      </td>
+                      <td style={{ padding: "10px 4px", color: "#888", fontSize: 12 }}>
+                        {f.citation
+                          ? `${f.citation}${f.citationDate ? ` (${f.citationDate})` : ""}`
+                          : "\u2014"}
+                      </td>
+                    </tr>
+                    {/* Nested sub-indicator rows */}
+                    {f.subIndicators.map((si) => (
+                      <tr key={si.id} style={{ borderBottom: "1px solid #0a0a14" }}>
+                        <td style={{ padding: "6px 4px 6px 24px", color: "#999", fontSize: 11 }}>
+                          {si.label}
+                        </td>
+                        <td />
+                        <td />
+                        <td style={{ textAlign: "center", padding: "6px 4px" }}>
+                          <SubIndicatorBadge si={si} />
+                        </td>
+                        <td style={{ padding: "6px 4px", color: "#666", fontSize: 11 }}>
+                          {si.citation || "\u2014"}
+                          {si.peerNote && (
+                            <span style={{ color: "#00d4ff", marginLeft: 6, fontStyle: "italic" }}>
+                              ({si.peerNote})
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </>
                 ))}
               </tbody>
             </table>
           </div>
 
-          {/* ======== SECTION 4: GAP ANALYSIS & RECOMMENDATIONS ======== */}
-          {gap.gaps.length > 0 && (
+          {/* ======== SECTION 4: GAP ANALYSIS & RECOMMENDATIONS (with sub-indicators) ======== */}
+          {enhanced.gaps.length > 0 && (
             <div
               className="section-card"
               style={{
@@ -395,7 +445,7 @@ export default async function GapReportPage({
               >
                 Gap Analysis &amp; Recommendations
               </h2>
-              {gap.gaps.map((g) => (
+              {enhanced.gaps.map((g) => (
                 <div
                   key={g.key}
                   style={{
@@ -410,15 +460,99 @@ export default async function GapReportPage({
                       {g.earned}/{g.max} pts &middot; {g.max - g.earned} pts available
                     </span>
                   </h3>
-                  <p style={{ fontSize: 13, lineHeight: 1.7, color: "#aaa", margin: "0" }}>
+                  <p style={{ fontSize: 13, lineHeight: 1.7, color: "#aaa", margin: "0 0 8px" }}>
                     {g.recommendation}
                   </p>
+                  {/* Sub-indicators for this gap */}
+                  {g.subIndicators.filter((si) => si.status !== "achieved").length > 0 && (
+                    <div style={{ marginTop: 4 }}>
+                      <div style={{ color: "#666", fontSize: 10, letterSpacing: 1, marginBottom: 4 }}>MISSING INDICATORS</div>
+                      {g.subIndicators
+                        .filter((si) => si.status !== "achieved")
+                        .map((si) => {
+                          const { icon, color } = STATUS_ICONS[si.status] ?? STATUS_ICONS.unknown;
+                          return (
+                            <div key={si.id} style={{ display: "flex", alignItems: "center", gap: 6, padding: "2px 0" }}>
+                              <span style={{ color, fontSize: 10, fontWeight: 700 }}>{icon}</span>
+                              <span style={{ color: "#999", fontSize: 11 }}>{si.label}</span>
+                              {si.peerNote && (
+                                <span style={{ color: "#00d4ff", fontSize: 10, fontStyle: "italic" }}>
+                                  &mdash; {si.peerNote}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           )}
 
-          {/* ======== SECTION 5: COMPETITIVE CONTEXT ======== */}
+          {/* ======== SECTION 5: SUB-INDICATOR MATURITY MATRIX ======== */}
+          <div
+            className="section-card"
+            style={{
+              background: "#0a0a12",
+              border: "1px solid #1a1a2e",
+              borderRadius: 12,
+              padding: "32px 28px",
+              marginBottom: 24,
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 20,
+                fontWeight: 700,
+                color: "#ffffff",
+                margin: "0 0 8px",
+              }}
+            >
+              Sub-Indicator Maturity Matrix
+            </h2>
+            <p style={{ fontSize: 12, color: "#888", margin: "0 0 16px" }}>
+              {enhanced.subIndicatorSummary.achieved} achieved &middot; {enhanced.subIndicatorSummary.partial} partial &middot; {enhanced.subIndicatorSummary.missing} missing &middot; {enhanced.subIndicatorSummary.unknown} unknown &mdash; {enhanced.subIndicatorSummary.total} total
+            </p>
+
+            {factorGroups.map((group) => (
+              <div key={group.key} style={{ marginBottom: 16 }}>
+                <div style={{ color: "#aaa", fontSize: 11, fontWeight: 600, marginBottom: 6 }}>
+                  {group.label}
+                </div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {group.subIndicators.map((si) => {
+                    const { color } = STATUS_ICONS[si.status] ?? STATUS_ICONS.unknown;
+                    return (
+                      <div
+                        key={si.id}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                          padding: "4px 8px",
+                          borderRadius: 4,
+                          background: "rgba(255,255,255,0.03)",
+                          border: `1px solid ${color}33`,
+                          fontSize: 10,
+                          color: "#ccc",
+                        }}
+                        title={`${si.label}: ${si.status}${si.citation ? ` — ${si.citation}` : ""}`}
+                      >
+                        <span style={{ color, fontWeight: 700 }}>
+                          {STATUS_ICONS[si.status]?.icon ?? "?"}
+                        </span>
+                        {si.label}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ======== SECTION 6: COMPETITIVE CONTEXT ======== */}
           <div
             className="section-card"
             style={{
@@ -444,19 +578,19 @@ export default async function GapReportPage({
             {peers.sameTier.length > 0 ? (
               <div style={{ marginBottom: 16 }}>
                 <h3 style={{ fontSize: 14, fontWeight: 600, color: "#888", margin: "0 0 8px" }}>
-                  Same Tier ({gap.tier})
+                  Same Tier ({enhanced.tier})
                 </h3>
                 <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, lineHeight: 1.8 }}>
                   {peers.sameTier.map((p) => (
                     <li key={p.id}>
-                      {p.city}, {p.state} — {p.score}/100
+                      {p.city}, {p.state} &mdash; {p.score}/100
                     </li>
                   ))}
                 </ul>
               </div>
             ) : (
               <p style={{ fontSize: 13, color: "#888", margin: "0 0 16px" }}>
-                No other cities currently share the {gap.tier} tier.
+                No other cities currently share the {enhanced.tier} tier.
               </p>
             )}
 
@@ -469,7 +603,7 @@ export default async function GapReportPage({
                   <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, lineHeight: 1.8 }}>
                     {peers.nextTierCities.map((p) => (
                       <li key={p.id}>
-                        {p.city}, {p.state} — {p.score}/100
+                        {p.city}, {p.state} &mdash; {p.score}/100
                       </li>
                     ))}
                   </ul>
@@ -488,7 +622,7 @@ export default async function GapReportPage({
             )}
           </div>
 
-          {/* ======== SECTION 6: SCORE TRAJECTORY ======== */}
+          {/* ======== SECTION 7: SCORE TRAJECTORY ======== */}
           <div
             className="section-card"
             style={{
@@ -534,7 +668,7 @@ export default async function GapReportPage({
                           {new Date(h.capturedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                         </td>
                         <td style={{ textAlign: "center", padding: "8px 4px" }}>{h.score}</td>
-                        <td style={{ textAlign: "center", padding: "8px 4px", color: "#888" }}>{h.tier || "—"}</td>
+                        <td style={{ textAlign: "center", padding: "8px 4px", color: "#888" }}>{h.tier || "\u2014"}</td>
                         <td style={{ padding: "8px 4px", color: "#888", fontSize: 12 }}>
                           {h.triggeringEvent?.summary || "Scheduled snapshot"}
                         </td>
@@ -553,8 +687,8 @@ export default async function GapReportPage({
             )}
           </div>
 
-          {/* ======== SECTION 7: PRIORITY MATRIX ======== */}
-          {gap.gaps.length > 0 && (
+          {/* ======== SECTION 8: PRIORITY MATRIX ======== */}
+          {enhanced.gaps.length > 0 && (
             <div
               className="section-card"
               style={{
@@ -580,13 +714,13 @@ export default async function GapReportPage({
                 {/* Quick Wins */}
                 <div style={{ flex: "1 1 240px" }}>
                   <h3 style={{ fontSize: 14, fontWeight: 700, color: "#f59e0b", margin: "0 0 12px" }}>
-                    Quick Wins (1–3 months)
+                    Quick Wins (1&ndash;3 months)
                   </h3>
-                  {gap.quickWins.length > 0 ? (
+                  {enhanced.quickWins.length > 0 ? (
                     <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, lineHeight: 1.8 }}>
-                      {gap.quickWins.map((g) => (
+                      {enhanced.quickWins.map((g) => (
                         <li key={g.key}>
-                          {g.label} — {g.max - g.earned} pts
+                          {g.label} &mdash; {g.max - g.earned} pts
                         </li>
                       ))}
                     </ul>
@@ -600,13 +734,13 @@ export default async function GapReportPage({
                 {/* Strategic */}
                 <div style={{ flex: "1 1 240px" }}>
                   <h3 style={{ fontSize: 14, fontWeight: 700, color: "#ff4444", margin: "0 0 12px" }}>
-                    Strategic Investments (6–18 months)
+                    Strategic Investments (6&ndash;18 months)
                   </h3>
-                  {gap.highImpact.length > 0 ? (
+                  {enhanced.highImpact.length > 0 ? (
                     <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, lineHeight: 1.8 }}>
-                      {gap.highImpact.map((g) => (
+                      {enhanced.highImpact.map((g) => (
                         <li key={g.key}>
-                          {g.label} — {g.max - g.earned} pts
+                          {g.label} &mdash; {g.max - g.earned} pts
                         </li>
                       ))}
                     </ul>
@@ -620,7 +754,7 @@ export default async function GapReportPage({
             </div>
           )}
 
-          {/* ======== SECTION 8: FEDERAL GRANT LANGUAGE ======== */}
+          {/* ======== SECTION 9: FEDERAL GRANT LANGUAGE ======== */}
           <div
             className="section-card"
             style={{
@@ -657,7 +791,7 @@ export default async function GapReportPage({
                 color: "#ccc",
               }}
             >
-              &ldquo;{city.city} has been assessed at Readiness Tier {gap.tier} ({gap.score}/100) by AirIndex, an independent UAM market intelligence platform tracking 20+ US metropolitan areas across seven standardized readiness factors including pilot programs, vertiport infrastructure, operator presence, zoning frameworks, regulatory posture, state legislation, and weather infrastructure. {city.city} currently meets {gap.achievedCount} of 7 factors.{peers.pointsToNextTier ? ` An investment of ${peers.pointsToNextTier} additional readiness points would advance the market to ${peers.nextTier} tier, positioning it among markets such as ${peers.nextTierCities.slice(0, 2).map((c) => c.city).join(" and ") || "leading UAM-ready cities"}.` : ""}&rdquo;
+              &ldquo;{city.city} has been assessed at Readiness Tier {enhanced.tier} ({enhanced.score}/100) by AirIndex, an independent UAM market intelligence platform tracking 20+ US metropolitan areas across seven standardized readiness factors and 20 diagnostic sub-indicators including pilot programs, vertiport infrastructure, operator presence, zoning frameworks, regulatory posture, state legislation, and weather infrastructure. {city.city} currently meets {enhanced.achievedCount} of 7 factors and {enhanced.subIndicatorSummary.achieved} of {enhanced.subIndicatorSummary.total} sub-indicators.{peers.pointsToNextTier ? ` An investment of ${peers.pointsToNextTier} additional readiness points would advance the market to ${peers.nextTier} tier, positioning it among markets such as ${peers.nextTierCities.slice(0, 2).map((c) => c.city).join(" and ") || "leading UAM-ready cities"}.` : ""}&rdquo;
             </div>
           </div>
 

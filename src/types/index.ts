@@ -79,6 +79,9 @@ export interface City {
     url?: string;
   }>>;
 
+  // Sub-indicator diagnostic data (gap analysis engine)
+  subIndicators?: Partial<Record<keyof ScoreBreakdown, SubIndicator[]>>;
+
   // Content
   notes: string;
   keyMilestones: string[];
@@ -184,6 +187,19 @@ export interface AlertSubscription {
   corridorIds: string[];               // Empty = no corridor alerts
   changeTypes: ChangeType[];          // Empty = all change types
   createdAt: string;
+}
+
+// --- Sub-Indicator (Gap Analysis) ---
+export type SubIndicatorStatus = "achieved" | "partial" | "missing" | "unknown";
+
+export interface SubIndicator {
+  id: string;
+  label: string;
+  status: SubIndicatorStatus;
+  citation?: string;
+  citationDate?: string;
+  citationUrl?: string;
+  peerNote?: string; // populated at runtime by peer comparison
 }
 
 // --- API Response wrappers ---
