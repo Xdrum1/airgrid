@@ -496,6 +496,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
             onToggleWatch={toggleWatch}
             isAuthenticated={isAuthenticated}
             userTier={userTier}
+            isAdmin={!!(adminEmail && session?.user?.email === adminEmail)}
             watchStatus={watchData[selected.id]?.watchStatus}
             outlook={watchData[selected.id]?.outlook}
             analystNote={watchData[selected.id]?.analystNote}
