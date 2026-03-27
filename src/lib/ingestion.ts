@@ -169,11 +169,11 @@ function normalizeSecFiling(f: SecFiling, operatorId: string): IngestedRecord {
 
 function normalizeCongressBill(b: CongressBill): IngestedRecord {
   return {
-    id: `congress_gov_${b.congress}_${b.billType}_${b.billNumber}`,
+    id: `congress_gov_${b.congress}_${b.type}_${b.number}`,
     source: "congress_gov",
-    sourceId: `${b.congress}-${b.billType}-${b.billNumber}`,
+    sourceId: `${b.congress}-${b.type}-${b.number}`,
     title: b.title,
-    summary: `${b.billType.toUpperCase()} ${b.billNumber} (${b.congress}th Congress) — ${b.latestAction?.text ?? "No action recorded"}`,
+    summary: `${b.type.toUpperCase()} ${b.number} (${b.congress}th Congress) — ${b.latestAction?.text ?? "No action recorded"}`,
     status: b.latestAction?.text ?? "introduced",
     date: b.latestAction?.actionDate ?? b.introducedDate,
     url: b.url,

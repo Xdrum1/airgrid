@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { City, Vertiport, Corridor } from "@/types";
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
@@ -7,6 +8,7 @@ import { VERTIPORT_STATUS_COLORS, CORRIDOR_STATUS_COLORS, WATCH_STATUS_COLORS, W
 import { hasProAccess } from "@/lib/billing-shared";
 import { OPERATORS_MAP } from "@/data/seed";
 import ScoreBar from "./ScoreBar";
+import ScoreTrend from "./ScoreTrend";
 import BreakdownPanel from "./BreakdownPanel";
 import GapAnalysisPanel from "./GapAnalysisPanel";
 
@@ -53,6 +55,16 @@ export default function CityDetailPanel({
 }) {
   const scoreColor = getScoreColor(selected.score ?? 0);
   const posture = getPostureConfig(selected.regulatoryPosture);
+
+  // Fetch score history for sparkline
+  const [scoreHistory, setScoreHistory] = useState<{ score: number; capturedAt: string }[]>([]);
+  useEffect(() => {
+    setScoreHistory([]);
+    fetch(`/api/internal/score-history/${selected.id}`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => setScoreHistory(data))
+      .catch(() => {});
+  }, [selected.id]);
 
   return (
     <div
@@ -192,6 +204,9 @@ export default function CityDetailPanel({
         <div style={{ marginTop: 12 }}>
           <ScoreBar value={selected.score ?? 0} color={scoreColor} />
         </div>
+        {scoreHistory.length > 1 && (
+          <ScoreTrend history={scoreHistory} color={scoreColor} />
+        )}
         <div style={{ display: "flex", gap: 6, marginTop: 10, flexWrap: "wrap" }}>
           <span
             style={{
@@ -329,14 +344,37 @@ export default function CityDetailPanel({
             style={{
               padding: "10px 20px 14px",
               borderBottom: "1px solid rgba(255,255,255,0.06)",
+              display: "flex",
+              gap: 8,
             }}
           >
             <Link
-              href={`/reports/gap/${selected.id}`}
+              href={`/reports/snapshot/${selected.id}`}
               style={{
+                flex: 1,
                 display: "block",
                 textAlign: "center",
-                padding: "8px 16px",
+                padding: "8px 12px",
+                background: "rgba(0,255,136,0.06)",
+                border: "1px solid rgba(0,255,136,0.2)",
+                borderRadius: 6,
+                color: "#00ff88",
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                textDecoration: "none",
+                transition: "all 0.15s",
+              }}
+            >
+              MARKET SNAPSHOT
+            </Link>
+            <Link
+              href={`/reports/gap/${selected.id}`}
+              style={{
+                flex: 1,
+                display: "block",
+                textAlign: "center",
+                padding: "8px 12px",
                 background: "rgba(0,212,255,0.08)",
                 border: "1px solid rgba(0,212,255,0.2)",
                 borderRadius: 6,
@@ -348,7 +386,7 @@ export default function CityDetailPanel({
                 transition: "all 0.15s",
               }}
             >
-              DOWNLOAD GAP REPORT
+              GAP REPORT
             </Link>
           </div>
         </>
