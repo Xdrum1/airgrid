@@ -101,7 +101,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               <a href="${appUrl}/dashboard?utm_source=email&utm_medium=transactional&utm_campaign=welcome" style="display:inline-block;padding:12px 28px;background:#00d4ff;color:#050508;font-size:13px;font-weight:700;text-decoration:none;border-radius:6px;">
                 Open Dashboard
               </a>
-              <p style="color:#bbb;font-size:11px;margin-top:32px;line-height:1.6;">
+              <div style="margin-top:32px;padding-top:20px;border-top:1px solid #eee;">
+                <p style="color:#888;font-size:12px;line-height:1.7;margin:0 0 8px;">
+                  <strong style="color:#666;">What you'll receive from us:</strong>
+                </p>
+                <p style="color:#888;font-size:12px;line-height:1.7;margin:0 0 4px;">
+                  &bull; <strong>UAM Market Pulse</strong> — weekly intelligence briefing on market movements, regulatory signals, and scoring updates
+                </p>
+                <p style="color:#888;font-size:12px;line-height:1.7;margin:0 0 4px;">
+                  &bull; <strong>Market alerts</strong> — real-time notifications for markets you subscribe to
+                </p>
+                <p style="color:#888;font-size:12px;line-height:1.7;margin:0 0 12px;">
+                  &bull; <strong>Product updates</strong> — occasional announcements about new features and data
+                </p>
+                <p style="color:#aaa;font-size:11px;line-height:1.6;margin:0;">
+                  You can unsubscribe from the Market Pulse at any time via the link in any newsletter. Market alerts can be managed from your dashboard.
+                </p>
+              </div>
+              <p style="color:#bbb;font-size:11px;margin-top:20px;line-height:1.6;">
                 AirIndex — the independent readiness rating system for urban air mobility.
               </p>
             </div>
