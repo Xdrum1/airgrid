@@ -9,6 +9,8 @@
  *   Federal Register:               https://www.federalregister.gov/api/v1
  *   LegiScan (state bills):         https://api.legiscan.com
  *   SEC EDGAR (public operators):   https://data.sec.gov/api
+ *   Congress.gov (federal bills):   https://api.congress.gov/v3    (see congress-api.ts)
+ *   Regulations.gov (FAA dockets):  https://api.regulations.gov/v4 (see regulations-api.ts)
  */
 
 const FAA_BASE = "https://uas-faa.opendata.arcgis.com";

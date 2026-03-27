@@ -1,6 +1,7 @@
-import { City, ScoreBreakdown } from "@/types";
+import { City, ScoreBreakdown, SubIndicator } from "@/types";
 import { SCORE_WEIGHTS, calculateReadinessScore, getScoreTier, getScoreColor } from "@/lib/scoring";
 import { SCORE_COMPONENT_LABELS } from "@/lib/dashboard-constants";
+import { getSubIndicatorsWithPeers, getSubIndicatorSummary, getDefsForFactor, type SubIndicatorSummary } from "@/lib/sub-indicators";
 
 // -------------------------------------------------------
 // Types
@@ -18,6 +19,7 @@ export interface FactorAnalysis {
   citationDate?: string;
   citationUrl?: string;
   recommendation: string;
+  subIndicators: SubIndicator[];
 }
 
 export interface GapAnalysis {
@@ -34,6 +36,11 @@ export interface GapAnalysis {
   quickWins: FactorAnalysis[];
   highImpact: FactorAnalysis[];
   topGapPointsAvailable: number;
+  subIndicatorSummary: SubIndicatorSummary;
+}
+
+export interface EnhancedGapAnalysis extends GapAnalysis {
+  peers: PeerContext;
 }
 
 export interface PeerContext {
@@ -83,6 +90,14 @@ export function analyzeGaps(city: City): GapAnalysis {
 
     const source = city.scoreSources?.[key];
 
+    // Merge sub-indicator data (from seed) with defs (from registry)
+    const citySubIndicators = city.subIndicators?.[key] ?? [];
+    const defs = getDefsForFactor(key);
+    const subInds: SubIndicator[] = defs.map((def) => {
+      const existing = citySubIndicators.find((si) => si.id === def.id);
+      return existing ?? { id: def.id, label: def.label, status: "unknown" as const };
+    });
+
     return {
       key,
       label: SCORE_COMPONENT_LABELS[key] || key,
@@ -95,6 +110,7 @@ export function analyzeGaps(city: City): GapAnalysis {
       citationDate: source?.date,
       citationUrl: source?.url,
       recommendation: RECOMMENDATIONS[key],
+      subIndicators: subInds,
     };
   });
 
@@ -123,6 +139,7 @@ export function analyzeGaps(city: City): GapAnalysis {
     quickWins,
     highImpact,
     topGapPointsAvailable,
+    subIndicatorSummary: getSubIndicatorSummary(city),
   };
 }
 
@@ -159,4 +176,31 @@ export function getPeerContext(city: City, allCities: City[]): PeerContext {
   const pointsToNextTier = nextTier ? nextTierThreshold - cityScore : null;
 
   return { sameTier, nextTier, nextTierCities, pointsToNextTier };
+}
+
+/**
+ * Combined entry point: gap analysis + peer context + sub-indicator peer notes.
+ * Used by the API and enhanced gap report page.
+ */
+export function getEnhancedGapAnalysis(city: City, allCities: City[]): EnhancedGapAnalysis {
+  const gap = analyzeGaps(city);
+  const peers = getPeerContext(city, allCities);
+
+  // Enrich sub-indicators with peer notes
+  const enrichedSubIndicators = getSubIndicatorsWithPeers(city, allCities);
+
+  // Merge peer-enriched sub-indicators into factor analyses
+  const factors = gap.factors.map((f) => {
+    const enriched = enrichedSubIndicators[f.key];
+    return enriched ? { ...f, subIndicators: enriched } : f;
+  });
+
+  return {
+    ...gap,
+    factors,
+    gaps: factors.filter((f) => !f.achieved).sort((a, b) => b.weight - a.weight),
+    quickWins: factors.filter((f) => !f.achieved && f.max <= 10),
+    highImpact: factors.filter((f) => !f.achieved && f.max >= 15),
+    peers,
+  };
 }

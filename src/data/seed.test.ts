@@ -7,6 +7,8 @@ import {
   VERTIPORTS,
   CORRIDORS,
 } from "./seed";
+import { SUB_INDICATOR_DEFS, getSubIndicatorSummary } from "@/lib/sub-indicators";
+import { analyzeGaps } from "@/lib/gap-analysis";
 
 // ----- CITIES -----
 describe("CITIES", () => {
@@ -137,6 +139,73 @@ describe("Cross-references", () => {
           `Operator ${opId} referenced by city ${city.id} not found`
         ).toBeDefined();
       }
+    }
+  });
+});
+
+// ----- Sub-Indicators -----
+describe("Sub-Indicators", () => {
+  const validIds = new Set(SUB_INDICATOR_DEFS.map((d) => d.id));
+
+  it("all cities have subIndicators defined", () => {
+    for (const city of CITIES) {
+      expect(
+        city.subIndicators,
+        `City ${city.id} missing subIndicators`
+      ).toBeDefined();
+    }
+  });
+
+  it("all sub-indicator IDs in seed match registry", () => {
+    for (const city of CITIES) {
+      if (!city.subIndicators) continue;
+      for (const [factor, indicators] of Object.entries(city.subIndicators)) {
+        for (const si of indicators ?? []) {
+          expect(
+            validIds.has(si.id),
+            `City ${city.id}, factor ${factor}: unknown sub-indicator ID "${si.id}"`
+          ).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("sub-indicator statuses are valid", () => {
+    const validStatuses = new Set(["achieved", "partial", "missing", "unknown"]);
+    for (const city of CITIES) {
+      if (!city.subIndicators) continue;
+      for (const [factor, indicators] of Object.entries(city.subIndicators)) {
+        for (const si of indicators ?? []) {
+          expect(
+            validStatuses.has(si.status),
+            `City ${city.id}, ${si.id}: invalid status "${si.status}"`
+          ).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("getSubIndicatorSummary counts correctly", () => {
+    const la = CITIES_MAP["los_angeles"];
+    const summary = getSubIndicatorSummary(la);
+    expect(summary.total).toBe(SUB_INDICATOR_DEFS.length);
+    expect(summary.achieved + summary.partial + summary.missing + summary.unknown).toBe(summary.total);
+    expect(summary.achieved).toBeGreaterThan(0);
+  });
+
+  it("analyzeGaps includes subIndicatorSummary", () => {
+    const dallas = CITIES_MAP["dallas"];
+    const gap = analyzeGaps(dallas);
+    expect(gap.subIndicatorSummary).toBeDefined();
+    expect(gap.subIndicatorSummary.total).toBe(SUB_INDICATOR_DEFS.length);
+  });
+
+  it("factor analyses include subIndicators array", () => {
+    const phoenix = CITIES_MAP["phoenix"];
+    const gap = analyzeGaps(phoenix);
+    for (const f of gap.factors) {
+      expect(Array.isArray(f.subIndicators)).toBe(true);
+      expect(f.subIndicators.length).toBeGreaterThan(0);
     }
   });
 });
