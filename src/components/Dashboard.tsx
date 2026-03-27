@@ -26,14 +26,15 @@ import MapTab from "./tabs/MapTab";
 import RankingsTab from "./tabs/RankingsTab";
 import CorridorsTab from "./tabs/CorridorsTab";
 import FilingsTab from "./tabs/FilingsTab";
+import FederalTab from "./tabs/FederalTab";
 import IntelTab from "./tabs/IntelTab";
 import AnalyticsTab from "./tabs/AnalyticsTab";
 import KeysTab from "./tabs/KeysTab";
 
 // -------------------------------------------------------
 
-const GATED_TABS: TabKey[] = ["corridors", "filings", "intel", "analytics", "keys"];
-const PRO_TABS: TabKey[] = ["corridors", "filings", "intel", "analytics"];
+const GATED_TABS: TabKey[] = ["corridors", "filings", "federal", "intel", "analytics", "keys"];
+const PRO_TABS: TabKey[] = ["corridors", "filings", "federal", "intel", "analytics"];
 
 interface DashboardProps {
   initialCities?: City[];
@@ -57,7 +58,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
   const [selected, setSelected] = useState<City>(CITIES_RESOLVED[0]);
   const [filter, setFilter] = useState<FilterKey>("all");
   const [tab, setTab] = useState<TabKey>(
-    ["map", "rank", "corridors", "filings", "intel", "analytics", "keys"].includes(initialTab) ? initialTab : "map"
+    ["map", "rank", "corridors", "filings", "federal", "intel", "analytics", "keys"].includes(initialTab) ? initialTab : "map"
   );
   const [animate, setAnimate] = useState(false);
   const [showSignOut, setShowSignOut] = useState(false);
@@ -351,6 +352,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                   ["rank", "RANK"],
                   ["corridors", "ROUTES"],
                   ["filings", "FEED"],
+                  ["federal", "FED"],
                   ["intel", "INTEL"],
                   ["analytics", "STATS"],
                   ...(hasProAccess(userTier) ? [["keys", "API"]] : []),
@@ -360,6 +362,7 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
                   ["rank", "RANKINGS"],
                   ["corridors", "CORRIDORS"],
                   ["filings", "FILINGS"],
+                  ["federal", "FEDERAL"],
                   ["intel", "INTEL"],
                   ["analytics", "ANALYTICS"],
                   ...(hasProAccess(userTier) ? [["keys", "API KEYS"]] : []),
@@ -432,6 +435,11 @@ export default function Dashboard({ initialCities, adminEmail }: DashboardProps)
             />
           ) : tab === "intel" ? (
             <IntelTab animate={animate} isMobile={isMobile} />
+          ) : tab === "federal" ? (
+            <FederalTab
+              animate={animate}
+              isMobile={isMobile}
+            />
           ) : tab === "filings" ? (
             <FilingsTab
               filings={filings}
