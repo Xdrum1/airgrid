@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.airindex.io"),
   title: "AirIndex — UAM Market Intelligence",
-  description: "AirIndex is the authoritative market intelligence platform for urban air mobility. 21 US cities scored daily across 7 verified factors. Trusted by operators, city planners, and investors.",
+  description: "The institutional intelligence layer for the AAM ecosystem. Market readiness data for operators, infrastructure developers, aerospace, and government organizations shaping where eVTOL operates.",
   keywords: ["urban air mobility", "eVTOL", "vertiport", "air taxi", "UAM", "Joby", "Archer"],
   manifest: "/manifest.json",
   icons: {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "AirIndex — UAM Market Intelligence",
-    description: "AirIndex is the authoritative market intelligence platform for urban air mobility. 21 US cities scored daily across 7 verified factors.",
+    description: "The intelligence infrastructure for urban air mobility. Market readiness data across 20+ U.S. markets, updated continuously from primary sources.",
     siteName: "AirIndex",
     url: "https://www.airindex.io",
     images: [{ url: "/images/og-image.png", width: 1200, height: 630 }],
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@AirIndexHQ",
     title: "AirIndex — UAM Market Intelligence",
-    description: "AirIndex is the authoritative market intelligence platform for urban air mobility. 21 US cities scored daily across 7 verified factors.",
+    description: "The intelligence infrastructure for urban air mobility. Market readiness data across 20+ U.S. markets, updated continuously from primary sources.",
     images: ["/images/og-image.png"],
   },
 };
