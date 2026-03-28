@@ -1,3 +1,6 @@
+# Private/confidential docs — NEVER COMMIT
+private/
+
 # Dependencies
 node_modules/
 .pnp
