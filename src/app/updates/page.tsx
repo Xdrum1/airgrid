@@ -37,11 +37,37 @@ const TAG_LABELS: Record<Update["tag"], string> = {
 
 const UPDATES: Update[] = [
   {
+    date: "2026-03-28",
+    tag: "feature",
+    title: "Heliport Infrastructure Map Layer",
+    body: "5,647 FAA-registered heliports now visible on the map. Toggle between MARKETS and HELIPORTS views — density heatmap at overview zoom, individual facility markers when zoomed in. Click any heliport for FAA ID, ownership type, elevation, and use classification.",
+    link: { label: "Request access", href: "/request-access" },
+  },
+  {
+    date: "2026-03-28",
+    tag: "launch",
+    title: "Institutional Platform Positioning",
+    body: "Redesigned the public site around our institutional intelligence positioning. AirIndex is the intelligence infrastructure for urban air mobility — market readiness data for the institutions shaping where eVTOL operates. New request access flow with organization, role, and use case fields.",
+  },
+  {
+    date: "2026-03-27",
+    tag: "feature",
+    title: "Federal Activity Tab",
+    body: "New Pro-gated dashboard tab tracking federal AAM legislation and regulatory activity. Two sections: Legislation (8 tracked Congress bills with live status via Congress.gov API) and FAA Dockets (regulations.gov documents with comment period tracking).",
+    link: { label: "Request access", href: "/request-access" },
+  },
+  {
+    date: "2026-03-27",
+    tag: "feature",
+    title: "Market Snapshot PDF & Score Trajectories",
+    body: "Downloadable market snapshot reports at /reports/snapshot/{cityId} with print-optimized layout. Score trajectory sparklines now visible in the city detail panel and snapshot pages, showing factor-level trends over time.",
+  },
+  {
     date: "2026-03-25",
     tag: "feature",
     title: "Gap Analysis Engine",
-    body: "Every city detail panel now shows a Gap Analysis section for Pro subscribers. See exactly which readiness factors are missing, how many points are available, and specific recommendations to close each gap. Powered by the same engine behind our institutional gap reports.",
-    link: { label: "View a market", href: "/dashboard" },
+    body: "Every city detail panel now shows a Gap Analysis section identifying which readiness factors are missing, how many points are available, and specific recommendations to close each gap. Powered by the same engine behind our institutional gap reports.",
+    link: { label: "Request access", href: "/request-access" },
   },
   {
     date: "2026-03-25",
@@ -118,14 +144,14 @@ const UPDATES: Update[] = [
     tag: "feature",
     title: "UAM Intel Feed",
     body: "Curated intelligence feed with regulatory, infrastructure, operator, and legislative categories. Auto-classified from our ingestion pipeline with editorial review. Published items include source attribution and market tagging.",
-    link: { label: "Read the feed", href: "/feed" },
+    link: { label: "Request access", href: "/request-access" },
   },
   {
     date: "2026-02-01",
     tag: "launch",
     title: "AirIndex Public Beta",
     body: "Launched the AirIndex UAM Readiness Intelligence platform tracking 21 US metropolitan areas across seven standardized readiness factors. Interactive map, city rankings, score breakdowns, and operator tracking.",
-    link: { label: "Explore the dashboard", href: "/dashboard" },
+    link: { label: "Request access", href: "/request-access" },
   },
 ];
 
