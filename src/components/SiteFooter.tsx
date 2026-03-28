@@ -38,7 +38,7 @@ export default function SiteFooter() {
           <Link href="/methodology" style={footerLinkStyle}>METHODOLOGY</Link>
           <Link href="/insights" style={footerLinkStyle}>INSIGHTS</Link>
           <Link href="/api" style={footerLinkStyle}>API</Link>
-          <Link href="/pricing" style={footerLinkStyle}>ACCESS</Link>
+          <Link href="/pricing" style={footerLinkStyle}>PRICING</Link>
           <Link href="/updates" style={footerLinkStyle}>UPDATES</Link>
           <Link href="/reports/march-2026" style={footerLinkStyle}>REPORTS</Link>
           <Link href="/contact" style={footerLinkStyle}>CONTACT</Link>
