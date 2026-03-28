@@ -215,6 +215,11 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* Section divider */}
+      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "0 20px" }}>
+        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
+      </div>
+
       {/* ======== Who Uses AirIndex ======== */}
       <ScrollReveal>
         <section
@@ -284,6 +289,11 @@ export default async function LandingPage() {
           </div>
         </section>
       </ScrollReveal>
+
+      {/* Section divider */}
+      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "0 20px" }}>
+        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
+      </div>
 
       {/* ======== Dashboard Preview ======== */}
       <ScrollReveal>
@@ -362,6 +372,11 @@ export default async function LandingPage() {
           </div>
         </section>
       </ScrollReveal>
+
+      {/* Section divider */}
+      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "0 20px" }}>
+        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
+      </div>
 
       {/* ======== Platform Capabilities ======== */}
       <ScrollReveal>
@@ -445,6 +460,11 @@ export default async function LandingPage() {
           </div>
         </section>
       </ScrollReveal>
+
+      {/* Section divider */}
+      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "0 20px 40px" }}>
+        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
+      </div>
 
       {/* ======== Market Pulse (Public Research) ======== */}
       <ScrollReveal>
