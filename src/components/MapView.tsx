@@ -946,7 +946,12 @@ export default function MapView({
           setHeliportPopup(null);
           handleMapClick(e);
         }}
-        onMove={(evt) => setCurrentZoom(evt.viewState.zoom)}
+        onMove={(evt) => {
+          setCurrentZoom(evt.viewState.zoom);
+          if (evt.viewState.zoom > (isMobile ? 3.5 : 4.5) && !hasNavigated) {
+            setHasNavigated(true);
+          }
+        }}
         onMouseEnter={() => {
           const canvas = mapRef.current?.getCanvas();
           if (canvas) canvas.style.cursor = "pointer";
@@ -1240,7 +1245,7 @@ export default function MapView({
           }}
           style={{
             position: "absolute",
-            top: isMobile ? 56 : 12,
+            top: isMobile ? 56 : 52,
             left: 12,
             zIndex: 20,
             background: "rgba(5,5,8,0.92)",
