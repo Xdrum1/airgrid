@@ -21,18 +21,18 @@ interface Tier {
 const TIERS: Tier[] = [
   {
     name: "Free",
-    tagline: "The score is free. Explore the index.",
+    tagline: "Public research and market overview.",
     price: "$0",
-    priceNote: "Free forever.",
+    priceNote: "Open access.",
     accent: "#00d4ff",
     highlight: false,
     features: [
-      "Dashboard map with city markers",
-      "Current readiness scores",
-      "City rankings",
-      "Basic market overview per city",
+      "Market Pulse weekly intelligence",
+      "Published methodology",
+      "Market overview and rankings",
+      "Insights and research",
     ],
-    cta: { label: "Explore Dashboard", href: "/dashboard" },
+    cta: { label: "Request Access", href: "/request-access" },
   },
   {
     name: "Professional",
