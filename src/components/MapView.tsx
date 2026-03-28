@@ -147,17 +147,19 @@ function CityMarker({
   onClick,
   onHover,
   onHoverEnd,
+  dimmed = false,
 }: {
   city: City;
   isSelected: boolean;
   onClick: () => void;
   onHover?: () => void;
   onHoverEnd?: () => void;
+  dimmed?: boolean;
 }) {
   const score = city.score ?? 0;
-  const color = getScoreColor(score);
+  const color = dimmed ? "#555" : getScoreColor(score);
 
-  const size = score >= 75 ? 18 : score >= 50 ? 14 : score >= 30 ? 10 : 8;
+  const size = dimmed ? 6 : score >= 75 ? 18 : score >= 50 ? 14 : score >= 30 ? 10 : 8;
   const glowSize = isSelected ? size * 3 : size * 2;
 
   return (
@@ -864,6 +866,49 @@ export default function MapView({
         }
       `}</style>
 
+      {/* Map layer toggle */}
+      <div style={{
+        position: "absolute",
+        top: isMobile ? 56 : 12,
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 20,
+        display: "flex",
+        background: "rgba(5,5,8,0.92)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 6,
+        overflow: "hidden",
+      }}>
+        {(["MARKETS", "HELIPORTS"] as const).map((mode) => {
+          const isActive = mode === "MARKETS" ? !showHeliports : showHeliports;
+          return (
+            <button
+              key={mode}
+              onClick={() => {
+                if (onToggleHeliports) onToggleHeliports();
+              }}
+              style={{
+                padding: "8px 18px",
+                background: isActive ? "rgba(255,255,255,0.08)" : "transparent",
+                border: "none",
+                color: isActive ? "#fff" : "#555",
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: 1.5,
+                cursor: "pointer",
+                fontFamily: "'Inter', sans-serif",
+                transition: "all 0.15s",
+                borderRight: mode === "MARKETS" ? "1px solid rgba(255,255,255,0.06)" : "none",
+              }}
+            >
+              {mode}
+            </button>
+          );
+        })}
+      </div>
+
       <Map
         ref={mapRef}
         mapboxAccessToken={token}
@@ -916,8 +961,8 @@ export default function MapView({
         <NavigationControl position="top-right" showCompass={false} />
         <ScaleControl position="bottom-right" unit="imperial" />
 
-        {/* Corridor GeoJSON layers */}
-        <Source id="corridors" type="geojson" data={corridorGeoJSON}>
+        {/* Corridor GeoJSON layers — hidden in heliport mode */}
+        {!showHeliports && <Source id="corridors" type="geojson" data={corridorGeoJSON}>
           <Layer
             id="corridors-proposed"
             type="line"
@@ -960,7 +1005,7 @@ export default function MapView({
               "line-dasharray": CORRIDOR_STYLES.suspended.dasharray,
             }}
           />
-        </Source>
+        </Source>}
 
         {/* Heliport layers */}
         {heliportGeoJSON && showHeliports && (
@@ -1018,6 +1063,7 @@ export default function MapView({
             <CityMarker
               city={city}
               isSelected={selected?.id === city.id}
+              dimmed={showHeliports}
               onClick={() => handleMarkerClick(city)}
               onHover={!isMobile ? () => {
                 if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
@@ -1032,8 +1078,8 @@ export default function MapView({
           </Marker>
         ))}
 
-        {/* Vertiport markers */}
-        {vertiports.map((v) => (
+        {/* Vertiport markers — hidden in heliport mode */}
+        {!showHeliports && vertiports.map((v) => (
           <Marker
             key={v.id}
             longitude={v.lng}

@@ -127,7 +127,7 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
   const [showAllCorridors, setShowAllCorridors] = useState(false);
   const [fetchedCorridors, setFetchedCorridors] = useState<Corridor[]>(CORRIDORS);
   const [heliportGeoJSON, setHeliportGeoJSON] = useState<GeoJSON.FeatureCollection | null>(null);
-  const [showHeliports, setShowHeliports] = useState(true);
+  const [showHeliports, setShowHeliports] = useState(false);
 
   // Fetch corridors from DB
   useEffect(() => {
