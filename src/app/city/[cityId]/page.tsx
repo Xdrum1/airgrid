@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { CITIES, OPERATORS_MAP, getVertiportsForCity, getCitiesWithOverrides, getCitiesMapWithOverrides } from "@/data/seed";
 import { getCorridorsForCity } from "@/lib/corridors";
 import { getScoreHistoryFull } from "@/lib/score-history";
+import { calculateReadinessScore, getScoreTier } from "@/lib/scoring";
 import { auth } from "@/auth";
 import { getUserTier } from "@/lib/billing";
 import CityDetail from "@/components/CityDetail";
@@ -16,9 +17,37 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const citiesMap = await getCitiesMapWithOverrides();
   const city = citiesMap[cityId];
   if (!city) return { title: "Market Not Found — AirIndex" };
+
+  const { score } = calculateReadinessScore(city);
+  const tier = getScoreTier(score);
+  const operators = city.activeOperators.map((id) => OPERATORS_MAP[id]?.name).filter(Boolean);
+  const operatorStr = operators.length > 0 ? ` Active operators: ${operators.join(", ")}.` : "";
+  const heliportStr = city.heliportCount ? ` ${city.heliportCount} FAA-registered heliports.` : "";
+
+  const title = `${city.city}, ${city.state} UAM Market Readiness — ${score}/100 ${tier} — AirIndex`;
+  const description = `${city.city}, ${city.state} scores ${score}/100 (${tier}) on the AirIndex UAM Readiness Index. 7-factor analysis: regulatory posture, state legislation, operator presence, vertiport zoning, pilot programs, infrastructure, and weather.${operatorStr}${heliportStr}`;
+
   return {
-    title: `${city.city}, ${city.state} — AirIndex`,
-    description: city.notes,
+    title,
+    description,
+    keywords: [
+      `${city.city} UAM`, `${city.city} eVTOL`, `${city.city} air taxi`,
+      `${city.city} vertiport`, `${city.state} urban air mobility`,
+      `${city.city} market readiness`, "UAM readiness score", "AirIndex",
+    ],
+    openGraph: {
+      title,
+      description,
+      siteName: "AirIndex",
+      url: `https://www.airindex.io/city/${cityId}`,
+      type: "article",
+    },
+    twitter: {
+      card: "summary",
+      site: "@AirIndexHQ",
+      title: `${city.city}, ${city.state} — ${score}/100 ${tier}`,
+      description,
+    },
   };
 }
 
