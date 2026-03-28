@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     await sendSesEmail({
       to: adminEmail,
       from: fromEmail,
-      subject: `VDG Inquiry: ${safeType} — ${name.trim()}`,
+      subject: `VDG Inquiry: ${(typeLabels[type] || type).replace(/[\r\n]/g, "")} — ${name.trim().replace(/[\r\n]/g, "")}`,
       html,
     });
 

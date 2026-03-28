@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
         await sendSesEmail({
           to: adminEmail,
           from: fromEmail,
-          subject: `AirIndex Inquiry: ${tier || "General"} — ${name} (${company || "Individual"})`,
+          subject: `AirIndex Inquiry: ${(tier || "General").replace(/[\r\n]/g, "")} — ${(name || "").replace(/[\r\n]/g, "")} (${(company || "Individual").replace(/[\r\n]/g, "")})`,
           html,
         });
       } catch (emailErr) {

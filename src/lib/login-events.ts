@@ -6,6 +6,10 @@ import { createLogger } from "@/lib/logger";
 
 const logger = createLogger("login-events");
 
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 /**
  * Generate a fingerprint from user-agent + IP /24 subnet.
  * Same user on the same network with minor DHCP changes won't trigger alerts.
@@ -135,7 +139,7 @@ async function sendNewDeviceNotification(params: {
         <table style="width:100%;border-collapse:collapse;">
           <tr>
             <td style="color:#888;font-size:12px;padding:6px 0;vertical-align:top;width:100px;">Account</td>
-            <td style="color:#0077aa;font-size:13px;padding:6px 0;">${to}</td>
+            <td style="color:#0077aa;font-size:13px;padding:6px 0;">${escapeHtml(to)}</td>
           </tr>
           <tr>
             <td style="color:#888;font-size:12px;padding:6px 0;vertical-align:top;">Method</td>
@@ -143,11 +147,11 @@ async function sendNewDeviceNotification(params: {
           </tr>
           <tr>
             <td style="color:#888;font-size:12px;padding:6px 0;vertical-align:top;">Device</td>
-            <td style="color:#333;font-size:13px;padding:6px 0;">${deviceStr}</td>
+            <td style="color:#333;font-size:13px;padding:6px 0;">${escapeHtml(deviceStr)}</td>
           </tr>
           <tr>
             <td style="color:#888;font-size:12px;padding:6px 0;vertical-align:top;">IP Address</td>
-            <td style="color:#333;font-size:13px;padding:6px 0;">${ip}</td>
+            <td style="color:#333;font-size:13px;padding:6px 0;">${escapeHtml(ip)}</td>
           </tr>
           <tr>
             <td style="color:#888;font-size:12px;padding:6px 0;vertical-align:top;">Time</td>
