@@ -110,7 +110,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
               Sign in
             </Link>
             <Link
-              href="/login?mode=signup"
+              href="/request-access"
               className="nav-cta"
               style={{
                 fontSize: 11,
@@ -124,7 +124,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                 transition: "opacity 0.15s",
               }}
             >
-              Sign up free
+              Request Access
             </Link>
           </>
         )}
@@ -228,7 +228,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                   Sign in
                 </Link>
                 <Link
-                  href="/login?mode=signup"
+                  href="/request-access"
                   onClick={() => setMobileOpen(false)}
                   style={{
                     display: "block",
@@ -243,7 +243,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                     borderRadius: 6,
                   }}
                 >
-                  Sign up free
+                  Request Access
                 </Link>
               </>
             )}
