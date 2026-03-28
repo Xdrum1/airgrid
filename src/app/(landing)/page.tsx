@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { MARKET_COUNT } from "@/data/seed";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import HeroFlightPath from "@/components/landing/HeroFlightPath";
@@ -280,6 +281,84 @@ export default async function LandingPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+      </ScrollReveal>
+
+      {/* ======== Dashboard Preview ======== */}
+      <ScrollReveal>
+        <section
+          style={{
+            maxWidth: 1120,
+            margin: "0 auto",
+            padding: "0 20px clamp(40px, 6vw, 80px)",
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              borderRadius: 12,
+              overflow: "hidden",
+              border: "1px solid rgba(255,255,255,0.08)",
+              boxShadow: "0 0 80px rgba(0,212,255,0.08), 0 0 160px rgba(124,58,237,0.05)",
+            }}
+          >
+            {/* Browser chrome */}
+            <div
+              style={{
+                background: "#0d0d1a",
+                padding: "12px 16px",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57" }} />
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e" }} />
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#28c840" }} />
+              <div
+                style={{
+                  flex: 1,
+                  marginLeft: 12,
+                  background: "rgba(255,255,255,0.04)",
+                  borderRadius: 4,
+                  padding: "5px 12px",
+                  fontSize: 10,
+                  color: "#888",
+                }}
+              >
+                airindex.io/dashboard
+              </div>
+            </div>
+            <Link href="/request-access" className="dashboard-preview-link" style={{ display: "block", position: "relative" }}>
+              <Image
+                src="/images/dashboard-preview.png"
+                alt="AirIndex intelligence platform — market readiness scoring across 20+ U.S. markets"
+                width={1920}
+                height={1080}
+                style={{ width: "100%", height: "auto", display: "block" }}
+                priority
+              />
+              <div className="dashboard-preview-overlay">
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 8,
+                }}>
+                  <span style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    letterSpacing: "0.06em",
+                    color: "#fff",
+                  }}>
+                    Request access to the full platform &rarr;
+                  </span>
+                </div>
+              </div>
+            </Link>
           </div>
         </section>
       </ScrollReveal>
