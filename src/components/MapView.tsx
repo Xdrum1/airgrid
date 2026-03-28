@@ -34,6 +34,21 @@ interface MapViewProps {
   watchedCityIds?: string[];
   onToggleWatch?: (cityId: string) => void;
   isAuthenticated?: boolean;
+  heliportGeoJSON?: GeoJSON.FeatureCollection | null;
+  showHeliports?: boolean;
+  onToggleHeliports?: () => void;
+}
+
+interface HeliportPopupInfo {
+  longitude: number;
+  latitude: number;
+  facilityName: string;
+  city: string;
+  state: string;
+  useType: string;
+  ownershipType: string;
+  elevation: number | null;
+  id: string;
 }
 
 interface PopupInfo {
@@ -612,6 +627,9 @@ export default function MapView({
   watchedCityIds = [],
   onToggleWatch,
   isAuthenticated = false,
+  heliportGeoJSON,
+  showHeliports = true,
+  onToggleHeliports,
 }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const [popup, setPopup] = useState<PopupInfo | null>(null);
@@ -619,6 +637,8 @@ export default function MapView({
   const [corridorPopup, setCorridorPopup] = useState<Corridor | null>(null);
   const [hasNavigated, setHasNavigated] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [heliportPopup, setHeliportPopup] = useState<HeliportPopupInfo | null>(null);
+  const [currentZoom, setCurrentZoom] = useState(4);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -855,7 +875,33 @@ export default function MapView({
         style={{ width: "100%", height: "100%" }}
         mapStyle={MAP_STYLE}
         onLoad={() => setMapLoaded(true)}
-        onClick={handleMapClick}
+        onClick={(e) => {
+          // Check if a heliport circle was clicked
+          const heliportFeatures = e.features?.filter((f) => f.layer?.id === "heliports-circles");
+          if (heliportFeatures && heliportFeatures.length > 0) {
+            const props = heliportFeatures[0].properties;
+            if (props) {
+              setHeliportPopup({
+                longitude: (heliportFeatures[0].geometry as GeoJSON.Point).coordinates[0],
+                latitude: (heliportFeatures[0].geometry as GeoJSON.Point).coordinates[1],
+                facilityName: props.facilityName,
+                city: props.city,
+                state: props.state,
+                useType: props.useType,
+                ownershipType: props.ownershipType,
+                elevation: props.elevation,
+                id: props.id,
+              });
+              setPopup(null);
+              setVertiportPopup(null);
+              setCorridorPopup(null);
+              return;
+            }
+          }
+          setHeliportPopup(null);
+          handleMapClick(e);
+        }}
+        onMove={(evt) => setCurrentZoom(evt.viewState.zoom)}
         onMouseEnter={() => {
           const canvas = mapRef.current?.getCanvas();
           if (canvas) canvas.style.cursor = "pointer";
@@ -864,7 +910,7 @@ export default function MapView({
           const canvas = mapRef.current?.getCanvas();
           if (canvas) canvas.style.cursor = "";
         }}
-        interactiveLayerIds={CORRIDOR_LAYER_IDS}
+        interactiveLayerIds={[...CORRIDOR_LAYER_IDS, ...(showHeliports ? ["heliports-circles"] : [])]}
         reuseMaps
       >
         <NavigationControl position="top-right" showCompass={false} />
@@ -915,6 +961,51 @@ export default function MapView({
             }}
           />
         </Source>
+
+        {/* Heliport layers */}
+        {heliportGeoJSON && showHeliports && (
+          <Source id="heliports" type="geojson" data={heliportGeoJSON}>
+            {/* Heatmap at low zoom */}
+            <Layer
+              id="heliports-heat"
+              type="heatmap"
+              maxzoom={9}
+              paint={{
+                "heatmap-weight": 1,
+                "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 3, 0.5, 8, 2],
+                "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 3, 8, 8, 20],
+                "heatmap-color": [
+                  "interpolate", ["linear"], ["heatmap-density"],
+                  0, "rgba(200,132,252,0)",
+                  0.2, "rgba(200,132,252,0.3)",
+                  0.4, "rgba(200,132,252,0.5)",
+                  0.6, "rgba(232,121,249,0.6)",
+                  0.8, "rgba(232,121,249,0.8)",
+                  1, "rgba(232,121,249,1)",
+                ],
+                "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 7, 1, 9, 0],
+              }}
+            />
+            {/* Circle markers at higher zoom */}
+            <Layer
+              id="heliports-circles"
+              type="circle"
+              minzoom={8}
+              paint={{
+                "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 3, 12, 6],
+                "circle-color": [
+                  "case",
+                  ["==", ["get", "useType"], "PU"], "#e879f9",
+                  "#a855f7",
+                ],
+                "circle-opacity": ["interpolate", ["linear"], ["zoom"], 8, 0, 9, 0.85],
+                "circle-stroke-width": 1,
+                "circle-stroke-color": "#e879f9",
+                "circle-stroke-opacity": 0.4,
+              }}
+            />
+          </Source>
+        )}
 
         {/* City markers */}
         {cities.map((city) => (
@@ -1028,6 +1119,59 @@ export default function MapView({
             <CorridorPopup corridor={corridorPopup} />
           </Popup>
         )}
+
+        {/* Heliport popup */}
+        {heliportPopup && currentZoom >= 8 && (
+          <Popup
+            longitude={heliportPopup.longitude}
+            latitude={heliportPopup.latitude}
+            anchor="bottom"
+            offset={12}
+            onClose={() => setHeliportPopup(null)}
+            closeOnClick={false}
+          >
+            <div style={{
+              background: "#0d0d1a",
+              border: "1px solid rgba(232,121,249,0.3)",
+              borderRadius: 8,
+              padding: "14px 16px",
+              minWidth: 200,
+              maxWidth: 280,
+            }}>
+              <div style={{ fontSize: 7, letterSpacing: 2, color: "#e879f9", marginBottom: 8, fontFamily: "'Inter', sans-serif" }}>
+                {heliportPopup.useType === "PU" ? "PUBLIC HELIPORT" : "PRIVATE HELIPORT"}
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", marginBottom: 4, fontFamily: "'Space Grotesk', sans-serif" }}>
+                {heliportPopup.facilityName}
+              </div>
+              <div style={{ fontSize: 11, color: "#888", marginBottom: 10, fontFamily: "'Inter', sans-serif" }}>
+                {heliportPopup.city}, {heliportPopup.state}
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <span style={{
+                  fontSize: 8, letterSpacing: 1, padding: "3px 8px", borderRadius: 4,
+                  background: "rgba(232,121,249,0.1)", border: "1px solid rgba(232,121,249,0.2)", color: "#e879f9",
+                }}>
+                  FAA: {heliportPopup.id}
+                </span>
+                {heliportPopup.elevation != null && (
+                  <span style={{
+                    fontSize: 8, letterSpacing: 1, padding: "3px 8px", borderRadius: 4,
+                    background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#888",
+                  }}>
+                    {Math.round(heliportPopup.elevation)} ft MSL
+                  </span>
+                )}
+                <span style={{
+                  fontSize: 8, letterSpacing: 1, padding: "3px 8px", borderRadius: 4,
+                  background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#888",
+                }}>
+                  {heliportPopup.ownershipType === "PU" ? "PUBLIC" : heliportPopup.ownershipType === "PR" ? "PRIVATE" : heliportPopup.ownershipType === "MA" ? "AIR FORCE" : heliportPopup.ownershipType === "MN" ? "NAVY" : heliportPopup.ownershipType === "MR" ? "ARMY" : heliportPopup.ownershipType}
+                </span>
+              </div>
+            </div>
+          </Popup>
+        )}
       </Map>
 
       {/* Reset View button */}
@@ -1045,6 +1189,7 @@ export default function MapView({
             setPopup(null);
             setVertiportPopup(null);
             setCorridorPopup(null);
+            setHeliportPopup(null);
             setHasNavigated(false);
           }}
           style={{
@@ -1251,6 +1396,43 @@ export default function MapView({
             </span>
           </div>
         ))}
+
+        {/* Heliport legend */}
+        <div
+          style={{
+            color: "#777",
+            fontSize: 8,
+            letterSpacing: 2,
+            marginTop: 12,
+            marginBottom: 8,
+            fontFamily: "'Inter', sans-serif",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            cursor: onToggleHeliports ? "pointer" : "default",
+            pointerEvents: "auto",
+            opacity: showHeliports ? 1 : 0.4,
+          }}
+          onClick={onToggleHeliports}
+        >
+          HELIPORTS (FAA)
+          <span style={{ fontSize: 7, color: "#555" }}>{showHeliports ? "ON" : "OFF"}</span>
+        </div>
+        {showHeliports && (
+          <>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#e879f9", flexShrink: 0 }} />
+              <span style={{ color: "#888", fontSize: 9, fontFamily: "'Inter', sans-serif" }}>PUBLIC USE</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#a855f7", flexShrink: 0 }} />
+              <span style={{ color: "#888", fontSize: 9, fontFamily: "'Inter', sans-serif" }}>PRIVATE USE</span>
+            </div>
+            <div style={{ color: "#555", fontSize: 8, fontFamily: "'Inter', sans-serif", marginTop: 2 }}>
+              Density heatmap at low zoom
+            </div>
+          </>
+        )}
       </div>}
     </>
   );
