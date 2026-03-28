@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendSesEmail } from "@/lib/ses";
+import { authorizeCron } from "@/lib/admin-helpers";
 import { createLogger } from "@/lib/logger";
 
 const logger = createLogger("daily-digest");
@@ -10,12 +11,8 @@ function escapeHtml(str: string): string {
 }
 
 export async function POST(request: NextRequest) {
-  // Auth: Bearer token (cron secret)
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = authorizeCron(request);
+  if (denied) return denied;
 
   const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
   if (!adminEmail) {

@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/admin-helpers";
+import { requireAdmin, getClientIp } from "@/lib/admin-helpers";
+import { rateLimit } from "@/lib/rate-limit";
 import { getRecentEvents } from "@/lib/event-tracking";
 
 export async function GET(req: NextRequest) {
   const denied = await requireAdmin(req);
   if (denied) return denied;
+
+  const rl = await rateLimit(`admin-events:${getClientIp(req)}`, 30, 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Rate limited" }, { status: 429 });
+  }
 
   const url = new URL(req.url);
   const userId = url.searchParams.get("userId") ?? undefined;
