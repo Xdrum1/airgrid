@@ -41,6 +41,9 @@ export default function MapTab({
   watchedCityIds,
   onToggleWatch,
   isAuthenticated,
+  heliportGeoJSON,
+  showHeliports,
+  onToggleHeliports,
 }: {
   cities: City[];
   selected: City;
@@ -58,6 +61,9 @@ export default function MapTab({
   watchedCityIds: string[];
   onToggleWatch: (cityId: string) => void;
   isAuthenticated: boolean;
+  heliportGeoJSON?: GeoJSON.FeatureCollection | null;
+  showHeliports?: boolean;
+  onToggleHeliports?: () => void;
 }) {
   return (
     <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
@@ -75,6 +81,9 @@ export default function MapTab({
         watchedCityIds={watchedCityIds}
         onToggleWatch={onToggleWatch}
         isAuthenticated={isAuthenticated}
+        heliportGeoJSON={heliportGeoJSON}
+        showHeliports={showHeliports}
+        onToggleHeliports={onToggleHeliports}
       />
 
       {/* Mobile: floating MARKETS button */}

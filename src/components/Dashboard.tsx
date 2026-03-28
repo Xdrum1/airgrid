@@ -126,6 +126,8 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
   const [selectedCorridor, setSelectedCorridor] = useState<Corridor | null>(null);
   const [showAllCorridors, setShowAllCorridors] = useState(false);
   const [fetchedCorridors, setFetchedCorridors] = useState<Corridor[]>(CORRIDORS);
+  const [heliportGeoJSON, setHeliportGeoJSON] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [showHeliports, setShowHeliports] = useState(true);
 
   // Fetch corridors from DB
   useEffect(() => {
@@ -133,6 +135,16 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
       .then((r) => r.json())
       .then((json) => {
         if (json.data && json.data.length > 0) setFetchedCorridors(json.data);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fetch heliport GeoJSON for map layer
+  useEffect(() => {
+    fetch("/api/heliports")
+      .then((r) => r.json())
+      .then((geojson) => {
+        if (geojson?.type === "FeatureCollection") setHeliportGeoJSON(geojson);
       })
       .catch(() => {});
   }, []);
@@ -472,6 +484,9 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
               watchedCityIds={watchedCityIds}
               onToggleWatch={toggleWatch}
               isAuthenticated={isAuthenticated}
+              heliportGeoJSON={heliportGeoJSON}
+              showHeliports={showHeliports}
+              onToggleHeliports={() => setShowHeliports((v) => !v)}
             />
           ) : (
             <RankingsTab
