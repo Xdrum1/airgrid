@@ -845,6 +845,9 @@ export default function MapView({
         .mapboxgl-ctrl-top-right .mapboxgl-ctrl {
           margin: 12px 12px 0 0;
         }
+        .mapboxgl-ctrl-top-left .mapboxgl-ctrl {
+          margin: 48px 0 0 12px;
+        }
         .mapboxgl-ctrl-group {
           background: #0d0d1a !important;
           border: 1px solid rgba(255,255,255,0.08) !important;
@@ -866,7 +869,7 @@ export default function MapView({
         }
       `}</style>
 
-      {/* Map layer toggle */}
+      {/* Map layer toggle + Reset */}
       <div style={{
         position: "absolute",
         top: isMobile ? 56 : 12,
@@ -874,39 +877,82 @@ export default function MapView({
         transform: "translateX(-50%)",
         zIndex: 20,
         display: "flex",
-        background: "rgba(5,5,8,0.92)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        border: "1px solid rgba(255,255,255,0.1)",
-        borderRadius: 6,
-        overflow: "hidden",
+        alignItems: "center",
+        gap: 8,
       }}>
-        {(["MARKETS", "HELIPORTS"] as const).map((mode) => {
-          const isActive = mode === "MARKETS" ? !showHeliports : showHeliports;
-          return (
-            <button
-              key={mode}
-              onClick={() => {
-                if (onToggleHeliports) onToggleHeliports();
-              }}
-              style={{
-                padding: "8px 18px",
-                background: isActive ? "rgba(255,255,255,0.08)" : "transparent",
-                border: "none",
-                color: isActive ? "#fff" : "#555",
-                fontSize: 9,
-                fontWeight: 700,
-                letterSpacing: 1.5,
-                cursor: "pointer",
-                fontFamily: "'Inter', sans-serif",
-                transition: "all 0.15s",
-                borderRight: mode === "MARKETS" ? "1px solid rgba(255,255,255,0.06)" : "none",
-              }}
-            >
-              {mode}
-            </button>
-          );
-        })}
+        <div style={{
+          display: "flex",
+          background: "rgba(5,5,8,0.92)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 6,
+          overflow: "hidden",
+        }}>
+          {(["MARKETS", "HELIPORTS"] as const).map((mode) => {
+            const isActive = mode === "MARKETS" ? !showHeliports : showHeliports;
+            return (
+              <button
+                key={mode}
+                onClick={() => {
+                  if (onToggleHeliports) onToggleHeliports();
+                }}
+                style={{
+                  padding: "8px 18px",
+                  background: isActive ? "rgba(255,255,255,0.08)" : "transparent",
+                  border: "none",
+                  color: isActive ? "#fff" : "#555",
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: 1.5,
+                  cursor: "pointer",
+                  fontFamily: "'Inter', sans-serif",
+                  transition: "all 0.15s",
+                  borderRight: mode === "MARKETS" ? "1px solid rgba(255,255,255,0.06)" : "none",
+                }}
+              >
+                {mode}
+              </button>
+            );
+          })}
+        </div>
+        {hasNavigated && (
+          <button
+            onClick={() => {
+              const view = isMobile ? INITIAL_VIEW_MOBILE : INITIAL_VIEW_DESKTOP;
+              mapRef.current?.flyTo({
+                center: [view.longitude, view.latitude],
+                zoom: view.zoom,
+                padding: view.padding,
+                duration: 1400,
+                essential: true,
+              });
+              setPopup(null);
+              setVertiportPopup(null);
+              setCorridorPopup(null);
+              setHeliportPopup(null);
+              setHasNavigated(false);
+            }}
+            style={{
+              background: "rgba(5,5,8,0.92)",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: 6,
+              padding: "8px 14px",
+              color: "#ccc",
+              fontSize: 9,
+              letterSpacing: 1.5,
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: "'Inter', sans-serif",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+              transition: "all 0.15s",
+            }}
+          >
+            RESET VIEW
+          </button>
+        )}
       </div>
 
       <Map
@@ -963,7 +1009,7 @@ export default function MapView({
         interactiveLayerIds={[...CORRIDOR_LAYER_IDS, ...(showHeliports ? ["heliports-circles"] : [])]}
         reuseMaps
       >
-        <NavigationControl position="top-right" showCompass={false} />
+        <NavigationControl position="top-left" showCompass={false} />
         <ScaleControl position="bottom-right" unit="imperial" />
 
         {/* Corridor GeoJSON layers — hidden in heliport mode */}
@@ -1225,48 +1271,7 @@ export default function MapView({
         )}
       </Map>
 
-      {/* Reset View button */}
-      {hasNavigated && (
-        <button
-          onClick={() => {
-            const view = isMobile ? INITIAL_VIEW_MOBILE : INITIAL_VIEW_DESKTOP;
-            mapRef.current?.flyTo({
-              center: [view.longitude, view.latitude],
-              zoom: view.zoom,
-              padding: view.padding,
-              duration: 1400,
-              essential: true,
-            });
-            setPopup(null);
-            setVertiportPopup(null);
-            setCorridorPopup(null);
-            setHeliportPopup(null);
-            setHasNavigated(false);
-          }}
-          style={{
-            position: "absolute",
-            top: isMobile ? 56 : 52,
-            left: 12,
-            zIndex: 20,
-            background: "rgba(5,5,8,0.92)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
-            border: "1px solid rgba(255,255,255,0.12)",
-            borderRadius: 8,
-            padding: isMobile ? "10px 16px" : "8px 14px",
-            color: "#ccc",
-            fontSize: isMobile ? 10 : 9,
-            letterSpacing: 1.5,
-            fontWeight: 700,
-            cursor: "pointer",
-            fontFamily: "'Inter', sans-serif",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
-            transition: "all 0.15s",
-          }}
-        >
-          RESET VIEW
-        </button>
-      )}
+      {/* Reset View button is now inline with the MARKETS/HELIPORTS toggle above */}
 
       {/* Legend overlay — hidden on mobile */}
       {!isMobile && <div
