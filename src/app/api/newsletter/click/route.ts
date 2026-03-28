@@ -8,24 +8,28 @@ export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("t");
   const url = req.nextUrl.searchParams.get("url");
 
-  if (email && issue && token && url && verifyTrackingToken(email, issue, token)) {
-    try {
-      await prisma.newsletterEvent.create({
-        data: {
-          email,
-          issue,
-          event: "click",
-          url,
-          userAgent: req.headers.get("user-agent") ?? undefined,
-          ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? undefined,
-        },
-      });
-    } catch {
-      // Don't fail the redirect on DB errors
-    }
+  const isValid = !!(email && issue && token && url && verifyTrackingToken(email, issue, token));
+
+  if (!isValid) {
+    return NextResponse.redirect("https://www.airindex.io");
   }
 
-  // Redirect to destination (or fallback to homepage)
+  try {
+    await prisma.newsletterEvent.create({
+      data: {
+        email: email!,
+        issue,
+        event: "click",
+        url: url!,
+        userAgent: req.headers.get("user-agent") ?? undefined,
+        ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? undefined,
+      },
+    });
+  } catch {
+    // Don't fail the redirect on DB errors
+  }
+
+  // Redirect to destination
   const destination = url || "https://www.airindex.io";
   const fallback = "https://www.airindex.io";
 

@@ -17,6 +17,11 @@ export async function GET(request: NextRequest) {
     const stripe = getStripe();
     const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
 
+    // Verify the authenticated user owns this checkout session
+    if (checkoutSession.metadata?.userId !== session.user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     return NextResponse.json({
       status: checkoutSession.status,
       paymentStatus: checkoutSession.payment_status,
