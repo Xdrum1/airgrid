@@ -58,11 +58,11 @@ function ContactForm() {
             marginBottom: 12,
           }}
         >
-          {isPro ? "You're on the list" : "Thank you"}
+          {isPro ? "Request received" : "Thank you"}
         </h2>
         <p style={{ color: "#999", fontSize: 13, lineHeight: 1.7, marginBottom: 24 }}>
           {isPro
-            ? "We'll notify you when Pro launches. Full dashboard access is free through launch."
+            ? "We'll review your request and reach out within 48 hours."
             : "We'll reach out within 48 hours."}
         </p>
         <Link
@@ -219,7 +219,7 @@ function ContactForm() {
           transition: "opacity 0.15s",
         }}
       >
-        {state === "submitting" ? "SENDING..." : isPro ? "JOIN WAITLIST" : "GET IN TOUCH"}
+        {state === "submitting" ? "SENDING..." : isPro ? "REQUEST ACCESS" : "GET IN TOUCH"}
       </button>
       <p style={{ color: "#555", fontSize: 9, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>
         By submitting, you agree to our{" "}
