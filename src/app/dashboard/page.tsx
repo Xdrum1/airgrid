@@ -9,7 +9,7 @@ export default async function DashboardPage() {
   const session = await auth();
 
   const cities = await getCitiesWithOverrides();
-  const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
+  const isAdmin = session?.user?.email === process.env.ADMIN_NOTIFY_EMAIL;
 
   return (
     <Suspense fallback={
@@ -17,7 +17,7 @@ export default async function DashboardPage() {
         <div style={{ color: "#555", fontSize: 13, fontFamily: "'Inter', sans-serif", letterSpacing: 2 }}>LOADING...</div>
       </div>
     }>
-      <Dashboard initialCities={cities} adminEmail={adminEmail} />
+      <Dashboard initialCities={cities} isAdmin={isAdmin} />
     </Suspense>
   );
 }
