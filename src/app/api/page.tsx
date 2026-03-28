@@ -317,11 +317,11 @@ export default function ApiLandingPage() {
             Ready to integrate?
           </h3>
           <p style={{ color: "#888", fontSize: 13, marginBottom: 20, maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
-            API access is available on Institutional and Enterprise plans.
-            Full reference documentation is available after upgrade.
+            API access is available through Institutional and Enterprise agreements.
+            Full reference documentation is available after onboarding.
           </p>
           <Link
-            href="/pricing"
+            href="/contact?tier=institutional"
             style={{
               display: "inline-block",
               background: "#7c3aed",
@@ -334,7 +334,7 @@ export default function ApiLandingPage() {
               textDecoration: "none",
             }}
           >
-            View Plans
+            Request Access
           </Link>
         </section>
 
