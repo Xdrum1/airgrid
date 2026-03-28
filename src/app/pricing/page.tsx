@@ -1,12 +1,63 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import SiteNav from "@/components/SiteNav";
-import PricingTiers from "@/components/PricingTiers";
+import SiteFooter from "@/components/SiteFooter";
 
 export const metadata: Metadata = {
-  title: "Plans — AirIndex",
-  description: "Intelligence access for every stage of the market. From individual analysts to institutional data partners — structured access to the industry's authoritative UAM readiness index.",
+  title: "Access — AirIndex",
+  description: "Intelligence access for organizations shaping where eVTOL operates. Market readiness data, gap analysis, corridor intelligence, and API access.",
 };
+
+const CAPABILITIES = [
+  {
+    title: "Market Readiness Intelligence",
+    description: "Readiness scores across 20+ U.S. markets with full factor-level breakdowns, source citations, and audit trails. Updated daily from primary sources.",
+    items: ["7-factor composite scoring", "Factor-level breakdowns with citations", "Score history and trajectory analysis", "Gap analysis with actionable recommendations"],
+  },
+  {
+    title: "Regulatory & Legislative Monitoring",
+    description: "Automated pipeline tracking federal filings, state legislation, operator disclosures, and FAA regulatory actions across every tracked market.",
+    items: ["Federal Register monitoring", "Congress.gov bill tracking", "State legislation via LegiScan", "SEC EDGAR operator filings"],
+  },
+  {
+    title: "Infrastructure Intelligence",
+    description: "Corridor tracking, vertiport data, heliport infrastructure mapping, and operator presence monitoring with facility-level detail.",
+    items: ["5,647 FAA heliport facilities mapped", "Flight corridor tracking with status", "Vertiport and operator data", "Infrastructure density visualization"],
+  },
+  {
+    title: "Reports & Deliverables",
+    description: "Downloadable market snapshots, pre-feasibility assessments, and the weekly UAM Market Pulse intelligence briefing.",
+    items: ["Per-city market snapshot PDFs", "Gap analysis reports", "Weekly Market Pulse briefing", "Custom deliverables on request"],
+  },
+  {
+    title: "API & Data Access",
+    description: "RESTful API with market data, score history, and export capabilities for organizations embedding UAM intelligence into their workflows.",
+    items: ["Bearer token authentication", "Market, detail, history, export endpoints", "JSON responses with rate limiting", "Bulk data export"],
+  },
+] as const;
+
+const FAQS = [
+  {
+    q: "How does pricing work?",
+    a: "Access is negotiated based on your organization's needs. We work with individual analysts, consulting teams, government agencies, and enterprise data partners — each with different requirements. Request access and we'll scope what makes sense for you.",
+  },
+  {
+    q: "What's publicly available?",
+    a: "The UAM Market Pulse weekly briefing, our published methodology, and research insights are freely available. The full intelligence platform — scoring data, gap analysis, corridors, filings, API — is available through access agreements.",
+  },
+  {
+    q: "How often is the data updated?",
+    a: "The AirIndex scoring pipeline runs daily. Score changes, regulatory signals, and legislative updates are detected and reflected within 24 hours. Score snapshots are archived weekly for trend analysis.",
+  },
+  {
+    q: "What data sources does AirIndex use?",
+    a: "Primary sources: FAA Federal Register, Congress.gov, state legislatures via LegiScan, SEC EDGAR, FAA NASR 5010, and regulations.gov. Every score is auditable and traceable to its origin records.",
+  },
+  {
+    q: "Can we integrate AirIndex data into our own systems?",
+    a: "Yes. The API provides programmatic access to all market data with structured JSON responses. Custom integrations, webhooks, and data feeds are available for enterprise agreements.",
+  },
+] as const;
 
 export default function PricingPage() {
   return (
@@ -31,123 +82,127 @@ export default function PricingPage() {
             lineHeight: 1.3,
           }}
         >
-          Intelligence access for every stage of the market
+          Intelligence access for your organization
         </h1>
-        <p style={{ color: "#999", fontSize: 15, margin: "0 auto", lineHeight: 1.7, maxWidth: 620 }}>
-          The dashboard and scores are free. Professional intelligence — score history, factor breakdowns,
-          corridor tracking, and market reports — is available through our sales team.
+        <p style={{ color: "#888", fontSize: 15, margin: "0 auto 40px", lineHeight: 1.7, maxWidth: 580 }}>
+          Market readiness data, gap analysis, regulatory monitoring, and infrastructure intelligence — scoped to what your organization needs.
         </p>
+        <Link
+          href="/request-access"
+          style={{
+            display: "inline-block",
+            padding: "14px 36px",
+            background: "#00d4ff",
+            color: "#050508",
+            fontSize: 12,
+            fontWeight: 700,
+            fontFamily: "'Inter', sans-serif",
+            letterSpacing: "0.06em",
+            textDecoration: "none",
+            borderRadius: 6,
+          }}
+        >
+          Request Access
+        </Link>
       </section>
 
-      {/* Audience context */}
-      <section style={{ maxWidth: 720, margin: "0 auto", padding: "48px 20px 0" }}>
-        <div style={{
-          borderLeft: "2px solid rgba(0,212,255,0.2)",
-          paddingLeft: 24,
-          display: "flex",
-          flexDirection: "column",
-          gap: 14,
-        }}>
-          {[
-            { role: "Analysts and consultants", action: "use Professional to track market trajectories and produce client deliverables." },
-            { role: "City planners", action: "use Professional to benchmark against peer markets and identify gap closure pathways." },
-            { role: "Infrastructure developers", action: "use Institutional to integrate readiness data into site selection workflows." },
-            { role: "Operators", action: "use Institutional API to monitor market conditions before making entry decisions." },
-            { role: "Data partnerships", action: "are negotiated directly —", link: true },
-          ].map((item) => (
-            <p key={item.role} style={{ color: "#7a8a9e", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
-              <span style={{ color: "#c0c8d8", fontWeight: 500 }}>{item.role}</span>{" "}
-              {item.link ? (
-                <>
-                  {item.action}{" "}
-                  <Link href="/contact?tier=enterprise" style={{ color: "#00d4ff", textDecoration: "none", borderBottom: "1px solid rgba(0,212,255,0.3)" }}>
-                    contact us
-                  </Link>.
-                </>
-              ) : (
-                item.action
-              )}
-            </p>
+      {/* Capabilities */}
+      <section style={{ maxWidth: 900, margin: "0 auto", padding: "clamp(48px, 6vw, 80px) 20px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {CAPABILITIES.map((cap) => (
+            <div
+              key={cap.title}
+              style={{
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 12,
+                padding: "28px 32px",
+              }}
+            >
+              <h3
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 16,
+                  color: "#eee",
+                  margin: "0 0 8px",
+                }}
+              >
+                {cap.title}
+              </h3>
+              <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 600 }}>
+                {cap.description}
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px" }}>
+                {cap.items.map((item) => (
+                  <span
+                    key={item}
+                    style={{
+                      fontSize: 11,
+                      color: "#666",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <span style={{ color: "#00d4ff", fontSize: 8 }}>&#10003;</span>
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Tiers */}
-      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 20px clamp(60px, 8vw, 100px)" }}>
-        <PricingTiers />
-      </section>
-
-      {/* Who uses AirIndex */}
-      <section style={{ maxWidth: 800, margin: "0 auto", padding: "0 20px 64px" }}>
-        <div style={{
-          background: "rgba(255,255,255,0.02)",
-          border: "1px solid rgba(255,255,255,0.06)",
-          borderRadius: 12,
-          padding: "32px 36px",
-        }}>
-          <h3
-            style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 700,
-              fontSize: 16,
-              color: "#ccc",
-              margin: "0 0 20px",
-            }}
-          >
+      {/* Who uses */}
+      <section style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 64px" }}>
+        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)", marginBottom: 64 }} />
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 12px" }}>
             Who uses AirIndex
-          </h3>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "14px 32px" }}>
-            {[
-              { type: "eVTOL operators", desc: "Market entry timing and corridor readiness" },
-              { type: "City planners & airport authorities", desc: "Benchmarking against peer markets" },
-              { type: "Infrastructure developers", desc: "Site selection and gap analysis" },
-              { type: "Defense & aerospace", desc: "AAM landscape intelligence for strategic planning" },
-              { type: "Investment & finance", desc: "Due diligence on market-level readiness" },
-              { type: "Policy & government", desc: "Federal program alignment and legislative tracking" },
-              { type: "Economic development alliances", desc: "Regional readiness benchmarking and investment attraction" },
-              { type: "Weather & sensor companies", desc: "Market coverage mapping and infrastructure gap identification" },
-            ].map((item) => (
-              <div key={item.type} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                <span style={{ color: "#00d4ff", fontSize: 8, marginTop: 5, flexShrink: 0 }}>&#9646;</span>
-                <div>
-                  <div style={{ color: "#c0c8d8", fontSize: 12, fontWeight: 600 }}>{item.type}</div>
-                  <div style={{ color: "#666", fontSize: 11, lineHeight: 1.5 }}>{item.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div
+          </h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "12px 24px", maxWidth: 700, margin: "0 auto" }}>
+          {[
+            "eVTOL Operators",
+            "Infrastructure Developers",
+            "City Planners & Airport Authorities",
+            "Aerospace & Defense",
+            "Insurance & Risk",
+            "Investment & Finance",
+            "Policy & Government",
+            "Economic Development Alliances",
+          ].map((role) => (
+            <div key={role} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ color: "#00d4ff", fontSize: 8, flexShrink: 0 }}>&#9646;</span>
+              <span style={{ color: "#999", fontSize: 12 }}>{role}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ textAlign: "center", marginTop: 32 }}>
+          <Link
+            href="/request-access"
             style={{
-              marginTop: 20,
-              paddingTop: 16,
-              borderTop: "1px solid rgba(255,255,255,0.04)",
-              textAlign: "center",
+              display: "inline-block",
+              padding: "12px 32px",
+              border: "1px solid rgba(0,212,255,0.4)",
+              borderRadius: 6,
+              color: "#00d4ff",
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              textDecoration: "none",
             }}
           >
-            <p style={{ color: "#555", fontSize: 11, margin: "0 0 16px", letterSpacing: 0.3 }}>
-              Used by professionals in eVTOL operations, vertiport development,
-              city planning, and aerospace investment.
-            </p>
-          </div>
-          <div style={{ textAlign: "center", marginTop: 8 }}>
-            <Link
-              href="/contact?tier=pro"
-              style={{
-                color: "#00d4ff",
-                fontSize: 12,
-                fontWeight: 600,
-                textDecoration: "none",
-                borderBottom: "1px solid rgba(0,212,255,0.3)",
-              }}
-            >
-              Schedule a walkthrough to see how it fits your workflow
-            </Link>
-          </div>
+            Request Access
+          </Link>
         </div>
       </section>
 
       {/* FAQ */}
       <section style={{ maxWidth: 640, margin: "0 auto", padding: "0 20px 80px" }}>
+        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)", marginBottom: 48 }} />
         <h3
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
@@ -159,28 +214,7 @@ export default function PricingPage() {
         >
           Questions
         </h3>
-        {[
-          {
-            q: "What do I get for free?",
-            a: "Free accounts include the dashboard map, current readiness scores, city rankings, and basic market overviews. The score is free — the intelligence behind the score is paid.",
-          },
-          {
-            q: "How often is the data updated?",
-            a: "The AirIndex scoring pipeline runs daily. Score changes, factor-level updates, and regulatory signals are timestamped and reflected in the dashboard and API within 24 hours of detection.",
-          },
-          {
-            q: "How is AirIndex data licensed?",
-            a: "Professional access is available under annual license agreements, billed monthly or annually. Institutional, API, and enterprise arrangements are negotiated directly with our team.",
-          },
-          {
-            q: "What's included in the API?",
-            a: "RESTful access to readiness scores, factor breakdowns, corridor data, and historical snapshots. Rate limits and export capabilities vary by tier. Available on Institutional and Enterprise plans.",
-          },
-          {
-            q: "What data sources does AirIndex use?",
-            a: "AirIndex aggregates verified primary sources — federal agencies, regulatory databases, legislative records, and operator disclosures. Every score is auditable and traceable to its origin records.",
-          },
-        ].map((faq) => (
+        {FAQS.map((faq) => (
           <div
             key={faq.q}
             style={{
@@ -198,18 +232,7 @@ export default function PricingPage() {
         ))}
       </section>
 
-      {/* Footer */}
-      <footer
-        style={{
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-          padding: "24px 20px",
-          textAlign: "center",
-        }}
-      >
-        <span style={{ color: "#777", fontSize: 9, letterSpacing: 1 }}>
-          © 2026 AIRINDEX · <Link href="/" style={{ color: "#777", textDecoration: "none" }}>HOME</Link> · <Link href="/about" style={{ color: "#777", textDecoration: "none" }}>ABOUT</Link> · <Link href="/methodology" style={{ color: "#777", textDecoration: "none" }}>METHODOLOGY</Link> · <Link href="/api" style={{ color: "#777", textDecoration: "none" }}>API</Link> · <Link href="/terms" style={{ color: "#777", textDecoration: "none" }}>TERMS</Link> · <Link href="/privacy" style={{ color: "#777", textDecoration: "none" }}>PRIVACY</Link>
-        </span>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
