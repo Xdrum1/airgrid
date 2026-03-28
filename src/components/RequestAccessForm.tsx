@@ -3,18 +3,31 @@
 import { useState } from "react";
 import { plausible } from "@/lib/plausible";
 
+const USE_CASES = [
+  "Operator",
+  "Infrastructure Developer",
+  "Government / Municipal",
+  "Investor",
+  "Insurance / Risk",
+  "Aerospace / Defense",
+  "Research / Academic",
+  "Other",
+] as const;
+
 export default function RequestAccessForm() {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    context: "",
+    organization: "",
+    role: "",
+    useCase: "",
     website: "", // honeypot
   });
   const [state, setState] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.email.trim()) return;
+    if (!form.email.trim() || !form.name.trim()) return;
     setState("submitting");
     try {
       const res = await fetch("/api/contact", {
@@ -23,16 +36,16 @@ export default function RequestAccessForm() {
         body: JSON.stringify({
           name: form.name,
           email: form.email,
-          message: form.context || "Requested access from /request-access",
+          company: form.organization,
+          role: form.role,
           tier: "pro",
-          company: "",
-          role: "",
+          message: `Use case: ${form.useCase || "Not specified"}\nOrganization: ${form.organization || "Not specified"}\nRole: ${form.role || "Not specified"}`,
           website: form.website,
         }),
       });
       if (res.ok) {
         setState("success");
-        plausible("Request Access", { source: "request-access" });
+        plausible("Request Access", { source: "request-access", useCase: form.useCase });
       } else {
         setState("error");
       }
@@ -52,6 +65,14 @@ export default function RequestAccessForm() {
     fontFamily: "'Inter', sans-serif",
     outline: "none",
     transition: "border-color 0.15s",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: 9,
+    letterSpacing: 2,
+    color: "#888",
+    marginBottom: 6,
+    display: "block",
   };
 
   if (state === "success") {
@@ -78,71 +99,79 @@ export default function RequestAccessForm() {
 
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div>
-        <label
-          style={{
-            fontSize: 9,
-            letterSpacing: 2,
-            color: "#888",
-            marginBottom: 6,
-            display: "block",
-          }}
-        >
-          EMAIL *
-        </label>
-        <input
-          type="email"
-          required
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          placeholder="you@company.com"
-          style={inputStyle}
-        />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div>
+          <label style={labelStyle}>NAME *</label>
+          <input
+            type="text"
+            required
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            placeholder="Your name"
+            style={inputStyle}
+            maxLength={100}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>WORK EMAIL *</label>
+          <input
+            type="email"
+            required
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            placeholder="you@company.com"
+            style={inputStyle}
+          />
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div>
+          <label style={labelStyle}>ORGANIZATION</label>
+          <input
+            type="text"
+            value={form.organization}
+            onChange={(e) => setForm({ ...form, organization: e.target.value })}
+            placeholder="Company or agency"
+            style={inputStyle}
+            maxLength={100}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>ROLE / TITLE</label>
+          <input
+            type="text"
+            value={form.role}
+            onChange={(e) => setForm({ ...form, role: e.target.value })}
+            placeholder="Your role"
+            style={inputStyle}
+            maxLength={100}
+          />
+        </div>
       </div>
 
       <div>
-        <label
+        <label style={labelStyle}>USE CASE</label>
+        <select
+          value={form.useCase}
+          onChange={(e) => setForm({ ...form, useCase: e.target.value })}
           style={{
-            fontSize: 9,
-            letterSpacing: 2,
-            color: "#888",
-            marginBottom: 6,
-            display: "block",
+            ...inputStyle,
+            cursor: "pointer",
+            appearance: "none",
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 14px center",
+            paddingRight: 36,
           }}
         >
-          NAME *
-        </label>
-        <input
-          type="text"
-          required
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          placeholder="Your name"
-          style={inputStyle}
-          maxLength={100}
-        />
-      </div>
-
-      <div>
-        <label
-          style={{
-            fontSize: 9,
-            letterSpacing: 2,
-            color: "#888",
-            marginBottom: 6,
-            display: "block",
-          }}
-        >
-          HOW DID YOU HEAR ABOUT US?
-        </label>
-        <input
-          type="text"
-          value={form.context}
-          onChange={(e) => setForm({ ...form, context: e.target.value })}
-          placeholder="Optional"
-          style={inputStyle}
-          maxLength={200}
-        />
+          <option value="" style={{ background: "#0a0a12", color: "#666" }}>Select your use case</option>
+          {USE_CASES.map((uc) => (
+            <option key={uc} value={uc} style={{ background: "#0a0a12", color: "#ccc" }}>
+              {uc}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Honeypot */}
@@ -162,8 +191,8 @@ export default function RequestAccessForm() {
         disabled={state === "submitting" || !form.email.trim() || !form.name.trim()}
         style={{
           padding: "14px 28px",
-          background: "#7c3aed",
-          color: "#fff",
+          background: "#00d4ff",
+          color: "#050508",
           fontSize: 11,
           fontWeight: 700,
           letterSpacing: 2,
@@ -181,13 +210,12 @@ export default function RequestAccessForm() {
 
       {state === "error" && (
         <p style={{ fontSize: 11, color: "#ff4444", textAlign: "center", margin: 0 }}>
-          Something went wrong. Please try again.
+          Something went wrong. Please try again or contact hello@airindex.io.
         </p>
       )}
 
-      <p style={{ fontSize: 10, color: "#777", textAlign: "center", margin: 0, lineHeight: 1.6 }}>
-        Free during early access. No credit card required. By requesting access, you agree to receive
-        market updates and the weekly UAM Market Pulse newsletter. You can unsubscribe at any time.
+      <p style={{ fontSize: 10, color: "#555", textAlign: "center", margin: 0, lineHeight: 1.6 }}>
+        By requesting access, you agree to receive market updates and the weekly UAM Market Pulse. You can unsubscribe at any time.
       </p>
     </form>
   );
