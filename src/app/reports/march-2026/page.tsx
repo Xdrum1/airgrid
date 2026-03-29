@@ -701,8 +701,9 @@ export default function MarchReportPage() {
           {/* ═══ PDF Download ═══ */}
           <section style={{ marginBottom: 48, padding: "32px 0", textAlign: "center" }}>
             <a
-              href="/reports/AirIndex_Report_March2026.pdf"
-              download
+              href="/reports/march-2026.html"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 display: "inline-block",
                 padding: "14px 32px",
@@ -715,10 +716,10 @@ export default function MarchReportPage() {
                 borderRadius: 6,
               }}
             >
-              Download Full Report (PDF)
+              Download Full Report
             </a>
             <p style={{ color: "#666", fontSize: 11, marginTop: 12 }}>
-              AirIndex March 2026 Market Intelligence Report — PDF format
+              Opens print-optimized version — use Ctrl/Cmd+P to save as PDF
             </p>
           </section>
 
