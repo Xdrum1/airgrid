@@ -4,7 +4,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { CITIES, OPERATORS, VERTIPORTS, MARKET_COUNT } from "@/data/seed";
 import { getScoreColor, getScoreTier, SCORE_WEIGHTS } from "@/lib/scoring";
-import ReportGate from "./ReportGate";
+// import ReportGate from "./ReportGate";
 
 export const metadata: Metadata = {
   title: "March 2026 Market Report — AirIndex",
@@ -375,8 +375,8 @@ export default function MarchReportPage() {
           </div>
         </section>
 
-        {/* ═══ GATE: Full Report Content ═══ */}
-        <ReportGate>
+        {/* ═══ Full Report Content (ungated for March issue) ═══ */}
+        <>
 
           {/* ═══ Methodology v1.3 ═══ */}
           <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
@@ -723,7 +723,7 @@ export default function MarchReportPage() {
             </p>
           </section>
 
-        </ReportGate>
+        </>
 
         {/* ═══ CTA (always visible) ═══ */}
         <section style={{
