@@ -173,6 +173,62 @@ export default async function LandingPage() {
         </section>
       </ScrollReveal>
 
+      {/* ======== Briefings CTA ======== */}
+      <ScrollReveal>
+        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 48px) 20px 0" }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
+            gap: 24,
+            background: "rgba(255,255,255,0.02)",
+            border: "1px solid rgba(124,58,237,0.12)",
+            borderRadius: 12,
+            padding: "clamp(24px, 4vw, 36px)",
+          }}>
+            <div>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#7c3aed" }}>MARKET INTELLIGENCE BRIEFINGS</span>
+              <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 18, color: "#fff", margin: "12px 0 10px" }}>
+                Need a custom market analysis?
+              </h3>
+              <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
+                AirIndex scores tell you where a market stands. A Market Intelligence Briefing tells you why — and what it would take to change it.
+              </p>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {[
+                { tier: "Market Snapshot", desc: "1 city · 5 days", href: "/briefings" },
+                { tier: "Market Briefing", desc: "2–3 cities · 10 days", href: "/briefings" },
+                { tier: "Strategic Assessment", desc: "4–21 cities · 3–4 weeks", href: "/briefings" },
+              ].map((t) => (
+                <Link
+                  key={t.tier}
+                  href={t.href}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "10px 14px",
+                    background: "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    borderRadius: 6,
+                    textDecoration: "none",
+                    transition: "border-color 0.15s",
+                  }}
+                >
+                  <div>
+                    <div style={{ color: "#eee", fontSize: 12, fontWeight: 600 }}>{t.tier}</div>
+                    <div style={{ color: "#666", fontSize: 10, marginTop: 2 }}>{t.desc}</div>
+                  </div>
+                  <span style={{ color: "#7c3aed", fontSize: 10, letterSpacing: 0.5 }}>
+                    Learn more →
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
+
       {/* Divider */}
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(24px, 4vw, 48px) 20px 0" }}>
         <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />

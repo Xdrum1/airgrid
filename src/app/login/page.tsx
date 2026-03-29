@@ -100,7 +100,7 @@ function LoginForm() {
                 marginBottom: 12,
               }}
             >
-              {isSignup ? "Create your free account" : "Sign in to AirIndex"}
+              {isSignup ? "Create your free account" : "Welcome back"}
             </h1>
             <p
               style={{
@@ -113,7 +113,7 @@ function LoginForm() {
             >
               {isSignup
                 ? <>Track 20+ UAM markets, get alerts, access regulatory filings.<br />Enter your email to get started — no password needed.</>
-                : <>Get alerts, track markets, access regulatory filings.<br />Enter your email to receive a sign-in link.</>
+                : <>Existing member? Enter your email to receive a sign-in link.<br />New to AirIndex? <a href="/request-access" style={{ color: "#00d4ff", textDecoration: "none" }}>Request access</a> to get started.</>
               }
             </p>
 
