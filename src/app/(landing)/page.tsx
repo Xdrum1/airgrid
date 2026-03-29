@@ -162,13 +162,13 @@ export default async function LandingPage() {
         <section style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0", textAlign: "center" }}>
           <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#00d4ff", display: "block", marginBottom: 16 }}>WHAT IS AIRINDEX</span>
           <p style={{ color: "#999", fontSize: 14, lineHeight: 1.8, margin: "0 0 10px" }}>
-            AirIndex is the market intelligence platform for urban air mobility. We track readiness
-            conditions across 21+ U.S. markets — scoring legislation, infrastructure, operator activity,
-            and regulatory posture against a published 7-factor methodology.
-          </p>
-          <p style={{ color: "#666", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
             Built for operators, infrastructure developers, government agencies, and investors
             making capital allocation decisions in advanced air mobility.
+          </p>
+          <p style={{ color: "#666", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
+            We track readiness conditions across 21+ U.S. markets — scoring legislation,
+            infrastructure, operator activity, and regulatory posture against a published
+            7-factor methodology. Updated continuously from primary sources.
           </p>
         </section>
       </ScrollReveal>
@@ -277,7 +277,18 @@ export default async function LandingPage() {
                 <p style={{ color: "#888", fontSize: 12, lineHeight: 1.7, margin: "0 0 18px" }}>
                   Arizona is the most consequential state-level story right now. SB1826 and SB1827 both advanced in committee. Joby&apos;s first production-conforming aircraft flew this week.
                 </p>
-                <Link href="/insights" style={{ fontSize: 11, color: "#00d4ff", textDecoration: "none", letterSpacing: 0.5, fontWeight: 600 }}>
+                <Link href="/insights" style={{
+                  display: "inline-block",
+                  padding: "10px 24px",
+                  background: "rgba(0,212,255,0.08)",
+                  border: "1px solid rgba(0,212,255,0.2)",
+                  borderRadius: 6,
+                  fontSize: 11,
+                  color: "#00d4ff",
+                  textDecoration: "none",
+                  letterSpacing: 0.5,
+                  fontWeight: 700,
+                }}>
                   Read the full Pulse →
                 </Link>
               </div>
@@ -435,10 +446,10 @@ export default async function LandingPage() {
                 color: "#fff",
               }}
             >
-              The intelligence infrastructure for urban air mobility.
+              Ready to see your market?
             </h2>
             <p style={{ color: "#555", fontSize: 12, margin: "0 0 28px", lineHeight: 1.7, maxWidth: 440, marginLeft: "auto", marginRight: "auto" }}>
-              Request access to the full platform — market readiness scores, gap analysis, corridor intelligence, regulatory filings, and the API.
+              Market readiness scores, gap analysis, corridor intelligence, regulatory filings, and API access for your team.
             </p>
             <Link
               href="/request-access"
