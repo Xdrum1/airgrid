@@ -207,20 +207,18 @@ function LoginForm() {
                 </>
               ) : (
                 <>
-                  Don&apos;t have an account?{" "}
+                  Need access?{" "}
                   <a
-                    href={`/login?mode=signup${callbackUrl !== "/dashboard" ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`}
+                    href="/request-access"
                     style={{ color: "#00d4ff", textDecoration: "none" }}
                   >
-                    Create one
+                    Request access
                   </a>
                 </>
               )}
             </p>
             <p style={{ color: "#666", fontSize: 10, marginTop: 16 }}>
-              {isSignup
-                ? "No password needed — we\u2019ll email you a magic link to get started."
-                : "No password needed — we\u2019ll email you a sign-in link."}
+              No password needed — we&apos;ll email you a sign-in link.
             </p>
             <p style={{ color: "#555", fontSize: 9, marginTop: 12, lineHeight: 1.5 }}>
               By creating an account, you agree to our{" "}
