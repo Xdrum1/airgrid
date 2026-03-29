@@ -11,6 +11,8 @@ import ScoreBar from "./ScoreBar";
 import ScoreTrend from "./ScoreTrend";
 import BreakdownPanel from "./BreakdownPanel";
 import GapAnalysisPanel from "./GapAnalysisPanel";
+import ScoreTimeline from "./ScoreTimeline";
+import ScenarioPanel from "./ScenarioPanel";
 
 import WatchlistStar from "./WatchlistStar";
 import { trackEvent } from "@/lib/track";
@@ -334,11 +336,14 @@ export default function CityDetailPanel({
         breakdown={selected.breakdown}
         scoreColor={scoreColor}
         gated={!hasProAccess(userTier)}
+        scoreSources={selected.scoreSources}
       />
 
-      {/* Gap Analysis — Pro only */}
+      {/* Score Timeline + Gap Analysis — Pro only */}
       {hasProAccess(userTier) && (
         <>
+          <ScoreTimeline cityId={selected.id} scoreColor={scoreColor} />
+          <ScenarioPanel breakdown={selected.breakdown} currentScore={selected.score ?? 0} scoreColor={scoreColor} />
           <GapAnalysisPanel city={selected} scoreColor={scoreColor} showSubIndicators={isAdmin} />
           <div
             style={{

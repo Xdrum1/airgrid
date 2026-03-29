@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ScoreBreakdown } from "@/types";
+import { ScoreBreakdown, City } from "@/types";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
 import ScoreBar from "./ScoreBar";
 
@@ -33,6 +33,8 @@ const GAP_STATEMENTS: Record<string, { zero: string; partial?: string }> = {
   },
 };
 
+type SourceCitation = { citation: string; date: string; url?: string };
+
 function BreakdownRow({
   label,
   value,
@@ -40,6 +42,7 @@ function BreakdownRow({
   color,
   factorKey,
   showGaps,
+  source,
 }: {
   label: string;
   value: number;
@@ -47,6 +50,7 @@ function BreakdownRow({
   color: string;
   factorKey?: string;
   showGaps?: boolean;
+  source?: SourceCitation;
 }) {
   const isGap = value < max;
   const isPartial = value > 0 && value < max;
@@ -88,13 +92,52 @@ function BreakdownRow({
         </span>
       </div>
       <ScoreBar value={value} max={max} color={value > 0 ? color : "#333"} />
-      {showGaps && isGap && gapText && (
+      {showGaps && source && (
+        <div style={{ marginTop: 3 }}>
+          <p
+            style={{
+              color: "#999",
+              fontSize: 8,
+              lineHeight: 1.5,
+              margin: 0,
+            }}
+          >
+            {source.url ? (
+              <a
+                href={source.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#00d4ff", textDecoration: "none" }}
+              >
+                {source.citation}
+              </a>
+            ) : (
+              source.citation
+            )}
+            <span style={{ color: "#555", marginLeft: 6 }}>{source.date}</span>
+          </p>
+        </div>
+      )}
+      {showGaps && isGap && gapText && !source && (
         <p
           style={{
             color: "#777",
             fontSize: 8,
             lineHeight: 1.5,
             margin: "4px 0 0",
+            fontStyle: "italic",
+          }}
+        >
+          {gapText}
+        </p>
+      )}
+      {showGaps && isGap && gapText && source && (
+        <p
+          style={{
+            color: "#777",
+            fontSize: 8,
+            lineHeight: 1.5,
+            margin: "2px 0 0",
             fontStyle: "italic",
           }}
         >
@@ -109,10 +152,12 @@ export default function BreakdownPanel({
   breakdown,
   scoreColor,
   gated = false,
+  scoreSources,
 }: {
   breakdown?: ScoreBreakdown;
   scoreColor: string;
   gated?: boolean;
+  scoreSources?: City["scoreSources"];
 }) {
   const rows = [
     { key: "activePilotProgram", label: "Active Pilot Program", value: breakdown?.activePilotProgram ?? 0, max: SCORE_WEIGHTS.activePilotProgram },
@@ -147,7 +192,16 @@ export default function BreakdownPanel({
       </div>
 
       {visibleRows.map((r) => (
-        <BreakdownRow key={r.key} label={r.label} value={r.value} max={r.max} color={scoreColor} factorKey={r.key} showGaps={!gated} />
+        <BreakdownRow
+          key={r.key}
+          label={r.label}
+          value={r.value}
+          max={r.max}
+          color={scoreColor}
+          factorKey={r.key}
+          showGaps={!gated}
+          source={scoreSources?.[r.key as keyof ScoreBreakdown]}
+        />
       ))}
 
       {gated && hiddenRows.length > 0 && (
