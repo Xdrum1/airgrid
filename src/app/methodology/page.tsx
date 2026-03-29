@@ -105,7 +105,7 @@ const FACTORS = [
     weight: 10,
     graduated: true,
     description:
-      "Weather infrastructure readiness tracks low-altitude weather sensing at the city level. Weather data at or below 500 feet AGL is critical for eVTOL operations — standard airport weather stations (ASOS/AWOS) report conditions at runway level but do not capture the wind shear, turbulence, and microclimate data required for vertiport approach corridors. This factor uses a graduated three-tier model: Full (10 pts) — dedicated low-altitude sensing deployed in the market; Partial (5 pts) — standard airport weather infrastructure exists but lacks UAM-specific coverage; None (0 pts) — no meaningful weather infrastructure for low-altitude operations. As dedicated sensor networks expand across US markets, this factor will increasingly differentiate markets that have invested in operational weather infrastructure from those relying on general aviation coverage.",
+      "Weather infrastructure readiness tracks low-altitude weather sensing at the city level. The USDOT AAM National Strategy identifies weather as one of four infrastructure pillars alongside physical, energy, and spectrum — making it a federally recognized prerequisite for commercial AAM operations, not an AirIndex-specific judgment. Weather remains the most uncertain and uncontrollable factor that will impact schedule reliability and operator dispatch rates, especially in built-up urban areas where confused winds will impact vertiport vehicle spacing and throughput. Better weather infrastructure will increase weather and wind certainty, contributing to a safer and more efficient airspace and vertiport ecosystem. States are a key enabler in closing the weather infrastructure gap. Weather data at or below 500 feet AGL is critical for eVTOL operations — standard airport weather stations (ASOS/AWOS) report conditions at runway level but do not capture the wind shear, turbulence, and microclimate data required for vertiport approach corridors. This factor uses a graduated three-tier model: Full (10 pts) — dedicated low-altitude sensing deployed in the market; Partial (5 pts) — standard airport weather infrastructure exists but lacks UAM-specific coverage; None (0 pts) — no meaningful weather infrastructure for low-altitude operations. As dedicated sensor networks expand across US markets, this factor will increasingly differentiate markets that have invested in operational weather infrastructure from those relying on general aviation coverage.",
     qualifies:
       "Full: Dedicated low-altitude weather sensors, eIPP (enhanced Instrument Performance Products) deployments, or UAM-specific weather observation networks operating within the metropolitan area. Partial: ASOS/AWOS weather stations at airports within the metro area providing surface-level observations applicable to nearby vertiport operations. None: No weather observation infrastructure relevant to low-altitude UAM operations.",
     doesNotQualify:
@@ -202,7 +202,7 @@ export default function MethodologyPage() {
               marginBottom: 16,
             }}
           >
-            Scoring Methodology &middot; v1.3 &middot; March 2026
+            Scoring Methodology &middot; v1.3 &middot; Revised March 29, 2026
           </div>
           <h1
             style={{

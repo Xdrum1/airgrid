@@ -389,10 +389,35 @@ export default function MarchReportPage() {
             }}>
               Scoring Methodology v1.3
             </h2>
-            <p style={{ color: "#999", fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>
+
+            <div style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 9,
+              letterSpacing: 1,
+              color: "#555",
+              marginBottom: 12,
+            }}>
+              UPDATED MARCH 29, 2026
+            </div>
+            <p style={{ color: "#999", fontSize: 13, lineHeight: 1.8, marginBottom: 14 }}>
               Version 1.3 introduces two major changes: State Legislation is now the highest-weighted factor at 20 points,
               and Weather Infrastructure replaces LAANC as the seventh scoring dimension. All scores are 0-100, computed
               from seven binary or graduated factors.
+            </p>
+            <p style={{ color: "#999", fontSize: 13, lineHeight: 1.8, marginBottom: 14 }}>
+              <strong style={{ color: "#ccc" }}>Why Weather Infrastructure at 10 points?</strong>{" "}
+              The USDOT AAM National Strategy documents weather as one of four infrastructure pillars
+              alongside physical, energy, and spectrum. Weather remains the most uncertain and
+              uncontrollable factor that will impact schedule reliability and operator dispatch rates,
+              especially in built-up urban areas where confused winds will impact vertiport vehicle
+              spacing and throughput. Better weather infrastructure will increase weather and wind
+              certainty, contributing to a safer and more efficient airspace and vertiport ecosystem.
+              States are a key enabler in closing the weather infrastructure gap.
+            </p>
+            <p style={{ color: "#999", fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>
+              No market currently scores full points on Weather Infrastructure, reflecting the absence
+              of comprehensive low-altitude weather sensing networks at scale. This is why even the
+              top-ranked markets — Los Angeles and Dallas — carry a 5-point gap from a perfect score.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {Object.entries(SCORE_WEIGHTS).map(([key, weight]) => (
