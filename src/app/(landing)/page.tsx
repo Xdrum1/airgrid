@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getCitiesWithOverrides, MARKET_COUNT } from "@/data/seed";
 import { calculateReadinessScore, getScoreTier, getScoreColor } from "@/lib/scoring";
 import { getPublishedFeedItems } from "@/lib/feed";
@@ -123,8 +124,41 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* ======== Dashboard Preview ======== */}
+      <ScrollReveal>
+        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 48px) 20px 0" }}>
+          <div
+            style={{
+              position: "relative",
+              borderRadius: 12,
+              overflow: "hidden",
+              border: "1px solid rgba(255,255,255,0.08)",
+              boxShadow: "0 0 80px rgba(0,212,255,0.06), 0 0 160px rgba(124,58,237,0.04)",
+            }}
+          >
+            <Link href="/request-access" className="dashboard-preview-link" style={{ display: "block", position: "relative" }}>
+              <Image
+                src="/images/dashboard-preview.png"
+                alt="AirIndex intelligence platform — market readiness scoring across 20+ U.S. markets"
+                width={1920}
+                height={1080}
+                style={{ width: "100%", height: "auto", display: "block" }}
+                priority
+              />
+              <div className="dashboard-preview-overlay">
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, letterSpacing: "0.06em", color: "#fff" }}>
+                    Request access to the full platform &rarr;
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </section>
+      </ScrollReveal>
+
       {/* Divider */}
-      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "24px 20px 0" }}>
+      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(24px, 4vw, 48px) 20px 0" }}>
         <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
       </div>
 
