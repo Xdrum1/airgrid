@@ -157,6 +157,22 @@ export default async function LandingPage() {
         </section>
       </ScrollReveal>
 
+      {/* ======== What is AirIndex ======== */}
+      <ScrollReveal>
+        <section style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0", textAlign: "center" }}>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#00d4ff", display: "block", marginBottom: 16 }}>WHAT IS AIRINDEX</span>
+          <p style={{ color: "#999", fontSize: 14, lineHeight: 1.8, margin: "0 0 10px" }}>
+            AirIndex is the market intelligence platform for urban air mobility. We track readiness
+            conditions across 21+ U.S. markets — scoring legislation, infrastructure, operator activity,
+            and regulatory posture against a published 7-factor methodology.
+          </p>
+          <p style={{ color: "#666", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
+            Built for operators, infrastructure developers, government agencies, and investors
+            making capital allocation decisions in advanced air mobility.
+          </p>
+        </section>
+      </ScrollReveal>
+
       {/* Divider */}
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(24px, 4vw, 48px) 20px 0" }}>
         <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
