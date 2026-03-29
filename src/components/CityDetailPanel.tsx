@@ -389,6 +389,31 @@ export default function CityDetailPanel({
               GAP REPORT
             </Link>
           </div>
+
+          {/* Briefing upsell */}
+          <div
+            style={{
+              padding: "12px 20px",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              background: "rgba(124,58,237,0.04)",
+            }}
+          >
+            <p style={{ color: "#999", fontSize: 9, lineHeight: 1.6, margin: "0 0 6px" }}>
+              Want a full analysis of {selected.city} with gap narrative, score trajectory, and recommendations?
+            </p>
+            <Link
+              href={`/briefings`}
+              style={{
+                color: "#7c3aed",
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: "0.05em",
+                textDecoration: "none",
+              }}
+            >
+              Request a Market Briefing →
+            </Link>
+          </div>
         </>
       )}
 

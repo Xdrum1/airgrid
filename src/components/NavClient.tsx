@@ -19,6 +19,7 @@ const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Methodology", href: "/methodology" },
+  { label: "Briefings", href: "/briefings" },
   { label: "Insights", href: "/insights" },
 ];
 
@@ -101,10 +102,12 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
               href="/login"
               className="nav-link"
               style={{
-                ...linkStyle,
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 6,
-                marginLeft: 4,
+                color: "#555",
+                fontSize: 10,
+                letterSpacing: "0.04em",
+                textDecoration: "none",
+                padding: "8px 10px",
+                transition: "color 0.15s",
               }}
             >
               Sign in
@@ -216,16 +219,13 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                   style={{
                     display: "block",
                     textAlign: "center",
-                    padding: "14px 0",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    color: "#aaa",
-                    fontSize: 13,
-                    letterSpacing: "0.06em",
+                    padding: "10px 0",
+                    color: "#666",
+                    fontSize: 12,
                     textDecoration: "none",
-                    borderRadius: 6,
                   }}
                 >
-                  Sign in
+                  Existing member? Sign in
                 </Link>
                 <Link
                   href="/request-access"

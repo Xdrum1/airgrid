@@ -14,6 +14,15 @@ const USE_CASES = [
   "Other",
 ] as const;
 
+const MARKET_OPTIONS = [
+  "Los Angeles, CA", "Dallas, TX", "Miami, FL", "Orlando, FL",
+  "San Francisco, CA", "New York, NY", "Phoenix, AZ", "Austin, TX",
+  "Houston, TX", "San Diego, CA", "Denver, CO", "Atlanta, GA",
+  "Chicago, IL", "Charlotte, NC", "Las Vegas, NV", "Nashville, TN",
+  "Seattle, WA", "Boston, MA", "Detroit, MI", "Columbus, OH",
+  "Tampa, FL",
+] as const;
+
 export default function RequestAccessForm() {
   const [form, setForm] = useState({
     name: "",
@@ -21,8 +30,11 @@ export default function RequestAccessForm() {
     organization: "",
     role: "",
     useCase: "",
+    markets: [] as string[],
+    decisionContext: "",
     website: "", // honeypot
   });
+  const [marketsOpen, setMarketsOpen] = useState(false);
   const [state, setState] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,7 +51,7 @@ export default function RequestAccessForm() {
           company: form.organization,
           role: form.role,
           tier: "pro",
-          message: `Use case: ${form.useCase || "Not specified"}\nOrganization: ${form.organization || "Not specified"}\nRole: ${form.role || "Not specified"}`,
+          message: `Use case: ${form.useCase || "Not specified"}\nOrganization: ${form.organization || "Not specified"}\nRole: ${form.role || "Not specified"}\nMarkets of interest: ${form.markets.length > 0 ? form.markets.join(", ") : "Not specified"}\nDecision context: ${form.decisionContext || "Not specified"}`,
           website: form.website,
         }),
       });
@@ -172,6 +184,79 @@ export default function RequestAccessForm() {
             </option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <label style={labelStyle}>WHICH MARKETS ARE YOU FOCUSED ON?</label>
+        <button
+          type="button"
+          onClick={() => setMarketsOpen(!marketsOpen)}
+          style={{
+            ...inputStyle,
+            cursor: "pointer",
+            textAlign: "left",
+            color: form.markets.length > 0 ? "#ccc" : "#666",
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 14px center",
+            paddingRight: 36,
+          }}
+        >
+          {form.markets.length > 0 ? `${form.markets.length} market${form.markets.length > 1 ? "s" : ""} selected` : "Select markets"}
+        </button>
+        {marketsOpen && (
+          <div style={{
+            background: "#0a0a12",
+            border: "1px solid #1a1a2e",
+            borderRadius: 6,
+            marginTop: 4,
+            maxHeight: 200,
+            overflowY: "auto",
+            padding: "4px 0",
+          }}>
+            {MARKET_OPTIONS.map((market) => (
+              <label
+                key={market}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "6px 14px",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  color: form.markets.includes(market) ? "#fff" : "#999",
+                  transition: "background 0.1s",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={form.markets.includes(market)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setForm({ ...form, markets: [...form.markets, market] });
+                    } else {
+                      setForm({ ...form, markets: form.markets.filter((m) => m !== market) });
+                    }
+                  }}
+                  style={{ accentColor: "#00d4ff" }}
+                />
+                {market}
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <label style={labelStyle}>WHAT DECISION IS THIS RESEARCH SUPPORTING?</label>
+        <input
+          type="text"
+          value={form.decisionContext}
+          onChange={(e) => setForm({ ...form, decisionContext: e.target.value })}
+          placeholder="e.g. Evaluating Dallas and Miami for vertiport development in 2026."
+          style={inputStyle}
+          maxLength={300}
+        />
       </div>
 
       {/* Honeypot */}

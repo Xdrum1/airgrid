@@ -5,17 +5,60 @@ import { ScoreBreakdown } from "@/types";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
 import ScoreBar from "./ScoreBar";
 
+// Plain-language gap statements per factor
+const GAP_STATEMENTS: Record<string, { zero: string; partial?: string }> = {
+  activePilotProgram: {
+    zero: "No active pilot program on record — this factor scores 0 until an FAA-approved pilot program is launched or hosted in this market.",
+  },
+  approvedVertiport: {
+    zero: "No approved vertiport on record — this factor scores 0 until a vertiport site receives municipal permits or begins construction.",
+  },
+  activeOperatorPresence: {
+    zero: "No active operator presence — this factor scores 0 until an eVTOL operator makes a market-specific commitment beyond general interest.",
+  },
+  vertiportZoning: {
+    zero: "No vertiport zoning in place — this factor scores 0 until the city adopts zoning provisions that accommodate vertiport development.",
+  },
+  regulatoryPosture: {
+    zero: "Restrictive regulatory posture — the city has enacted barriers or shown active opposition to UAM operations.",
+    partial: "Neutral regulatory posture — no active opposition but no UAM-specific support. Moving to friendly would add 5 points.",
+  },
+  stateLegislation: {
+    zero: "No UAM-enabling state legislation — this is the highest-weighted factor (20 pts). Enacted legislation is a prerequisite for infrastructure capital.",
+    partial: "State legislation is actively moving but not yet enacted. Full enactment would add 10 points.",
+  },
+  weatherInfrastructure: {
+    zero: "No low-altitude weather sensing infrastructure for UAM operations in this market.",
+    partial: "Standard airport weather coverage only — no dedicated low-altitude sensing for eVTOL operations.",
+  },
+};
+
 function BreakdownRow({
   label,
   value,
   max,
   color,
+  factorKey,
+  showGaps,
 }: {
   label: string;
   value: number;
   max: number;
   color: string;
+  factorKey?: string;
+  showGaps?: boolean;
 }) {
+  const isGap = value < max;
+  const isPartial = value > 0 && value < max;
+  const gapInfo = factorKey ? GAP_STATEMENTS[factorKey] : undefined;
+  const gapText = gapInfo
+    ? isPartial && gapInfo.partial
+      ? gapInfo.partial
+      : value === 0
+        ? gapInfo.zero
+        : null
+    : null;
+
   return (
     <div style={{ marginBottom: 10 }}>
       <div
@@ -45,6 +88,19 @@ function BreakdownRow({
         </span>
       </div>
       <ScoreBar value={value} max={max} color={value > 0 ? color : "#333"} />
+      {showGaps && isGap && gapText && (
+        <p
+          style={{
+            color: "#777",
+            fontSize: 8,
+            lineHeight: 1.5,
+            margin: "4px 0 0",
+            fontStyle: "italic",
+          }}
+        >
+          {gapText}
+        </p>
+      )}
     </div>
   );
 }
@@ -59,13 +115,13 @@ export default function BreakdownPanel({
   gated?: boolean;
 }) {
   const rows = [
-    { label: "Active Pilot Program", value: breakdown?.activePilotProgram ?? 0, max: SCORE_WEIGHTS.activePilotProgram },
-    { label: "Approved Vertiport", value: breakdown?.approvedVertiport ?? 0, max: SCORE_WEIGHTS.approvedVertiport },
-    { label: "Active Operators", value: breakdown?.activeOperatorPresence ?? 0, max: SCORE_WEIGHTS.activeOperatorPresence },
-    { label: "Vertiport Zoning", value: breakdown?.vertiportZoning ?? 0, max: SCORE_WEIGHTS.vertiportZoning },
-    { label: "Regulatory Posture", value: breakdown?.regulatoryPosture ?? 0, max: SCORE_WEIGHTS.regulatoryPosture },
-    { label: "State Legislation", value: breakdown?.stateLegislation ?? 0, max: SCORE_WEIGHTS.stateLegislation },
-    { label: "Weather Infrastructure", value: breakdown?.weatherInfrastructure ?? 0, max: SCORE_WEIGHTS.weatherInfrastructure },
+    { key: "activePilotProgram", label: "Active Pilot Program", value: breakdown?.activePilotProgram ?? 0, max: SCORE_WEIGHTS.activePilotProgram },
+    { key: "approvedVertiport", label: "Approved Vertiport", value: breakdown?.approvedVertiport ?? 0, max: SCORE_WEIGHTS.approvedVertiport },
+    { key: "activeOperatorPresence", label: "Active Operators", value: breakdown?.activeOperatorPresence ?? 0, max: SCORE_WEIGHTS.activeOperatorPresence },
+    { key: "vertiportZoning", label: "Vertiport Zoning", value: breakdown?.vertiportZoning ?? 0, max: SCORE_WEIGHTS.vertiportZoning },
+    { key: "regulatoryPosture", label: "Regulatory Posture", value: breakdown?.regulatoryPosture ?? 0, max: SCORE_WEIGHTS.regulatoryPosture },
+    { key: "stateLegislation", label: "State Legislation", value: breakdown?.stateLegislation ?? 0, max: SCORE_WEIGHTS.stateLegislation },
+    { key: "weatherInfrastructure", label: "Weather Infrastructure", value: breakdown?.weatherInfrastructure ?? 0, max: SCORE_WEIGHTS.weatherInfrastructure },
   ];
 
   // Show first 2 rows unblurred, blur the rest
@@ -91,7 +147,7 @@ export default function BreakdownPanel({
       </div>
 
       {visibleRows.map((r) => (
-        <BreakdownRow key={r.label} label={r.label} value={r.value} max={r.max} color={scoreColor} />
+        <BreakdownRow key={r.key} label={r.label} value={r.value} max={r.max} color={scoreColor} factorKey={r.key} showGaps={!gated} />
       ))}
 
       {gated && hiddenRows.length > 0 && (
@@ -106,7 +162,7 @@ export default function BreakdownPanel({
             }}
           >
             {hiddenRows.map((r) => (
-              <BreakdownRow key={r.label} label={r.label} value={r.value} max={r.max} color={scoreColor} />
+              <BreakdownRow key={r.key} label={r.label} value={r.value} max={r.max} color={scoreColor} />
             ))}
           </div>
 
