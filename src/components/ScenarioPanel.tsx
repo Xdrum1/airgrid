@@ -76,70 +76,47 @@ export default function ScenarioPanel({
 
   return (
     <div style={{ padding: "14px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: 12,
-      }}>
-        <div style={{ color: "#777", fontSize: 8, letterSpacing: 2 }}>
-          WHAT IF
-        </div>
-        {delta > 0 && (
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-          }}>
-            <span style={{
-              color: projectedColor,
-              fontSize: 14,
-              fontWeight: 700,
-              fontFamily: "'Space Mono', monospace",
-            }}>
-              {projected}
-            </span>
-            <span style={{
-              color: "#00ff88",
-              fontSize: 9,
-              fontWeight: 700,
-              fontFamily: "'Space Mono', monospace",
-            }}>
-              +{delta}
-            </span>
-          </div>
-        )}
+      <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 12 }}>
+        WHAT IF
       </div>
 
-      {/* Projected tier badge */}
-      {delta > 0 && tierChanged && (
+      {/* Projected score display — always visible when factors toggled */}
+      {delta > 0 && (
         <div style={{
           display: "flex",
           alignItems: "center",
-          gap: 6,
+          justifyContent: "space-between",
           marginBottom: 12,
-          padding: "6px 10px",
+          padding: "10px 14px",
           background: "rgba(0,255,136,0.04)",
           border: "1px solid rgba(0,255,136,0.12)",
-          borderRadius: 6,
+          borderRadius: 8,
         }}>
-          <span style={{
-            color: scoreColor,
-            fontSize: 9,
-            fontWeight: 700,
-            letterSpacing: 1,
-          }}>
-            {currentTier}
-          </span>
-          <span style={{ color: "#555", fontSize: 9 }}>→</span>
-          <span style={{
-            color: projectedColor,
-            fontSize: 9,
-            fontWeight: 700,
-            letterSpacing: 1,
-          }}>
-            {projectedTier}
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ color: scoreColor, fontSize: 11, fontWeight: 700, fontFamily: "'Space Mono', monospace" }}>
+                {currentScore}
+              </div>
+              <div style={{ color: "#555", fontSize: 7, letterSpacing: 1 }}>{currentTier}</div>
+            </div>
+            <span style={{ color: "#555", fontSize: 12 }}>→</span>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ color: projectedColor, fontSize: 20, fontWeight: 700, fontFamily: "'Space Mono', monospace" }}>
+                {projected}
+              </div>
+              <div style={{ color: projectedColor, fontSize: 7, letterSpacing: 1 }}>{projectedTier}</div>
+            </div>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{ color: "#00ff88", fontSize: 16, fontWeight: 700, fontFamily: "'Space Mono', monospace" }}>
+              +{delta}
+            </div>
+            {tierChanged && (
+              <div style={{ color: "#00ff88", fontSize: 8, letterSpacing: 1, marginTop: 2 }}>
+                TIER UP
+              </div>
+            )}
+          </div>
         </div>
       )}
 

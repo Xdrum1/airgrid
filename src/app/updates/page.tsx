@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -19,6 +20,7 @@ interface Update {
   title: string;
   body: string;
   link?: { label: string; href: string };
+  image?: { src: string; alt: string; width: number; height: number };
 }
 
 const TAG_COLORS: Record<Update["tag"], string> = {
@@ -42,6 +44,7 @@ const UPDATES: Update[] = [
     title: "\"What If\" Scenario Modeling",
     body: "Interactive scenario modeling on every city page. Toggle gap factors on and off to see projected score changes and tier transitions in real time. See exactly what happens if legislation passes, a pilot program launches, or weather infrastructure is deployed — individually or in combination.",
     link: { label: "Request access", href: "/request-access" },
+    image: { src: "/images/detail-panel-phoenix.png", alt: "Scenario modeling — Phoenix city detail panel", width: 400, height: 900 },
   },
   {
     date: "2026-03-29",
@@ -49,12 +52,14 @@ const UPDATES: Update[] = [
     title: "Score Timeline with Causal Events",
     body: "Every score change is now annotated with the event that caused it. The new Score Timeline shows date, delta, which factors moved, and a linked source citation for each change. See exactly why Miami went from 80 to 100, or why New York dropped from 70 to 55.",
     link: { label: "Request access", href: "/request-access" },
+    image: { src: "/images/timeline-events.png", alt: "Score Timeline — San Francisco score changes with factor-level tags", width: 600, height: 480 },
   },
   {
     date: "2026-03-29",
     tag: "feature",
     title: "Factor-Level Source Citations",
     body: "Score breakdown now shows the specific evidence behind each factor — what earned the points, when it was verified, and a link to the source. Every score is now traceable to a documented event or filing.",
+    image: { src: "/images/breakdown-la.png", alt: "Factor breakdown with citations — Los Angeles at 95", width: 400, height: 900 },
   },
   {
     date: "2026-03-29",
@@ -76,6 +81,7 @@ const UPDATES: Update[] = [
     title: "Heliport Infrastructure Map Layer",
     body: "5,647 FAA-registered heliports now visible on the map. Toggle between MARKETS and HELIPORTS views — density heatmap at overview zoom, individual facility markers when zoomed in. Click any heliport for FAA ID, ownership type, elevation, and use classification.",
     link: { label: "Request access", href: "/request-access" },
+    image: { src: "/images/heliport-detail.png", alt: "Heliport map layer — San Francisco Bay Area with facility popup", width: 800, height: 500 },
   },
   {
     date: "2026-03-28",
@@ -89,6 +95,7 @@ const UPDATES: Update[] = [
     title: "Federal Activity Tab",
     body: "New Pro-gated dashboard tab tracking federal AAM legislation and regulatory activity. Two sections: Legislation (8 tracked Congress bills with live status via Congress.gov API) and FAA Dockets (regulations.gov documents with comment period tracking).",
     link: { label: "Request access", href: "/request-access" },
+    image: { src: "/images/federal-activity.png", alt: "Federal Activity tab — AAM legislation tracking with live Congress bill status", width: 800, height: 400 },
   },
   {
     date: "2026-03-27",
@@ -344,6 +351,25 @@ export default function UpdatesPage() {
               >
                 {update.body}
               </p>
+
+              {/* Optional image */}
+              {update.image && (
+                <div style={{
+                  marginTop: 14,
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  maxWidth: update.image.width > 500 ? 560 : 340,
+                }}>
+                  <Image
+                    src={update.image.src}
+                    alt={update.image.alt}
+                    width={update.image.width}
+                    height={update.image.height}
+                    style={{ width: "100%", height: "auto", display: "block" }}
+                  />
+                </div>
+              )}
 
               {/* Optional link */}
               {update.link && (
