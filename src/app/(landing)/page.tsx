@@ -165,27 +165,11 @@ export default async function LandingPage() {
             Built for operators, infrastructure developers, government agencies, and investors
             making capital allocation decisions in advanced air mobility.
           </p>
-          <p style={{ color: "#666", fontSize: 13, lineHeight: 1.7, margin: "0 0 28px" }}>
+          <p style={{ color: "#666", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
             We track readiness conditions across 21+ U.S. markets — scoring legislation,
             infrastructure, operator activity, and regulatory posture against a published
             7-factor methodology. Updated continuously from primary sources.
           </p>
-          <div style={{
-            borderRadius: 10,
-            overflow: "hidden",
-            border: "1px solid rgba(255,255,255,0.08)",
-            boxShadow: "0 0 60px rgba(0,212,255,0.04)",
-            maxWidth: 360,
-            margin: "0 auto",
-          }}>
-            <Image
-              src="/images/detail-panel-phoenix.png"
-              alt="AirIndex city intelligence — factor breakdown, source citations, and score timeline for Phoenix, AZ"
-              width={360}
-              height={810}
-              style={{ width: "100%", height: "auto", display: "block" }}
-            />
-          </div>
         </section>
       </ScrollReveal>
 
