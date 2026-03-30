@@ -44,7 +44,7 @@ const UPDATES: Update[] = [
     title: "\"What If\" Scenario Modeling",
     body: "Interactive scenario modeling on every city page. Toggle gap factors on and off to see projected score changes and tier transitions in real time. See exactly what happens if legislation passes, a pilot program launches, or weather infrastructure is deployed — individually or in combination.",
     link: { label: "Request access", href: "/request-access" },
-    image: { src: "/images/detail-panel-phoenix.png", alt: "Scenario modeling — Phoenix city detail panel", width: 400, height: 900 },
+    image: { src: "/images/scenario-phoenix.png", alt: "What If scenario modeling — Phoenix with legislation toggled showing 50 → 60 projection", width: 800, height: 200 },
   },
   {
     date: "2026-03-29",
