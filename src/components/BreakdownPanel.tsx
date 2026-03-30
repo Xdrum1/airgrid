@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ScoreBreakdown, City } from "@/types";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
+import { safeHref } from "@/lib/safe-url";
 import ScoreBar from "./ScoreBar";
 
 // Plain-language gap statements per factor
@@ -102,9 +103,9 @@ function BreakdownRow({
               margin: 0,
             }}
           >
-            {source.url ? (
+            {safeHref(source.url) ? (
               <a
-                href={source.url}
+                href={safeHref(source.url)!}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ color: "#00d4ff", textDecoration: "none" }}
