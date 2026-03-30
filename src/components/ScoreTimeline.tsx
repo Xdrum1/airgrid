@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { safeHref } from "@/lib/safe-url";
 
 interface FactorDelta {
   factor: string;
@@ -188,9 +189,9 @@ export default function ScoreTimeline({
               {/* Triggering event */}
               {point.triggeringEvent && (
                 <div style={{ marginTop: 2 }}>
-                  {point.triggeringEvent.sourceUrl ? (
+                  {safeHref(point.triggeringEvent.sourceUrl) ? (
                     <a
-                      href={point.triggeringEvent.sourceUrl}
+                      href={safeHref(point.triggeringEvent.sourceUrl)!}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ color: "#999", fontSize: 9, lineHeight: 1.5, textDecoration: "none" }}
