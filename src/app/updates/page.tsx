@@ -359,7 +359,7 @@ export default function UpdatesPage() {
                   borderRadius: 8,
                   overflow: "hidden",
                   border: "1px solid rgba(255,255,255,0.08)",
-                  maxWidth: update.image.width > 500 ? 560 : 340,
+                  maxWidth: 420,
                 }}>
                   <Image
                     src={update.image.src}
