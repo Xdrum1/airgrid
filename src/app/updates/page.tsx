@@ -37,6 +37,40 @@ const TAG_LABELS: Record<Update["tag"], string> = {
 
 const UPDATES: Update[] = [
   {
+    date: "2026-03-29",
+    tag: "feature",
+    title: "\"What If\" Scenario Modeling",
+    body: "Interactive scenario modeling on every city page. Toggle gap factors on and off to see projected score changes and tier transitions in real time. See exactly what happens if legislation passes, a pilot program launches, or weather infrastructure is deployed — individually or in combination.",
+    link: { label: "Request access", href: "/request-access" },
+  },
+  {
+    date: "2026-03-29",
+    tag: "feature",
+    title: "Score Timeline with Causal Events",
+    body: "Every score change is now annotated with the event that caused it. The new Score Timeline shows date, delta, which factors moved, and a linked source citation for each change. See exactly why Miami went from 80 to 100, or why New York dropped from 70 to 55.",
+    link: { label: "Request access", href: "/request-access" },
+  },
+  {
+    date: "2026-03-29",
+    tag: "feature",
+    title: "Factor-Level Source Citations",
+    body: "Score breakdown now shows the specific evidence behind each factor — what earned the points, when it was verified, and a link to the source. Every score is now traceable to a documented event or filing.",
+  },
+  {
+    date: "2026-03-29",
+    tag: "launch",
+    title: "Market Intelligence Briefings",
+    body: "Custom market analysis is now available in three tiers: Market Snapshots (single city), Market Briefings (2-3 cities with discovery call), and Strategic Assessments (4-21 cities with quarterly reviews). Each briefing includes factor breakdown, gap analysis, score trajectory, and tailored recommendations.",
+    link: { label: "Learn more", href: "/briefings" },
+  },
+  {
+    date: "2026-03-29",
+    tag: "data",
+    title: "Weather Infrastructure Methodology Update",
+    body: "Added USDOT AAM National Strategy rationale to the Weather Infrastructure factor. Weather is one of four federally recognized infrastructure pillars (physical, energy, spectrum, weather) — this is now cited in the methodology and March report.",
+    link: { label: "Read the methodology", href: "/methodology" },
+  },
+  {
     date: "2026-03-28",
     tag: "feature",
     title: "Heliport Infrastructure Map Layer",
