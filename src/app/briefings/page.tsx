@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import TrackPageView from "@/components/TrackPageView";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
@@ -160,6 +161,35 @@ export default function BriefingsPage() {
             Intelligence Briefing tells you why — and what it would take to
             change it. Choose the scope that fits your decision.
           </p>
+        </div>
+
+        {/* ── Platform Preview ──────────────────────── */}
+        <div style={{
+          marginBottom: 56,
+          borderRadius: 10,
+          overflow: "hidden",
+          border: "1px solid rgba(255,255,255,0.08)",
+          boxShadow: "0 0 60px rgba(0,212,255,0.04)",
+          maxWidth: 400,
+          margin: "0 auto 56px",
+        }}>
+          <Image
+            src="/images/detail-panel-phoenix.png"
+            alt="AirIndex city detail panel — Phoenix at 50 with factor breakdown, citations, score timeline, and gap analysis"
+            width={400}
+            height={900}
+            style={{ width: "100%", height: "auto", display: "block" }}
+          />
+          <div style={{
+            padding: "10px 16px",
+            background: "rgba(255,255,255,0.02)",
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            textAlign: "center",
+          }}>
+            <span style={{ color: "#666", fontSize: 10 }}>
+              Factor breakdown, source citations, score timeline, and gap analysis — Phoenix, AZ
+            </span>
+          </div>
         </div>
 
         {/* ── Tier Cards ─────────────────────────────── */}
