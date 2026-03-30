@@ -426,10 +426,10 @@ export default async function LandingPage() {
                 accent: "#00ff88",
               },
               {
-                label: "RESEARCH",
-                title: "Markets to Watch — Q1 2026",
-                description: "Phoenix, Nashville, and Charlotte identified as markets with the highest potential for tier advancement based on legislative and infrastructure signals.",
-                href: "/insights",
+                label: "PLATFORM UPDATE",
+                title: "Causal Intelligence Layer Shipped",
+                description: "Every score is now traceable to a source event. Score timelines, factor citations, and interactive scenario modeling — see why markets score what they do and what would change them.",
+                href: "/updates",
                 accent: "#f59e0b",
               },
             ].map((item) => (
