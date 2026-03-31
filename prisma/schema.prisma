@@ -980,6 +980,109 @@ model RplScoreChangeEvent {
   @@index([appliedAt])
 }
 
+// ═══════════════════════════════════════════════════════════
+// FPIS — Federal Programs Intelligence Store (Container 5)
+// Dual consumer: Gap Analysis (subscriber-facing) and VDG
+// Grant Tracker (internal). Every program mapped to factors
+// it improves + markets it's relevant to.
+// ═══════════════════════════════════════════════════════════
+
+model FpisProgram {
+  id                String   @id @default(cuid())
+  code              String   @unique @db.VarChar(20) // DOT-RAISE, FAA-BEYOND, etc.
+  name              String   @db.VarChar(200)
+  agency            String   @db.VarChar(100)       // DOT, FAA, DoD/AFWERX, NASA, EDA, etc.
+  awardRangeMin     Decimal? @db.Decimal(15, 2)     // Min award in USD
+  awardRangeMax     Decimal? @db.Decimal(15, 2)     // Max award in USD
+  cycle             String   @db.VarChar(50)        // Annual, Rolling, Discretionary, etc.
+  programType       String   @db.VarChar(30)        // GRANT | SBIR | STTR | PILOT | PARTNERSHIP | CONTRACT
+  description       String   @db.Text
+  eligibility       String   @db.Text
+  gapAnalysisRole   String   @db.Text               // How Gap Analysis surfaces this program
+  vdgRelevance      String?  @db.Text               // Internal VDG grant strategy notes
+  vdgPriority       String?  @db.VarChar(10)        // HIGHEST | HIGH | MEDIUM | LOW
+  sbirEligible      Boolean  @default(false)        // Phase III pathway available
+  isActive          Boolean  @default(true)
+  websiteUrl        String?  @db.Text
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  factorImpacts     FpisProgramFactorImpact[]
+  awards            FpisProgramAward[]
+  applicationWindows FpisApplicationWindow[]
+  vdgTrackerEntries FpisVdgGrantTracker[]
+
+  @@index([agency])
+  @@index([programType])
+  @@index([isActive])
+}
+
+model FpisProgramFactorImpact {
+  id               String   @id @default(cuid())
+  programId        String
+  program          FpisProgram @relation(fields: [programId], references: [id])
+  factorCode       String   @db.VarChar(5)         // FKB factor code (PLT, VRT, REG, etc.)
+  pointsOnAward    Int      @db.SmallInt            // Score impact when awarded
+  impactNote       String?  @db.Text               // Context for the point impact
+  createdAt        DateTime @default(now())
+
+  @@index([programId])
+  @@index([factorCode])
+}
+
+model FpisProgramAward {
+  id               String   @id @default(cuid())
+  programId        String
+  program          FpisProgram @relation(fields: [programId], references: [id])
+  cityId           String?                         // Market that received the award
+  awardee          String   @db.VarChar(200)       // Organization name
+  awardAmount      Decimal? @db.Decimal(15, 2)
+  awardDate        DateTime @db.Date
+  projectTitle     String?  @db.VarChar(500)
+  sourceUrl        String?  @db.Text               // USASpending.gov link or press release
+  notes            String?  @db.Text
+  createdAt        DateTime @default(now())
+
+  @@index([programId])
+  @@index([cityId])
+  @@index([awardDate])
+}
+
+model FpisApplicationWindow {
+  id               String   @id @default(cuid())
+  programId        String
+  program          FpisProgram @relation(fields: [programId], references: [id])
+  fiscalYear       String   @db.VarChar(10)        // FY2026, FY2027
+  openDate         DateTime? @db.Date
+  closeDate        DateTime? @db.Date
+  nofoUrl          String?  @db.Text               // Notice of Funding Opportunity link
+  status           String   @db.VarChar(20)        // UPCOMING | OPEN | CLOSED | CANCELLED
+  notes            String?  @db.Text
+  createdAt        DateTime @default(now())
+
+  @@index([programId])
+  @@index([status])
+}
+
+model FpisVdgGrantTracker {
+  id               String   @id @default(cuid())
+  programId        String
+  program          FpisProgram @relation(fields: [programId], references: [id])
+  applicationName  String   @db.VarChar(200)       // "SC Launch", "AFWERX Phase I", etc.
+  status           String   @db.VarChar(20)        // IDENTIFIED | DRAFTING | SUBMITTED | UNDER_REVIEW | AWARDED | DECLINED
+  targetAmount     Decimal? @db.Decimal(15, 2)
+  submittedDate    DateTime? @db.Date
+  decisionDate     DateTime? @db.Date
+  outcome          String?  @db.VarChar(20)        // AWARDED | DECLINED | WITHDRAWN
+  nextAction       String?  @db.Text
+  notes            String?  @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([programId])
+  @@index([status])
+}
+
 model RplAnalystAnnotation {
   id                  String   @id @default(cuid())
   documentId          String
