@@ -724,6 +724,153 @@ model FkbMethodologyVersion {
 }
 
 // ═══════════════════════════════════════════════════════════
+// OID — Operator Intelligence Database (Container 3)
+// Structured intelligence about every eVTOL/UAM operator.
+// Feeds OPR factor scoring. Standalone API product for
+// Institutional/Enterprise tiers.
+// Hard rule: no deletes. Operators marked is_active=FALSE.
+// Market presence records for EXITED retained as history.
+// ═══════════════════════════════════════════════════════════
+
+model OidOperator {
+  id                String   @id @default(cuid())
+  name              String   @db.VarChar(200)      // Legal/operating name
+  shortName         String   @db.VarChar(50)       // Display name (e.g. "Joby")
+  ticker            String?  @db.VarChar(10)       // Stock ticker if public
+  cik               String?  @db.VarChar(20)       // SEC CIK number
+  entityType        String   @db.VarChar(30)       // MANUFACTURER | OPERATOR | OPERATOR_MANUFACTURER | INFRASTRUCTURE
+  vehicleType       String?  @db.VarChar(50)       // eVTOL | eSTOL | VTOL | HYBRID
+  hqCity            String?  @db.VarChar(100)
+  hqCountry         String   @default("US") @db.Char(2)
+  foundedYear       Int?     @db.SmallInt
+  website           String?  @db.Text
+  isActive          Boolean  @default(true)
+  inactiveReason    String?  @db.Text              // Acquisition, bankruptcy, pivot
+  acquiredBy        String?                        // Self-referential — OidOperator.id
+  oprWeightMultiplier Decimal @default(1.0) @db.Decimal(3, 2) // Analyst-adjustable
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  marketPresence    OidOperatorMarketPresence[]
+  events            OidOperatorEvent[]
+  certifications    OidOperatorCertification[]
+  financing         OidOperatorFinancing[]
+  vertiportCommitments OidVertiportCommitment[]
+
+  @@index([entityType])
+  @@index([isActive])
+}
+
+model OidOperatorMarketPresence {
+  id               String   @id @default(cuid())
+  operatorId       String
+  operator         OidOperator @relation(fields: [operatorId], references: [id])
+  cityId           String                         // References Market.id
+  deploymentStage  String   @db.VarChar(20)       // COMMERCIAL_OPS | CERTIFIED | TESTING | ANNOUNCED | WATCHLIST | EXITED
+  stageScore       Int      @db.SmallInt           // 20 | 15 | 10 | 5 | 2 | 0
+  stageSetAt       DateTime @db.Date
+  stageSetBy       String   @db.VarChar(20)       // PIPELINE | ANALYST
+  evidenceEventId  String?                        // References OidOperatorEvent.id
+  confidence       String   @db.VarChar(10)       // HIGH | MEDIUM | LOW
+  notes            String?  @db.Text
+  routeAnnounced   Boolean  @default(false)
+  vertiportCommitted Boolean @default(false)
+  isActive         Boolean  @default(true)        // FALSE if operator exited market
+  lastSignalAt     DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([operatorId, cityId])
+  @@index([cityId])
+  @@index([deploymentStage])
+  @@index([isActive])
+}
+
+model OidOperatorEvent {
+  id                    String   @id @default(cuid())
+  operatorId            String
+  operator              OidOperator @relation(fields: [operatorId], references: [id])
+  cityId                String?                   // NULL for company-wide events
+  eventType             String   @db.VarChar(30)   // 20-type taxonomy
+  eventDate             DateTime @db.Date
+  headline              String   @db.VarChar(300)
+  sourceName            String   @db.VarChar(100)
+  sourceUrl             String?  @db.Text
+  sourceReliability     Int      @db.SmallInt       // 1-5
+  stageImplication      String?  @db.VarChar(20)   // Which deployment stage this implies
+  stageImplicationConfidence String? @db.VarChar(10) // HIGH | MEDIUM | LOW
+  rawSignalId           String?                    // Pipeline signal link
+  isVerified            Boolean  @default(false)
+  verifiedBy            String?  @db.VarChar(100)
+  ingestedAt            DateTime @default(now())
+
+  @@index([operatorId])
+  @@index([cityId])
+  @@index([eventType])
+  @@index([eventDate])
+}
+
+model OidOperatorCertification {
+  id               String   @id @default(cuid())
+  operatorId       String
+  operator         OidOperator @relation(fields: [operatorId], references: [id])
+  certType         String   @db.VarChar(30)       // FAA_PART135 | FAA_TYPE_CERT | FAA_EXPERIMENTAL | FAA_ATCO | FAA_BEYOND | OTHER
+  certNumber       String?  @db.VarChar(100)
+  issuingAuthority String   @db.VarChar(100)
+  cityId           String?                        // Market-specific cert, NULL for national
+  issuedDate       DateTime? @db.Date
+  effectiveDate    DateTime? @db.Date
+  expiryDate       DateTime? @db.Date
+  isActive         Boolean  @default(true)
+  sourceUrl        String?  @db.Text
+  notes            String?  @db.Text
+  createdAt        DateTime @default(now())
+
+  @@index([operatorId])
+  @@index([certType])
+}
+
+model OidOperatorFinancing {
+  id               String   @id @default(cuid())
+  operatorId       String
+  operator         OidOperator @relation(fields: [operatorId], references: [id])
+  roundType        String   @db.VarChar(30)       // SEED | SERIES_A | SERIES_B | SERIES_C | DEBT | SPAC | IPO | GRANT | STRATEGIC
+  amountUsd        Decimal? @db.Decimal(15, 2)
+  amountDisclosed  Boolean  @default(true)
+  announcedDate    DateTime @db.Date
+  closedDate       DateTime? @db.Date
+  leadInvestor     String?  @db.VarChar(200)
+  notableInvestors String[] @default([])
+  totalRaisedToDate Decimal? @db.Decimal(15, 2)
+  sourceName       String   @db.VarChar(100)
+  sourceUrl        String?  @db.Text
+  notes            String?  @db.Text
+  createdAt        DateTime @default(now())
+
+  @@index([operatorId])
+  @@index([roundType])
+  @@index([announcedDate])
+}
+
+model OidVertiportCommitment {
+  id               String   @id @default(cuid())
+  operatorId       String
+  operator         OidOperator @relation(fields: [operatorId], references: [id])
+  cityId           String                         // References Market.id
+  commitmentType   String   @db.VarChar(30)       // GROUND_LEASE | MOU | LOI | PARTNERSHIP | OWNERSHIP
+  siteName         String?  @db.VarChar(200)
+  partnerName      String?  @db.VarChar(200)      // Airport authority, developer, etc.
+  announcedDate    DateTime @db.Date
+  sourceUrl        String?  @db.Text
+  isActive         Boolean  @default(true)
+  notes            String?  @db.Text
+  createdAt        DateTime @default(now())
+
+  @@index([operatorId])
+  @@index([cityId])
+}
+
+// ═══════════════════════════════════════════════════════════
 // RPL — Regulatory Precedent Library (Container 4)
 // Structured repository of regulatory documents, legislative
 // records, and administrative rulings. Evidence layer for
