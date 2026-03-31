@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, email, company, role, tier, message, website, source } = body as {
+    const { name, email, company, role, tier, message, website, source, buyerType } = body as {
       name: string;
       email: string;
       company?: string;
@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
       message?: string;
       website?: string;
       source?: string;
+      buyerType?: string;
     };
 
     // Honeypot — hidden field that only bots fill in
@@ -71,6 +72,18 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Store buyerType on User record if one exists (pre-fill for future briefings)
+    if (buyerType?.trim()) {
+      try {
+        await prisma.user.updateMany({
+          where: { email: email.trim() },
+          data: { buyerType: buyerType.trim().slice(0, 50) },
+        });
+      } catch {
+        // User may not exist yet — that's fine
+      }
+    }
+
     // Send admin notification email (best-effort, don't block on failure)
     const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
     const fromEmail = process.env.SES_FROM_EMAIL || "noreply@airindex.io";
@@ -81,6 +94,7 @@ export async function POST(request: NextRequest) {
       const safeCompany = company ? escapeHtml(company) : "";
       const safeRole = role ? escapeHtml(role) : "";
       const safeTier = escapeHtml(tier || "not specified");
+      const safeBuyerType = buyerType ? escapeHtml(buyerType) : "";
       const safeMessage = message ? escapeHtml(message) : "";
 
       const html = `
@@ -91,6 +105,7 @@ export async function POST(request: NextRequest) {
             <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Email</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;"><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>
             ${safeCompany ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Company</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeCompany}</td></tr>` : ""}
             ${safeRole ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Role</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeRole}</td></tr>` : ""}
+            ${safeBuyerType ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Buyer Type</td><td style="padding: 8px 12px; border-bottom: 1px solid #222; font-weight: bold;">${safeBuyerType}</td></tr>` : ""}
             <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Tier</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeTier}</td></tr>
             ${safeMessage ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Message</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeMessage}</td></tr>` : ""}
           </table>

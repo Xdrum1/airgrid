@@ -15,6 +15,7 @@ model User {
   lastName              String?
   organization          String?
   jobTitle              String?
+  buyerType             String?   // infra-developer|operator|municipality|heliport-owner|insurance|federal|other
   referralSource        String?
   email                 String    @unique
   emailVerified         DateTime?
