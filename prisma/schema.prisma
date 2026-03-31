@@ -558,3 +558,263 @@ model NewsletterEvent {
   @@index([issue, event])
   @@index([createdAt])
 }
+
+// ═══════════════════════════════════════════════════════════
+// MCS — Market Context Store (Foundation)
+// Canonical market registry. Every container references
+// Market.id as the stable city identifier.
+// ═══════════════════════════════════════════════════════════
+
+model Market {
+  id            String   @id                     // Matches seed.ts city IDs (e.g. "los_angeles")
+  city          String                           // "Los Angeles"
+  state         String   @db.Char(2)             // "CA"
+  metro         String?                          // "Greater Los Angeles"
+  country       String   @default("US") @db.Char(2)
+  lat           Decimal  @db.Decimal(9, 6)
+  lng           Decimal  @db.Decimal(9, 6)
+  isActive      Boolean  @default(true)
+  addedAt       DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  factorScores  FkbFactorScore[]
+
+  @@index([state])
+  @@index([isActive])
+}
+
+// ═══════════════════════════════════════════════════════════
+// FKB — Factor Knowledge Base (Container 1)
+// Authoritative source of truth for scoring factors, weights,
+// data sources, per-market factor scores, and analyst overrides.
+// Hard rule: no deletes. Retire factors, deprecate sources,
+// log overrides — never DELETE.
+// ═══════════════════════════════════════════════════════════
+
+model FkbFactor {
+  id               String   @id @default(cuid())
+  code             String   @unique              // OPR, LEG, VRT, REG, PLT, ZON, MKT
+  name             String                        // "Operator Presence"
+  description      String   @db.Text             // Canonical definition
+  scoringTier      String                        // PRIMARY | DERIVED | BINARY
+  introducedIn     String                        // Methodology version (e.g. "v1.0")
+  retired          Boolean  @default(false)
+  retiredIn        String?                       // Version retired (e.g. "v1.3" for LAANC)
+  retirementReason String?  @db.Text
+  sortOrder        Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  weights          FkbFactorWeight[]
+  sources          FkbFactorSource[]
+  scores           FkbFactorScore[]
+}
+
+model FkbFactorWeight {
+  id               String   @id @default(cuid())
+  factorId         String
+  factor           FkbFactor @relation(fields: [factorId], references: [id])
+  methodologyVersion String                     // "v1.3"
+  weightPct        Decimal  @db.Decimal(5, 2)    // 0-100 weight
+  effectiveFrom    DateTime @db.Date
+  effectiveTo      DateTime? @db.Date            // NULL = currently active
+  changeRationale  String   @db.Text
+  approvedBy       String                        // Name/title of approver
+  createdAt        DateTime @default(now())
+
+  @@index([factorId, methodologyVersion])
+  @@index([effectiveFrom])
+}
+
+model FkbFactorSource {
+  id               String   @id @default(cuid())
+  factorId         String
+  factor           FkbFactor @relation(fields: [factorId], references: [id])
+  sourceName       String                        // "Federal Register API"
+  sourceType       String                        // API | RSS | SCRAPE | MANUAL | UPLOAD
+  baseUrl          String?  @db.Text
+  apiEndpoint      String?  @db.Text
+  reliabilityScore Int      @db.SmallInt          // 1-5: 5=federal official, 1=press/social
+  updateFrequency  String                        // DAILY | WEEKLY | MONTHLY | ON_EVENT
+  lastVerified     DateTime? @db.Date
+  isActive         Boolean  @default(true)
+  notes            String?  @db.Text
+  createdAt        DateTime @default(now())
+
+  @@index([factorId])
+  @@index([isActive])
+}
+
+model FkbFactorScore {
+  id                  String   @id @default(cuid())
+  factorId            String
+  factor              FkbFactor @relation(fields: [factorId], references: [id])
+  marketId            String
+  market              Market   @relation(fields: [marketId], references: [id])
+  score               Decimal  @db.Decimal(5, 2)  // Raw factor score
+  scoreNormalized     Decimal  @db.Decimal(5, 2)  // Scaled to 0-100 contribution range
+  methodologyVersion  String
+  confidence          String                     // HIGH | MEDIUM | LOW
+  confidenceReasons   Json?                      // [{reason, impact}]
+  signalCount         Int      @default(0)
+  hasOverride         Boolean  @default(false)
+  scoredAt            DateTime @default(now())
+
+  overrides           FkbScoreOverride[]
+
+  @@unique([factorId, marketId, methodologyVersion])
+  @@index([marketId])
+  @@index([confidence])
+}
+
+model FkbScoreOverride {
+  id                  String   @id @default(cuid())
+  factorScoreId       String
+  factorScore         FkbFactorScore @relation(fields: [factorScoreId], references: [id])
+  originalScore       Decimal  @db.Decimal(5, 2)
+  overrideScore       Decimal  @db.Decimal(5, 2)
+  overrideReason      String   @db.Text
+  evidenceUrl         String?  @db.Text
+  overrideType        String                     // UPWARD | DOWNWARD
+  overrideConfidence  String                     // HIGH | MEDIUM
+  analystName         String
+  reviewedBy          String?                    // Second reviewer for magnitude >5
+  expiresAt           DateTime? @db.Date          // Auto-flag for re-evaluation
+  createdAt           DateTime @default(now())
+
+  @@index([factorScoreId])
+}
+
+model FkbMethodologyVersion {
+  id               String   @id @default(cuid())
+  version          String   @unique              // "v1.0", "v1.3", etc.
+  effectiveDate    DateTime @db.Date
+  summary          String   @db.Text             // Human-readable changelog
+  factorsAdded     String[] @default([])          // Factor codes added
+  factorsRetired   String[] @default([])          // Factor codes retired
+  weightsChanged   Json?                         // [{factorCode, oldWeight, newWeight}]
+  approvedBy       String
+  createdAt        DateTime @default(now())
+}
+
+// ═══════════════════════════════════════════════════════════
+// RPL — Regulatory Precedent Library (Container 4)
+// Structured repository of regulatory documents, legislative
+// records, and administrative rulings. Evidence layer for
+// REG + LEG scoring. Training corpus for Prediction Layer.
+// Hard rule: nothing is ever deleted. Append-only.
+// ═══════════════════════════════════════════════════════════
+
+model RplDocument {
+  id                  String   @id @default(cuid())
+  docType             String                     // FEDERAL_RULE, STATE_BILL, etc. (15 types)
+  title               String   @db.VarChar(500)
+  shortTitle          String?  @db.VarChar(200)   // Human-readable for watch list
+  issuingAuthority    String   @db.VarChar(100)   // "FAA", "LegiScan / Texas Legislature"
+  documentNumber      String?  @db.VarChar(100)   // Docket, bill number, order number
+  publishedDate       DateTime @db.Date
+  effectiveDate       DateTime? @db.Date          // When enacted/effective
+  momentumDirection   String   @db.Char(3)        // POS | NEG | NEU | MIX
+  significance        String                     // HIGH | MEDIUM | LOW
+  summary             String?  @db.Text           // AI-generated or analyst summary
+  sourceUrl           String?  @db.Text
+  storageKey          String?  @db.Text           // S3 key for full-text body
+  storageFetchedAt    DateTime?
+  rawSignalId         String?                    // Link to pipeline signal if originated there
+  isActive            Boolean  @default(true)     // FALSE if withdrawn/superseded/vetoed
+  supersededBy        String?                    // Self-referential FK
+  ingestedAt          DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  factorMappings      RplDocumentFactorMapping[]
+  cityAssociations    RplDocumentCityAssociation[]
+  legislationDetail   RplLegislationDetail?
+  scoreChangeEvents   RplScoreChangeEvent[]
+  annotations         RplAnalystAnnotation[]
+
+  @@index([docType])
+  @@index([momentumDirection])
+  @@index([significance])
+  @@index([publishedDate])
+  @@index([isActive])
+}
+
+model RplDocumentFactorMapping {
+  id                  String   @id @default(cuid())
+  documentId          String
+  document            RplDocument @relation(fields: [documentId], references: [id])
+  factorCode          String   @db.VarChar(5)     // OPR | LEG | VRT | REG | PLT | ZON | MKT
+  mappingType         String                     // PRIMARY | SECONDARY
+  scoreDeltaEstimate  Int?     @db.SmallInt        // Estimated point impact (negative = decrease)
+  mappingRationale    String?  @db.Text
+  createdAt           DateTime @default(now())
+
+  @@index([documentId])
+  @@index([factorCode])
+}
+
+model RplDocumentCityAssociation {
+  id                  String   @id @default(cuid())
+  documentId          String
+  document            RplDocument @relation(fields: [documentId], references: [id])
+  cityId              String                     // References market/city ID
+  associationType     String                     // DIRECTLY_NAMES | STATE_APPLIES | METRO_RELEVANT | NATIONAL
+  scoringWeight       Decimal  @db.Decimal(3, 2)  // 0-1 applied to score_delta_estimate
+  analystNote         String?  @db.Text
+  createdAt           DateTime @default(now())
+
+  @@index([documentId])
+  @@index([cityId])
+  @@unique([documentId, cityId])
+}
+
+model RplLegislationDetail {
+  id                  String   @id @default(cuid())
+  documentId          String   @unique
+  document            RplDocument @relation(fields: [documentId], references: [id])
+  jurisdiction        String   @db.Char(2)        // State code or "US"
+  billNumber          String   @db.VarChar(30)     // "SB 2627", "HR 3935"
+  chamber             String                     // SENATE | HOUSE | JOINT
+  session             String   @db.VarChar(50)     // "89th Regular Session"
+  currentStage        String                     // INTRODUCED | IN_COMMITTEE | PASSED_CHAMBER | ENROLLED | ENACTED | VETOED | DEAD
+  sponsors            String[] @default([])
+  lastActionDate      DateTime? @db.Date
+  lastActionText      String?  @db.Text
+  enrolledDate        DateTime? @db.Date
+  enactedDate         DateTime? @db.Date
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([jurisdiction])
+  @@index([currentStage])
+  @@index([jurisdiction, currentStage])
+}
+
+model RplScoreChangeEvent {
+  id                  String   @id @default(cuid())
+  documentId          String
+  document            RplDocument @relation(fields: [documentId], references: [id])
+  cityId              String
+  factorCode          String   @db.VarChar(5)
+  scoreBefore         Decimal  @db.Decimal(5, 2)
+  scoreAfter          Decimal  @db.Decimal(5, 2)
+  delta               Decimal  @db.Decimal(5, 2)
+  methodologyVersion  String
+  appliedAt           DateTime @default(now())
+
+  @@index([documentId])
+  @@index([cityId, factorCode])
+  @@index([appliedAt])
+}
+
+model RplAnalystAnnotation {
+  id                  String   @id @default(cuid())
+  documentId          String
+  document            RplDocument @relation(fields: [documentId], references: [id])
+  annotationType      String                     // CONTEXT | CORRECTION | PREDICTION | LINK
+  content             String   @db.Text
+  analystName         String
+  createdAt           DateTime @default(now())
+
+  @@index([documentId])
+}
