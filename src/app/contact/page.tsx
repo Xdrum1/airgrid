@@ -10,6 +10,7 @@ function ContactForm() {
   const searchParams = useSearchParams();
   const tier = searchParams.get("tier") ?? "";
   const ref = searchParams.get("ref") ?? "";
+  const buyer = searchParams.get("buyer") ?? "";
 
   const [form, setForm] = useState({
     name: "",
@@ -17,6 +18,7 @@ function ContactForm() {
     company: "",
     role: "",
     tier: tier || "pro",
+    buyerType: buyer || "",
     message: "",
     website: "", // honeypot — bots fill this, humans don't see it
   });
@@ -30,7 +32,7 @@ function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, source: ref || undefined }),
+        body: JSON.stringify({ ...form, source: ref || undefined, buyerType: form.buyerType || undefined }),
       });
       if (res.ok) {
         setState("success");
@@ -175,8 +177,33 @@ function ContactForm() {
           )}
         </select>
       </div>
+      <div style={{ marginBottom: 16 }}>
+        <label style={labelStyle}>I AM A</label>
+        <select
+          value={form.buyerType}
+          onChange={(e) => setForm({ ...form, buyerType: e.target.value })}
+          style={{
+            ...inputStyle,
+            appearance: "none",
+            cursor: "pointer",
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 14px center",
+            paddingRight: 36,
+          }}
+        >
+          <option value="">Select buyer type</option>
+          <option value="infra-developer">Infrastructure Developer / Investor</option>
+          <option value="operator">eVTOL Operator</option>
+          <option value="municipality">City Planner / Municipality / State Agency</option>
+          <option value="heliport-owner">Heliport or Vertiport Owner</option>
+          <option value="insurance">Insurance Carrier / Underwriter</option>
+          <option value="federal">Federal Agency / DOT</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
       <div style={{ marginBottom: 24 }}>
-        <label style={labelStyle}>USE CASE</label>
+        <label style={labelStyle}>WHAT ARE YOU WORKING ON?</label>
         <textarea
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
