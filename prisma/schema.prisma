@@ -579,9 +579,34 @@ model Market {
   updatedAt     DateTime @updatedAt
 
   factorScores  FkbFactorScore[]
+  ordinanceAudit OrdinanceAudit?
 
   @@index([state])
   @@index([isActive])
+}
+
+// ── Municipality Ordinance Audit Data ────────────────────
+// Manual-seed table: 5 compliance questions per market.
+// Populated by Alan, imported by dev. Updated as ordinances change.
+
+model OrdinanceAudit {
+  id                    String   @id @default(cuid())
+  marketId              String   @unique
+  market                Market   @relation(fields: [marketId], references: [id])
+  faaTerminology        String   @default("unknown") // yes | no | partial | unknown
+  faaTerminologyNote    String?  @db.Text
+  zoningOrdinance       String   @default("unknown") // yes | no | partial | unknown
+  zoningOrdinanceNote   String?  @db.Text
+  airspaceDetermination String   @default("unknown") // yes | no | partial | unknown
+  airspaceDeterminationNote String? @db.Text
+  nfpa418Referenced     String   @default("unknown") // yes | no | partial | unknown
+  nfpa418ReferencedNote String?  @db.Text
+  stateAdoptedAC        String   @default("unknown") // yes | no | partial | unknown
+  stateAdoptedACNote    String?  @db.Text
+  lastAuditedAt         DateTime? @db.Date
+  auditedBy             String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 // ═══════════════════════════════════════════════════════════
