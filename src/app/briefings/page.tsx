@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import TrackPageView from "@/components/TrackPageView";
+import BuyerTypeSelector from "@/components/BuyerTypeSelector";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -191,6 +192,9 @@ export default function BriefingsPage() {
             </span>
           </div>
         </div>
+
+        {/* ── Buyer Type Selector ───────────────────── */}
+        <BuyerTypeSelector />
 
         {/* ── Tier Cards ─────────────────────────────── */}
         <div

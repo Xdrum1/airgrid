@@ -4,13 +4,12 @@ import { useState } from "react";
 import { plausible } from "@/lib/plausible";
 
 const USE_CASES = [
-  "Operator",
-  "Infrastructure Developer",
-  "Government / Municipal",
-  "Investor",
-  "Insurance / Risk",
-  "Aerospace / Defense",
-  "Research / Academic",
+  "Infrastructure Developer / Investor",
+  "eVTOL Operator",
+  "City Planner / Municipality / State Agency",
+  "Heliport or Vertiport Owner",
+  "Insurance Carrier / Underwriter",
+  "Federal Agency / DOT",
   "Other",
 ] as const;
 
@@ -163,10 +162,11 @@ export default function RequestAccessForm() {
       </div>
 
       <div>
-        <label style={labelStyle}>USE CASE</label>
+        <label style={labelStyle}>I AM A *</label>
         <select
           value={form.useCase}
           onChange={(e) => setForm({ ...form, useCase: e.target.value })}
+          required
           style={{
             ...inputStyle,
             cursor: "pointer",
@@ -177,7 +177,7 @@ export default function RequestAccessForm() {
             paddingRight: 36,
           }}
         >
-          <option value="" style={{ background: "#0a0a12", color: "#666" }}>Select your use case</option>
+          <option value="" style={{ background: "#0a0a12", color: "#666" }}>Select your buyer type</option>
           {USE_CASES.map((uc) => (
             <option key={uc} value={uc} style={{ background: "#0a0a12", color: "#ccc" }}>
               {uc}
