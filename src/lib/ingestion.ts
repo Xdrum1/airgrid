@@ -11,6 +11,7 @@ import { classifyRecords } from "@/lib/classifier";
 import { applyOverrides } from "@/lib/score-updater";
 import { alertCronFailure } from "@/lib/cron-alerts";
 import { processMarketLeadSignals, type MarketLeadSignal } from "@/lib/market-leads";
+import { writeToRpl } from "@/lib/rpl-writer";
 import type { ChangelogEntry } from "@/types";
 
 async function getPrisma() {
@@ -558,6 +559,49 @@ export async function runIngestion(): Promise<{
         console.log(
           `[ingestion] Score updater: ${result.persisted} overrides persisted, ${result.applied} auto-applied, ${result.scoreChanges.length} score changes`
         );
+      }
+
+      // 11c. Write to RPL — persist classified records to Regulatory Precedent Library
+      try {
+        // Build RPL write inputs from classified records + their classification results
+        const rplInputs = dedupedRecords.map((r) => {
+          // Find this record's classification result from the DB
+          // ClassificationResults were just written by classifyRecords() above
+          return {
+            recordId: r.id,
+            source: r.source,
+            title: r.title,
+            summary: r.summary,
+            url: r.url,
+            date: r.date,
+            // Classification data will be pulled from ClassificationResult table by rpl-writer
+          };
+        });
+
+        // Fetch classification results for these records
+        const classResults = await prisma.classificationResult.findMany({
+          where: { recordId: { in: dedupedRecords.map(r => r.id) } },
+          select: { recordId: true, eventType: true, confidence: true, affectedCities: true },
+        });
+        const classMap = new Map(classResults.map(c => [c.recordId, c]));
+
+        const rplWriteInputs = rplInputs.map(r => {
+          const cls = classMap.get(r.recordId);
+          return {
+            ...r,
+            eventType: cls?.eventType ?? null,
+            confidence: cls?.confidence ?? null,
+            affectedCities: cls?.affectedCities ?? [],
+          };
+        });
+
+        const rplResult = await writeToRpl(rplWriteInputs);
+        console.log(
+          `[ingestion] RPL: ${rplResult.documentsCreated} docs created, ${rplResult.documentsUpdated} updated, ` +
+          `${rplResult.factorMappingsCreated} factor mappings, ${rplResult.cityAssociationsCreated} city associations`
+        );
+      } catch (err) {
+        console.error("[ingestion] RPL write failed (non-blocking):", err);
       }
 
       // 12. Process corridor events
