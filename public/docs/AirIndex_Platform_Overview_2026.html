@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AirIndex Platform Overview — UAM Market Readiness Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CUSTOM PROPERTIES — SCREEN (DARK)
+   ============================================================ */
+:root {
+  --bg: #050508;
+  --bg-card: #0a0a12;
+  --bg-elevated: #0f0f1a;
+  --border: #1a1a2e;
+  --border-subtle: #12121e;
+  --text: #cccccc;
+  --text-muted: #777788;
+  --text-heading: #ffffff;
+  --accent-cyan: #00d4ff;
+  --accent-green: #00ff88;
+  --accent-purple: #7c3aed;
+  --accent-amber: #f59e0b;
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.15);
+  --glow-green: 0 0 20px rgba(0, 255, 136, 0.15);
+  --max-width: 800px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 60px 32px 80px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  text-align: center;
+  margin-bottom: 64px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-title {
+  font-family: var(--font-heading);
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--text-heading);
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.header-subtitle {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--accent-cyan);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.header-meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   SECTION DIVIDERS
+   ============================================================ */
+.section {
+  margin-bottom: 56px;
+}
+
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent-cyan) 20%, var(--accent-purple) 50%, var(--accent-cyan) 80%, transparent 100%);
+  opacity: 0.3;
+  margin-bottom: 40px;
+}
+
+.section-number {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-cyan);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 24px;
+  letter-spacing: -0.3px;
+}
+
+/* ============================================================
+   BODY TEXT
+   ============================================================ */
+p {
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+.body-text {
+  margin-bottom: 24px;
+}
+
+/* ============================================================
+   FACTOR TABLE
+   ============================================================ */
+.factor-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 13px;
+}
+
+.factor-table thead {
+  border-bottom: 2px solid var(--border);
+}
+
+.factor-table th {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-align: left;
+  padding: 10px 12px;
+  font-weight: 400;
+}
+
+.factor-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: top;
+}
+
+.factor-code {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-cyan);
+  font-size: 13px;
+}
+
+.factor-name {
+  color: var(--text-heading);
+  font-weight: 500;
+}
+
+.factor-scoring {
+  color: var(--text);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.weight-bar-cell {
+  width: 100px;
+}
+
+.weight-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.weight-bar {
+  height: 6px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.weight-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.weight-20 { width: 60px; background: var(--accent-green); }
+.weight-15 { width: 45px; background: var(--accent-cyan); }
+.weight-10 { width: 30px; background: var(--accent-purple); }
+
+.tier-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.tier-primary {
+  color: var(--accent-green);
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.tier-derived {
+  color: var(--accent-purple);
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+/* Readiness tiers */
+.readiness-tiers {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.readiness-tier {
+  padding: 14px 16px;
+  border-radius: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+.readiness-tier-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.readiness-tier-range {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.tier-advanced .readiness-tier-name { color: var(--accent-green); }
+.tier-moderate .readiness-tier-name { color: var(--accent-cyan); }
+.tier-early .readiness-tier-name { color: var(--accent-amber); }
+.tier-nascent .readiness-tier-name { color: #ff4444; }
+
+/* ============================================================
+   METHODOLOGY NOTE
+   ============================================================ */
+.methodology-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  border-left: 2px solid var(--accent-purple);
+  padding-left: 16px;
+  margin-top: 20px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   CAPABILITY LIST
+   ============================================================ */
+.capability {
+  margin-bottom: 24px;
+  padding: 20px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.capability:hover {
+  border-color: var(--border);
+}
+
+.capability-name {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-bottom: 6px;
+}
+
+.capability-desc {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ============================================================
+   CONTAINER ARCHITECTURE
+   ============================================================ */
+.container-card {
+  margin-bottom: 20px;
+  padding: 20px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-cyan);
+}
+
+.container-card.status-live { border-left-color: var(--accent-green); }
+.container-card.status-foundation { border-left-color: var(--accent-amber); }
+.container-card.status-planned { border-left-color: var(--accent-purple); }
+
+.container-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.container-name {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.container-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.status-live .container-status {
+  color: var(--accent-green);
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.status-foundation .container-status {
+  color: var(--accent-amber);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.status-planned .container-status {
+  color: var(--accent-purple);
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.container-desc {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ============================================================
+   DATA PIPELINE
+   ============================================================ */
+.pipeline-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 24px;
+}
+
+.pipeline-col-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-cyan);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.pipeline-list {
+  list-style: none;
+  padding: 0;
+}
+
+.pipeline-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 13.5px;
+  color: var(--text);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pipeline-list li::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  background: var(--accent-cyan);
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+  top: -2px;
+}
+
+.pipeline-list li:last-child {
+  border-bottom: none;
+}
+
+.pipeline-detail {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   PRODUCTS & REVENUE
+   ============================================================ */
+.product-group {
+  margin-bottom: 28px;
+}
+
+.product-group-title {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-bottom: 12px;
+}
+
+.product-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.product-tier {
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+.product-tier-name {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  margin-bottom: 8px;
+}
+
+.product-tier-detail {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.product-desc {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   ROADMAP
+   ============================================================ */
+.roadmap-list {
+  list-style: none;
+  padding: 0;
+}
+
+.roadmap-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.roadmap-item:last-child {
+  border-bottom: none;
+}
+
+.roadmap-bullet {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  flex-shrink: 0;
+  position: relative;
+  top: 4px;
+}
+
+.roadmap-bullet.future {
+  background: var(--accent-purple);
+}
+
+.roadmap-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.roadmap-text strong {
+  color: var(--text-heading);
+}
+
+.roadmap-year {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   STATS GRID
+   ============================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.stat-card {
+  padding: 24px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 6px;
+  line-height: 1.1;
+}
+
+.stat-value .accent {
+  color: var(--accent-cyan);
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.footer-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+@media print {
+  @page {
+    size: letter;
+    margin: 0.6in;
+  }
+
+  :root {
+    --bg: #ffffff;
+    --bg-card: #f8f8fa;
+    --bg-elevated: #f0f0f4;
+    --border: #ddd;
+    --border-subtle: #e8e8ec;
+    --text: #333;
+    --text-muted: #666;
+    --text-heading: #111;
+    --accent-cyan: #0088aa;
+    --accent-green: #00884a;
+    --accent-purple: #5b21b6;
+    --accent-amber: #b45309;
+  }
+
+  body {
+    font-size: 11pt;
+    background: white;
+    color: #333;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .header {
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+  }
+
+  .header-title {
+    font-size: 28pt;
+    color: #111;
+  }
+
+  .header-subtitle {
+    color: #0088aa;
+  }
+
+  .section {
+    margin-bottom: 32px;
+  }
+
+  .section-divider {
+    background: #ddd;
+    opacity: 1;
+    margin-bottom: 24px;
+  }
+
+  .section-title {
+    font-size: 18pt;
+    color: #111;
+  }
+
+  /* Page breaks */
+  .section:nth-child(n+4) {
+    page-break-before: auto;
+  }
+
+  .section-break-before {
+    page-break-before: always;
+  }
+
+  .capability {
+    background: #f8f8fa;
+    border-color: #e0e0e4;
+    break-inside: avoid;
+  }
+
+  .container-card {
+    background: #f8f8fa;
+    border-color: #e0e0e4;
+    break-inside: avoid;
+  }
+
+  .container-card.status-live { border-left-color: #00884a; }
+  .container-card.status-foundation { border-left-color: #b45309; }
+  .container-card.status-planned { border-left-color: #5b21b6; }
+
+  .stat-card {
+    background: #f8f8fa;
+    border-color: #e0e0e4;
+    break-inside: avoid;
+  }
+
+  .stat-value {
+    color: #111;
+  }
+
+  .stat-value .accent {
+    color: #0088aa;
+  }
+
+  .product-tier {
+    background: #f8f8fa;
+    border-color: #e0e0e4;
+    break-inside: avoid;
+  }
+
+  .weight-20 { background: #00884a; }
+  .weight-15 { background: #0088aa; }
+  .weight-10 { background: #5b21b6; }
+
+  .tier-primary {
+    color: #00884a;
+    background: rgba(0, 136, 74, 0.08);
+    border-color: rgba(0, 136, 74, 0.2);
+  }
+
+  .tier-derived {
+    color: #5b21b6;
+    background: rgba(91, 33, 182, 0.08);
+    border-color: rgba(91, 33, 182, 0.2);
+  }
+
+  .readiness-tier {
+    background: #f8f8fa;
+    border-color: #e0e0e4;
+  }
+
+  .tier-advanced .readiness-tier-name { color: #00884a; }
+  .tier-moderate .readiness-tier-name { color: #0088aa; }
+  .tier-early .readiness-tier-name { color: #b45309; }
+  .tier-nascent .readiness-tier-name { color: #cc0000; }
+
+  .factor-code { color: #0088aa; }
+
+  .section-number { color: #0088aa; }
+
+  .pipeline-list li::before { background: #0088aa; }
+
+  .product-tier-name { color: #0088aa; }
+
+  .stats-grid {
+    break-inside: avoid;
+  }
+
+  .footer {
+    border-top-color: #ddd;
+  }
+
+  a {
+    color: #0088aa;
+    text-decoration: none;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 640px) {
+  .container { padding: 40px 20px 60px; }
+  .header-title { font-size: 28px; }
+  .section-title { font-size: 22px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .product-tiers { grid-template-columns: 1fr; }
+  .readiness-tiers { grid-template-columns: repeat(2, 1fr); }
+  .pipeline-grid { grid-template-columns: 1fr; }
+  .factor-table { font-size: 11px; }
+  .factor-table td, .factor-table th { padding: 8px 6px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <h1 class="header-title">AirIndex Platform Overview</h1>
+    <div class="header-subtitle">UAM Market Readiness Intelligence</div>
+    <div class="header-meta">Vertical Data Group, LLC &middot; airindex.io &middot; March 2026 &middot; Confidential</div>
+  </header>
+
+  <!-- ========== SECTION 1: WHAT AIRINDEX IS ========== -->
+  <section class="section">
+    <div class="section-divider"></div>
+    <span class="section-number">01</span>
+    <h2 class="section-title">What AirIndex Is</h2>
+    <div class="body-text">
+      <p>AirIndex is the market intelligence platform for advanced air mobility. We track readiness conditions across 21+ U.S. metropolitan areas &mdash; scoring legislation, infrastructure, operator activity, and regulatory posture against a published 7-factor methodology updated continuously from primary federal and state sources.</p>
+      <p>Built for operators, infrastructure developers, government agencies, insurance underwriters, and investors making capital allocation decisions in AAM. The platform serves as both a monitoring tool (scores, trajectories, alerts) and an advisory layer (gap analysis, scenario modeling, precedent lookups).</p>
+      <p>AirIndex is not a forecast or demand model. It measures structural readiness &mdash; the infrastructure, regulatory framework, and operator engagement that must be in place before commercial eVTOL operations can begin.</p>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 2: SCORING METHODOLOGY ========== -->
+  <section class="section">
+    <div class="section-divider"></div>
+    <span class="section-number">02</span>
+    <h2 class="section-title">Scoring Methodology (v1.3)</h2>
+
+    <table class="factor-table">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Factor</th>
+          <th>Weight</th>
+          <th>Tier</th>
+          <th>Scoring</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="factor-code">OPR</span></td>
+          <td><span class="factor-name">Operator Presence</span></td>
+          <td class="weight-bar-cell">
+            <div class="weight-bar-wrap">
+              <div class="weight-bar weight-15"></div>
+              <span class="weight-label">15%</span>
+            </div>
+          </td>
+          <td><span class="tier-badge tier-primary">Primary</span></td>
+          <td><span class="factor-scoring">Binary: operator committed to market</span></td>
+        </tr>
+        <tr>
+          <td><span class="factor-code">LEG</span></td>
+          <td><span class="factor-name">State Legislation</span></td>
+          <td class="weight-bar-cell">
+            <div class="weight-bar-wrap">
+              <div class="weight-bar weight-20"></div>
+              <span class="weight-label">20%</span>
+            </div>
+          </td>
+          <td><span class="tier-badge tier-primary">Primary</span></td>
+          <td><span class="factor-scoring">Graduated: enacted (20), actively moving (10), none (0)</span></td>
+        </tr>
+        <tr>
+          <td><span class="factor-code">VRT</span></td>
+          <td><span class="factor-name">Vertiport Infrastructure</span></td>
+          <td class="weight-bar-cell">
+            <div class="weight-bar-wrap">
+              <div class="weight-bar weight-15"></div>
+              <span class="weight-label">15%</span>
+            </div>
+          </td>
+          <td><span class="tier-badge tier-primary">Primary</span></td>
+          <td><span class="factor-scoring">Binary: permitted/under construction vertiport</span></td>
+        </tr>
+        <tr>
+          <td><span class="factor-code">REG</span></td>
+          <td><span class="factor-name">Regulatory Posture</span></td>
+          <td class="weight-bar-cell">
+            <div class="weight-bar-wrap">
+              <div class="weight-bar weight-10"></div>
+              <span class="weight-label">10%</span>
+            </div>
+          </td>
+          <td><span class="tier-badge tier-derived">Derived</span></td>
+          <td><span class="factor-scoring">Graduated: friendly (10), neutral (5), restrictive (0)</span></td>
+        </tr>
+        <tr>
+          <td><span class="factor-code">PLT</span></td>
+          <td><span class="factor-name">Pilot Programs</span></td>
+          <td class="weight-bar-cell">
+            <div class="weight-bar-wrap">
+              <div class="weight-bar weight-15"></div>
+              <span class="weight-label">15%</span>
+            </div>
+          </td>
+          <td><span class="tier-badge tier-derived">Derived</span></td>
+          <td><span class="factor-scoring">Binary: FAA-sanctioned pilot program</span></td>
+        </tr>
+        <tr>
+          <td><span class="factor-code">ZON</span></td>
+          <td><span class="factor-name">Zoning &amp; Land Use</span></td>
+          <td class="weight-bar-cell">
+            <div class="weight-bar-wrap">
+              <div class="weight-bar weight-15"></div>
+              <span class="weight-label">15%</span>
+            </div>
+          </td>
+          <td><span class="tier-badge tier-derived">Derived</span></td>
+          <td><span class="factor-scoring">Binary: vertiport zoning adopted</span></td>
+        </tr>
+        <tr>
+          <td><span class="factor-code">WTH</span></td>
+          <td><span class="factor-name">Weather Infrastructure</span></td>
+          <td class="weight-bar-cell">
+            <div class="weight-bar-wrap">
+              <div class="weight-bar weight-10"></div>
+              <span class="weight-label">10%</span>
+            </div>
+          </td>
+          <td><span class="tier-badge tier-derived">Derived</span></td>
+          <td><span class="factor-scoring">Graduated: full (10), partial (5), none (0)</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="readiness-tiers">
+      <div class="readiness-tier tier-advanced">
+        <div class="readiness-tier-name">Advanced</div>
+        <div class="readiness-tier-range">75 &ndash; 100</div>
+      </div>
+      <div class="readiness-tier tier-moderate">
+        <div class="readiness-tier-name">Moderate</div>
+        <div class="readiness-tier-range">50 &ndash; 74</div>
+      </div>
+      <div class="readiness-tier tier-early">
+        <div class="readiness-tier-name">Early</div>
+        <div class="readiness-tier-range">30 &ndash; 49</div>
+      </div>
+      <div class="readiness-tier tier-nascent">
+        <div class="readiness-tier-name">Nascent</div>
+        <div class="readiness-tier-range">0 &ndash; 29</div>
+      </div>
+    </div>
+
+    <div class="methodology-note">
+      Methodology versioned and auditable. v1.0 launched Feb 2026, v1.3 current (Mar 2026). Weight changes require rationale and approval. Weather factor grounded in USDOT AAM National Strategy (four infrastructure pillars: physical, energy, spectrum, weather). Full methodology published at <a href="https://airindex.io/methodology" style="color: var(--accent-cyan);">airindex.io/methodology</a>.
+    </div>
+  </section>
+
+  <!-- ========== SECTION 3: PLATFORM CAPABILITIES ========== -->
+  <section class="section section-break-before">
+    <div class="section-divider"></div>
+    <span class="section-number">03</span>
+    <h2 class="section-title">Platform Capabilities (Live)</h2>
+
+    <div class="capability">
+      <div class="capability-name">Intelligence Dashboard</div>
+      <p class="capability-desc">Interactive map + ranked city list + city detail panel. Real-time scores across 21+ markets. Map toggles between MARKETS (cities, corridors, vertiports) and HELIPORTS (5,647 FAA facilities).</p>
+    </div>
+
+    <div class="capability">
+      <div class="capability-name">Factor Breakdown with Source Citations</div>
+      <p class="capability-desc">Every factor on every city shows the specific evidence behind the score &mdash; linked to source, with verification date. Turns a number into an auditable claim.</p>
+    </div>
+
+    <div class="capability">
+      <div class="capability-name">Score Timeline with Causal Events</div>
+      <p class="capability-desc">Chronological record of every score change annotated with the triggering event, factor-level deltas, and source links. See exactly why a score moved.</p>
+    </div>
+
+    <div class="capability">
+      <div class="capability-name">&ldquo;What If&rdquo; Scenario Modeling</div>
+      <p class="capability-desc">Interactive toggle for gap factors. See projected score and tier transitions in real time. &ldquo;If Arizona passes SB1826, Phoenix moves from 50 to 70.&rdquo;</p>
+    </div>
+
+    <div class="capability">
+      <div class="capability-name">Gap Analysis Engine</div>
+      <p class="capability-desc">Per-city diagnostic showing which factors are missing, how many points are available, specific recommendations to close each gap, and sub-indicator status.</p>
+    </div>
+
+    <div class="capability">
+      <div class="capability-name">Corridor Intelligence</div>
+      <p class="capability-desc">9 tracked corridors with distance, flight time, altitude, operator, and status. DB-backed with detail pages and subscription alerts.</p>
+    </div>
+
+    <div class="capability">
+      <div class="capability-name">Federal Activity Tracking</div>
+      <p class="capability-desc">Congress.gov bill tracking (8+ AAM bills with live status) and regulations.gov FAA docket monitoring with comment period tracking.</p>
+    </div>
+
+    <div class="capability">
+      <div class="capability-name">Heliport Infrastructure Layer</div>
+      <p class="capability-desc">5,647 FAA NASR 5010 heliports with coordinates, elevation, ownership, use classification. Heatmap density view + individual facility popups.</p>
+    </div>
+
+    <div class="capability">
+      <div class="capability-name">Market Intelligence Briefings</div>
+      <p class="capability-desc">Custom analysis in three tiers: Market Snapshot (1 city), Market Briefing (2-3 cities), Strategic Assessment (4-21 cities). Discovery call framework, tailored recommendations by buyer type.</p>
+    </div>
+
+    <div class="capability">
+      <div class="capability-name">API v1</div>
+      <p class="capability-desc">Bearer token auth, tier-based rate limiting, 4 endpoints (markets list, detail, history, export). Snake_case JSON with X-RateLimit headers.</p>
+    </div>
+
+    <div class="capability">
+      <div class="capability-name">UAM Market Pulse</div>
+      <p class="capability-desc">Weekly editorial intelligence report. Free distribution &mdash; the editorial layer that drives credibility and sharing.</p>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 4: INTELLIGENCE ARCHITECTURE ========== -->
+  <section class="section section-break-before">
+    <div class="section-divider"></div>
+    <span class="section-number">04</span>
+    <h2 class="section-title">Intelligence Architecture</h2>
+
+    <div class="container-card status-live">
+      <div class="container-header">
+        <div class="container-name">Container 1: Factor Knowledge Base (FKB)</div>
+        <span class="container-status">Live</span>
+      </div>
+      <p class="container-desc">Authoritative source of truth for scoring factors. 8 factor codes (7 active + 1 retired), versioned weight configuration, 21 data sources with reliability ratings, 147 per-market factor scores with confidence levels, analyst override audit trail. Scoring engine reads weights from FKB at runtime &mdash; methodology changes are database updates, not code deployments.</p>
+    </div>
+
+    <div class="container-card status-foundation">
+      <div class="container-header">
+        <div class="container-name">Container 2: Market Context Store (MCS)</div>
+        <span class="container-status">Foundation</span>
+      </div>
+      <p class="container-desc">Market registry with 23 cities. Peer market mappings, state-level context. Foundation table referenced by all other containers.</p>
+    </div>
+
+    <div class="container-card status-planned">
+      <div class="container-header">
+        <div class="container-name">Container 3: Operator Intelligence Database (OID)</div>
+        <span class="container-status">Planned</span>
+      </div>
+      <p class="container-desc">6-stage operator deployment model (ANNOUNCED &rarr; COMMERCIAL_OPS). 11+ operators tracked. Event taxonomy with auto-advance staging. Feeds OPR factor scoring with confidence-weighted operator sub-scores.</p>
+    </div>
+
+    <div class="container-card status-live">
+      <div class="container-header">
+        <div class="container-name">Container 4: Regulatory Precedent Library (RPL)</div>
+        <span class="container-status">Live</span>
+      </div>
+      <p class="container-desc">1,912 classified regulatory documents. 15 document types, 4 momentum directions (POS/NEG/NEU/MIX), 3 significance levels. Factor mappings link every document to affected scoring factors. City associations link documents to affected markets. 406 state legislation records with jurisdiction, bill number, chamber, and legislative stage. Precedent lookup engine answers: &ldquo;What did Dallas do to reach ADVANCED?&rdquo;</p>
+    </div>
+
+    <div class="container-card status-planned">
+      <div class="container-header">
+        <div class="container-name">Container 5: Federal Programs Intelligence Store (FPIS)</div>
+        <span class="container-status">Planned</span>
+      </div>
+      <p class="container-desc">10 federal programs cataloged. Dual consumer: Gap Analysis (subscriber-facing) + VDG Grant Tracker (internal). City + factor gap &rarr; matching federal programs with peer precedents.</p>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 5: DATA PIPELINE ========== -->
+  <section class="section section-break-before">
+    <div class="section-divider"></div>
+    <span class="section-number">05</span>
+    <h2 class="section-title">Data Pipeline</h2>
+
+    <div class="pipeline-grid">
+      <div>
+        <div class="pipeline-col-title">Ingestion Sources</div>
+        <ul class="pipeline-list">
+          <li>Federal Register API <span class="pipeline-detail">(daily, 730-day backfill)</span></li>
+          <li>LegiScan API <span class="pipeline-detail">(daily, all 50 states)</span></li>
+          <li>Congress.gov API <span class="pipeline-detail">(daily, 8+ curated bills)</span></li>
+          <li>Regulations.gov API <span class="pipeline-detail">(daily, FAA dockets)</span></li>
+          <li>SEC EDGAR <span class="pipeline-detail">(daily, public operator filings)</span></li>
+          <li>Operator news via Google News API <span class="pipeline-detail">(daily)</span></li>
+          <li>FAA NASR 5010 heliport database <span class="pipeline-detail">(monthly)</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="pipeline-col-title">Pipeline Stats</div>
+        <ul class="pipeline-list">
+          <li>1,912 ingested records</li>
+          <li>948 AI classifications <span class="pipeline-detail">(Claude Haiku)</span></li>
+          <li>~80% classification accuracy <span class="pipeline-detail">(v4 prompt)</span></li>
+          <li>5 prompt versions tracked with commit hashes</li>
+          <li>Daily ingestion at 06:00 UTC</li>
+          <li>Snapshot after ingestion, auto-review after snapshot</li>
+          <li>Conservative auto-reviewer: drops false signals, doesn&rsquo;t promote false ones</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 6: PRODUCTS & REVENUE ========== -->
+  <section class="section section-break-before">
+    <div class="section-divider"></div>
+    <span class="section-number">06</span>
+    <h2 class="section-title">Products &amp; Revenue Model</h2>
+
+    <div class="product-group">
+      <div class="product-group-title">Market Intelligence Briefings</div>
+      <div class="product-tiers">
+        <div class="product-tier">
+          <div class="product-tier-name">Market Snapshot</div>
+          <p class="product-tier-detail">1 city, 5-7 pages<br>5 business days</p>
+        </div>
+        <div class="product-tier">
+          <div class="product-tier-name">Market Briefing</div>
+          <p class="product-tier-detail">2-3 cities, 12-18 pages<br>10 business days<br>Discovery call required</p>
+        </div>
+        <div class="product-tier">
+          <div class="product-tier-name">Strategic Assessment</div>
+          <p class="product-tier-detail">4-21 cities, 25-35 pages<br>3-4 weeks<br>Quarterly reviews included</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-group">
+      <div class="product-group-title">Platform Access</div>
+      <p class="product-desc">Tiered depth model &mdash; same platform, more depth per tier. Free users see composite scores. Pro users see factor breakdowns, gap analysis, operator profiles, regulatory evidence. Institutional users get multi-market views, API, full regulatory trail.</p>
+    </div>
+
+    <div class="product-group">
+      <div class="product-group-title">UAM Market Pulse</div>
+      <p class="product-desc">Free weekly intelligence report. Distribution engine for credibility and audience building.</p>
+    </div>
+
+    <div class="product-group">
+      <div class="product-group-title">Monthly Market Report</div>
+      <p class="product-desc">Full market analysis &mdash; score movements, methodology updates, corridor tracking, operator analysis. March 2026 report covers 21 markets, v1.3 methodology, heliport data integration.</p>
+    </div>
+
+    <div class="product-group">
+      <div class="product-group-title">API Licensing</div>
+      <p class="product-desc">Bearer token auth, tier-based rate limiting (100/hr Pro, 1K/hr Institutional, 10K/hr Enterprise).</p>
+    </div>
+  </section>
+
+  <!-- ========== SECTION 7: WHAT'S COMING ========== -->
+  <section class="section">
+    <div class="section-divider"></div>
+    <span class="section-number">07</span>
+    <h2 class="section-title">What&rsquo;s Coming (Q2&ndash;Q3 2026)</h2>
+
+    <ul class="roadmap-list">
+      <li class="roadmap-item">
+        <div class="roadmap-bullet"></div>
+        <div class="roadmap-text"><strong>OID Container</strong> &mdash; Structured operator intelligence with deployment staging</div>
+      </li>
+      <li class="roadmap-item">
+        <div class="roadmap-bullet"></div>
+        <div class="roadmap-text"><strong>FPIS Container</strong> &mdash; Federal program matching for gap analysis</div>
+      </li>
+      <li class="roadmap-item">
+        <div class="roadmap-bullet"></div>
+        <div class="roadmap-text"><strong>TruWeather Integration</strong> &mdash; External weather sensing data replacing internal WTH assessment</div>
+      </li>
+      <li class="roadmap-item">
+        <div class="roadmap-bullet"></div>
+        <div class="roadmap-text"><strong>Rex Alexander Heliport Data</strong> &mdash; Site-level risk scoring for insurance underwriting</div>
+      </li>
+      <li class="roadmap-item">
+        <div class="roadmap-bullet future"></div>
+        <div class="roadmap-text"><strong>Prediction Layer</strong> <span class="roadmap-year">(2027)</span> &mdash; Tier advancement probability based on RPL regulatory signal patterns</div>
+      </li>
+      <li class="roadmap-item">
+        <div class="roadmap-bullet future"></div>
+        <div class="roadmap-text"><strong>National Expansion</strong> &mdash; Phased rollout to 50 MSAs based on UAM activity evidence</div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ========== SECTION 8: BY THE NUMBERS ========== -->
+  <section class="section section-break-before">
+    <div class="section-divider"></div>
+    <span class="section-number">08</span>
+    <h2 class="section-title">By The Numbers</h2>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">21<span class="accent">+</span></div>
+        <div class="stat-label">Tracked US Markets</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">7</div>
+        <div class="stat-label">Scoring Factors (v1.3)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">1,912</div>
+        <div class="stat-label">Classified Regulatory Documents</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">147</div>
+        <div class="stat-label">Per-Market Factor Scores</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">5,647</div>
+        <div class="stat-label">FAA-Registered Heliports</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">9</div>
+        <div class="stat-label">Tracked Corridors</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">8<span class="accent">+</span></div>
+        <div class="stat-label">Monitored Congress Bills</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">21</div>
+        <div class="stat-label">Verified Data Sources</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Intelligence Containers<br>(2 Live, 1 Foundation, 2 Planned)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="footer-text">Vertical Data Group, LLC &middot; airindex.io &middot; Confidential &mdash; do not distribute without permission</div>
+  </footer>
+
+</div>
+</body>
+</html>
