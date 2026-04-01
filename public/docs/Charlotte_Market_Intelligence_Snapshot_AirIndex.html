@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charlotte, NC — Market Intelligence Snapshot — AirIndex</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; color: #333; background: #fff; font-size: 11px; line-height: 1.6; }
+  @page { size: letter; margin: 0.5in; }
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page-break { page-break-before: always; }
+  }
+
+  .container { max-width: 720px; margin: 0 auto; padding: 20px 0; }
+
+  /* Header */
+  .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 2px solid #e5e7eb; margin-bottom: 20px; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .wordmark { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 13px; color: #1a1a2e; letter-spacing: 2px; }
+  .header-subtitle { font-size: 10px; color: #888; }
+  .header-right { font-size: 9px; color: #999; text-align: right; letter-spacing: 0.5px; }
+
+  /* Title */
+  .title-block { margin-bottom: 20px; }
+  .city-name { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: #111; margin-bottom: 2px; }
+  .title-sub { font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-style: italic; }
+
+  /* Intro box */
+  .intro-box { background: #f8f9fb; border-left: 3px solid #2563eb; padding: 14px 18px; margin-bottom: 20px; font-size: 10.5px; color: #555; line-height: 1.7; border-radius: 0 4px 4px 0; }
+
+  /* Section headers */
+  .section-header { background: #7c2d12; color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700; padding: 8px 14px; margin-bottom: 12px; letter-spacing: 0.5px; }
+
+  /* Score block */
+  .score-row { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 20px; }
+  .score-number { font-family: 'Space Grotesk', sans-serif; font-size: 52px; font-weight: 700; color: #ff4444; line-height: 1; border-left: 4px solid #ff4444; padding-left: 16px; }
+  .score-desc { flex: 1; font-size: 11px; color: #555; line-height: 1.7; }
+  .score-desc strong { color: #111; }
+  .tier-badge { display: inline-block; background: #ff4444; color: #fff; font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 3px; letter-spacing: 1px; }
+  .rank-badge { display: inline-block; background: #f3f4f6; color: #555; font-size: 9px; font-weight: 600; padding: 2px 8px; border-radius: 3px; margin-left: 6px; }
+
+  /* Peer table */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+  th { background: #f3f4f6; text-align: left; padding: 6px 14px; font-size: 10px; font-weight: 600; color: #555; border-bottom: 2px solid #e5e7eb; letter-spacing: 0.5px; }
+  td { padding: 8px 14px; border-bottom: 1px solid #e5e7eb; font-size: 11px; }
+  .score-col { text-align: center; font-weight: 700; font-size: 13px; }
+  .highlight-row { background: #fef2f2; font-weight: 600; }
+  .highlight-row td { color: #111; }
+  .tier-advanced { color: #059669; font-weight: 600; font-size: 10px; }
+  .tier-moderate { color: #0077b6; font-weight: 600; font-size: 10px; }
+  .tier-early { color: #d97706; font-weight: 600; font-size: 10px; }
+  .tier-nascent { color: #dc2626; font-weight: 600; font-size: 10px; }
+  .you-marker { color: #dc2626; font-weight: 700; }
+
+  /* Status badges */
+  .status-no { background: #fef2f2; color: #991b1b; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 12px; display: inline-block; }
+  .status-partial { background: #fffbeb; color: #92400e; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 12px; display: inline-block; }
+  .status-yes { background: #f0fdf4; color: #166534; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 12px; display: inline-block; }
+
+  /* Impact table */
+  .impact-positive { color: #059669; font-weight: 700; }
+  .impact-tier { color: #0077b6; font-size: 10px; }
+
+  /* Callout */
+  .callout { background: #f8f9fb; border-left: 3px solid #d97706; padding: 12px 16px; margin: 16px 0; font-size: 10.5px; line-height: 1.7; color: #555; }
+  .callout strong { color: #333; }
+
+  /* CTA section */
+  .cta-section { background: #1e3a5f; color: #fff; padding: 14px 18px; margin-top: 20px; border-radius: 4px; }
+  .cta-section h3 { font-family: 'Space Grotesk', sans-serif; font-size: 13px; margin-bottom: 8px; }
+  .cta-section p { font-size: 10.5px; line-height: 1.7; color: #cbd5e1; }
+
+  /* Footer */
+  .footer { margin-top: 20px; padding-top: 12px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 8px; color: #aaa; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="wordmark">AIRINDEX</span>
+      <span class="header-subtitle">UAM Market Intelligence &middot; airindex.io</span>
+    </div>
+    <div class="header-right">COMPLIMENTARY &middot; APRIL 2026 &middot; NOT FOR REDISTRIBUTION</div>
+  </div>
+
+  <!-- TITLE -->
+  <div class="title-block">
+    <div class="city-name">Charlotte, NC</div>
+    <div class="title-sub">Market Intelligence Snapshot &middot; Urban Air Mobility Readiness</div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="intro-box">
+    AirIndex scores 21+ U.S. markets on readiness for commercial eVTOL operations on a 0&ndash;100 scale across seven factors: state legislation, vertiport infrastructure, regulatory posture, pilot programs, zoning and land use, operator presence, and weather infrastructure. Scores are updated daily from a pipeline of 1,900+ classified regulatory documents, federal filings, operator announcements, and legislative records. This snapshot was prepared specifically for Charlotte in the context of the NC&ndash;GA Advanced Air Mobility corridor initiative.
+  </div>
+
+  <!-- SCORE BLOCK -->
+  <div class="section-header">CHARLOTTE'S CURRENT SCORE</div>
+  <div class="score-row">
+    <div class="score-number">25</div>
+    <div class="score-desc">
+      <span class="tier-badge">NASCENT</span>
+      <span class="rank-badge">#13 of 21+ markets</span>
+      <br><br>
+      Charlotte is currently in the <strong>NASCENT tier</strong> &mdash; the lowest readiness classification in the AirIndex system, scoring 25 out of 100. Markets in this tier have no meaningful regulatory framework for vertical flight infrastructure, no active vertiport development, and no committed eVTOL operator presence. Operators evaluating where to launch commercial air taxi service do not include NASCENT markets on their shortlists without a visible path to improvement. Given Charlotte's position as the NC anchor for the first interstate AAM corridor, this gap is worth closing before operators make market entry decisions.
+    </div>
+  </div>
+
+  <!-- PEER TABLE -->
+  <div class="section-header">HOW CHARLOTTE COMPARES TO PEER MARKETS</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Market</th>
+        <th style="text-align:center;">Score</th>
+        <th>Tier</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Dallas, TX</td>
+        <td class="score-col" style="color:#059669;">95</td>
+        <td class="tier-advanced">ADVANCED</td>
+      </tr>
+      <tr>
+        <td>Los Angeles, CA</td>
+        <td class="score-col" style="color:#059669;">95</td>
+        <td class="tier-advanced">ADVANCED</td>
+      </tr>
+      <tr>
+        <td>Miami, FL</td>
+        <td class="score-col" style="color:#059669;">80</td>
+        <td class="tier-advanced">ADVANCED</td>
+      </tr>
+      <tr>
+        <td>New York, NY</td>
+        <td class="score-col" style="color:#0077b6;">55</td>
+        <td class="tier-moderate">MODERATE</td>
+      </tr>
+      <tr>
+        <td>Phoenix, AZ</td>
+        <td class="score-col" style="color:#0077b6;">50</td>
+        <td class="tier-moderate">MODERATE</td>
+      </tr>
+      <tr class="highlight-row">
+        <td><strong>Charlotte, NC</strong></td>
+        <td class="score-col" style="color:#dc2626;">25</td>
+        <td class="tier-nascent">NASCENT <span class="you-marker">&#9632; You are here</span></td>
+      </tr>
+      <tr>
+        <td style="color:#888;">National avg.</td>
+        <td class="score-col" style="color:#888;">40</td>
+        <td class="tier-early">EARLY</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ORDINANCE AUDIT -->
+  <div class="section-header">WHAT IS HOLDING CHARLOTTE'S SCORE DOWN</div>
+  <p style="margin-bottom:12px; font-size:11px; color:#555; line-height:1.7;">
+    AirIndex runs a five-question ordinance audit for each market to assess whether the city's legal and regulatory framework supports vertical flight infrastructure. Charlotte has four gaps &mdash; all of which are within the city's direct control to fix. None require state legislation or private capital investment.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:35%;">Question</th>
+        <th style="width:10%; text-align:center;">Status</th>
+        <th>What this means</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. Correct FAA terminology in city code (heliport, helistop, vertiport per 14 CFR Part 157)</td>
+        <td style="text-align:center;"><span class="status-no">NO</span></td>
+        <td>Charlotte's UDO (updated Dec 2025) contains no vertiport terminology. NC is developing an AAM strategy but the city code has not been updated. Using undefined terms like "helipad" creates legal ambiguity in any permit application.</td>
+      </tr>
+      <tr>
+        <td>2. Heliport/vertiport addressed as permitted or conditional use in zoning ordinance</td>
+        <td style="text-align:center;"><span class="status-no">NO</span></td>
+        <td>Charlotte UDO (eff. June 2023, updated Dec 2025) does not address vertiports. No clear zoning pathway for vertiport development. Developers cannot determine where a vertiport can be built without a special exception process.</td>
+      </tr>
+      <tr>
+        <td>3. FAA airspace determination required in permit process</td>
+        <td style="text-align:center;"><span class="status-no">NO</span></td>
+        <td>No evidence of FAA airspace determination in Charlotte's permit process. Without this requirement, heliports and vertiports can be approved without confirming FAA has reviewed the airspace impact &mdash; creating liability exposure for the city.</td>
+      </tr>
+      <tr>
+        <td>4. NFPA 418 referenced in fire or building code</td>
+        <td style="text-align:center;"><span class="status-partial">PARTIAL</span></td>
+        <td>NC adopted IBC, which references NFPA 418 for rooftop heliports. However, Charlotte's standalone fire code does not explicitly reference NFPA 418 for all vertical flight infrastructure.</td>
+      </tr>
+      <tr>
+        <td>5. State (NC) has adopted FAA AC 150/5390-2D as enforceable standard</td>
+        <td style="text-align:center;"><span class="status-no">NO</span></td>
+        <td>North Carolina has not yet adopted the FAA heliport design standard as enforceable at the state level. The Charlotte-Atlanta corridor announcement signals this is in motion but not yet law.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SCORE TRAJECTORY -->
+  <div class="page-break"></div>
+  <div class="section-header">WHAT MOVES THE SCORE &mdash; SPECIFIC ACTIONS AND THEIR IMPACT</div>
+  <p style="margin-bottom:12px; font-size:11px; color:#555; line-height:1.7;">
+    Each gap in Charlotte's ordinance audit has a measurable impact on the AirIndex score. The actions below are ranked by impact and ease. The first three are ordinance changes that can be enacted by Charlotte City Council without state legislative action or capital investment.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:35%;">Action</th>
+        <th>Who acts</th>
+        <th style="text-align:center;">Score now</th>
+        <th style="text-align:center;">Score after</th>
+        <th style="text-align:center;">Impact</th>
+        <th>Tier change</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Add vertiport as permitted/conditional use in zoning ordinance</td>
+        <td><strong>City Council</strong></td>
+        <td style="text-align:center;">25</td>
+        <td style="text-align:center; font-weight:700;">40</td>
+        <td style="text-align:center;" class="impact-positive">+15</td>
+        <td class="impact-tier">NASCENT &rarr; EARLY</td>
+      </tr>
+      <tr>
+        <td>Designate AAM point-of-contact and upgrade regulatory posture to friendly</td>
+        <td><strong>City Manager</strong></td>
+        <td style="text-align:center;">25</td>
+        <td style="text-align:center; font-weight:700;">30</td>
+        <td style="text-align:center;" class="impact-positive">+5</td>
+        <td class="impact-tier">Score improvement</td>
+      </tr>
+      <tr>
+        <td>Require FAA airspace determination as condition of heliport/vertiport permit</td>
+        <td><strong>City Planning</strong></td>
+        <td style="text-align:center;">25</td>
+        <td style="text-align:center;">25</td>
+        <td style="text-align:center; color:#888;">*</td>
+        <td style="font-size:9px; color:#888;">Reduces liability exposure; score impact via REG posture upgrade</td>
+      </tr>
+      <tr>
+        <td>Reference NFPA 418 in standalone fire code ordinance</td>
+        <td><strong>Fire Marshal / Council</strong></td>
+        <td style="text-align:center;">25</td>
+        <td style="text-align:center;">25</td>
+        <td style="text-align:center; color:#888;">*</td>
+        <td style="font-size:9px; color:#888;">Reduces liability exposure; supports insurance and developer confidence</td>
+      </tr>
+      <tr style="background:#f0f7ff; font-weight:600;">
+        <td>All actions combined (zoning + posture + compliance)</td>
+        <td><strong>City</strong></td>
+        <td style="text-align:center;">25</td>
+        <td style="text-align:center; font-weight:700; color:#0077b6;">45</td>
+        <td style="text-align:center;" class="impact-positive">+20</td>
+        <td class="impact-tier">NASCENT &rarr; EARLY</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:9px; color:#999; margin-bottom:8px;">
+    * These actions do not directly move a scored factor but reduce regulatory and liability exposure, which supports the overall market readiness profile. The FAA airspace requirement and NFPA 418 reference contribute to an upgrade in regulatory posture (REG factor) when combined with other signals.
+  </p>
+
+  <!-- CALLOUT -->
+  <div class="callout">
+    <strong>&#9632; 90-Day Window:</strong> The FAA is expected to publish a unified vertical flight infrastructure Advisory Circular for public comment around June 2026 &mdash; the merger of AC 150/5390-2D (Heliport Design) and Engineering Brief 105A (Vertiport Design). Cities that update their ordinance language before this publication will be positioned to align with the new federal standard from day one. Cities that wait will face a more complex update process after the fact.
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h3>Full Market Readiness &amp; Gap Report</h3>
+    <p>
+      This snapshot covers Charlotte's score, ordinance audit, and high-level gap roadmap. The full Market Readiness &amp; Gap Report includes a complete seven-factor breakdown with primary source citations, regulatory trajectory analysis with favorable and stalled scenarios, operator attraction assessment, peer market comparison, and a 12-month score projection tied to specific actions.
+    </p>
+    <p style="margin-top:10px; color:#93c5fd;">
+      Contact <strong style="color:#fff;">alan@airindex.io</strong> or visit <strong style="color:#fff;">airindex.io/briefings</strong> to request a scoped engagement.
+    </p>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>Vertical Data Group, LLC &middot; alan@airindex.io &middot; airindex.io</span>
+    <span>Source: AirIndex UAM Market Readiness Index, v1.3 (airindex.io/methodology)</span>
+  </div>
+
+</div>
+</body>
+</html>

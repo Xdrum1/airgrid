@@ -39,7 +39,7 @@ const FACTORS = [
       "Sites in the planning or feasibility stage without permits filed. Announced locations without municipal approval. Existing heliports without documented UAM conversion plans.",
     actionable:
       "Advance vertiport sites through the permitting process. Fast-track environmental review for vertiport-zoned parcels. Partner with operators on site selection and FAA engineering briefs.",
-    sources: "Municipal planning records, FAA vertiport engineering briefs, operator filings, local zoning board decisions.",
+    sources: "Municipal planning records, FAA vertiport engineering briefs, operator filings, local zoning board decisions. Site counts reflect FAA-registered heliport and landing facilities per NASR 5010 records. Emergency Helicopter Landing Facilities (EHLFs) are excluded as they do not require FAA Form 7480 registration and are not captured in the NASR database. Total vertical flight infrastructure in any market may exceed the registered site count.",
   },
   {
     key: "activeOperatorPresence",
@@ -75,7 +75,7 @@ const FACTORS = [
     weight: 10,
     graduated: true,
     description:
-      "What is the overall regulatory stance toward UAM at the municipal level? This is the only graduated factor in the model. Rather than binary yes/no, regulatory posture is assessed on a three-level scale: Friendly (10 points), Neutral (5 points), or Restrictive (0 points). This reflects the reality that regulatory environments exist on a spectrum — a city can be passively permissive without being actively supportive.",
+      "What is the overall regulatory stance toward UAM at the municipal level? This is the only graduated factor in the model. Rather than binary yes/no, regulatory posture is assessed on a three-level scale: Friendly (10 points), Neutral (5 points), or Restrictive (0 points). This reflects the reality that regulatory environments exist on a spectrum — a city can be passively permissive without being actively supportive. Note: Regulatory posture scoring reflects the observable framework of state and local regulations governing vertical flight infrastructure. The FAA does not hold enforcement authority over private-use heliports. Conditional and objectionable airspace determinations issued by the FAA carry no mandatory compliance mechanism for private-use facilities. REG scores reflect regulatory framework strength, not verified compliance rates.",
     qualifies:
       "Friendly: City has formed a UAM task force, joined federal programs (e.g., NASA AAM National Campaign), issued public statements of support, or allocated staff/budget to UAM planning. Neutral: No active opposition or support; standard permitting processes apply without UAM-specific provisions. Restrictive: City has enacted ordinances limiting drone/eVTOL operations, issued public opposition, or created regulatory barriers beyond standard requirements.",
     doesNotQualify:
