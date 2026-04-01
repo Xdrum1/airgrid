@@ -14,6 +14,7 @@ import AdminLeads from "./AdminLeads";
 import AdminMarketWatch from "./AdminMarketWatch";
 import AdminFeed from "./AdminFeed";
 import AdminInquiries from "./AdminInquiries";
+import AdminEmerging from "./AdminEmerging";
 
 // -------------------------------------------------------
 // Types
@@ -54,7 +55,7 @@ interface ClassificationResult {
   createdAt: string;
 }
 
-type TabKey = "inquiries" | "overrides" | "classifications" | "corridors" | "events" | "billing" | "pipeline" | "watch" | "watchlist" | "reports" | "feed";
+type TabKey = "inquiries" | "overrides" | "classifications" | "corridors" | "events" | "billing" | "pipeline" | "watch" | "watchlist" | "reports" | "feed" | "emerging";
 
 // -------------------------------------------------------
 // Helpers
@@ -471,7 +472,7 @@ export default function AdminReview() {
           padding: "0 24px",
         }}
       >
-        {(["inquiries", "overrides", "classifications", "corridors", "events", "billing", "pipeline", "watch", "watchlist", "reports", "feed"] as const).map((t) => {
+        {(["inquiries", "overrides", "classifications", "corridors", "events", "billing", "pipeline", "watch", "watchlist", "reports", "feed", "emerging"] as const).map((t) => {
           const labels: Record<TabKey, string> = {
             inquiries: "INQUIRIES",
             overrides: "PENDING OVERRIDES",
@@ -484,6 +485,7 @@ export default function AdminReview() {
             watchlist: "LEADS",
             reports: "REPORTS",
             feed: "INTEL FEED",
+            emerging: "EMERGING",
           };
           return (
             <button
@@ -518,6 +520,8 @@ export default function AdminReview() {
           <AdminInquiries showToast={showToast} />
         ) : tab === "feed" ? (
           <AdminFeed showToast={showToast} />
+        ) : tab === "emerging" ? (
+          <AdminEmerging showToast={showToast} />
         ) : tab === "reports" ? (
           <AdminReports />
         ) : tab === "watch" ? (
