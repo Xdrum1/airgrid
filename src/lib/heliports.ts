@@ -26,39 +26,60 @@ export async function getHeliportsGeoJSON(): Promise<GeoJSON.FeatureCollection> 
 
   const prisma = await getPrisma();
 
-  const heliports = await prisma.heliport.findMany({
-    where: { statusCode: "O" },
-    select: {
-      id: true,
-      facilityName: true,
-      city: true,
-      state: true,
-      lat: true,
-      lng: true,
-      useType: true,
-      ownershipType: true,
-      elevation: true,
-      cityId: true,
-    },
-  });
+  const [heliports, complianceRecords] = await Promise.all([
+    prisma.heliport.findMany({
+      where: { statusCode: "O" },
+      select: {
+        id: true,
+        facilityName: true,
+        city: true,
+        state: true,
+        lat: true,
+        lng: true,
+        useType: true,
+        ownershipType: true,
+        elevation: true,
+        cityId: true,
+      },
+    }),
+    prisma.heliportCompliance.findMany({
+      select: {
+        facilityId: true,
+        complianceStatus: true,
+        complianceScore: true,
+        siteType: true,
+        q5EvtolViability: true,
+      },
+    }),
+  ]);
 
-  const features: GeoJSON.Feature[] = heliports.map((h) => ({
-    type: "Feature" as const,
-    geometry: {
-      type: "Point" as const,
-      coordinates: [h.lng, h.lat],
-    },
-    properties: {
-      id: h.id,
-      facilityName: h.facilityName,
-      city: h.city,
-      state: h.state,
-      useType: h.useType,
-      ownershipType: h.ownershipType,
-      elevation: h.elevation,
-      cityId: h.cityId,
-    },
-  }));
+  // Build compliance lookup by facility ID
+  const complianceMap = new Map(complianceRecords.map((c) => [c.facilityId, c]));
+
+  const features: GeoJSON.Feature[] = heliports.map((h) => {
+    const compliance = complianceMap.get(h.id);
+    return {
+      type: "Feature" as const,
+      geometry: {
+        type: "Point" as const,
+        coordinates: [h.lng, h.lat],
+      },
+      properties: {
+        id: h.id,
+        facilityName: h.facilityName,
+        city: h.city,
+        state: h.state,
+        useType: h.useType,
+        ownershipType: h.ownershipType,
+        elevation: h.elevation,
+        cityId: h.cityId,
+        complianceStatus: compliance?.complianceStatus ?? "unknown",
+        complianceScore: compliance?.complianceScore ?? 0,
+        siteType: compliance?.siteType ?? "unknown",
+        evtolViability: compliance?.q5EvtolViability ?? "unknown",
+      },
+    };
+  });
 
   const geojson: GeoJSON.FeatureCollection = {
     type: "FeatureCollection",

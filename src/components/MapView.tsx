@@ -49,6 +49,9 @@ interface HeliportPopupInfo {
   ownershipType: string;
   elevation: number | null;
   id: string;
+  complianceStatus: string;
+  siteType: string;
+  evtolViability: string;
 }
 
 interface PopupInfo {
@@ -982,6 +985,9 @@ export default function MapView({
                 ownershipType: props.ownershipType,
                 elevation: props.elevation,
                 id: props.id,
+                complianceStatus: props.complianceStatus ?? "unknown",
+                siteType: props.siteType ?? "unknown",
+                evtolViability: props.evtolViability ?? "unknown",
               });
               setPopup(null);
               setVertiportPopup(null);
@@ -1091,12 +1097,20 @@ export default function MapView({
                 "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 3, 12, 6],
                 "circle-color": [
                   "case",
-                  ["==", ["get", "useType"], "PU"], "#e879f9",
-                  "#a855f7",
+                  ["==", ["get", "complianceStatus"], "compliant"], "#00ff88",
+                  ["==", ["get", "complianceStatus"], "conditional"], "#f59e0b",
+                  ["==", ["get", "complianceStatus"], "objectionable"], "#ff4444",
+                  "#a855f7", // unknown — default purple
                 ],
                 "circle-opacity": ["interpolate", ["linear"], ["zoom"], 8, 0, 9, 0.85],
                 "circle-stroke-width": 1,
-                "circle-stroke-color": "#e879f9",
+                "circle-stroke-color": [
+                  "case",
+                  ["==", ["get", "complianceStatus"], "compliant"], "#00ff88",
+                  ["==", ["get", "complianceStatus"], "conditional"], "#f59e0b",
+                  ["==", ["get", "complianceStatus"], "objectionable"], "#ff4444",
+                  "#e879f9",
+                ],
                 "circle-stroke-opacity": 0.4,
               }}
             />
@@ -1266,6 +1280,30 @@ export default function MapView({
                   {heliportPopup.ownershipType === "PU" ? "PUBLIC" : heliportPopup.ownershipType === "PR" ? "PRIVATE" : heliportPopup.ownershipType === "MA" ? "AIR FORCE" : heliportPopup.ownershipType === "MN" ? "NAVY" : heliportPopup.ownershipType === "MR" ? "ARMY" : heliportPopup.ownershipType}
                 </span>
               </div>
+              {/* Compliance status */}
+              {heliportPopup.complianceStatus !== "unknown" && (
+                <div style={{ marginTop: 10, paddingTop: 8, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{
+                      fontSize: 8, letterSpacing: 1, padding: "3px 8px", borderRadius: 4, fontWeight: 700,
+                      background: heliportPopup.complianceStatus === "compliant" ? "rgba(0,255,136,0.1)" :
+                        heliportPopup.complianceStatus === "conditional" ? "rgba(245,158,11,0.1)" : "rgba(255,68,68,0.1)",
+                      border: `1px solid ${heliportPopup.complianceStatus === "compliant" ? "rgba(0,255,136,0.3)" :
+                        heliportPopup.complianceStatus === "conditional" ? "rgba(245,158,11,0.3)" : "rgba(255,68,68,0.3)"}`,
+                      color: heliportPopup.complianceStatus === "compliant" ? "#00ff88" :
+                        heliportPopup.complianceStatus === "conditional" ? "#f59e0b" : "#ff4444",
+                    }}>
+                      {heliportPopup.complianceStatus.toUpperCase()}
+                    </span>
+                    {heliportPopup.siteType === "hospital" && (
+                      <span style={{ fontSize: 7, color: "#888" }}>Hospital helipad</span>
+                    )}
+                    {heliportPopup.evtolViability === "at_risk" && (
+                      <span style={{ fontSize: 7, color: "#f59e0b" }}>eVTOL conversion at risk</span>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </Popup>
         )}
