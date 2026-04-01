@@ -610,6 +610,49 @@ model OrdinanceAudit {
 }
 
 // ═══════════════════════════════════════════════════════════
+// MCS — Market Context Store (Container 2)
+// Peer comparison, state context, and regional clusters.
+// Enables "what did Dallas do?" cross-market queries and
+// buyer-specific peer tables in briefing reports.
+// ═══════════════════════════════════════════════════════════
+
+model McsStateContext {
+  id                    String   @id @default(cuid())
+  stateCode             String   @unique @db.Char(2)
+  stateName             String   @db.VarChar(50)
+  legislationStatus     String   @db.VarChar(20)    // enacted | actively_moving | none
+  enforcementPosture    String   @db.VarChar(20)    // strong | moderate | limited | none
+  enforcementNote       String?  @db.Text           // Rex-sourced context on state enforcement
+  dotAamEngagement      String   @db.VarChar(20)    // active | emerging | none
+  dotAamNote            String?  @db.Text
+  aamOfficeEstablished  Boolean  @default(false)
+  keyLegislation        String?  @db.Text           // Primary bill(s) — e.g. "TX HB 1735", "CA SB 944"
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model McsRegionalCluster {
+  id                String   @id @default(cuid())
+  name              String   @unique @db.VarChar(100) // "SoCal Corridor", "Texas Triangle", etc.
+  description       String?  @db.Text
+  marketIds         String[] @default([])             // Market IDs in this cluster
+  corridorRelevance String?  @db.Text                 // How cluster relates to corridor planning
+  createdAt         DateTime @default(now())
+}
+
+model McsPeerGroup {
+  id                String   @id @default(cuid())
+  marketId          String                            // The market this peer group is for
+  peerMarketIds     String[] @default([])             // Markets considered peers
+  groupingBasis     String   @db.VarChar(30)          // SAME_TIER | SAME_STATE | SIMILAR_PROFILE | REGIONAL
+  notes             String?  @db.Text
+  createdAt         DateTime @default(now())
+
+  @@unique([marketId, groupingBasis])
+  @@index([marketId])
+}
+
+// ═══════════════════════════════════════════════════════════
 // FKB — Factor Knowledge Base (Container 1)
 // Authoritative source of truth for scoring factors, weights,
 // data sources, per-market factor scores, and analyst overrides.
