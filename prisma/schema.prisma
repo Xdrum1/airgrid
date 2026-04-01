@@ -1126,6 +1126,34 @@ model FpisVdgGrantTracker {
   @@index([status])
 }
 
+// ═══════════════════════════════════════════════════════════
+// Terminology Database
+// Source-traced, scoring-linked terminology reference.
+// Public page at /terminology. Internal style guide.
+// Every term traceable to a primary source document.
+// ═══════════════════════════════════════════════════════════
+
+model AirIndexTerm {
+  id                  String   @id                     // Slug format: "vertiport", "heliport", etc.
+  term                String   @db.VarChar(200)        // The correct term as it appears in source
+  definition          String   @db.Text                // Plain-language definition in AirIndex voice
+  sourceRef           String   @db.VarChar(200)        // Primary source: "FAA AC 150/5390-2D", "14 CFR Part 157"
+  sourceUrl           String?  @db.Text                // Direct URL to source document
+  incorrectAlternatives String[] @default([])          // Common wrong terms: ["helipad", "landing pad"]
+  contextOfUse        String   @db.Text                // Where/how this term should appear
+  factorCodes         String[] @default([])            // AirIndex factor codes affected: ["LEG", "ZON", "VRT"]
+  scoringImplication  String   @db.Text                // What happens to score when city uses wrong term
+  category            String   @db.VarChar(30)         // infrastructure | regulatory | operational | legislative | standards
+  versionAdded        String   @db.VarChar(10)         // AirIndex methodology version: "v1.3"
+  lastUpdated         DateTime @db.Date
+  isPublic            Boolean  @default(true)          // true = visible on /terminology
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([category])
+  @@index([isPublic])
+}
+
 model RplAnalystAnnotation {
   id                  String   @id @default(cuid())
   documentId          String
