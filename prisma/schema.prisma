@@ -1133,6 +1133,64 @@ model FpisVdgGrantTracker {
 // Every term traceable to a primary source document.
 // ═══════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════
+// Heliport Compliance Database
+// 5-question compliance checklist per FAA-registered site.
+// Output: COMPLIANT / CONDITIONAL / OBJECTIONABLE per site.
+// Foundation for insurance portfolio product + VRT factor.
+// ═══════════════════════════════════════════════════════════
+
+model HeliportCompliance {
+  id                    String   @id @default(cuid())
+  facilityId            String   @unique               // FAA site number from NASR 5010
+  facilityName          String   @db.VarChar(200)
+  state                 String   @db.Char(2)
+  city                  String   @db.VarChar(100)
+  lat                   Decimal  @db.Decimal(9, 6)
+  lng                   Decimal  @db.Decimal(9, 6)
+  siteType              String   @db.VarChar(30)       // hospital | private | public | military | other
+  ownershipType         String?  @db.VarChar(30)       // public | private | military
+
+  // Question 1: FAA registration current and accurate
+  q1FaaRegistration     String   @default("unknown")   // pass | flag | missing | unknown
+  q1Note                String?  @db.Text
+
+  // Question 2: FAA airspace determination on file
+  q2AirspaceDetermination String @default("unknown")   // on_file | not_found | unknown
+  q2DeterminationType   String?  @db.VarChar(20)       // concur | concur_with_exception | objectionable
+  q2Note                String?  @db.Text
+
+  // Question 3: State enforcement posture
+  q3StateEnforcement    String   @default("unknown")   // strong | limited | none | unknown
+  q3Note                String?  @db.Text
+
+  // Question 4: NFPA 418 jurisdiction adoption
+  q4Nfpa418             String   @default("unknown")   // adopted | partial | none | unknown
+  q4Note                String?  @db.Text
+
+  // Question 5: eVTOL dimensional viability
+  q5EvtolViability      String   @default("unknown")   // viable | at_risk | unknown
+  q5Note                String?  @db.Text
+
+  // Computed compliance status
+  complianceStatus      String   @default("unknown")   // compliant | conditional | objectionable | unknown
+  complianceScore       Int      @default(0) @db.SmallInt // 0-5 (count of passing questions)
+  flagCount             Int      @default(0) @db.SmallInt // Number of questions that failed
+
+  // Metadata
+  lastAssessedAt        DateTime? @db.Date
+  assessedBy            String?  @db.VarChar(50)       // PIPELINE | ANALYST | REX
+  marketId              String?                        // Nearest tracked market if within metro area
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([state])
+  @@index([complianceStatus])
+  @@index([siteType])
+  @@index([marketId])
+  @@index([q5EvtolViability])
+}
+
 model AirIndexTerm {
   id                  String   @id                     // Slug format: "vertiport", "heliport", etc.
   term                String   @db.VarChar(200)        // The correct term as it appears in source
