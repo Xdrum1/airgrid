@@ -31,7 +31,7 @@ function SubIndicatorRow({ si }: { si: SubIndicator }) {
           <div style={{ color: "#666", fontSize: 8, marginTop: 1 }}>{si.citation}</div>
         )}
         {si.peerNote && (
-          <div style={{ color: "#00d4ff", fontSize: 8, marginTop: 1, fontStyle: "italic" }}>
+          <div style={{ color: "#5B8DB8", fontSize: 8, marginTop: 1, fontStyle: "italic" }}>
             {si.peerNote}
           </div>
         )}
@@ -267,7 +267,7 @@ export default function GapAnalysisPanel({
           style={{
             background: "none",
             border: "none",
-            color: "#00d4ff",
+            color: "#5B8DB8",
             fontSize: 9,
             letterSpacing: 1,
             cursor: "pointer",
@@ -315,7 +315,7 @@ export default function GapAnalysisPanel({
           <a
             href="/contact?tier=enterprise&ref=gap-analysis"
             style={{
-              color: "#00d4ff",
+              color: "#5B8DB8",
               fontSize: 9,
               letterSpacing: 0.5,
               textDecoration: "none",

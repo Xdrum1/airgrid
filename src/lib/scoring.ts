@@ -94,7 +94,7 @@ function scoreWeather(level: WeatherInfraLevel): number {
 
 export function getScoreColor(score: number): string {
   if (score >= 75) return "#00ff88";
-  if (score >= 50) return "#00d4ff";
+  if (score >= 50) return "#5B8DB8";
   if (score >= 30) return "#f59e0b";
   return "#ff4444";
 }

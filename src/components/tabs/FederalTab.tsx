@@ -82,7 +82,7 @@ export default function FederalTab({
     if (lower.includes("became public law") || lower.includes("signed by president"))
       return "#00ff88";
     if (lower.includes("passed") || lower.includes("agreed to"))
-      return "#00d4ff";
+      return "#5B8DB8";
     if (lower.includes("referred to") || lower.includes("introduced"))
       return "#f59e0b";
     return "#888";
@@ -91,7 +91,7 @@ export default function FederalTab({
   const docTypeColors: Record<string, string> = {
     Rule: "#ff4444",
     "Proposed Rule": "#f59e0b",
-    Notice: "#00d4ff",
+    Notice: "#5B8DB8",
     Other: "#888",
   };
 
@@ -152,11 +152,11 @@ export default function FederalTab({
               }}
               style={{
                 flex: 1,
-                background: section === key ? "rgba(0,212,255,0.1)" : "transparent",
-                border: section === key ? "1px solid rgba(0,212,255,0.2)" : "1px solid transparent",
+                background: section === key ? "rgba(91,141,184,0.1)" : "transparent",
+                border: section === key ? "1px solid rgba(91,141,184,0.2)" : "1px solid transparent",
                 borderRadius: 4,
                 padding: "8px 12px",
-                color: section === key ? "#00d4ff" : "#666",
+                color: section === key ? "#5B8DB8" : "#666",
                 fontSize: 9,
                 letterSpacing: 1.5,
                 cursor: "pointer",
@@ -185,8 +185,8 @@ export default function FederalTab({
             style={{
               width: 16,
               height: 16,
-              border: "2px solid rgba(0,212,255,0.2)",
-              borderTopColor: "#00d4ff",
+              border: "2px solid rgba(91,141,184,0.2)",
+              borderTopColor: "#5B8DB8",
               borderRadius: "50%",
               animation: "spin 0.8s linear infinite",
             }}
@@ -248,17 +248,17 @@ export default function FederalTab({
                     transitionDuration: "0.25s",
                     transitionDelay: `${i * 0.02}s`,
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(0,212,255,0.3)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(91,141,184,0.3)")}
                   onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)")}
                 >
                   {/* Bill identifier + congress */}
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                     <span
                       style={{
-                        color: "#00d4ff",
+                        color: "#5B8DB8",
                         fontSize: 8,
                         letterSpacing: 1,
-                        border: "1px solid rgba(0,212,255,0.3)",
+                        border: "1px solid rgba(91,141,184,0.3)",
                         borderRadius: 3,
                         padding: "2px 6px",
                         fontFamily: "'Space Mono', monospace",
@@ -369,10 +369,10 @@ export default function FederalTab({
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                       <span
                         style={{
-                          color: isActive ? "#00d4ff" : "#666",
+                          color: isActive ? "#5B8DB8" : "#666",
                           fontSize: 8,
                           letterSpacing: 1,
-                          border: `1px solid ${isActive ? "rgba(0,212,255,0.3)" : "rgba(255,255,255,0.1)"}`,
+                          border: `1px solid ${isActive ? "rgba(91,141,184,0.3)" : "rgba(255,255,255,0.1)"}`,
                           borderRadius: 3,
                           padding: "2px 6px",
                           fontFamily: "'Space Mono', monospace",
@@ -466,7 +466,7 @@ export default function FederalTab({
                       transitionDuration: "0.25s",
                       transitionDelay: `${i * 0.02}s`,
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(0,212,255,0.3)")}
+                    onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(91,141,184,0.3)")}
                     onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)")}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>

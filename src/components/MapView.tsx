@@ -91,7 +91,7 @@ const INITIAL_VIEW_MOBILE = {
 // -------------------------------------------------------
 const VERTIPORT_STATUS_COLORS: Record<string, string> = {
   planned: "#f59e0b",
-  permitted: "#00d4ff",
+  permitted: "#5B8DB8",
   under_construction: "#7c3aed",
   operational: "#00ff88",
 };
@@ -101,7 +101,7 @@ const VERTIPORT_STATUS_COLORS: Record<string, string> = {
 // -------------------------------------------------------
 const CORRIDOR_STYLES: Record<string, { color: string; dasharray: number[]; label: string }> = {
   proposed: { color: "#f59e0b", dasharray: [4, 4], label: "Proposed" },
-  authorized: { color: "#00d4ff", dasharray: [1, 0], label: "Authorized" },
+  authorized: { color: "#5B8DB8", dasharray: [1, 0], label: "Authorized" },
   active: { color: "#00ff88", dasharray: [1, 0], label: "Active" },
   suspended: { color: "#ff4444", dasharray: [2, 4], label: "Suspended" },
 };
@@ -401,7 +401,7 @@ function CorridorPopup({
         style={{
           display: "block",
           marginTop: 10,
-          color: "#00d4ff",
+          color: "#5B8DB8",
           fontSize: 8,
           letterSpacing: 1,
           textDecoration: "none",
@@ -540,9 +540,9 @@ function CityPopup({
         {city.vertiportCount > 0 && (
           <span
             style={{
-              color: "#00d4ff",
+              color: "#5B8DB8",
               fontSize: 7,
-              border: "1px solid rgba(0,212,255,0.3)",
+              border: "1px solid rgba(91,141,184,0.3)",
               borderRadius: 3,
               padding: "2px 6px",
               letterSpacing: 1,
@@ -799,7 +799,7 @@ export default function MapView({
             maxWidth: 340,
           }}
         >
-          Add your token to <code style={{ color: "#00d4ff" }}>.env.local</code>
+          Add your token to <code style={{ color: "#5B8DB8" }}>.env.local</code>
           <br />
           <br />
           <code style={{ color: "#00ff88" }}>
@@ -812,7 +812,7 @@ export default function MapView({
             href="https://mapbox.com"
             target="_blank"
             rel="noreferrer"
-            style={{ color: "#00d4ff" }}
+            style={{ color: "#5B8DB8" }}
           >
             mapbox.com
           </a>{" "}
@@ -1351,7 +1351,7 @@ export default function MapView({
         {(
           [
             ["≥ 75 HIGH", "#00ff88", 18],
-            ["50–74 MODERATE", "#00d4ff", 14],
+            ["50–74 MODERATE", "#5B8DB8", 14],
             ["30–49 EARLY", "#f59e0b", 10],
             ["< 30 NASCENT", "#ff4444", 8],
           ] as [string, string, number][]
@@ -1403,7 +1403,7 @@ export default function MapView({
         {(
           [
             ["PLANNED", "#f59e0b"],
-            ["PERMITTED", "#00d4ff"],
+            ["PERMITTED", "#5B8DB8"],
             ["CONSTRUCTION", "#7c3aed"],
             ["OPERATIONAL", "#00ff88"],
           ] as [string, string][]
@@ -1454,7 +1454,7 @@ export default function MapView({
         {(
           [
             ["PROPOSED", "#f59e0b", "4,4"],
-            ["AUTHORIZED", "#00d4ff", "0"],
+            ["AUTHORIZED", "#5B8DB8", "0"],
             ["ACTIVE", "#00ff88", "0"],
             ["SUSPENDED", "#ff4444", "2,4"],
           ] as [string, string, string][]

@@ -393,9 +393,9 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
                   border: "none",
                   borderBottom:
                     tab === t
-                      ? "2px solid #00d4ff"
+                      ? "2px solid #5B8DB8"
                       : "2px solid transparent",
-                  color: tab === t ? "#00d4ff" : "#666",
+                  color: tab === t ? "#5B8DB8" : "#666",
                   padding: isMobile ? "11px 10px" : "13px 16px",
                   fontSize: isMobile ? 10 : 9,
                   letterSpacing: isMobile ? 1 : 2,

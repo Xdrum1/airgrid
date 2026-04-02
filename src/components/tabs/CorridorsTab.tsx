@@ -88,7 +88,7 @@ export default function CorridorsTab({
         marginBottom: 24,
       }}>
         {[
-          { label: "TOTAL", value: corridors.length, color: "#00d4ff" },
+          { label: "TOTAL", value: corridors.length, color: "#5B8DB8" },
           { label: "AUTHORIZED", value: corridors.filter(c => c.status === "authorized" || c.status === "active").length, color: "#00ff88" },
           { label: "PROPOSED", value: corridors.filter(c => c.status === "proposed").length, color: "#f59e0b" },
           { label: "MARKETS", value: new Set(corridors.map(c => c.cityId)).size, color: "#7c3aed" },
@@ -149,11 +149,11 @@ export default function CorridorsTab({
                   key={s}
                   onClick={() => setStatusFilter(s)}
                   style={{
-                    background: isActive ? "rgba(0,212,255,0.08)" : "transparent",
-                    border: isActive ? "1px solid rgba(0,212,255,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                    background: isActive ? "rgba(91,141,184,0.08)" : "transparent",
+                    border: isActive ? "1px solid rgba(91,141,184,0.4)" : "1px solid rgba(255,255,255,0.08)",
                     borderRadius: 4,
                     padding: "5px 10px",
-                    color: isActive ? "#00d4ff" : "#555",
+                    color: isActive ? "#5B8DB8" : "#555",
                     fontSize: 8,
                     letterSpacing: 1,
                     cursor: "pointer",
@@ -224,7 +224,7 @@ export default function CorridorsTab({
               transitionDuration: "0.25s",
               transitionDelay: `${i * 0.03}s`,
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(0,212,255,0.3)")}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(91,141,184,0.3)")}
             onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)")}
           >
             {/* Name + status + city */}
@@ -255,11 +255,11 @@ export default function CorridorsTab({
 
             {/* Origin → Destination */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <span style={{ color: "#00d4ff", fontSize: 10 }}>
+              <span style={{ color: "#5B8DB8", fontSize: 10 }}>
                 {corridor.startPoint.label}
               </span>
               <span style={{ color: "#666", fontSize: 10 }}>→</span>
-              <span style={{ color: "#00d4ff", fontSize: 10 }}>
+              <span style={{ color: "#5B8DB8", fontSize: 10 }}>
                 {corridor.endPoint.label}
               </span>
             </div>
@@ -363,7 +363,7 @@ export default function CorridorsTab({
               <Link
                 href={`/corridor/${corridor.id}`}
                 onClick={(e) => e.stopPropagation()}
-                style={{ color: "#00d4ff", fontSize: 8, letterSpacing: 1, textDecoration: "none" }}
+                style={{ color: "#5B8DB8", fontSize: 8, letterSpacing: 1, textDecoration: "none" }}
               >
                 DETAILS →
               </Link>

@@ -169,7 +169,7 @@ export default function CityDetailPanel({
                   display: "block",
                   transition: "color 0.15s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#00d4ff")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#5B8DB8")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "inherit")}
               >
                 {selected.city}
@@ -380,10 +380,10 @@ export default function CityDetailPanel({
                 display: "block",
                 textAlign: "center",
                 padding: "8px 12px",
-                background: "rgba(0,212,255,0.08)",
-                border: "1px solid rgba(0,212,255,0.2)",
+                background: "rgba(91,141,184,0.08)",
+                border: "1px solid rgba(91,141,184,0.2)",
                 borderRadius: 6,
-                color: "#00d4ff",
+                color: "#5B8DB8",
                 fontSize: 9,
                 fontWeight: 700,
                 letterSpacing: "0.1em",
@@ -513,10 +513,10 @@ export default function CityDetailPanel({
                     onClick={() => onVertiportSelect(isVpSelected ? null : v)}
                     style={{
                       background: isVpSelected
-                        ? "rgba(0,212,255,0.06)"
+                        ? "rgba(91,141,184,0.06)"
                         : "rgba(255,255,255,0.02)",
                       border: isVpSelected
-                        ? "1px solid rgba(0,212,255,0.3)"
+                        ? "1px solid rgba(91,141,184,0.3)"
                         : "1px solid rgba(255,255,255,0.05)",
                       borderRadius: 6,
                       padding: "10px 12px",
@@ -590,10 +590,10 @@ export default function CityDetailPanel({
                     }}
                     style={{
                       background: isCorSelected
-                        ? "rgba(0,212,255,0.06)"
+                        ? "rgba(91,141,184,0.06)"
                         : "rgba(255,255,255,0.02)",
                       border: isCorSelected
-                        ? "1px solid rgba(0,212,255,0.3)"
+                        ? "1px solid rgba(91,141,184,0.3)"
                         : "1px solid rgba(255,255,255,0.05)",
                       borderRadius: 6,
                       padding: "10px 12px",
@@ -635,7 +635,7 @@ export default function CityDetailPanel({
                       <Link
                         href={`/corridor/${c.id}`}
                         onClick={(e) => e.stopPropagation()}
-                        style={{ color: "#00d4ff", fontSize: 7, letterSpacing: 1, textDecoration: "none" }}
+                        style={{ color: "#5B8DB8", fontSize: 7, letterSpacing: 1, textDecoration: "none" }}
                       >
                         DETAILS →
                       </Link>
@@ -732,7 +732,7 @@ export default function CityDetailPanel({
                 style={{
                   display: "inline-block",
                   padding: "7px 18px",
-                  background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
+                  background: "linear-gradient(135deg, #5B8DB8, #7c3aed)",
                   borderRadius: 5,
                   color: "#000",
                   fontSize: 9,

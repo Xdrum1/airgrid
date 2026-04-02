@@ -24,7 +24,7 @@ interface Update {
 }
 
 const TAG_COLORS: Record<Update["tag"], string> = {
-  feature: "#00d4ff",
+  feature: "#5B8DB8",
   data: "#00ff88",
   improvement: "#f59e0b",
   launch: "#7c3aed",
@@ -266,7 +266,7 @@ export default function UpdatesPage() {
               bottom: 0,
               width: 1,
               background:
-                "linear-gradient(to bottom, rgba(0,212,255,0.3), rgba(0,212,255,0.05))",
+                "linear-gradient(to bottom, rgba(91,141,184,0.3), rgba(91,141,184,0.05))",
             }}
           />
 
@@ -378,7 +378,7 @@ export default function UpdatesPage() {
                   style={{
                     display: "inline-block",
                     marginTop: 10,
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     fontSize: 12,
                     textDecoration: "none",
                     letterSpacing: "0.04em",

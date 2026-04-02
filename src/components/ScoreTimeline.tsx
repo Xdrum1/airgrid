@@ -36,7 +36,7 @@ const FACTOR_LABELS: Record<string, string> = {
 };
 
 const CHANGE_TYPE_COLORS: Record<string, string> = {
-  new_filing: "#00d4ff",
+  new_filing: "#5B8DB8",
   new_law: "#00ff88",
   status_change: "#f59e0b",
   faa_update: "#7c3aed",
@@ -197,7 +197,7 @@ export default function ScoreTimeline({
                       style={{ color: "#999", fontSize: 9, lineHeight: 1.5, textDecoration: "none" }}
                     >
                       {point.triggeringEvent.summary}
-                      <span style={{ color: "#00d4ff", marginLeft: 4 }}>↗</span>
+                      <span style={{ color: "#5B8DB8", marginLeft: 4 }}>↗</span>
                     </a>
                   ) : (
                     <span style={{ color: "#999", fontSize: 9, lineHeight: 1.5 }}>
@@ -217,7 +217,7 @@ export default function ScoreTimeline({
           style={{
             background: "none",
             border: "none",
-            color: "#00d4ff",
+            color: "#5B8DB8",
             fontSize: 9,
             letterSpacing: 1,
             cursor: "pointer",

@@ -61,7 +61,7 @@ export default function RankingsTab({
               marginBottom: 12,
             }}
           >
-            <span style={{ color: "#00d4ff", fontSize: 9, letterSpacing: 2, fontWeight: 700 }}>
+            <span style={{ color: "#5B8DB8", fontSize: 9, letterSpacing: 2, fontWeight: 700 }}>
               RECENT SCORE CHANGES
             </span>
             <span style={{ color: "#555", fontSize: 8 }}>
@@ -129,10 +129,10 @@ export default function RankingsTab({
               padding: "11px 14px",
               marginBottom: 4,
               background: isSelected
-                ? "rgba(0,212,255,0.05)"
+                ? "rgba(91,141,184,0.05)"
                 : "rgba(255,255,255,0.015)",
               border: isSelected
-                ? "1px solid rgba(0,212,255,0.3)"
+                ? "1px solid rgba(91,141,184,0.3)"
                 : "1px solid rgba(255,255,255,0.04)",
               borderRadius: 6,
               cursor: "pointer",
@@ -204,9 +204,9 @@ export default function RankingsTab({
                 {city.vertiportCount > 0 && (
                   <span
                     style={{
-                      color: "#00d4ff",
+                      color: "#5B8DB8",
                       fontSize: 7,
-                      border: "1px solid rgba(0,212,255,0.25)",
+                      border: "1px solid rgba(91,141,184,0.25)",
                       borderRadius: 2,
                       padding: "1px 4px",
                     }}
@@ -295,7 +295,7 @@ export default function RankingsTab({
           operator disclosures, and municipal records. Scores update as new signals are detected and classified.{" "}
           <Link
             href="/methodology"
-            style={{ color: "#00d4ff", textDecoration: "none" }}
+            style={{ color: "#5B8DB8", textDecoration: "none" }}
             onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
             onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
           >

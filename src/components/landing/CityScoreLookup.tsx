@@ -108,7 +108,7 @@ export default function CityScoreLookup({ cities }: { cities: CityData[] }) {
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: 8,
-              color: "#00d4ff",
+              color: "#5B8DB8",
               letterSpacing: 1,
               textDecoration: "none",
             }}
@@ -162,7 +162,7 @@ export default function CityScoreLookup({ cities }: { cities: CityData[] }) {
           transition: "border-color 0.15s",
         }}
         onFocus={(e) =>
-          (e.currentTarget.style.borderColor = "rgba(0,212,255,0.4)")
+          (e.currentTarget.style.borderColor = "rgba(91,141,184,0.4)")
         }
         onBlur={(e) =>
           (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")

@@ -71,13 +71,13 @@ export default function LiveActivityFeed({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ color: "#00d4ff", fontSize: 14 }}>&#9889;</span>
+          <span style={{ color: "#5B8DB8", fontSize: 14 }}>&#9889;</span>
           <span
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: 9,
               letterSpacing: 2,
-              color: "#00d4ff",
+              color: "#5B8DB8",
             }}
           >
             ACTIVITY FEED
@@ -169,7 +169,7 @@ export default function LiveActivityFeed({
           style={{
             fontFamily: "'Inter', sans-serif",
             fontSize: 9,
-            color: "#00d4ff",
+            color: "#5B8DB8",
             letterSpacing: 1,
             textDecoration: "none",
           }}

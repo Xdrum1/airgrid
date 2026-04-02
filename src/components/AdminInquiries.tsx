@@ -27,7 +27,7 @@ interface Stats {
 }
 
 const STATUS_CONFIG: Record<string, { color: string; label: string }> = {
-  new: { color: "#00d4ff", label: "NEW" },
+  new: { color: "#5B8DB8", label: "NEW" },
   contacted: { color: "#f59e0b", label: "CONTACTED" },
   qualified: { color: "#7c3aed", label: "QUALIFIED" },
   converted: { color: "#00ff88", label: "CONVERTED" },
@@ -35,7 +35,7 @@ const STATUS_CONFIG: Record<string, { color: string; label: string }> = {
 };
 
 const TIER_COLORS: Record<string, string> = {
-  pro: "#00d4ff",
+  pro: "#5B8DB8",
   institutional: "#7c3aed",
   enterprise: "#f59e0b",
 };
@@ -235,7 +235,7 @@ export default function AdminInquiries({
             style={{
               background: "none",
               border: "none",
-              color: "#00d4ff",
+              color: "#5B8DB8",
               fontSize: 10,
               cursor: "pointer",
               fontFamily: "'Inter', sans-serif",
@@ -366,7 +366,7 @@ export default function AdminInquiries({
                 <div style={{ marginBottom: inq.message ? 8 : 10 }}>
                   <a
                     href={`mailto:${inq.email}`}
-                    style={{ color: "#00d4ff", fontSize: 11, textDecoration: "none" }}
+                    style={{ color: "#5B8DB8", fontSize: 11, textDecoration: "none" }}
                   >
                     {inq.email}
                   </a>
@@ -601,7 +601,7 @@ export default function AdminInquiries({
                     href={`mailto:${inq.email}?subject=Re: AirIndex ${inq.tier} inquiry`}
                     style={{
                       marginLeft: "auto",
-                      color: "#00d4ff",
+                      color: "#5B8DB8",
                       fontSize: 9,
                       letterSpacing: 1,
                       textDecoration: "none",

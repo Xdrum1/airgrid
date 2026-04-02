@@ -69,7 +69,7 @@ function ContactForm() {
         <Link
           href="/dashboard"
           style={{
-            color: "#00d4ff",
+            color: "#5B8DB8",
             fontSize: 11,
             letterSpacing: 1,
             textDecoration: "none",
@@ -239,7 +239,7 @@ function ContactForm() {
         style={{
           width: "100%",
           padding: "14px 0",
-          background: state === "submitting" ? "#333" : "#00d4ff",
+          background: state === "submitting" ? "#333" : "#5B8DB8",
           border: "none",
           borderRadius: 6,
           color: "#050508",
@@ -255,8 +255,8 @@ function ContactForm() {
       </button>
       <p style={{ color: "#555", fontSize: 9, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>
         By submitting, you agree to our{" "}
-        <a href="/terms" style={{ color: "#00d4ff", textDecoration: "none" }}>Terms of Service</a> and{" "}
-        <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>. You may receive
+        <a href="/terms" style={{ color: "#5B8DB8", textDecoration: "none" }}>Terms of Service</a> and{" "}
+        <a href="/privacy" style={{ color: "#5B8DB8", textDecoration: "none" }}>Privacy Policy</a>. You may receive
         the monthly UAM Market Pulse and product updates. You can unsubscribe at any time.
       </p>
       {state === "error" && (
@@ -285,7 +285,7 @@ export default function ContactPage() {
         <div style={{
           fontSize: 9,
           letterSpacing: 3,
-          color: "#00d4ff",
+          color: "#5B8DB8",
           fontFamily: "'Space Mono', monospace",
           marginBottom: 16,
         }}>

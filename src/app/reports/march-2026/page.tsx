@@ -37,7 +37,7 @@ const TOP_STORIES = [
     body: "Joby's Electric Skies Tour demo flight across SF Bay confirmed active pilot program status and operator presence in the market. Combined with California's existing enacted legislation, vertiport zoning frameworks, and regulatory posture, San Francisco jumped from EARLY (40) to ADVANCED (75) — the largest single-month score movement in AirIndex history.",
   },
   {
-    color: "#00d4ff",
+    color: "#5B8DB8",
     title: "Scoring methodology v1.3 shipped",
     body: "State Legislation elevated to highest-weighted factor (20 pts). Weather Infrastructure replaces LAANC as the seventh factor, with graduated scoring (none/partial/full). No market currently scores 100 — even Dallas and LA carry a 5-point weather infrastructure gap, reflecting the absence of comprehensive low-altitude weather sensing networks at scale.",
   },
@@ -52,7 +52,7 @@ const TOP_STORIES = [
     body: "Full NASR 5010 heliport database integrated. Los Angeles leads with 146 registered heliports, followed by Houston (137), Dallas (69), and Phoenix (48). These existing aviation facilities represent potential eVTOL conversion sites — markets with dense heliport networks may have a 12-18 month infrastructure advantage.",
   },
   {
-    color: "#00d4ff",
+    color: "#5B8DB8",
     title: "Federal Register coverage expanded 1,580%",
     body: "Ingestion window expanded from 90 to 730 days with new search terms ('powered lift', SFAR). Records jumped from 5 to 84. One filing — Archer's White House UAM Pilot Program — had been missed in the 90-day window and triggered Miami's score change from 80 to 100 (later adjusted to 80 under v1.3).",
   },
@@ -116,7 +116,7 @@ export default function MarchReportPage() {
           <div style={{
             fontSize: 9,
             letterSpacing: 3,
-            color: "#00d4ff",
+            color: "#5B8DB8",
             fontFamily: "'Space Mono', monospace",
             marginBottom: 12,
           }}>
@@ -138,14 +138,14 @@ export default function MarchReportPage() {
           </p>
           <div style={{ marginTop: 20, display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
             <span style={{
-              background: "rgba(0,212,255,0.08)",
-              border: "1px solid rgba(0,212,255,0.2)",
+              background: "rgba(91,141,184,0.08)",
+              border: "1px solid rgba(91,141,184,0.2)",
               borderRadius: 4,
               padding: "4px 12px",
               fontSize: 10,
               fontFamily: "'Space Mono', monospace",
               letterSpacing: 1,
-              color: "#00d4ff",
+              color: "#5B8DB8",
             }}>
               v1.3 METHODOLOGY
             </span>
@@ -203,7 +203,7 @@ export default function MarchReportPage() {
             gap: 12,
           }}>
             {[
-              { value: String(MARKET_COUNT), label: "MARKETS", color: "#00d4ff" },
+              { value: String(MARKET_COUNT), label: "MARKETS", color: "#5B8DB8" },
               { value: "1,797", label: "RECORDS", color: "#00ff88" },
               { value: "5,647", label: "HELIPORTS", color: "#f59e0b" },
               { value: "v1.3", label: "METHODOLOGY", color: "#7c3aed" },
@@ -434,7 +434,7 @@ export default function MarchReportPage() {
                     fontFamily: "'Space Mono', monospace",
                     fontSize: 14,
                     fontWeight: 700,
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     minWidth: 30,
                   }}>
                     {weight}
@@ -446,7 +446,7 @@ export default function MarchReportPage() {
                     <div style={{
                       height: "100%",
                       width: `${weight * 5}%`,
-                      background: "rgba(0,212,255,0.4)",
+                      background: "rgba(91,141,184,0.4)",
                       borderRadius: 2,
                     }} />
                   </div>
@@ -655,9 +655,9 @@ export default function MarchReportPage() {
                       letterSpacing: 1,
                       padding: "2px 8px",
                       borderRadius: 3,
-                      background: m.outlook === "IMPROVING" ? "rgba(0,255,136,0.1)" : "rgba(0,212,255,0.1)",
-                      color: m.outlook === "IMPROVING" ? "#00ff88" : "#00d4ff",
-                      border: `1px solid ${m.outlook === "IMPROVING" ? "rgba(0,255,136,0.2)" : "rgba(0,212,255,0.2)"}`,
+                      background: m.outlook === "IMPROVING" ? "rgba(0,255,136,0.1)" : "rgba(91,141,184,0.1)",
+                      color: m.outlook === "IMPROVING" ? "#00ff88" : "#5B8DB8",
+                      border: `1px solid ${m.outlook === "IMPROVING" ? "rgba(0,255,136,0.2)" : "rgba(91,141,184,0.2)"}`,
                     }}>
                       {m.outlook}
                     </span>
@@ -707,7 +707,7 @@ export default function MarchReportPage() {
               style={{
                 display: "inline-block",
                 padding: "14px 32px",
-                background: "#00d4ff",
+                background: "#5B8DB8",
                 color: "#050508",
                 fontSize: 12,
                 fontWeight: 700,
@@ -751,7 +751,7 @@ export default function MarchReportPage() {
             style={{
               display: "inline-block",
               padding: "12px 28px",
-              background: "#00d4ff",
+              background: "#5B8DB8",
               color: "#050508",
               fontSize: 12,
               fontWeight: 700,

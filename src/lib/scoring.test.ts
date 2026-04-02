@@ -200,9 +200,9 @@ describe("getScoreColor", () => {
     expect(getScoreColor(100)).toBe("#00ff88");
   });
 
-  it("returns blue (#00d4ff) for score 50-74", () => {
-    expect(getScoreColor(50)).toBe("#00d4ff");
-    expect(getScoreColor(74)).toBe("#00d4ff");
+  it("returns blue (#5B8DB8) for score 50-74", () => {
+    expect(getScoreColor(50)).toBe("#5B8DB8");
+    expect(getScoreColor(74)).toBe("#5B8DB8");
   });
 
   it("returns amber (#f59e0b) for score 30-49", () => {

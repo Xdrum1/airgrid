@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 // Category color map
 // -------------------------------------------------------
 const CATEGORY_COLORS: Record<string, string> = {
-  infrastructure: "#00d4ff",
+  infrastructure: "#5B8DB8",
   regulatory: "#7c3aed",
   standards: "#f59e0b",
   operational: "#00ff88",
@@ -75,7 +75,7 @@ export default async function TerminologyPage() {
               fontFamily: "'Space Mono', monospace",
               fontSize: 9,
               letterSpacing: 2,
-              color: "#00d4ff",
+              color: "#5B8DB8",
               textTransform: "uppercase",
               marginBottom: 16,
             }}
@@ -207,9 +207,9 @@ export default async function TerminologyPage() {
                             fontFamily: "'Space Mono', monospace",
                             fontSize: 9,
                             letterSpacing: 1,
-                            color: "#00d4ff",
-                            background: "rgba(0,212,255,0.08)",
-                            border: "1px solid rgba(0,212,255,0.2)",
+                            color: "#5B8DB8",
+                            background: "rgba(91,141,184,0.08)",
+                            border: "1px solid rgba(91,141,184,0.2)",
                             borderRadius: 12,
                             padding: "3px 10px",
                           }}
@@ -244,7 +244,7 @@ export default async function TerminologyPage() {
                           href={t.sourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ color: "#00d4ff", textDecoration: "none" }}
+                          style={{ color: "#5B8DB8", textDecoration: "none" }}
                         >
                           {t.sourceRef}
                         </a>
@@ -372,7 +372,7 @@ export default async function TerminologyPage() {
           <p style={{ color: "#777", fontSize: 13, lineHeight: 1.7, marginBottom: 16 }}>
             This terminology database is maintained by Vertical Data Group as part of the AirIndex
             methodology. For corrections, additions, or questions, contact{" "}
-            <a href="mailto:info@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>
+            <a href="mailto:info@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               info@airindex.io
             </a>
             .
@@ -421,7 +421,7 @@ export default async function TerminologyPage() {
               fontSize: 12,
             }}
           >
-            <Link href="/methodology" style={{ color: "#00d4ff", textDecoration: "none" }}>
+            <Link href="/methodology" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               Methodology
             </Link>
             <Link href="/dashboard" style={{ color: "#555", textDecoration: "none" }}>

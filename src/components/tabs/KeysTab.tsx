@@ -141,7 +141,7 @@ export default function KeysTab({
             left: 40,
             right: 40,
             height: 2,
-            background: "linear-gradient(90deg, #00d4ff, #7c3aed)",
+            background: "linear-gradient(90deg, #5B8DB8, #7c3aed)",
             borderRadius: "2px 2px 0 0",
           }} />
           <h2 style={{
@@ -305,7 +305,7 @@ export default function KeysTab({
             onClick={createKey}
             disabled={creating}
             style={{
-              background: "#00d4ff",
+              background: "#5B8DB8",
               border: "none",
               borderRadius: 4,
               color: "#050508",
@@ -401,9 +401,9 @@ export default function KeysTab({
                     fontFamily: "'Inter', sans-serif",
                     fontSize: 9,
                     letterSpacing: 1,
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     textTransform: "uppercase",
-                    background: "rgba(0,212,255,0.08)",
+                    background: "rgba(91,141,184,0.08)",
                     padding: "2px 8px",
                     borderRadius: 3,
                   }}>
@@ -446,11 +446,11 @@ export default function KeysTab({
           fontSize: 12,
           color: "#888",
         }}>
-          <a href="/api" style={{ color: "#00d4ff", textDecoration: "none" }}>
+          <a href="/api" style={{ color: "#5B8DB8", textDecoration: "none" }}>
             API Overview
           </a>
           {" · "}
-          <a href="/api/docs" style={{ color: "#00d4ff", textDecoration: "none" }}>
+          <a href="/api/docs" style={{ color: "#5B8DB8", textDecoration: "none" }}>
             Full Reference Docs
           </a>
         </div>

@@ -48,7 +48,7 @@ export default function ReportGate({ children }: { children: React.ReactNode }) 
             textAlign: "center",
             padding: "40px 32px",
             background: "rgba(10,10,18,0.95)",
-            border: "1px solid rgba(0,212,255,0.15)",
+            border: "1px solid rgba(91,141,184,0.15)",
             borderRadius: 12,
           }}
         >
@@ -59,7 +59,7 @@ export default function ReportGate({ children }: { children: React.ReactNode }) 
               left: 60,
               right: 60,
               height: 2,
-              background: "linear-gradient(90deg, transparent, #00d4ff, transparent)",
+              background: "linear-gradient(90deg, transparent, #5B8DB8, transparent)",
               borderRadius: 2,
             }}
           />
@@ -68,7 +68,7 @@ export default function ReportGate({ children }: { children: React.ReactNode }) 
               fontFamily: "'Space Mono', monospace",
               fontSize: 9,
               letterSpacing: 3,
-              color: "#00d4ff",
+              color: "#5B8DB8",
               marginBottom: 16,
             }}
           >
@@ -103,7 +103,7 @@ export default function ReportGate({ children }: { children: React.ReactNode }) 
               style={{
                 display: "inline-block",
                 padding: "14px 32px",
-                background: "#00d4ff",
+                background: "#5B8DB8",
                 color: "#050508",
                 fontSize: 12,
                 fontWeight: 700,

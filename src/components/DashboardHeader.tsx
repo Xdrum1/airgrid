@@ -28,7 +28,7 @@ export default function DashboardHeader({
   const router = useRouter();
 
   const headerStats = [
-    { label: `${cities.length} MARKETS`, color: "#00d4ff" },
+    { label: `${cities.length} MARKETS`, color: "#5B8DB8" },
     {
       label: `${cities.filter((c) => (c.score ?? 0) >= 60).length} HIGH READINESS`,
       color: "#00ff88",
@@ -83,7 +83,7 @@ export default function DashboardHeader({
           <Link
             href="/updates"
             style={{
-              color: "#00d4ff",
+              color: "#5B8DB8",
               fontSize: 9,
               letterSpacing: 1,
               textDecoration: "none",
@@ -100,7 +100,7 @@ export default function DashboardHeader({
               width: 5,
               height: 5,
               borderRadius: "50%",
-              background: "#00d4ff",
+              background: "#5B8DB8",
               flexShrink: 0,
             }} />
             WHAT&apos;S NEW
@@ -182,7 +182,7 @@ export default function DashboardHeader({
                   <div style={{
                     fontSize: 11,
                     fontWeight: 600,
-                    color: userTier === "free" ? "#888" : "#00d4ff",
+                    color: userTier === "free" ? "#888" : "#5B8DB8",
                     textTransform: "capitalize",
                   }}>
                     {userTier === "grandfathered" ? "Pro (Founding)" : userTier}
@@ -239,11 +239,11 @@ export default function DashboardHeader({
           <button
             onClick={onSignIn}
             style={{
-              background: "linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15))",
-              border: "1px solid rgba(0,212,255,0.3)",
+              background: "linear-gradient(135deg, rgba(91,141,184,0.15), rgba(124,58,237,0.15))",
+              border: "1px solid rgba(91,141,184,0.3)",
               borderRadius: 4,
               padding: isMobile ? "8px 14px" : "6px 14px",
-              color: "#00d4ff",
+              color: "#5B8DB8",
               fontSize: 9,
               letterSpacing: 2,
               fontWeight: 700,

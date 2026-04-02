@@ -315,7 +315,7 @@ export default async function BriefingPage({
                   fontFamily: "'Courier New', monospace",
                   fontWeight: 400,
                   fontSize: 22,
-                  color: "#00d4ff",
+                  color: "#5B8DB8",
                   letterSpacing: "0.12em",
                 }}
               >
@@ -463,7 +463,7 @@ export default async function BriefingPage({
                 <a
                   href="/contact?tier=briefing&ref=site-audit"
                   style={{
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     fontSize: 13,
                     fontWeight: 600,
                     textDecoration: "none",
@@ -832,7 +832,7 @@ export default async function BriefingPage({
                             style={{
                               padding: "10px",
                               borderBottom: "1px solid #0f0f1a",
-                              color: "#00d4ff",
+                              color: "#5B8DB8",
                               fontFamily: "'Space Mono', monospace",
                               fontSize: 11,
                             }}
@@ -921,8 +921,8 @@ export default async function BriefingPage({
               <div
                 className="phase-card"
                 style={{
-                  background: "rgba(0,212,255,0.04)",
-                  border: "1px solid rgba(0,212,255,0.15)",
+                  background: "rgba(91,141,184,0.04)",
+                  border: "1px solid rgba(91,141,184,0.15)",
                   borderRadius: 8,
                   padding: "20px",
                 }}
@@ -930,7 +930,7 @@ export default async function BriefingPage({
                 <div
                   style={{
                     ...labelStyle,
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     marginBottom: 8,
                   }}
                 >
@@ -1181,7 +1181,7 @@ export default async function BriefingPage({
                 style={{
                   fontFamily: "'Courier New', monospace",
                   fontWeight: 400,
-                  color: "#00d4ff",
+                  color: "#5B8DB8",
                   letterSpacing: "0.1em",
                 }}
               >

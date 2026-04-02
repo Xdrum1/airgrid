@@ -128,14 +128,14 @@ export default function CityListPanel({
           ).map(([val, lbl]) => {
             const isWatchingFilter = val === "watching";
             const isActive = filter === val;
-            const activeColor = isWatchingFilter ? "#f59e0b" : "#00d4ff";
+            const activeColor = isWatchingFilter ? "#f59e0b" : "#5B8DB8";
             return (
               <button
                 key={val}
                 onClick={() => onFilterChange(val)}
                 style={{
                   background: isActive
-                    ? isWatchingFilter ? "rgba(245,158,11,0.12)" : "rgba(0,212,255,0.12)"
+                    ? isWatchingFilter ? "rgba(245,158,11,0.12)" : "rgba(91,141,184,0.12)"
                     : "transparent",
                   border: isActive
                     ? `1px solid ${activeColor}59`

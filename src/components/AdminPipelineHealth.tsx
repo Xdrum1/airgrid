@@ -257,7 +257,7 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
                     <div style={{
                       height: "100%",
                       width: `${pct}%`,
-                      background: "#00d4ff",
+                      background: "#5B8DB8",
                       borderRadius: 3,
                       opacity: 0.7,
                     }} />

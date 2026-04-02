@@ -4,20 +4,20 @@
 
 export const VERTIPORT_STATUS_COLORS: Record<string, string> = {
   planned: "#f59e0b",
-  permitted: "#00d4ff",
+  permitted: "#5B8DB8",
   under_construction: "#7c3aed",
   operational: "#00ff88",
 };
 
 export const CORRIDOR_STATUS_COLORS: Record<string, string> = {
   proposed: "#f59e0b",
-  authorized: "#00d4ff",
+  authorized: "#5B8DB8",
   active: "#00ff88",
   suspended: "#ff4444",
 };
 
 export const CHANGE_TYPE_COLORS: Record<string, string> = {
-  new_filing: "#00d4ff",
+  new_filing: "#5B8DB8",
   status_change: "#f59e0b",
   new_law: "#00ff88",
   faa_update: "#7c3aed",
@@ -26,7 +26,7 @@ export const CHANGE_TYPE_COLORS: Record<string, string> = {
 
 export const WATCH_STATUS_COLORS: Record<string, string> = {
   STABLE: "#00ff88",
-  POSITIVE_WATCH: "#00d4ff",
+  POSITIVE_WATCH: "#5B8DB8",
   NEGATIVE_WATCH: "#f59e0b",
   DEVELOPING: "#7c3aed",
 };
@@ -51,7 +51,7 @@ export const OUTLOOK_LABELS: Record<string, string> = {
 };
 
 export const FEED_CATEGORY_COLORS: Record<string, string> = {
-  Regulatory: "#00d4ff",
+  Regulatory: "#5B8DB8",
   Infrastructure: "#7c3aed",
   Operator: "#f59e0b",
   Legislative: "#00ff88",
@@ -65,7 +65,7 @@ export const FEED_STATUS_COLORS: Record<string, string> = {
 
 export const SCORE_COMPONENT_COLORS: Record<string, string> = {
   activePilotProgram: "#00ff88",
-  approvedVertiport: "#00d4ff",
+  approvedVertiport: "#5B8DB8",
   activeOperatorPresence: "#f59e0b",
   vertiportZoning: "#7c3aed",
   regulatoryPosture: "#ff6b35",

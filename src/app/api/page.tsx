@@ -271,8 +271,8 @@ export default function ApiLandingPage() {
           </h2>
           <div
             style={{
-              background: "rgba(0, 212, 255, 0.03)",
-              border: "1px solid rgba(0, 212, 255, 0.1)",
+              background: "rgba(91, 141, 184, 0.03)",
+              border: "1px solid rgba(91, 141, 184, 0.1)",
               borderRadius: 8,
               padding: "20px 24px",
               fontFamily: "'Inter', sans-serif",
@@ -286,7 +286,7 @@ export default function ApiLandingPage() {
               # Get all ADVANCED-tier markets
             </div>
             <div>
-              <span style={{ color: "#00d4ff" }}>curl</span> https://airindex.io/api/v1/markets \
+              <span style={{ color: "#5B8DB8" }}>curl</span> https://airindex.io/api/v1/markets \
             </div>
             <div style={{ paddingLeft: 16 }}>
               -H <span style={{ color: "#00ff88" }}>&quot;Authorization: Bearer your_api_key&quot;</span>
@@ -348,7 +348,7 @@ export default function ApiLandingPage() {
             fontSize: 12,
           }}
         >
-          <Link href="/dashboard" style={{ color: "#00d4ff", textDecoration: "none" }}>
+          <Link href="/dashboard" style={{ color: "#5B8DB8", textDecoration: "none" }}>
             Dashboard
           </Link>
           <Link href="/methodology" style={{ color: "#555", textDecoration: "none" }}>

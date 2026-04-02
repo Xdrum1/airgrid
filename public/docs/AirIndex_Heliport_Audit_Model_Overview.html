@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AirIndex Heliport Infrastructure Audit Model</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #1a1a2e;
+    background: #fff;
+    line-height: 1.7;
+    font-size: 14px;
+  }
+
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 60px 40px;
+  }
+
+  /* Header */
+  .header {
+    border-bottom: 3px solid #1a1a2e;
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .header .subtitle {
+    font-size: 15px;
+    color: #555;
+    margin-top: 6px;
+  }
+  .header .meta {
+    font-size: 11px;
+    color: #999;
+    letter-spacing: 0.5px;
+  }
+  .confidential {
+    font-size: 10px;
+    font-weight: 700;
+    color: #c0392b;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* Sections */
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 40px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 24px 0 8px;
+  }
+  p {
+    margin-bottom: 14px;
+    color: #333;
+  }
+
+  /* Callout boxes */
+  .callout {
+    background: #f8f9fb;
+    border-left: 4px solid #2c5282;
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .callout p { margin-bottom: 0; }
+  .callout.green { border-left-color: #27ae60; background: #f6fdf8; }
+  .callout.amber { border-left-color: #e67e22; background: #fdf8f3; }
+
+  /* Step flow */
+  .steps {
+    margin: 20px 0;
+  }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    background: #1a1a2e;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .step-content {
+    padding-top: 6px;
+  }
+  .step-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .step-desc {
+    color: #555;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* Score card */
+  .score-model {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .score-card {
+    background: #f8f9fb;
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .score-card .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 6px;
+  }
+  .score-card .title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .score-card .desc {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  /* Simple table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  th {
+    background: #1a1a2e;
+    color: #fff;
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #eee;
+    color: #444;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  /* Status badges */
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+  .badge-green { background: #e8f8ef; color: #1e8449; }
+  .badge-amber { background: #fef5e7; color: #b7791f; }
+  .badge-red { background: #fde8e8; color: #c0392b; }
+  .badge-blue { background: #e8f0fe; color: #2c5282; }
+
+  /* Partnership section */
+  .partner-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 24px 0;
+    flex-wrap: wrap;
+  }
+  .partner-box {
+    background: #f8f9fb;
+    border: 2px solid #e8ecf1;
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: center;
+    min-width: 160px;
+  }
+  .partner-box .org {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .partner-box .role {
+    font-size: 11px;
+    color: #666;
+  }
+  .partner-arrow {
+    font-size: 20px;
+    color: #bbb;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #999;
+  }
+
+  /* Print */
+  @media print {
+    body { font-size: 12px; }
+    .page { padding: 20px 0; max-width: 100%; }
+    .score-model { break-inside: avoid; }
+    .step { break-inside: avoid; }
+    h2 { break-after: avoid; }
+  }
+
+  ul { margin: 0 0 14px 20px; }
+  li { margin-bottom: 6px; color: #444; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1>Heliport Infrastructure<br>Audit Model</h1>
+        <div class="subtitle">How AirIndex Assesses Vertical Flight Infrastructure</div>
+      </div>
+      <span class="confidential">Confidential</span>
+    </div>
+    <div class="meta">Vertical Data Group LLC &nbsp;|&nbsp; Prepared for Five-Alpha LLC &nbsp;|&nbsp; March 2026</div>
+  </div>
+
+  <!-- The Problem We're Solving -->
+  <h2>The Problem We're Solving</h2>
+
+  <p>Every state, city, and airport authority planning for Advanced Air Mobility needs to answer one question first: <strong>what vertical flight infrastructure do we already have?</strong></p>
+
+  <p>The answer should be simple. It's not. As your VFS Forum 80 research documented, the FAA's Airport Master Record has significant data quality issues:</p>
+
+  <ul>
+    <li><strong>Facilities that no longer exist</strong> are still listed as active in the system</li>
+    <li><strong>Location coordinates can be miles off</strong> from the actual facility (the TN60 example: 55.95 statute miles off)</li>
+    <li><strong>Emergency Helicopter Landing Facilities (EHLFs)</strong> are mixed in with operational heliports, inflating counts in cities like Los Angeles and San Francisco</li>
+    <li><strong>Dimensional data is unreliable</strong> &mdash; heliport TLOF/FATO dimensions are recorded using airport runway fields, with no heliport-specific data elements</li>
+    <li><strong>Thousands of facilities are missing entirely</strong> &mdash; NASA estimates 2,000+ hospital heliports alone are not in the FAA system</li>
+    <li><strong>Standards compliance is unknown</strong> &mdash; no way to determine from FAA data whether a facility meets current AC 150/5390-2D requirements</li>
+  </ul>
+
+  <p>The result: decision-makers working from incomplete data, building plans on a foundation they can't trust. States that think they have zero existing infrastructure might actually have dozens of conversion-ready sites.</p>
+
+  <!-- What the Audit Model Does -->
+  <h2>What the Audit Model Does</h2>
+
+  <p>The AirIndex audit model takes every available data source for a given state or metro area, cross-references them to build a complete picture, and flags discrepancies that need physical verification. Think of it as a three-stage process:</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Aggregate</div>
+        <div class="step-desc">Pull every known facility from FAA 5010, OE/AAA obstruction filings, state DOT aviation databases, hospital helipad registries, and landing zone databases. Combine them into a single inventory for the target area.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Cross-Reference &amp; Flag</div>
+        <div class="step-desc">Match facilities across sources by geographic proximity. When a facility appears in one source but not another, flag the discrepancy. When coordinates disagree, flag it. When a facility is listed as active in FAA records but doesn't appear in any other source, flag it as a potential ghost. When a facility appears in landing zone or hospital data but not in FAA records, flag it as potentially undocumented.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Score &amp; Prioritize</div>
+        <div class="step-desc">For every confirmed facility, calculate a Conversion Potential Score &mdash; how suitable is this heliport for future vertiport conversion? Rank all facilities so the buyer knows which sites to prioritize for physical evaluation.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><strong>Key point:</strong> The digital audit doesn't replace physical verification. It tells you <em>where to look</em> and <em>what to look for</em>, so physical site evaluations are targeted and efficient rather than starting from scratch.</p>
+  </div>
+
+  <!-- Conversion Potential Score -->
+  <h2>Conversion Potential Score</h2>
+
+  <p>Every facility in the audit inventory receives a Conversion Potential Score based on six factors. This score answers the question: <strong>if someone wanted to convert this heliport into a vertiport, how viable is it?</strong></p>
+
+  <div class="score-model">
+    <div class="score-card">
+      <div class="label">Factor 1</div>
+      <div class="title">Ownership Type</div>
+      <div class="desc">Public-use facilities have clearer regulatory pathways for conversion than private-use. Public ownership typically means fewer zoning hurdles.</div>
+    </div>
+    <div class="score-card">
+      <div class="label">Factor 2</div>
+      <div class="title">Facility Classification</div>
+      <div class="desc">Is it a true heliport, a helipad, or an EHLF? Each has different conversion implications. True heliports with established operations are strongest candidates.</div>
+    </div>
+    <div class="score-card">
+      <div class="label">Factor 3</div>
+      <div class="title">Physical Dimensions</div>
+      <div class="desc">Pad size, FATO dimensions (where reliable), and elevation. Larger facilities with adequate safety areas have more conversion flexibility. Higher elevations may need additional FATO length per AC 150/5390-2D.</div>
+    </div>
+    <div class="score-card">
+      <div class="label">Factor 4</div>
+      <div class="title">Location &amp; Demand</div>
+      <div class="desc">Proximity to population centers, airports, hospitals, business districts, and transit hubs. A heliport near a central business district or major airport scores higher than one in an isolated area.</div>
+    </div>
+    <div class="score-card">
+      <div class="label">Factor 5</div>
+      <div class="title">Airspace &amp; Zoning</div>
+      <div class="desc">Airspace classification, obstruction environment, and local zoning compatibility. Facilities with established airspace determinations and favorable zoning have a head start.</div>
+    </div>
+    <div class="score-card">
+      <div class="label">Factor 6</div>
+      <div class="title">Market Readiness</div>
+      <div class="desc">How ready is the surrounding metro market for AAM? This pulls from the AirIndex Readiness Score &mdash; operator presence, legislation, regulatory posture, and corridor proximity all factor in.</div>
+    </div>
+  </div>
+
+  <p>Each factor is scored and weighted to produce an overall Conversion Potential rating:</p>
+
+  <table>
+    <tr>
+      <th>Rating</th>
+      <th>What It Means</th>
+      <th>Recommended Action</th>
+    </tr>
+    <tr>
+      <td><span class="badge badge-green">HIGH</span></td>
+      <td>Strong conversion candidate. Favorable ownership, adequate dimensions, good location, supportive regulatory environment.</td>
+      <td>Priority candidate for physical site evaluation and feasibility study.</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-amber">MODERATE</span></td>
+      <td>Viable with modifications. May need dimensional upgrades, zoning changes, or operational adjustments.</td>
+      <td>Include in planning inventory. Evaluate if modifications are cost-effective.</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-red">LOW</span></td>
+      <td>Significant barriers to conversion. May be an EHLF, have restrictive zoning, or lack adequate dimensions.</td>
+      <td>Document for completeness. Not a near-term conversion target.</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-blue">VERIFY</span></td>
+      <td>Insufficient or conflicting data. Cannot score accurately until physical verification confirms facility status and dimensions.</td>
+      <td>Needs on-site evaluation before any planning decisions are made.</td>
+    </tr>
+  </table>
+
+  <!-- Discrepancy Detection -->
+  <h2>Discrepancy Detection</h2>
+
+  <p>The audit model's cross-referencing process surfaces five types of discrepancies, each drawn directly from the data quality issues documented in your VFS Forum 80 research:</p>
+
+  <table>
+    <tr>
+      <th>Discrepancy Type</th>
+      <th>What It Means</th>
+      <th>Example</th>
+    </tr>
+    <tr>
+      <td><strong>Ghost Facility</strong></td>
+      <td>Listed in FAA 5010 as active but not confirmed by any other source. May no longer exist.</td>
+      <td>Heliport with no operations data, no OE/AAA filings, no satellite confirmation, and an owner information date over 20 years old.</td>
+    </tr>
+    <tr>
+      <td><strong>Undocumented Facility</strong></td>
+      <td>Active facility found in landing zone data, hospital registries, or obstruction filings but <em>not</em> in FAA 5010.</td>
+      <td>Hospital heliport in active air ambulance use per landing zone database but missing from FAA Airport Master Record.</td>
+    </tr>
+    <tr>
+      <td><strong>Location Mismatch</strong></td>
+      <td>Coordinates in FAA records don't match coordinates from other sources or satellite imagery.</td>
+      <td>Recorded coordinates place the facility miles from its actual location (per your TN60 Nashville finding: 55.95 miles off).</td>
+    </tr>
+    <tr>
+      <td><strong>Classification Conflict</strong></td>
+      <td>Facility categorized differently across sources. Particularly common with EHLFs counted as heliports.</td>
+      <td>Building EHLF in LA (required for structures over 100') listed as a heliport in FAA records but never used for helicopter operations.</td>
+    </tr>
+    <tr>
+      <td><strong>Dimensional Discrepancy</strong></td>
+      <td>Recorded dimensions don't match physical site or other sources.</td>
+      <td>FAA records show 100' x 100' (the garage deck) when actual TLOF is 40' x 40' (per your Tucson Medical Center AZ37 finding).</td>
+    </tr>
+  </table>
+
+  <!-- Data Sources -->
+  <h2>Data Sources</h2>
+
+  <p>The model draws from multiple public and semi-public sources. No single source is complete &mdash; the value is in the cross-reference:</p>
+
+  <table>
+    <tr>
+      <th>Source</th>
+      <th>What It Contributes</th>
+      <th>Limitation</th>
+    </tr>
+    <tr>
+      <td><strong>FAA 5010<br>Airport Master Record</strong></td>
+      <td>Baseline inventory. Name, location, ownership, use type, dimensions, activation date, operations data.</td>
+      <td>Incomplete, inaccurate coordinates, no EHLF distinction, stale private-use data. Your research: ~19% error rate in tested states.</td>
+    </tr>
+    <tr>
+      <td><strong>FAA OE/AAA<br>Obstruction Filings</strong></td>
+      <td>Airspace determinations for proposed or modified facilities. Surfaces facilities that filed for airspace review even if not in 5010.</td>
+      <td>Only covers facilities that went through the obstruction evaluation process.</td>
+    </tr>
+    <tr>
+      <td><strong>Landing Zone<br>Databases</strong></td>
+      <td>Active helicopter landing zones verified by air medical crews. Photos, GPS coordinates, hazard information. Covers facilities FAA doesn't track.</td>
+      <td>Focused on air ambulance operations. May not cover corporate or industrial facilities.</td>
+    </tr>
+    <tr>
+      <td><strong>State DOT<br>Aviation Databases</strong></td>
+      <td>State-level airport and heliport inventories. Quality varies &mdash; some states (California for hospital heliports) maintain good records.</td>
+      <td>Not all states maintain separate databases. Format and completeness vary widely.</td>
+    </tr>
+    <tr>
+      <td><strong>AirIndex<br>Market Intelligence</strong></td>
+      <td>Market readiness scores, operator presence, corridor proximity, regulatory posture, legislation status for the surrounding metro area.</td>
+      <td>Market-level context, not facility-level. Used for the "Market Readiness" scoring factor.</td>
+    </tr>
+  </table>
+
+  <!-- How We Work Together -->
+  <h2>How We Work Together</h2>
+
+  <p>AirIndex and Five-Alpha address different parts of the same problem. The audit model is designed so that digital analysis and physical verification reinforce each other:</p>
+
+  <div class="partner-flow">
+    <div class="partner-box">
+      <div class="org">AirIndex</div>
+      <div class="role">Digital audit layer</div>
+    </div>
+    <span class="partner-arrow">&rarr;</span>
+    <div class="partner-box">
+      <div class="org">State / Client</div>
+      <div class="role">Reviews &amp; prioritizes</div>
+    </div>
+    <span class="partner-arrow">&rarr;</span>
+    <div class="partner-box">
+      <div class="org">Five-Alpha</div>
+      <div class="role">Physical verification</div>
+    </div>
+    <span class="partner-arrow">&rarr;</span>
+    <div class="partner-box">
+      <div class="org">AirIndex</div>
+      <div class="role">Updated with verified data</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">AirIndex produces the digital audit</div>
+        <div class="step-desc">Aggregates all available data sources for the target state or metro area. Cross-references to build a complete inventory. Flags discrepancies. Scores each facility for conversion potential. Delivers a report with maps, facility details, and prioritized recommendations.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Client reviews and selects priority sites</div>
+        <div class="step-desc">The state DOT, airport authority, or planning organization reviews the digital audit. They decide which high-priority and "VERIFY" facilities warrant physical evaluation based on their planning needs and budget.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Five-Alpha conducts physical verification</div>
+        <div class="step-desc">On-the-ground site surveys for priority facilities. NFPA 418 compliance assessment. Standards verification against current AC 150/5390-2D. Confirms existence, dimensions, condition, and operational status. This is Rex's domain &mdash; the physical verification and compliance expertise that no database can replace.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Verified data feeds back into the model</div>
+        <div class="step-desc">Five-Alpha's verified findings update the AirIndex inventory. Ghost facilities are marked inactive. Undocumented facilities are added with verified data. Conversion Potential Scores are recalculated with accurate dimensions and status. The model gets more accurate with every verification cycle.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout green">
+    <p><strong>The flywheel:</strong> Every physical verification Rex completes makes the digital model more accurate. A more accurate model produces better-targeted recommendations for the next client. Better targeting means less wasted time on sites that don't pan out. This is a reinforcing cycle &mdash; the product gets better with use.</p>
+  </div>
+
+  <!-- What the Client Receives -->
+  <h2>What the Client Receives</h2>
+
+  <p>A state-level infrastructure audit report includes:</p>
+
+  <ul>
+    <li><strong>Complete facility inventory</strong> &mdash; every documented and undocumented heliport/helipad in the state, with source attribution</li>
+    <li><strong>Discrepancy analysis</strong> &mdash; facilities flagged as ghost, undocumented, location mismatch, classification conflict, or dimensional discrepancy</li>
+    <li><strong>Conversion Potential Scores</strong> &mdash; every confirmed facility rated HIGH / MODERATE / LOW / VERIFY with factor-level detail</li>
+    <li><strong>Priority map</strong> &mdash; geographic visualization showing all facilities color-coded by conversion potential and discrepancy status</li>
+    <li><strong>Top conversion candidates</strong> &mdash; ranked list of the highest-potential sites with specific attributes (ownership, dimensions, airspace, demand proximity)</li>
+    <li><strong>Recommendations</strong> &mdash; which sites to prioritize for physical verification, which data gaps to address, and how the state compares to peer markets</li>
+  </ul>
+
+  <div class="callout amber">
+    <p><strong>For discussion:</strong> Your four audit questions &mdash; (1) Does it still exist? (2) Does it meet current standards? (3) Is the data accurate? (4) Is it a heliport or an EHLF? &mdash; map directly to our discrepancy categories. I'd like your input on whether the Conversion Potential factors are weighted correctly, and whether there are facility-level indicators from your field experience that the model should include.</p>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>AirIndex Heliport Audit Model &nbsp;|&nbsp; Confidential &nbsp;|&nbsp; Vertical Data Group LLC</span>
+    <span>March 2026</span>
+  </div>
+
+</div>
+</body>
+</html>

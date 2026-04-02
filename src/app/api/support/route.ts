@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
 
   const html = `
     <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:600px;padding:20px;">
-      <h2 style="color:#00d4ff;margin:0 0 16px;font-size:16px;">Support Request</h2>
+      <h2 style="color:#5B8DB8;margin:0 0 16px;font-size:16px;">Support Request</h2>
       <table style="border-collapse:collapse;width:100%;">
         <tr><td style="padding:8px 12px;color:#999;border-bottom:1px solid #eee;width:120px;">From</td><td style="padding:8px 12px;border-bottom:1px solid #eee;"><a href="mailto:${escapeHtml(userEmail)}">${escapeHtml(userEmail)}</a></td></tr>
         <tr><td style="padding:8px 12px;color:#999;border-bottom:1px solid #eee;">Plan</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${escapeHtml(userTier)}</td></tr>

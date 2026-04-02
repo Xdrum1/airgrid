@@ -170,7 +170,7 @@ function UpgradeWall() {
         </Link>
         <div style={{ fontSize: 12, color: "#555" }}>
           Already subscribed?{" "}
-          <Link href="/login" style={{ color: "#00d4ff", textDecoration: "none" }}>
+          <Link href="/login" style={{ color: "#5B8DB8", textDecoration: "none" }}>
             Sign in
           </Link>
         </div>
@@ -332,7 +332,7 @@ export default async function ApiDocsPage() {
   -H "Authorization: Bearer aix_xxxxxxxxxxxxxxxxxxxx" \\
   -H "Content-Type: application/json"`}</JsonBlock>
           <p style={{ color: "#888", fontSize: 13 }}>
-            API keys are prefixed with <code style={{ color: "#00d4ff", fontFamily: mono }}>aix_</code>.
+            API keys are prefixed with <code style={{ color: "#5B8DB8", fontFamily: mono }}>aix_</code>.
             Never expose API keys in client-side code or public repositories.
           </p>
         </Section>
@@ -354,7 +354,7 @@ export default async function ApiDocsPage() {
             <tbody>
               {[
                 ["ADVANCED", "75\u2013100", "Commercial UAM operations are viable. Active operator presence, approved infrastructure, and supportive regulatory environment.", "#00ff88"],
-                ["MODERATE", "50\u201374", "Market conditions are developing. Key infrastructure or regulatory milestones are pending but trajectory is positive.", "#00d4ff"],
+                ["MODERATE", "50\u201374", "Market conditions are developing. Key infrastructure or regulatory milestones are pending but trajectory is positive.", "#5B8DB8"],
                 ["EARLY", "30\u201349", "Early-stage signals present. Policy interest and limited operator activity, but no operational infrastructure.", "#f59e0b"],
                 ["NASCENT", "0\u201329", "Minimal or no UAM readiness activity. Market has not yet initiated the regulatory or infrastructure development required.", "#ff4444"],
               ].map(([tier, range, meaning, color]) => (
@@ -372,8 +372,8 @@ export default async function ApiDocsPage() {
         <Section id="envelope" title="Response Envelope">
           <p style={{ marginBottom: 16 }}>
             All successful responses are wrapped in a consistent envelope with a{" "}
-            <code style={{ color: "#00d4ff", fontFamily: mono }}>meta</code> block and a{" "}
-            <code style={{ color: "#00d4ff", fontFamily: mono }}>data</code> payload.
+            <code style={{ color: "#5B8DB8", fontFamily: mono }}>meta</code> block and a{" "}
+            <code style={{ color: "#5B8DB8", fontFamily: mono }}>data</code> payload.
           </p>
           <JsonBlock>{`{
   "meta": {
@@ -448,7 +448,7 @@ export default async function ApiDocsPage() {
             </thead>
             <tbody>
               <tr>
-                <td style={{ ...tdStyle, fontFamily: mono, fontSize: 12, color: "#00d4ff" }}>city_id</td>
+                <td style={{ ...tdStyle, fontFamily: mono, fontSize: 12, color: "#5B8DB8" }}>city_id</td>
                 <td style={{ ...tdStyle, fontFamily: mono, fontSize: 12 }}>string</td>
                 <td style={tdStyle}>Market slug (e.g. <code style={{ fontFamily: mono }}>los_angeles</code>, <code style={{ fontFamily: mono }}>dallas</code>)</td>
               </tr>
@@ -566,18 +566,18 @@ export default async function ApiDocsPage() {
 }`}</JsonBlock>
           <div
             style={{
-              background: "rgba(0,212,255,0.04)",
-              border: "1px solid rgba(0,212,255,0.12)",
+              background: "rgba(91,141,184,0.04)",
+              border: "1px solid rgba(91,141,184,0.12)",
               borderRadius: 8,
               padding: "16px 20px",
               marginBottom: 16,
             }}
           >
-            <div style={{ fontFamily: grotesk, fontWeight: 600, fontSize: 13, color: "#00d4ff", marginBottom: 6 }}>
+            <div style={{ fontFamily: grotesk, fontWeight: 600, fontSize: 13, color: "#5B8DB8", marginBottom: 6 }}>
               Attribution Trail
             </div>
             <p style={{ color: "#888", fontSize: 13, margin: 0, lineHeight: 1.6 }}>
-              The <code style={{ fontFamily: mono, color: "#00d4ff" }}>triggering_event</code> field
+              The <code style={{ fontFamily: mono, color: "#5B8DB8" }}>triggering_event</code> field
               links every score change to the specific filing, regulatory event, or infrastructure
               update that caused it. This causal chain is not available from any other UAM data source.
             </p>
@@ -725,13 +725,13 @@ curl https://airindex.io/api/v1/markets/export \\
           </p>
           <div
             style={{
-              background: "rgba(0, 212, 255, 0.04)",
-              border: "1px solid rgba(0, 212, 255, 0.12)",
+              background: "rgba(91, 141, 184, 0.04)",
+              border: "1px solid rgba(91, 141, 184, 0.12)",
               borderRadius: 8,
               padding: "20px 24px",
               fontFamily: mono,
               fontSize: 13,
-              color: "#00d4ff",
+              color: "#5B8DB8",
               lineHeight: 1.8,
               marginBottom: 16,
             }}
@@ -743,7 +743,7 @@ curl https://airindex.io/api/v1/markets/export \\
             Methodology: https://airindex.io/methodology
           </div>
           <p style={{ color: "#888", fontSize: 13 }}>
-            All API responses include a <code style={{ fontFamily: mono, color: "#00d4ff" }}>meta</code> block
+            All API responses include a <code style={{ fontFamily: mono, color: "#5B8DB8" }}>meta</code> block
             with <code style={{ fontFamily: mono }}>rated_by</code>, <code style={{ fontFamily: mono }}>methodology_version</code>,
             and methodology URL. Attribution travels with the data by design.
           </p>
@@ -759,7 +759,7 @@ curl https://airindex.io/api/v1/markets/export \\
             fontSize: 12,
           }}
         >
-          <Link href="/api" style={{ color: "#00d4ff", textDecoration: "none" }}>
+          <Link href="/api" style={{ color: "#5B8DB8", textDecoration: "none" }}>
             API Overview
           </Link>
           <Link href="/dashboard" style={{ color: "#555", textDecoration: "none" }}>

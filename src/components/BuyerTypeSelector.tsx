@@ -8,7 +8,7 @@ const BUYER_TYPES = [
     id: "infra-developer",
     label: "Infrastructure Developer / Investor",
     description: "Site feasibility, conversion viability, capital exposure by gap, phased development roadmap.",
-    accent: "#00d4ff",
+    accent: "#5B8DB8",
   },
   {
     id: "municipality",
@@ -96,7 +96,7 @@ export default function BuyerTypeSelector() {
             style={{
               display: "inline-block",
               padding: "10px 24px",
-              background: "#00d4ff",
+              background: "#5B8DB8",
               color: "#050508",
               fontSize: 12,
               fontWeight: 700,

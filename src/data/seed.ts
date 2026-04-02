@@ -16,7 +16,7 @@ export const OPERATORS: Operator[] = [
     keyPartnerships: ["Uber", "Delta Airlines", "Toyota", "Dubai RTA"],
     activeMarkets: ["los_angeles", "new_york", "miami"],
     acquisitions: ["Blade Air Mobility (acquired Aug 2025, ~$125M — NYC/LA/Miami terminal network)"],
-    color: "#00d4ff",
+    color: "#5B8DB8",
     website: "https://www.jobyaviation.com",
     lastUpdated: "2026-03-03",
   },

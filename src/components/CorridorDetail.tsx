@@ -14,7 +14,7 @@ import { safeHref } from "@/lib/safe-url";
 
 const STATUS_COLORS: Record<string, string> = {
   proposed: "#f59e0b",
-  authorized: "#00d4ff",
+  authorized: "#5B8DB8",
   active: "#00ff88",
   suspended: "#ff4444",
 };
@@ -239,8 +239,8 @@ export default function CorridorDetail({
               </div>
               <div
                 style={{
-                  background: "rgba(0,212,255,0.04)",
-                  border: "1px solid rgba(0,212,255,0.12)",
+                  background: "rgba(91,141,184,0.04)",
+                  border: "1px solid rgba(91,141,184,0.12)",
                   borderRadius: 8,
                   padding: 20,
                 }}
@@ -250,7 +250,7 @@ export default function CorridorDetail({
                     <div style={{ color: "#999", fontSize: 8, letterSpacing: 1, marginBottom: 3 }}>
                       AUTH NUMBER
                     </div>
-                    <div style={{ color: "#00d4ff", fontSize: 12, fontWeight: 700 }}>
+                    <div style={{ color: "#5B8DB8", fontSize: 12, fontWeight: 700 }}>
                       {corridor.faaAuthNumber}
                     </div>
                   </div>
@@ -286,9 +286,9 @@ export default function CorridorDetail({
                         <span
                           key={opId}
                           style={{
-                            background: "rgba(0,212,255,0.08)",
-                            color: "#00d4ff",
-                            border: "1px solid rgba(0,212,255,0.2)",
+                            background: "rgba(91,141,184,0.08)",
+                            color: "#5B8DB8",
+                            border: "1px solid rgba(91,141,184,0.2)",
                             borderRadius: 4,
                             padding: "3px 8px",
                             fontSize: 9,
@@ -399,7 +399,7 @@ export default function CorridorDetail({
                         href={safeHref(entry.sourceUrl)!}
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ color: "#00d4ff", fontSize: 9, textDecoration: "none", letterSpacing: 0.5 }}
+                        style={{ color: "#5B8DB8", fontSize: 9, textDecoration: "none", letterSpacing: 0.5 }}
                       >
                         SOURCE →
                       </a>
@@ -453,7 +453,7 @@ export default function CorridorDetail({
                     href={safeHref(entry.sourceUrl)!}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ color: "#00d4ff", fontSize: 9, textDecoration: "none" }}
+                    style={{ color: "#5B8DB8", fontSize: 9, textDecoration: "none" }}
                   >
                     Source →
                   </a>

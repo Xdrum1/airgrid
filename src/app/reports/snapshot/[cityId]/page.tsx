@@ -150,7 +150,7 @@ export default async function SnapshotPage({
             <div style={{ display: "flex", gap: 12 }}>
               <Link
                 href={`/reports/gap/${cityId}`}
-                style={{ color: "#00d4ff", fontSize: 11, textDecoration: "none", fontWeight: 600 }}
+                style={{ color: "#5B8DB8", fontSize: 11, textDecoration: "none", fontWeight: 600 }}
               >
                 Full Gap Report &rarr;
               </Link>
@@ -174,7 +174,7 @@ export default async function SnapshotPage({
               <span style={{ fontFamily: "'Courier New', monospace", fontWeight: 800, fontSize: 22, color: "#e0e0e0", letterSpacing: "0.12em" }}>
                 AIR
               </span>
-              <span className="neon-accent" style={{ fontFamily: "'Courier New', monospace", fontWeight: 400, fontSize: 22, color: "#00d4ff", letterSpacing: "0.12em" }}>
+              <span className="neon-accent" style={{ fontFamily: "'Courier New', monospace", fontWeight: 400, fontSize: 22, color: "#5B8DB8", letterSpacing: "0.12em" }}>
                 INDEX
               </span>
               <span style={{ color: "#555", fontSize: 12, marginLeft: 12, letterSpacing: "0.1em" }}>
@@ -244,7 +244,7 @@ export default async function SnapshotPage({
                 { label: "FAA Heliports", value: city.heliportCount ?? 0, detail: `${city.heliportPublicCount ?? 0} public-use` },
               ].map((stat) => (
                 <div key={stat.label} style={{ textAlign: "center" }}>
-                  <div className="stat-value" style={{ fontSize: 28, fontWeight: 700, color: "#00d4ff" }}>{stat.value}</div>
+                  <div className="stat-value" style={{ fontSize: 28, fontWeight: 700, color: "#5B8DB8" }}>{stat.value}</div>
                   <div className="stat-label" style={{ fontSize: 10, color: "#888", letterSpacing: "0.08em", fontWeight: 600, marginBottom: 2 }}>{stat.label.toUpperCase()}</div>
                   <div style={{ fontSize: 10, color: "#666", lineHeight: 1.3 }}>{stat.detail}</div>
                 </div>
@@ -404,7 +404,7 @@ export default async function SnapshotPage({
               </div>
               {peers.pointsToNextTier && (
                 <div style={{ marginTop: 14, padding: "10px 14px", background: "#0f0f1a", borderRadius: 6, fontSize: 12 }}>
-                  <strong style={{ color: "#00d4ff" }}>{peers.pointsToNextTier} points</strong>
+                  <strong style={{ color: "#5B8DB8" }}>{peers.pointsToNextTier} points</strong>
                   <span style={{ color: "#888" }}> to reach {peers.nextTier} tier</span>
                   {peers.nextTierCities.length > 0 && (
                     <span style={{ color: "#666" }}>
@@ -471,7 +471,7 @@ export default async function SnapshotPage({
                       <span style={{ color: "#666", flexShrink: 0, width: 50 }}>
                         {new Date(h.capturedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                       </span>
-                      <span style={{ color: "#00d4ff", fontWeight: 600, flexShrink: 0, width: 28 }}>{h.score}</span>
+                      <span style={{ color: "#5B8DB8", fontWeight: 600, flexShrink: 0, width: 28 }}>{h.score}</span>
                       <span style={{ color: "#888" }}>{h.triggeringEvent?.summary?.slice(0, 70)}</span>
                     </div>
                   ))}
@@ -493,8 +493,8 @@ export default async function SnapshotPage({
           {/* ======== ENTERPRISE CTA ======== */}
           <div
             style={{
-              background: "rgba(0,212,255,0.05)",
-              border: "1px solid rgba(0,212,255,0.15)",
+              background: "rgba(91,141,184,0.05)",
+              border: "1px solid rgba(91,141,184,0.15)",
               borderRadius: 8,
               padding: "20px 24px",
               marginBottom: 20,
@@ -504,8 +504,8 @@ export default async function SnapshotPage({
             <p style={{ fontSize: 13, color: "#aaa", margin: "0 0 6px" }}>
               Need the full gap analysis, federal grant language, or a co-branded version of this report?
             </p>
-            <p style={{ fontSize: 12, color: "#00d4ff", margin: 0 }}>
-              <a href="/contact?tier=enterprise&ref=snapshot" style={{ color: "#00d4ff", textDecoration: "none", fontWeight: 600 }}>
+            <p style={{ fontSize: 12, color: "#5B8DB8", margin: 0 }}>
+              <a href="/contact?tier=enterprise&ref=snapshot" style={{ color: "#5B8DB8", textDecoration: "none", fontWeight: 600 }}>
                 Request enterprise intelligence &rarr;
               </a>
             </p>
@@ -518,7 +518,7 @@ export default async function SnapshotPage({
             </p>
             <p style={{ margin: "4px 0 0" }}>
               <span style={{ fontFamily: "'Courier New', monospace", fontWeight: 800, letterSpacing: "0.1em" }}>AIR</span>
-              <span className="neon-accent" style={{ fontFamily: "'Courier New', monospace", fontWeight: 400, color: "#00d4ff", letterSpacing: "0.1em" }}>INDEX</span>
+              <span className="neon-accent" style={{ fontFamily: "'Courier New', monospace", fontWeight: 400, color: "#5B8DB8", letterSpacing: "0.1em" }}>INDEX</span>
               {" "}&middot; Vertical Data Group LLC &middot; airindex.io
             </p>
             <p className="screen-only" style={{ margin: "6px 0 0", color: "#777" }}>

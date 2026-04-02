@@ -64,7 +64,7 @@ function unsubscribedHtml(): string {
     <div style="font-weight:800;font-size:20px;letter-spacing:-0.5px;margin-bottom:24px;">AIRINDEX</div>
     <p style="color:#00ff88;font-size:14px;font-weight:600;margin:0 0 12px;">You've been unsubscribed.</p>
     <p style="color:#888;font-size:13px;line-height:1.6;margin:0 0 24px;">You will no longer receive alert emails for this subscription.</p>
-    <a href="/dashboard" style="color:#00d4ff;font-size:12px;text-decoration:none;">Back to Dashboard</a>
+    <a href="/dashboard" style="color:#5B8DB8;font-size:12px;text-decoration:none;">Back to Dashboard</a>
   </div>
 </body>
 </html>`;

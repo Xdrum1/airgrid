@@ -113,7 +113,7 @@ function LoginForm() {
             >
               {isSignup
                 ? <>Track 20+ UAM markets, get alerts, access regulatory filings.<br />Enter your email to get started — no password needed.</>
-                : <>Existing member? Enter your email to receive a sign-in link.<br />New to AirIndex? <a href="/request-access" style={{ color: "#00d4ff", textDecoration: "none" }}>Request access</a> to get started.</>
+                : <>Existing member? Enter your email to receive a sign-in link.<br />New to AirIndex? <a href="/request-access" style={{ color: "#5B8DB8", textDecoration: "none" }}>Request access</a> to get started.</>
               }
             </p>
 
@@ -173,7 +173,7 @@ function LoginForm() {
                   width: "100%",
                   padding: "14px 16px",
                   background: email.trim()
-                    ? "linear-gradient(135deg, #00d4ff, #7c3aed)"
+                    ? "linear-gradient(135deg, #5B8DB8, #7c3aed)"
                     : "#1a1a2e",
                   border: "none",
                   borderRadius: 6,
@@ -200,7 +200,7 @@ function LoginForm() {
                   Already have an account?{" "}
                   <a
                     href={`/login${callbackUrl !== "/dashboard" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`}
-                    style={{ color: "#00d4ff", textDecoration: "none" }}
+                    style={{ color: "#5B8DB8", textDecoration: "none" }}
                   >
                     Sign in
                   </a>
@@ -210,7 +210,7 @@ function LoginForm() {
                   Need access?{" "}
                   <a
                     href="/request-access"
-                    style={{ color: "#00d4ff", textDecoration: "none" }}
+                    style={{ color: "#5B8DB8", textDecoration: "none" }}
                   >
                     Request access
                   </a>
@@ -222,10 +222,10 @@ function LoginForm() {
             </p>
             <p style={{ color: "#555", fontSize: 9, marginTop: 12, lineHeight: 1.5 }}>
               By creating an account, you agree to our{" "}
-              <a href="/terms" style={{ color: "#00d4ff", textDecoration: "none" }}>Terms of Service</a> and{" "}
-              <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>, and to receive
+              <a href="/terms" style={{ color: "#5B8DB8", textDecoration: "none" }}>Terms of Service</a> and{" "}
+              <a href="/privacy" style={{ color: "#5B8DB8", textDecoration: "none" }}>Privacy Policy</a>, and to receive
               market updates and the weekly UAM Market Pulse newsletter. You can{" "}
-              <a href="/privacy#your-rights" style={{ color: "#00d4ff", textDecoration: "none" }}>unsubscribe</a> at any time.
+              <a href="/privacy#your-rights" style={{ color: "#5B8DB8", textDecoration: "none" }}>unsubscribe</a> at any time.
             </p>
           </>
         ) : (
@@ -235,8 +235,8 @@ function LoginForm() {
                 width: 48,
                 height: 48,
                 borderRadius: "50%",
-                background: "rgba(0,212,255,0.1)",
-                border: "1px solid rgba(0,212,255,0.3)",
+                background: "rgba(91,141,184,0.1)",
+                border: "1px solid rgba(91,141,184,0.3)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

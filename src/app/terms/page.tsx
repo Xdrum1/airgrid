@@ -24,7 +24,7 @@ const S = {
     marginBottom: 14,
   },
   link: {
-    color: "#00d4ff",
+    color: "#5B8DB8",
     textDecoration: "none" as const,
   },
   strong: {
@@ -83,7 +83,7 @@ export default function TermsPage() {
 
       {/* Content */}
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "48px 24px 80px" }}>
-        <p style={{ fontSize: 10, letterSpacing: "0.2em", color: "#00d4ff", textTransform: "uppercase" as const, marginBottom: 16 }}>
+        <p style={{ fontSize: 10, letterSpacing: "0.2em", color: "#5B8DB8", textTransform: "uppercase" as const, marginBottom: 16 }}>
           Legal
         </p>
 

@@ -20,7 +20,7 @@ export default function HeroFlightPath() {
       ],
       delay: "0s",
       duration: "8s",
-      color: "#00d4ff",
+      color: "#5B8DB8",
     },
     {
       // DFW → corridor north — shorter hop

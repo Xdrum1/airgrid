@@ -58,7 +58,7 @@ export default function UpgradeGate({ feature }: UpgradeGateProps) {
             left: 40,
             right: 40,
             height: 2,
-            background: "linear-gradient(90deg, #00ff88, #00d4ff)",
+            background: "linear-gradient(90deg, #00ff88, #5B8DB8)",
             borderRadius: "2px 2px 0 0",
           }}
         />
@@ -97,7 +97,7 @@ export default function UpgradeGate({ feature }: UpgradeGateProps) {
           style={{
             display: "inline-block",
             padding: "13px 32px",
-            background: "linear-gradient(135deg, #00ff88, #00d4ff)",
+            background: "linear-gradient(135deg, #00ff88, #5B8DB8)",
             border: "none",
             borderRadius: 6,
             color: "#000",

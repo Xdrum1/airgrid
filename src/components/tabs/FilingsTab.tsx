@@ -67,8 +67,8 @@ export default function FilingsTab({
             style={{
               width: 16,
               height: 16,
-              border: "2px solid rgba(0,212,255,0.2)",
-              borderTopColor: "#00d4ff",
+              border: "2px solid rgba(91,141,184,0.2)",
+              borderTopColor: "#5B8DB8",
               borderRadius: "50%",
               animation: "spin 0.8s linear infinite",
             }}
@@ -111,7 +111,7 @@ export default function FilingsTab({
         const typeColors: Record<string, string> = {
           Rule: "#ff4444",
           "Proposed Rule": "#f59e0b",
-          Notice: "#00d4ff",
+          Notice: "#5B8DB8",
           "Presidential Document": "#7c3aed",
         };
         const badgeColor = typeColors[filing.type] ?? "#555";
@@ -140,7 +140,7 @@ export default function FilingsTab({
               transitionDelay: `${i * 0.02}s`,
             }}
             onMouseEnter={(e) =>
-              (e.currentTarget.style.borderColor = "rgba(0,212,255,0.3)")
+              (e.currentTarget.style.borderColor = "rgba(91,141,184,0.3)")
             }
             onMouseLeave={(e) =>
               (e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)")

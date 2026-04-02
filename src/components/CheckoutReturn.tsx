@@ -78,9 +78,9 @@ export default function CheckoutReturn() {
           href="/dashboard"
           style={{
             display: "inline-block",
-            background: "rgba(0,212,255,0.1)",
-            border: "1px solid rgba(0,212,255,0.3)",
-            color: "#00d4ff",
+            background: "rgba(91,141,184,0.1)",
+            border: "1px solid rgba(91,141,184,0.3)",
+            color: "#5B8DB8",
             fontWeight: 600,
             fontSize: 13,
             padding: "12px 28px",
@@ -131,7 +131,7 @@ export default function CheckoutReturn() {
         Not redirecting?{" "}
         <Link
           href="/dashboard?checkout=success"
-          style={{ color: "#00d4ff", textDecoration: "none" }}
+          style={{ color: "#5B8DB8", textDecoration: "none" }}
         >
           Click here
         </Link>

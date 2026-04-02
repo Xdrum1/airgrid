@@ -766,7 +766,7 @@ function OverrideCard({
       style={{
         background: "rgba(255,255,255,0.02)",
         border: isRecommendation
-          ? "1px solid rgba(0,212,255,0.2)"
+          ? "1px solid rgba(91,141,184,0.2)"
           : "1px solid rgba(255,255,255,0.06)",
         borderRadius: 8,
         padding: 16,
@@ -800,7 +800,7 @@ function OverrideCard({
           </span>
           <span
             style={{
-              color: "#00d4ff",
+              color: "#5B8DB8",
               fontSize: 11,
               fontWeight: 700,
               letterSpacing: 1,
@@ -849,8 +849,8 @@ function OverrideCard({
       {isRecommendation && rec && (
         <div
           style={{
-            background: "rgba(0,212,255,0.04)",
-            border: "1px solid rgba(0,212,255,0.15)",
+            background: "rgba(91,141,184,0.04)",
+            border: "1px solid rgba(91,141,184,0.15)",
             borderRadius: 6,
             padding: 12,
             marginBottom: 12,
@@ -866,7 +866,7 @@ function OverrideCard({
           >
             <span
               style={{
-                color: "#00d4ff",
+                color: "#5B8DB8",
                 fontSize: 9,
                 fontWeight: 700,
                 letterSpacing: 2,
@@ -1120,14 +1120,14 @@ function ClassificationCard({
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span
             style={{
-              background: "rgba(0,212,255,0.1)",
-              color: "#00d4ff",
+              background: "rgba(91,141,184,0.1)",
+              color: "#5B8DB8",
               fontSize: 9,
               fontWeight: 700,
               letterSpacing: 1,
               padding: "3px 8px",
               borderRadius: 3,
-              border: "1px solid rgba(0,212,255,0.3)",
+              border: "1px solid rgba(91,141,184,0.3)",
             }}
           >
             {classification.eventType.toUpperCase()}

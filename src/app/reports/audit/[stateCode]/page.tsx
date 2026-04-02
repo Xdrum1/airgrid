@@ -167,7 +167,7 @@ export default async function AuditReportPage({
 
         {/* ── Title ── */}
         <div style={{ marginBottom: 40 }}>
-          <div style={{ fontSize: 9, letterSpacing: 3, color: "#00d4ff", fontFamily: "'Space Mono', monospace", marginBottom: 12 }}>
+          <div style={{ fontSize: 9, letterSpacing: 3, color: "#5B8DB8", fontFamily: "'Space Mono', monospace", marginBottom: 12 }}>
             HELIPORT INFRASTRUCTURE AUDIT
           </div>
           <h1 style={{
@@ -189,10 +189,10 @@ export default async function AuditReportPage({
           <h2 style={sectionHeadStyle}>Executive Summary</h2>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16, marginBottom: 24 }}>
             {[
-              { value: totalHeliports.toLocaleString(), label: "Total Heliports", color: "#00d4ff" },
+              { value: totalHeliports.toLocaleString(), label: "Total Heliports", color: "#5B8DB8" },
               { value: `${publicUse}`, label: "Public Use", color: "#00ff88" },
               { value: `${privateUse}`, label: "Private Use", color: "#f59e0b" },
-              { value: `${operational}`, label: "Operational", color: "#00d4ff" },
+              { value: `${operational}`, label: "Operational", color: "#5B8DB8" },
             ].map(s => (
               <div key={s.label} style={{ textAlign: "center" }}>
                 <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 24, fontWeight: 700, color: s.color }}>
@@ -486,12 +486,12 @@ export default async function AuditReportPage({
         {/* ── Methodology Note ── */}
         <div style={{
           padding: "20px 24px",
-          background: "rgba(0,212,255,0.03)",
-          border: "1px solid rgba(0,212,255,0.1)",
+          background: "rgba(91,141,184,0.03)",
+          border: "1px solid rgba(91,141,184,0.1)",
           borderRadius: 8,
           marginBottom: 24,
         }}>
-          <div style={{ fontSize: 9, letterSpacing: 2, color: "#00d4ff", marginBottom: 8, fontFamily: "'Space Mono', monospace" }}>
+          <div style={{ fontSize: 9, letterSpacing: 2, color: "#5B8DB8", marginBottom: 8, fontFamily: "'Space Mono', monospace" }}>
             METHODOLOGY NOTE
           </div>
           <p style={{ fontSize: 12, color: "#888", lineHeight: 1.7, margin: 0 }}>
@@ -501,11 +501,11 @@ export default async function AuditReportPage({
             is pending integration of FAA OE/AAA determined cases data. Compliance status is algorithmically
             assessed &mdash; field verification by a qualified inspector (e.g., Five-Alpha LLC) is recommended
             before regulatory action. See{" "}
-            <a href="https://airindex.io/methodology" style={{ color: "#00d4ff", textDecoration: "none" }}>
+            <a href="https://airindex.io/methodology" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               airindex.io/methodology
             </a>{" "}
             and{" "}
-            <a href="https://airindex.io/terminology" style={{ color: "#00d4ff", textDecoration: "none" }}>
+            <a href="https://airindex.io/terminology" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               airindex.io/terminology
             </a>{" "}
             for scoring definitions and standardized terms.

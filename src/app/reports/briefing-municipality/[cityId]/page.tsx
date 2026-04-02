@@ -491,7 +491,7 @@ export default async function MunicipalityBriefingPage({
                   fontFamily: "'Courier New', monospace",
                   fontWeight: 400,
                   fontSize: 22,
-                  color: "#00d4ff",
+                  color: "#5B8DB8",
                   letterSpacing: "0.12em",
                 }}
               >
@@ -624,7 +624,7 @@ export default async function MunicipalityBriefingPage({
                   {top5.map((p) => {
                     const isTarget = p.id === cityId;
                     const rowBg = isTarget
-                      ? "rgba(0,212,255,0.08)"
+                      ? "rgba(91,141,184,0.08)"
                       : "transparent";
                     const pTierColor = getScoreColor(p.score);
                     return (
@@ -634,7 +634,7 @@ export default async function MunicipalityBriefingPage({
                             padding: "10px",
                             borderBottom: "1px solid #0f0f1a",
                             fontWeight: isTarget ? 700 : 400,
-                            color: isTarget ? "#00d4ff" : "#e0e0e0",
+                            color: isTarget ? "#5B8DB8" : "#e0e0e0",
                           }}
                         >
                           {p.city}, {p.state}
@@ -642,7 +642,7 @@ export default async function MunicipalityBriefingPage({
                             <span
                               style={{
                                 fontSize: 9,
-                                color: "#00d4ff",
+                                color: "#5B8DB8",
                                 marginLeft: 8,
                                 fontFamily: "'Space Mono', monospace",
                               }}
@@ -679,20 +679,20 @@ export default async function MunicipalityBriefingPage({
                   })}
                   {/* Target city row if not in top 5 */}
                   {!top5.some((p) => p.id === cityId) && (
-                    <tr style={{ background: "rgba(0,212,255,0.08)" }}>
+                    <tr style={{ background: "rgba(91,141,184,0.08)" }}>
                       <td
                         style={{
                           padding: "10px",
                           borderBottom: "1px solid #0f0f1a",
                           fontWeight: 700,
-                          color: "#00d4ff",
+                          color: "#5B8DB8",
                         }}
                       >
                         {city.city}, {city.state}
                         <span
                           style={{
                             fontSize: 9,
-                            color: "#00d4ff",
+                            color: "#5B8DB8",
                             marginLeft: 8,
                             fontFamily: "'Space Mono', monospace",
                           }}
@@ -796,7 +796,7 @@ export default async function MunicipalityBriefingPage({
                 <a
                   href="/contact?tier=briefing&ref=ordinance-audit"
                   style={{
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     fontSize: 13,
                     fontWeight: 600,
                     textDecoration: "none",
@@ -1631,7 +1631,7 @@ export default async function MunicipalityBriefingPage({
                 style={{
                   fontFamily: "'Courier New', monospace",
                   fontWeight: 400,
-                  color: "#00d4ff",
+                  color: "#5B8DB8",
                   letterSpacing: "0.1em",
                 }}
               >

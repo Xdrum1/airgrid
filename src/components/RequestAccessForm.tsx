@@ -238,7 +238,7 @@ export default function RequestAccessForm() {
                       setForm({ ...form, markets: form.markets.filter((m) => m !== market) });
                     }
                   }}
-                  style={{ accentColor: "#00d4ff" }}
+                  style={{ accentColor: "#5B8DB8" }}
                 />
                 {market}
               </label>
@@ -276,7 +276,7 @@ export default function RequestAccessForm() {
         disabled={state === "submitting" || !form.email.trim() || !form.name.trim()}
         style={{
           padding: "14px 28px",
-          background: "#00d4ff",
+          background: "#5B8DB8",
           color: "#050508",
           fontSize: 11,
           fontWeight: 700,

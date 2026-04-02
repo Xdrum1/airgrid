@@ -46,7 +46,7 @@ export default function CheckoutSuccessModal({
       <div
         style={{
           background: "#0a0a12",
-          border: "1px solid rgba(0,212,255,0.15)",
+          border: "1px solid rgba(91,141,184,0.15)",
           borderRadius: 12,
           padding: "36px 32px 28px",
           maxWidth: 420,
@@ -60,8 +60,8 @@ export default function CheckoutSuccessModal({
             width: 48,
             height: 48,
             borderRadius: "50%",
-            background: "rgba(0,212,255,0.1)",
-            border: "1px solid rgba(0,212,255,0.25)",
+            background: "rgba(91,141,184,0.1)",
+            border: "1px solid rgba(91,141,184,0.25)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -135,7 +135,7 @@ export default function CheckoutSuccessModal({
           style={{
             width: "100%",
             padding: "14px 0",
-            background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
+            background: "linear-gradient(135deg, #5B8DB8, #7c3aed)",
             border: "none",
             borderRadius: 6,
             color: "#000",

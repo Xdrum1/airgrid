@@ -589,7 +589,7 @@ export default function CityDetail({
                           href={safeHref(entry.triggeringEvent.sourceUrl)!}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ color: "#00d4ff", fontSize: 9, letterSpacing: 0.5 }}
+                          style={{ color: "#5B8DB8", fontSize: 9, letterSpacing: 0.5 }}
                         >
                           View source →
                         </a>
@@ -748,7 +748,7 @@ export default function CityDetail({
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
-                        color: "#00d4ff",
+                        color: "#5B8DB8",
                         fontSize: 10,
                         letterSpacing: 1,
                         textDecoration: "none",
@@ -861,7 +861,7 @@ export default function CityDetail({
                         transition: `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s, border-color 0.15s`,
                         cursor: "pointer",
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(0,212,255,0.3)")}
+                      onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(91,141,184,0.3)")}
                       onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)")}
                     >
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
@@ -896,7 +896,7 @@ export default function CityDetail({
                         </div>
                       )}
 
-                      <div style={{ color: "#00d4ff", fontSize: 8, letterSpacing: 1, marginTop: 10, textAlign: "right" }}>
+                      <div style={{ color: "#5B8DB8", fontSize: 8, letterSpacing: 1, marginTop: 10, textAlign: "right" }}>
                         DETAILS →
                       </div>
                     </div>

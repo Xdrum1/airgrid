@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const TIERS = [
   {
     name: "Market Snapshot",
-    accent: "#00d4ff",
+    accent: "#5B8DB8",
     badge: null,
     scope: "1 city, 5\u20137 pages",
     turnaround: "5 business days",
@@ -120,7 +120,7 @@ export default function BriefingsPage() {
               fontFamily: "'Space Mono', monospace",
               fontSize: 9,
               letterSpacing: 2,
-              color: "#00d4ff",
+              color: "#5B8DB8",
               textTransform: "uppercase",
               marginBottom: 12,
             }}
@@ -170,7 +170,7 @@ export default function BriefingsPage() {
           borderRadius: 10,
           overflow: "hidden",
           border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: "0 0 60px rgba(0,212,255,0.04)",
+          boxShadow: "0 0 60px rgba(91,141,184,0.04)",
           maxWidth: 400,
           margin: "0 auto 56px",
         }}>
@@ -419,7 +419,7 @@ export default function BriefingsPage() {
             style={{
               display: "inline-block",
               padding: "12px 32px",
-              background: "#00d4ff",
+              background: "#5B8DB8",
               color: "#050508",
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,

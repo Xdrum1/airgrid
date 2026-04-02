@@ -24,7 +24,7 @@ const TIERS: Tier[] = [
     tagline: "Public research and market overview.",
     price: "$0",
     priceNote: "Open access.",
-    accent: "#00d4ff",
+    accent: "#5B8DB8",
     highlight: false,
     features: [
       "Market Pulse weekly intelligence",
@@ -39,7 +39,7 @@ const TIERS: Tier[] = [
     tagline: "The full intelligence layer for analysts, consultants, and city planners making UAM decisions.",
     price: "Contact us",
     priceNote: "Annual license, billed monthly or annually.",
-    accent: "#00d4ff",
+    accent: "#5B8DB8",
     highlight: true,
     features: [
       "Everything in Free, plus:",
@@ -102,9 +102,9 @@ export default function PricingTiers() {
     <>
       <style>{`
         .pricing-cta { transition: border-color 0.2s, color 0.2s, background 0.2s; }
-        .pricing-cta:hover { border-color: rgba(0,212,255,0.35) !important; color: #00d4ff !important; background: rgba(0,212,255,0.06) !important; }
+        .pricing-cta:hover { border-color: rgba(91,141,184,0.35) !important; color: #5B8DB8 !important; background: rgba(91,141,184,0.06) !important; }
         .pricing-secondary { transition: color 0.2s; }
-        .pricing-secondary:hover { color: #00d4ff !important; }
+        .pricing-secondary:hover { color: #5B8DB8 !important; }
         @media (max-width: 900px) {
           .pricing-grid { grid-template-columns: 1fr 1fr !important; }
         }
@@ -130,9 +130,9 @@ export default function PricingTiers() {
               position: "relative",
               display: "flex",
               flexDirection: "column",
-              background: tier.highlight ? "rgba(0,212,255,0.03)" : "rgba(255,255,255,0.02)",
+              background: tier.highlight ? "rgba(91,141,184,0.03)" : "rgba(255,255,255,0.02)",
               border: tier.highlight
-                ? "1px solid rgba(0,212,255,0.2)"
+                ? "1px solid rgba(91,141,184,0.2)"
                 : "1px solid rgba(255,255,255,0.06)",
               borderRadius: 12,
               padding: "36px 24px 28px",
@@ -237,9 +237,9 @@ export default function PricingTiers() {
                   fontWeight: 700,
                   letterSpacing: "0.06em",
                   textDecoration: "none",
-                  background: tier.highlight ? "#00d4ff" : "rgba(255,255,255,0.08)",
+                  background: tier.highlight ? "#5B8DB8" : "rgba(255,255,255,0.08)",
                   border: tier.highlight
-                    ? "1px solid #00d4ff"
+                    ? "1px solid #5B8DB8"
                     : "1px solid rgba(255,255,255,0.15)",
                   color: tier.highlight ? "#050508" : "#fff",
                 }}

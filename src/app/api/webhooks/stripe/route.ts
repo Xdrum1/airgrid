@@ -215,11 +215,11 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
           <p style="font-size:14px;line-height:1.6;margin:0 0 24px;">
             Please update your payment method to avoid any interruption to your service. Stripe will automatically retry the charge over the next few days.
           </p>
-          <a href="${appUrl}/dashboard" style="display:inline-block;padding:12px 28px;background:#00d4ff;color:#050508;font-size:13px;font-weight:700;text-decoration:none;border-radius:6px;letter-spacing:0.04em;">
+          <a href="${appUrl}/dashboard" style="display:inline-block;padding:12px 28px;background:#5B8DB8;color:#050508;font-size:13px;font-weight:700;text-decoration:none;border-radius:6px;letter-spacing:0.04em;">
             Update Payment Method
           </a>
           <p style="font-size:12px;line-height:1.6;margin:24px 0 0;color:#888;">
-            If you need help, reply to this email or contact us at <a href="mailto:support@airindex.io" style="color:#00d4ff;">support@airindex.io</a>.
+            If you need help, reply to this email or contact us at <a href="mailto:support@airindex.io" style="color:#5B8DB8;">support@airindex.io</a>.
           </p>
         </div>
       `.trim(),

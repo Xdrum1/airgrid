@@ -23,7 +23,7 @@ interface UserEvent {
 // -------------------------------------------------------
 
 const EVENT_COLORS: Record<string, string> = {
-  page_view: "#00d4ff",
+  page_view: "#5B8DB8",
   page_leave: "#555",
   city_detail: "#00ff88",
   corridor_click: "#f59e0b",
@@ -32,7 +32,7 @@ const EVENT_COLORS: Record<string, string> = {
   operator_click: "#14b8a6",
   alert_subscribe: "#00ff88",
   alert_unsubscribe: "#ff4444",
-  watchlist_add: "#00d4ff",
+  watchlist_add: "#5B8DB8",
   watchlist_remove: "#ff4444",
   report_download: "#7c3aed",
 };
@@ -112,7 +112,7 @@ export default function AdminEvents({
         }}
       >
         <StatBox label="TOTAL EVENTS" value={String(events.length)} color="#7c3aed" />
-        <StatBox label="UNIQUE USERS" value={String(uniqueUsers.size)} color="#00d4ff" />
+        <StatBox label="UNIQUE USERS" value={String(uniqueUsers.size)} color="#5B8DB8" />
         <StatBox
           label="PAGE VIEWS"
           value={String(eventCounts["page_view"] ?? 0)}

@@ -68,8 +68,8 @@ export default function ActivityTab({
             style={{
               width: 16,
               height: 16,
-              border: "2px solid rgba(0,212,255,0.2)",
-              borderTopColor: "#00d4ff",
+              border: "2px solid rgba(91,141,184,0.2)",
+              borderTopColor: "#5B8DB8",
               borderRadius: "50%",
               animation: "spin 0.8s linear infinite",
             }}
@@ -182,7 +182,7 @@ export default function ActivityTab({
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     fontSize: 9,
                     display: "inline-block",
                   }}

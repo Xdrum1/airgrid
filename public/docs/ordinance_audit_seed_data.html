@@ -1,0 +1,213 @@
+
+<style>
+.wrap { padding: 1rem 0; font-family: var(--font-sans); }
+.city-block { margin-bottom: 20px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+.city-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.city-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.city-meta { font-size: 11px; color: var(--color-text-tertiary); }
+.q-row { display: grid; grid-template-columns: 2fr 80px 1fr; gap: 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.q-row:last-child { border-bottom: none; }
+.q-text { padding: 8px 16px; font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; display: flex; align-items: center; }
+.q-status { padding: 8px 12px; display: flex; align-items: center; justify-content: center; border-left: 0.5px solid var(--color-border-tertiary); border-right: 0.5px solid var(--color-border-tertiary); }
+.q-note { padding: 8px 12px; font-size: 11px; color: var(--color-text-tertiary); line-height: 1.4; display: flex; align-items: center; }
+.badge { font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+.yes { background: #EAF3DE; color: #27500A; }
+.partial { background: #FAEEDA; color: #633806; }
+.no { background: #FCEBEB; color: #791F1F; }
+.header-row { display: grid; grid-template-columns: 2fr 80px 1fr; background: var(--color-background-secondary); }
+.header-cell { padding: 6px 16px; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-tertiary); }
+.header-cell:nth-child(2) { border-left: 0.5px solid var(--color-border-tertiary); border-right: 0.5px solid var(--color-border-tertiary); text-align: center; }
+@media (prefers-color-scheme: dark) {
+  .yes { background: #173404; color: #C0DD97; }
+  .partial { background: #412402; color: #FAC775; }
+  .no { background: #501313; color: #F7C1C1; }
+}
+</style>
+<div class="wrap">
+
+<div class="city-block">
+  <div class="city-head">
+    <span class="city-name">Dallas, TX</span>
+    <span class="city-meta">AirIndex score: 100 · ADVANCED · State enforcement: limited (TX)</span>
+  </div>
+  <div class="header-row">
+    <div class="header-cell">Question</div>
+    <div class="header-cell">Status</div>
+    <div class="header-cell">Note</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">1. Correct FAA terminology in city code (heliport, helistop, vertiport per 14 CFR Part 157)</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">Heliport used in Dallas code. Vertiport not yet defined. "Helipad" appears in older sections — legally ambiguous.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">2. Heliport/vertiport addressed as permitted or conditional use in zoning ordinance</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">Heliport appears in Dallas zoning code under specific districts. Vertiport not enumerated. Covered by implication via EB 105A heliport classification.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">3. FAA airspace determination requirement written into permit process</div>
+    <div class="q-status"><span class="badge no">No</span></div>
+    <div class="q-note">No evidence of FAA airspace determination as a permit prerequisite in Dallas code. Texas has limited state-level enforcement.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">4. NFPA 418 referenced in fire code or building code</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">Dallas adopted IBC (updated May 2025). IBC references NFPA 418 for rooftop heliports/helistops. Not explicitly cited in standalone fire code ordinance.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">5. State (TX) has adopted FAA AC 150/5390-2D as enforceable standard</div>
+    <div class="q-status"><span class="badge no">No</span></div>
+    <div class="q-note">Texas has limited enforcement per Rex. TxDOT does not mandate AC 150/5390-2D for private-use heliports. Federal grant-funded facilities only.</div>
+  </div>
+</div>
+
+<div class="city-block">
+  <div class="city-head">
+    <span class="city-name">Miami, FL</span>
+    <span class="city-meta">AirIndex score: 80 · FRIENDLY · State enforcement: strong (FL)</span>
+  </div>
+  <div class="header-row">
+    <div class="header-cell">Question</div>
+    <div class="header-cell">Status</div>
+    <div class="header-cell">Note</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">1. Correct FAA terminology in city code (heliport, helistop, vertiport per 14 CFR Part 157)</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">Miami-Dade UAM Policy Framework (2023) uses vertiport terminology. City code still references heliport/helistop. Vertiport not yet formally codified at city level.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">2. Heliport/vertiport addressed as permitted or conditional use in zoning ordinance</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">Miami-Dade TPO published UAM Policy Framework and Strategic Roadmap (2023). Heliports addressed in zoning. Vertiport as distinct use not yet codified.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">3. FAA airspace determination requirement written into permit process</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">FDOT guidance allows local governments to make zoning approval contingent on FDOT site approval. Florida state framework partially covers this. Not explicitly codified at city level.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">4. NFPA 418 referenced in fire code or building code</div>
+    <div class="q-status"><span class="badge yes">Yes</span></div>
+    <div class="q-note">Florida is a heavily enforced state per Rex. Florida adopted IBC and IFC which reference NFPA 418. SB 1662 (July 2025) strengthens AAM infrastructure standards statewide.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">5. State (FL) has adopted FAA AC 150/5390-2D as enforceable standard</div>
+    <div class="q-status"><span class="badge yes">Yes</span></div>
+    <div class="q-note">Florida is one of the most heavily enforced states per Rex. FDOT AAM Land Use Compatibility and Site Approval Guidebook (Sept 2024) provides enforceable framework. SB 1662 further codifies this.</div>
+  </div>
+</div>
+
+<div class="city-block">
+  <div class="city-head">
+    <span class="city-name">Phoenix, AZ</span>
+    <span class="city-meta">AirIndex score: ~55 · NEUTRAL · State enforcement: improving (AZ SB 1307)</span>
+  </div>
+  <div class="header-row">
+    <div class="header-cell">Question</div>
+    <div class="header-cell">Status</div>
+    <div class="header-cell">Note</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">1. Correct FAA terminology in city code (heliport, helistop, vertiport per 14 CFR Part 157)</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">Phoenix AAM framework study (Dec 2025) uses correct vertiport terminology. City code not yet updated. AZ SB 1307 (eff. Sept 2025) introduces vertiport into state statute.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">2. Heliport/vertiport addressed as permitted or conditional use in zoning ordinance</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">Phoenix published AAM framework identifying Sky Harbor, Deer Valley, and Goodyear as vertiport-ready sites. Formal zoning amendment not yet enacted. eIPP application submitted.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">3. FAA airspace determination requirement written into permit process</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">AZ SB 1307 mandates ADOT incorporate vertiports into statewide aviation plan by Sept 2026. State-level framework emerging. Not yet codified at city permit level.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">4. NFPA 418 referenced in fire code or building code</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">Arizona adopted IBC. IBC references NFPA 418 for rooftop facilities. Standalone fire code ordinance reference not confirmed. State enforcement improving under SB 1307.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">5. State (AZ) has adopted FAA AC 150/5390-2D as enforceable standard</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">AZ SB 1307 (Sept 2025) establishes AAM infrastructure planning mandate. ADOT AAM Specialist being appointed. AC adoption not yet explicit — framework in development.</div>
+  </div>
+</div>
+
+<div class="city-block">
+  <div class="city-head">
+    <span class="city-name">Charlotte, NC</span>
+    <span class="city-meta">AirIndex score: ~45 · NEUTRAL · State enforcement: developing (NC AAM strategy)</span>
+  </div>
+  <div class="header-row">
+    <div class="header-cell">Question</div>
+    <div class="header-cell">Status</div>
+    <div class="header-cell">Note</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">1. Correct FAA terminology in city code (heliport, helistop, vertiport per 14 CFR Part 157)</div>
+    <div class="q-status"><span class="badge no">No</span></div>
+    <div class="q-note">Charlotte UDO updated Dec 2025 — no evidence of vertiport terminology added. NC developing AAM strategy but city code not yet updated. High-value fix target.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">2. Heliport/vertiport addressed as permitted or conditional use in zoning ordinance</div>
+    <div class="q-status"><span class="badge no">No</span></div>
+    <div class="q-note">Charlotte UDO (eff. June 2023, updated Dec 2025) does not address vertiports. Heliport treatment unclear. Charlotte-Atlanta AAM corridor study underway but no zoning action yet.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">3. FAA airspace determination requirement written into permit process</div>
+    <div class="q-status"><span class="badge no">No</span></div>
+    <div class="q-note">No evidence of FAA airspace determination in Charlotte permit process. NC NCDOT Division of Aviation involved in Charlotte-Atlanta corridor study — state action ahead of city action.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">4. NFPA 418 referenced in fire code or building code</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">NC adopted IBC. IBC references NFPA 418 for rooftop heliports. Standalone city fire code reference not confirmed. NC is listed among states developing AAM strategies.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">5. State (NC) has adopted FAA AC 150/5390-2D as enforceable standard</div>
+    <div class="q-status"><span class="badge no">No</span></div>
+    <div class="q-note">NC developing AAM strategy alongside GA for Charlotte-Atlanta corridor. No confirmed state-level AC adoption. Framework emerging but not yet enforceable.</div>
+  </div>
+</div>
+
+<div class="city-block">
+  <div class="city-head">
+    <span class="city-name">New York City, NY</span>
+    <span class="city-meta">AirIndex score: 70 · FRIENDLY · State enforcement: moderate (NY)</span>
+  </div>
+  <div class="header-row">
+    <div class="header-cell">Question</div>
+    <div class="header-cell">Status</div>
+    <div class="header-cell">Note</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">1. Correct FAA terminology in city code (heliport, helistop, vertiport per 14 CFR Part 157)</div>
+    <div class="q-status"><span class="badge yes">Yes</span></div>
+    <div class="q-note">NYC Admin Code §412.8 addresses heliports and helistops. NYC Council legislation (Int 0026-2024, Int 0070-2024) uses correct terminology. Vertiport not yet separately codified but covered under heliport classification per EB 105A.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">2. Heliport/vertiport addressed as permitted or conditional use in zoning ordinance</div>
+    <div class="q-status"><span class="badge yes">Yes</span></div>
+    <div class="q-note">NYC has two city-controlled heliports (East 34th St, Downtown Manhattan). NYCEDC renewed Atlantic Aviation with mandatory eVTOL charging infrastructure requirement. Active city-level management of heliport/vertiport infrastructure.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">3. FAA airspace determination requirement written into permit process</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">NYC coordinates with FAA on heliport operations. City-controlled heliports operate under NYCEDC concession agreements that incorporate FAA requirements. Formal airspace determination as permit prerequisite not explicitly codified.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">4. NFPA 418 referenced in fire code or building code</div>
+    <div class="q-status"><span class="badge yes">Yes</span></div>
+    <div class="q-note">NYC adopted IBC and FDNY fire code. IBC references NFPA 418 for rooftop heliports. NYC Building Code §412.8 specifically addresses heliports and helistops with explicit standards.</div>
+  </div>
+  <div class="q-row">
+    <div class="q-text">5. State (NY) has adopted FAA AC 150/5390-2D as enforceable standard</div>
+    <div class="q-status"><span class="badge partial">Partial</span></div>
+    <div class="q-note">NY State aviation law provides framework but AC 150/5390-2D adoption not explicitly confirmed at state level. NYC's active heliport management and NYCEDC requirements provide de facto enforcement structure.</div>
+  </div>
+</div>
+
+</div>
