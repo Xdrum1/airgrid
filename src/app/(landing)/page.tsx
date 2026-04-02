@@ -429,10 +429,10 @@ export default async function LandingPage() {
                 accent: "#00ff88",
               },
               {
-                label: "PLATFORM UPDATE",
-                title: "Causal Intelligence Layer Shipped",
-                description: "Every score is now traceable to a source event. Score timelines, factor citations, and interactive scenario modeling — see why markets score what they do and what would change them.",
-                href: "/updates",
+                label: "SAMPLE REPORT",
+                title: "Charlotte Market Intelligence Snapshot",
+                description: "See what an AirIndex market briefing looks like. Readiness scoring, gap analysis, peer benchmarking, and actionable infrastructure recommendations.",
+                href: "/docs/Charlotte_Market_Intelligence_Snapshot_AirIndex.pdf",
                 accent: "#f59e0b",
               },
             ].map((item) => (
@@ -495,6 +495,58 @@ export default async function LandingPage() {
               </span>
             ))}
           </div>
+          {/* How We Work */}
+          <div style={{ marginBottom: 56 }}>
+            <div style={{ textAlign: "center", marginBottom: 32 }}>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#5B8DB8" }}>HOW WE WORK</span>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, maxWidth: 720, margin: "0 auto" }}>
+              {[
+                {
+                  step: "01",
+                  title: "Discovery Call",
+                  desc: "30-minute conversation about your market, your decision, and the data gap you need closed.",
+                },
+                {
+                  step: "02",
+                  title: "Scoped Briefing",
+                  desc: "We prepare a tailored deliverable — market report, infrastructure audit, or data license — scoped to your use case.",
+                },
+                {
+                  step: "03",
+                  title: "Platform Access",
+                  desc: "Ongoing dashboard access, API integration, and priority pipeline alerts as your needs evolve.",
+                },
+              ].map((s) => (
+                <div key={s.step} style={{ textAlign: "center" }}>
+                  <div style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 22,
+                    fontWeight: 700,
+                    color: "#5B8DB8",
+                    marginBottom: 10,
+                    opacity: 0.6,
+                  }}>
+                    {s.step}
+                  </div>
+                  <div style={{
+                    color: "#eee",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    marginBottom: 6,
+                  }}>
+                    {s.title}
+                  </div>
+                  <div style={{ color: "#666", fontSize: 11, lineHeight: 1.6 }}>
+                    {s.desc}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
           <div style={{ textAlign: "center" }}>
             <h2
               style={{
@@ -511,7 +563,7 @@ export default async function LandingPage() {
               Market readiness scores, gap analysis, corridor intelligence, regulatory filings, and API access for your team.
             </p>
             <Link
-              href="/request-access"
+              href="/contact"
               style={{
                 display: "inline-block",
                 padding: "14px 36px",
@@ -524,7 +576,7 @@ export default async function LandingPage() {
                 borderRadius: 6,
               }}
             >
-              Request Access
+              Talk to Us
             </Link>
           </div>
         </section>
