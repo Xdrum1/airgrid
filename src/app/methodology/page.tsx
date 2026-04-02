@@ -836,6 +836,9 @@ export default function MethodologyPage() {
           <Link href="/dashboard" style={{ color: "#00d4ff", textDecoration: "none" }}>
             View Dashboard
           </Link>
+          <Link href="/terminology" style={{ color: "#555", textDecoration: "none" }}>
+            Terminology Reference
+          </Link>
           <Link href="/api" style={{ color: "#555", textDecoration: "none" }}>
             API
           </Link>

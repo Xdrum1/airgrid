@@ -5,6 +5,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { MARKET_COUNT } from "@/data/seed";
 import { SCORE_WEIGHTS } from "@/lib/scoring";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "About AirIndex — UAM Market Intelligence by Vertical Data Group",
@@ -37,11 +38,26 @@ const DATA_SOURCES = [
   { name: "Federal Register", desc: "FAA rulemaking, powered lift SFARs, airspace actions" },
   { name: "LegiScan", desc: "State-level UAM legislation across all 50 states" },
   { name: "SEC EDGAR", desc: "Operator financial filings, 8-K disclosures, market signals" },
-  { name: "FAA NASR 5010", desc: "5,647 registered heliports mapped to all tracked metros" },
+  { name: "Congress.gov", desc: "Federal AAM bills, hearings, committee actions via API v3" },
+  { name: "Regulations.gov", desc: "FAA docket activity, proposed rules, public comment tracking" },
+  { name: "FAA NASR 5010", desc: "FAA-registered heliports mapped to all tracked metros" },
   { name: "Operator Activity", desc: "Press releases, partnership announcements, certification milestones" },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  // Pull live stats from DB
+  let recordCount = 1_797;
+  let heliportCount = 5_647;
+  try {
+    const [records, heliports] = await Promise.all([
+      prisma.ingestedRecord.count(),
+      prisma.heliport.count(),
+    ]);
+    recordCount = records;
+    heliportCount = heliports;
+  } catch {
+    // Fallback to hardcoded values if DB is unavailable
+  }
   return (
     <div
       style={{
@@ -265,8 +281,8 @@ export default function AboutPage() {
             }}>
               {[
                 { value: String(MARKET_COUNT), label: "Markets" },
-                { value: "1,797", label: "Records" },
-                { value: "5,647", label: "Heliports" },
+                { value: recordCount.toLocaleString(), label: "Records" },
+                { value: heliportCount.toLocaleString(), label: "Heliports" },
                 { value: "v1.3", label: "Methodology" },
               ].map((m) => (
                 <div key={m.label} style={{ textAlign: "center", minWidth: 80 }}>
@@ -285,6 +301,68 @@ export default function AboutPage() {
               ))}
             </div>
           </div>
+        </section>
+
+        {/* ═══ Intelligence Architecture ═══ */}
+        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <h2 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: 22,
+            fontWeight: 700,
+            color: "#fff",
+            marginBottom: 8,
+          }}>
+            Intelligence Architecture
+          </h2>
+          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+            AirIndex scores are backed by a five-container intelligence system — each container stores
+            a different class of structured evidence. Scores are traceable through the full chain: from
+            the raw regulatory filing to the factor it affects to the market score it changes.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {[
+              { name: "Factor Knowledge Base", code: "FKB", desc: "Factor definitions, weights, per-market scores with confidence levels and audit trail" },
+              { name: "Regulatory Precedent Library", code: "RPL", desc: "Structured regulatory documents — federal rules, state legislation, FAA orders — with factor mappings and momentum tracking" },
+              { name: "Market Context Store", code: "MCS", desc: "State-level enforcement posture, regional clusters, and peer market groupings for benchmarking" },
+              { name: "Operator Intelligence Database", code: "OID", desc: "Operator deployment stages, certifications, financing history, and vertiport commitments per market" },
+              { name: "Federal Programs Intelligence", code: "FPIS", desc: "Federal grant and SBIR programs mapped to scoring factors — surfaces funding pathways in gap analysis" },
+            ].map((c) => (
+              <div key={c.code} style={{
+                padding: "14px 16px",
+                background: "rgba(255,255,255,0.02)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 6,
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                  <span style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 10,
+                    color: "#00d4ff",
+                    padding: "2px 6px",
+                    background: "rgba(0,212,255,0.08)",
+                    borderRadius: 3,
+                    letterSpacing: 1,
+                  }}>
+                    {c.code}
+                  </span>
+                  <span style={{ color: "#ccc", fontSize: 12, fontWeight: 600 }}>{c.name}</span>
+                </div>
+                <div style={{ color: "#666", fontSize: 11, lineHeight: 1.5 }}>
+                  {c.desc}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p style={{ color: "#666", fontSize: 11, lineHeight: 1.7, marginTop: 16 }}>
+            This architecture ensures that every score change has a paper trail — from source document
+            to factor impact to market score. When a state enacts AAM legislation, the document enters
+            RPL, maps to the LEG factor in FKB, and the market score updates with full provenance.
+            See our{" "}
+            <Link href="/terminology" style={{ color: "#00d4ff", textDecoration: "none" }}>
+              terminology reference
+            </Link>{" "}
+            for standardized definitions used across the platform.
+          </p>
         </section>
 
         {/* ═══ Who We Serve ═══ */}
