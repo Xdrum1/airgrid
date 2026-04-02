@@ -8,7 +8,7 @@ import {
   CORRIDORS,
 } from "./seed";
 import { SUB_INDICATOR_DEFS, getSubIndicatorSummary } from "@/lib/sub-indicators";
-import { analyzeGaps } from "@/lib/gap-analysis";
+import { analyzeGapsSync } from "@/lib/gap-analysis";
 
 // ----- CITIES -----
 describe("CITIES", () => {
@@ -195,14 +195,14 @@ describe("Sub-Indicators", () => {
 
   it("analyzeGaps includes subIndicatorSummary", () => {
     const dallas = CITIES_MAP["dallas"];
-    const gap = analyzeGaps(dallas);
+    const gap = analyzeGapsSync(dallas);
     expect(gap.subIndicatorSummary).toBeDefined();
     expect(gap.subIndicatorSummary.total).toBe(SUB_INDICATOR_DEFS.length);
   });
 
   it("factor analyses include subIndicators array", () => {
     const phoenix = CITIES_MAP["phoenix"];
-    const gap = analyzeGaps(phoenix);
+    const gap = analyzeGapsSync(phoenix);
     for (const f of gap.factors) {
       expect(Array.isArray(f.subIndicators)).toBe(true);
       expect(f.subIndicators.length).toBeGreaterThan(0);

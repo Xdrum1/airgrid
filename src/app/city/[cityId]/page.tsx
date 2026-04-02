@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { CITIES, OPERATORS_MAP, getVertiportsForCity, getCitiesWithOverrides, getCitiesMapWithOverrides } from "@/data/seed";
 import { getCorridorsForCity } from "@/lib/corridors";
 import { getScoreHistoryFull } from "@/lib/score-history";
-import { calculateReadinessScore, getScoreTier } from "@/lib/scoring";
+import { calculateReadinessScoreFromFkb, getScoreTier } from "@/lib/scoring";
 import { auth } from "@/auth";
 import { getUserTier } from "@/lib/billing";
 import CityDetail from "@/components/CityDetail";
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const city = citiesMap[cityId];
   if (!city) return { title: "Market Not Found — AirIndex" };
 
-  const { score } = calculateReadinessScore(city);
+  const { score } = await calculateReadinessScoreFromFkb(city);
   const tier = getScoreTier(score);
   const operators = city.activeOperators.map((id) => OPERATORS_MAP[id]?.name).filter(Boolean);
   const operatorStr = operators.length > 0 ? ` Active operators: ${operators.join(", ")}.` : "";

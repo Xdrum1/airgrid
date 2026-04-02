@@ -12,7 +12,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { CITIES } from "@/data/seed";
-import { calculateReadinessScore } from "@/lib/scoring";
+import { calculateReadinessScoreFromFkb } from "@/lib/scoring";
 import { createLogger } from "@/lib/logger";
 
 const logger = createLogger("market-watchlist");
@@ -26,12 +26,12 @@ interface TriggerCandidate {
 
 // ── Trigger Evaluation ───────────────────────────────────
 
-function evaluateLegislationTriggers(): TriggerCandidate[] {
+async function evaluateLegislationTriggers(): Promise<TriggerCandidate[]> {
   const candidates: TriggerCandidate[] = [];
 
   for (const city of CITIES) {
     if (city.stateLegislationStatus === "actively_moving") {
-      const { score } = calculateReadinessScore(city);
+      const { score } = await calculateReadinessScoreFromFkb(city);
       candidates.push({
         cityId: city.id,
         triggerType: "LEGISLATION",
@@ -72,7 +72,7 @@ async function evaluateOverrideTriggers(): Promise<TriggerCandidate[]> {
 
     const city = CITIES.find((c) => c.id === group.cityId);
     if (!city) continue;
-    const { score } = calculateReadinessScore(city);
+    const { score } = await calculateReadinessScoreFromFkb(city);
 
     const fields = overrides.map((o) => o.field).join(", ");
     const topReason = overrides[0]?.reason?.slice(0, 100) || "";
@@ -126,7 +126,7 @@ async function evaluateActivityTriggers(): Promise<TriggerCandidate[]> {
       if (scores.size > 1) continue; // Score changed — not a trigger
     }
 
-    const { score } = calculateReadinessScore(city);
+    const { score } = await calculateReadinessScoreFromFkb(city);
     candidates.push({
       cityId,
       triggerType: "ELEVATED_ACTIVITY",
@@ -196,7 +196,7 @@ export async function updateMarketWatchList(): Promise<{
 
       const city = CITIES.find((c) => c.id === entry.cityId);
       if (city) {
-        const { score } = calculateReadinessScore(city);
+        const { score } = await calculateReadinessScoreFromFkb(city);
         if (score !== entry.currentScore) {
           reason = "SCORE_CHANGED";
         }

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getCitiesWithOverrides, CITIES, MARKET_COUNT } from "@/data/seed";
 import {
-  calculateReadinessScore,
+  calculateReadinessScoreFromFkb,
   getScoreTier,
   getScoreColor,
   SCORE_WEIGHTS,
@@ -238,7 +238,7 @@ export async function generateMetadata({
   const city = allCities.find((c) => c.id === cityId);
   if (!city) return { title: "Municipality Briefing" };
 
-  const { score } = calculateReadinessScore(city);
+  const { score } = await calculateReadinessScoreFromFkb(city);
   const tier = getScoreTier(score);
 
   return {
@@ -259,10 +259,10 @@ export default async function MunicipalityBriefingPage({
   const city = allCities.find((c) => c.id === cityId);
   if (!city) notFound();
 
-  const { score, breakdown } = calculateReadinessScore(city);
+  const { score, breakdown } = await calculateReadinessScoreFromFkb(city);
   const tier = getScoreTier(score);
   const tierColor = getScoreColor(score);
-  const gap = analyzeGaps(city);
+  const gap = await analyzeGaps(city);
 
   // Compute national rank
   const sortedCities = [...allCities].sort(
@@ -341,17 +341,20 @@ export default async function MunicipalityBriefingPage({
   });
 
   // Count how many peer cities in top 5 meet each operator requirement
-  const peerOperatorCount = top5.filter((p) => {
-    const pCity = allCities.find((c) => c.id === p.id);
-    if (!pCity) return false;
-    const pGap = analyzeGaps(pCity);
-    const pMap = new Map(pGap.factors.map((f) => [f.key, f]));
-    return (
-      (pMap.get("stateLegislation")?.achieved ?? false) &&
-      (pMap.get("approvedVertiport")?.achieved ?? false) &&
-      (pMap.get("regulatoryPosture")?.achieved ?? false)
-    );
-  }).length;
+  const peerGaps = await Promise.all(
+    top5.map(async (p) => {
+      const pCity = allCities.find((c) => c.id === p.id);
+      if (!pCity) return false;
+      const pGap = await analyzeGaps(pCity);
+      const pMap = new Map(pGap.factors.map((f) => [f.key, f]));
+      return (
+        (pMap.get("stateLegislation")?.achieved ?? false) &&
+        (pMap.get("approvedVertiport")?.achieved ?? false) &&
+        (pMap.get("regulatoryPosture")?.achieved ?? false)
+      );
+    })
+  );
+  const peerOperatorCount = peerGaps.filter(Boolean).length;
 
   const today = new Date().toLocaleDateString("en-US", {
     month: "long",

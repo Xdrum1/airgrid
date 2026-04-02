@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { City, SubIndicator } from "@/types";
-import { analyzeGaps } from "@/lib/gap-analysis";
+import { analyzeGapsSync } from "@/lib/gap-analysis";
 
 const STATUS_ICONS: Record<string, { icon: string; color: string }> = {
   achieved: { icon: "\u2713", color: "#00ff88" },
@@ -51,7 +51,7 @@ export default function GapAnalysisPanel({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [expandedFactors, setExpandedFactors] = useState<Set<string>>(new Set());
-  const gap = analyzeGaps(city);
+  const gap = analyzeGapsSync(city);
 
   const toggleFactor = (key: string) => {
     setExpandedFactors((prev) => {
