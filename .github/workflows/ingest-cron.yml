@@ -10,7 +10,7 @@ jobs:
   ingest:
     runs-on: ubuntu-latest
     steps:
-      - name: Health check + warmup
+      - name: Health check + deep warmup
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           APP_URL: ${{ vars.APP_URL }}
@@ -21,11 +21,17 @@ jobs:
           if [ "$HTTP_CODE" != "200" ]; then
             echo "::warning::Health check returned $HTTP_CODE — app may be degraded"
           fi
-          # Warm up the ingest Lambda to avoid cold start timeout
-          echo "Warming up ingest Lambda..."
-          curl -s -o /dev/null --max-time 15 \
-            -H "Authorization: invalid-warmup" \
-            "$URL/api/ingest" || true
+          # Deep warmup: hit the ingest endpoint with ?warmup=true to cold-start
+          # the Lambda AND lazy-load the full ingestion module tree (classifier,
+          # rules engine, Prisma client, etc.) without running actual ingestion.
+          echo "Deep-warming ingest Lambda (loading full module tree)..."
+          WARMUP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 45 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$URL/api/ingest?warmup=true")
+          echo "Warmup: $WARMUP_CODE"
+          if [ "$WARMUP_CODE" != "200" ]; then
+            echo "::warning::Warmup returned $WARMUP_CODE — cold start may still be in progress"
+          fi
           sleep 3
 
       - name: Trigger ingestion endpoint

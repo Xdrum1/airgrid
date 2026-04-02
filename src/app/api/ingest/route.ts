@@ -87,6 +87,14 @@ async function startIngestion(): Promise<Response> {
 export async function GET(request: NextRequest) {
   const denied = authorizeCron(request);
   if (denied) return denied;
+
+  // Deep warmup: load the full module tree without running ingestion.
+  // This prevents cold-start timeouts on the real call.
+  if (request.nextUrl.searchParams.get("warmup") === "true") {
+    await import("@/lib/ingestion");
+    return NextResponse.json({ status: "warm" });
+  }
+
   return startIngestion();
 }
 
