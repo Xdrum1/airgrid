@@ -5,10 +5,12 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { plausible } from "@/lib/plausible";
+import NavClient from "@/components/NavClient";
+import SiteFooter from "@/components/SiteFooter";
 
 function ContactForm() {
   const searchParams = useSearchParams();
-  const tier = searchParams.get("tier") ?? "";
+  const inquiry = searchParams.get("inquiry") ?? "";
   const ref = searchParams.get("ref") ?? "";
   const buyer = searchParams.get("buyer") ?? "";
 
@@ -17,7 +19,7 @@ function ContactForm() {
     email: "",
     company: "",
     role: "",
-    tier: tier || "pro",
+    tier: inquiry || "general",
     buyerType: buyer || "",
     message: "",
     website: "", // honeypot — bots fill this, humans don't see it
@@ -45,8 +47,7 @@ function ContactForm() {
     }
   };
 
-  const isPro = form.tier === "pro";
-  const tierLocked = !!tier; // lock when arriving from a specific CTA
+  const inquiryLocked = !!inquiry;
 
   if (state === "success") {
     return (
@@ -60,12 +61,10 @@ function ContactForm() {
             marginBottom: 12,
           }}
         >
-          {isPro ? "Request received" : "Thank you"}
+          Inquiry received
         </h2>
         <p style={{ color: "#999", fontSize: 13, lineHeight: 1.7, marginBottom: 24 }}>
-          {isPro
-            ? "We'll review your request and reach out within 48 hours."
-            : "We'll reach out within 48 hours."}
+          We&apos;ll review your inquiry and reach out within 48 hours.
         </p>
         <Link
           href="/dashboard"
@@ -152,29 +151,29 @@ function ContactForm() {
         </div>
       </div>
       <div style={{ marginBottom: 16 }}>
-        <label style={labelStyle}>INTERESTED IN</label>
+        <label style={labelStyle}>INQUIRY TYPE</label>
         <select
           value={form.tier}
           onChange={(e) => setForm({ ...form, tier: e.target.value })}
-          disabled={tierLocked}
+          disabled={inquiryLocked}
           style={{
             ...inputStyle,
             appearance: "none",
-            cursor: tierLocked ? "default" : "pointer",
-            opacity: tierLocked ? 0.7 : 1,
+            cursor: inquiryLocked ? "default" : "pointer",
+            opacity: inquiryLocked ? 0.7 : 1,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 14px center",
+            paddingRight: 36,
           }}
         >
-          {tierLocked ? (
-            <option value={form.tier}>
-              {form.tier === "pro" ? "Pro" : form.tier === "institutional" ? "Team" : "Enterprise"}
-            </option>
-          ) : (
-            <>
-              <option value="pro">Pro</option>
-              <option value="institutional">Team</option>
-              <option value="enterprise">Enterprise</option>
-            </>
-          )}
+          <option value="general">General Inquiry</option>
+          <option value="data-license">Data License</option>
+          <option value="market-report">Market Intelligence Report</option>
+          <option value="heliport-audit">Heliport Infrastructure Audit</option>
+          <option value="api-access">API Access</option>
+          <option value="partnership">Partnership / Data Exchange</option>
+          <option value="press">Press / Research</option>
         </select>
       </div>
       <div style={{ marginBottom: 16 }}>
@@ -192,13 +191,19 @@ function ContactForm() {
             paddingRight: 36,
           }}
         >
-          <option value="">Select buyer type</option>
+          <option value="">Select your role</option>
           <option value="infra-developer">Infrastructure Developer / Investor</option>
-          <option value="operator">eVTOL Operator</option>
+          <option value="operator">eVTOL / AAM Operator</option>
           <option value="municipality">City Planner / Municipality / State Agency</option>
+          <option value="airport-authority">Airport Authority</option>
           <option value="heliport-owner">Heliport or Vertiport Owner</option>
           <option value="insurance">Insurance Carrier / Underwriter</option>
           <option value="federal">Federal Agency / DOT</option>
+          <option value="economic-dev">Economic Development Alliance</option>
+          <option value="defense">Defense / Aerospace</option>
+          <option value="weather-sensor">Weather / Sensor Provider</option>
+          <option value="academia">Academia / Research</option>
+          <option value="press">Press / Media</option>
           <option value="other">Other</option>
         </select>
       </div>
@@ -246,13 +251,13 @@ function ContactForm() {
           transition: "opacity 0.15s",
         }}
       >
-        {state === "submitting" ? "SENDING..." : isPro ? "REQUEST ACCESS" : "GET IN TOUCH"}
+        {state === "submitting" ? "SENDING..." : "SEND INQUIRY"}
       </button>
       <p style={{ color: "#555", fontSize: 9, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>
         By submitting, you agree to our{" "}
         <a href="/terms" style={{ color: "#00d4ff", textDecoration: "none" }}>Terms of Service</a> and{" "}
-        <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>, and to receive
-        market updates and the weekly UAM Market Pulse newsletter. You can unsubscribe at any time.
+        <a href="/privacy" style={{ color: "#00d4ff", textDecoration: "none" }}>Privacy Policy</a>. You may receive
+        the monthly UAM Market Pulse and product updates. You can unsubscribe at any time.
       </p>
       {state === "error" && (
         <div style={{ color: "#ff4444", fontSize: 11, marginTop: 12, textAlign: "center" }}>
@@ -273,81 +278,19 @@ export default function ContactPage() {
         color: "#fff",
       }}
     >
-      {/* Nav */}
-      <nav
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          background: "rgba(5,5,8,0.85)",
-          backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1120,
-            margin: "0 auto",
-            padding: "0 20px",
-            height: 64,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "inherit" }}>
-            <img
-              src="/images/logo/airindex-wordmark.svg"
-              alt="AirIndex"
-              style={{ height: 28 }}
-            />
-          </Link>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Link
-              href="/pricing"
-              style={{
-                color: "#888",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-              }}
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/api"
-              style={{
-                color: "#888",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-              }}
-            >
-              API
-            </Link>
-            <Link
-              href="/dashboard"
-              style={{
-                color: "#888",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                padding: "8px 16px",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 6,
-              }}
-            >
-              Dashboard
-            </Link>
-          </div>
-        </div>
-      </nav>
-      <div style={{ height: 64 }} />
+      <NavClient isAuthed={false} />
 
       {/* Header */}
       <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(48px, 6vw, 80px) 20px 40px", textAlign: "center" }}>
+        <div style={{
+          fontSize: 9,
+          letterSpacing: 3,
+          color: "#00d4ff",
+          fontFamily: "'Space Mono', monospace",
+          marginBottom: 16,
+        }}>
+          DATA LICENSES &middot; REPORTS &middot; API &middot; PARTNERSHIPS
+        </div>
         <h1
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
@@ -360,6 +303,7 @@ export default function ContactPage() {
         </h1>
         <p style={{ fontFamily: "'Inter', sans-serif", color: "#999", fontSize: 14, margin: 0, lineHeight: 1.6 }}>
           Tell us what you&apos;re working on and we&apos;ll reach out within 48 hours.
+          All data access is negotiated &mdash; no self-serve checkout.
         </p>
       </section>
 
@@ -370,18 +314,7 @@ export default function ContactPage() {
         </Suspense>
       </section>
 
-      {/* Footer */}
-      <footer
-        style={{
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-          padding: "24px 20px",
-          textAlign: "center",
-        }}
-      >
-        <span style={{ color: "#777", fontSize: 9, letterSpacing: 1 }}>
-          © 2026 AIRINDEX · <Link href="/" style={{ color: "#777", textDecoration: "none" }}>HOME</Link> · <Link href="/about" style={{ color: "#777", textDecoration: "none" }}>ABOUT</Link> · <Link href="/pricing" style={{ color: "#777", textDecoration: "none" }}>PRICING</Link> · <Link href="/api" style={{ color: "#777", textDecoration: "none" }}>API</Link> · <Link href="/terms" style={{ color: "#777", textDecoration: "none" }}>TERMS</Link> · <Link href="/privacy" style={{ color: "#777", textDecoration: "none" }}>PRIVACY</Link>
-        </span>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
