@@ -2,6 +2,7 @@
  * Emerging Markets — Ingestion Adapters
  *
  * Phase 1: DOE ARPA-E (via USAspending.gov) + ClinicalTrials.gov
+ * Phase 2: Federal Register (drone/hydrogen/AV) + LegiScan + NHTSA
  * Each adapter returns normalized EmergingRawRecord[] for classification.
  */
 
@@ -210,4 +211,292 @@ export async function fetchClinicalTrials(daysBack: number = 365): Promise<Emerg
 
   log.info(`ClinicalTrials: fetched ${records.length} studies`);
   return records;
+}
+
+// ═══════════════════════════════════════════════════════════
+// Phase 2 — Commercial Drone, Hydrogen Fueling, Autonomous Vehicle
+// Uses shared Federal Register + LegiScan adapters with market-specific terms
+// ═══════════════════════════════════════════════════════════
+
+const FEDERAL_REGISTER_BASE = "https://www.federalregister.gov/api/v1";
+const LEGISCAN_BASE = "https://api.legiscan.com";
+
+/**
+ * Shared Federal Register search — fetches documents matching a set of terms.
+ * Same pagination logic as faa-api.ts but returns EmergingRawRecord[].
+ */
+async function fetchFederalRegisterForMarket(
+  terms: string[],
+  marketSource: string,
+  daysBack: number,
+): Promise<EmergingRawRecord[]> {
+  const records: EmergingRawRecord[] = [];
+  const seen = new Set<string>();
+  const endDate = new Date().toISOString().slice(0, 10);
+  const startDate = new Date(Date.now() - daysBack * 86400000).toISOString().slice(0, 10);
+
+  for (const term of terms) {
+    try {
+      let page = 1;
+      const perPage = 50;
+
+      while (page <= 5) {
+        const params = new URLSearchParams({
+          "conditions[term]": term,
+          "conditions[publication_date][gte]": startDate,
+          "conditions[publication_date][lte]": endDate,
+          per_page: String(perPage),
+          page: String(page),
+          order: "newest",
+        });
+
+        const res = await fetch(`${FEDERAL_REGISTER_BASE}/documents.json?${params}`);
+        if (!res.ok) break;
+
+        const json = await res.json();
+        const results = json.results ?? [];
+
+        for (const r of results) {
+          const docNum = r.document_number;
+          if (!docNum || seen.has(docNum)) continue;
+          seen.add(docNum);
+
+          records.push({
+            sourceId: docNum,
+            source: marketSource,
+            title: (r.title ?? "Untitled").slice(0, 300),
+            url: r.html_url ?? `https://www.federalregister.gov/d/${docNum}`,
+            date: r.publication_date ?? startDate,
+            summary: (r.abstract ?? "").slice(0, 500),
+            raw: { document_number: docNum, type: r.type, agencies: r.agencies },
+          });
+        }
+
+        if (results.length < perPage) break;
+        page++;
+        await delay(DELAY_MS);
+      }
+    } catch (err) {
+      log.error(`Federal Register fetch failed for "${term}":`, err);
+    }
+  }
+
+  // Filter obvious noise
+  const NOISE = /safety zone|marine mammal|coast guard|fisheries|wildlife/i;
+  const filtered = records.filter((r) => !NOISE.test(r.title));
+
+  log.info(`FedReg (${marketSource}): ${records.length} raw → ${filtered.length} after noise filter`);
+  return filtered;
+}
+
+/**
+ * Shared LegiScan search — returns bills matching market-specific queries.
+ */
+async function fetchLegiScanForMarket(
+  query: string,
+  marketSource: string,
+): Promise<EmergingRawRecord[]> {
+  const apiKey = process.env.LEGISCAN_API_KEY;
+  if (!apiKey) return [];
+
+  const records: EmergingRawRecord[] = [];
+
+  // Search all states (state=ALL)
+  try {
+    const url = `${LEGISCAN_BASE}/?key=${apiKey}&op=getSearch&state=ALL&query=${encodeURIComponent(query)}`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      log.warn(`LegiScan API error for ${marketSource}: ${res.status}`);
+      return [];
+    }
+
+    const json = await res.json();
+    const sr = json.searchresult;
+    if (!sr) return [];
+
+    const bills = Object.entries(sr)
+      .filter(([k]) => k !== "summary")
+      .map(([, v]) => v as {
+        bill_id: number;
+        bill_number: string;
+        title: string;
+        description: string;
+        state: string;
+        url: string;
+        last_action_date: string;
+      });
+
+    for (const bill of bills) {
+      records.push({
+        sourceId: `legiscan_${bill.bill_id}`,
+        source: marketSource,
+        title: `[${bill.state}] ${bill.bill_number}: ${bill.title}`.slice(0, 300),
+        url: bill.url,
+        date: bill.last_action_date ?? new Date().toISOString().slice(0, 10),
+        summary: (bill.description ?? bill.title).slice(0, 500),
+        raw: { bill_id: bill.bill_id, state: bill.state, bill_number: bill.bill_number },
+      });
+    }
+
+    log.info(`LegiScan (${marketSource}): ${records.length} bills`);
+  } catch (err) {
+    log.error(`LegiScan fetch failed for ${marketSource}:`, err);
+  }
+
+  return records;
+}
+
+// -------------------------------------------------------
+// Commercial Drone Infrastructure
+// Shared Federal Register + FAA adapters per architecture decision
+// -------------------------------------------------------
+
+const DRONE_FR_TERMS = [
+  '"unmanned aircraft system"',
+  '"drone delivery"',
+  '"drone corridor"',
+  '"beyond visual line of sight"',
+  "BVLOS",
+  '"UAS integration"',
+  '"remote identification"',
+  '"drone infrastructure"',
+  '"Part 107"',
+  '"Part 108"',
+];
+
+const DRONE_LEGISCAN_QUERY = 'drone OR "unmanned aircraft" OR "UAS" OR "BVLOS" OR "drone delivery" OR "drone corridor"';
+
+export async function fetchDroneSignals(daysBack: number = 90): Promise<EmergingRawRecord[]> {
+  const [frRecords, lsRecords] = await Promise.all([
+    fetchFederalRegisterForMarket(DRONE_FR_TERMS, "fed_reg_drone", daysBack),
+    fetchLegiScanForMarket(DRONE_LEGISCAN_QUERY, "legiscan_drone"),
+  ]);
+
+  const all = [...frRecords, ...lsRecords];
+  log.info(`Commercial Drone: ${all.length} total (${frRecords.length} FedReg, ${lsRecords.length} LegiScan)`);
+  return all;
+}
+
+// -------------------------------------------------------
+// Hydrogen Fueling Infrastructure
+// DOE (via USAspending), FERC (via Federal Register), LegiScan
+// -------------------------------------------------------
+
+const HYDROGEN_FR_TERMS = [
+  '"hydrogen fueling"',
+  '"hydrogen infrastructure"',
+  '"hydrogen hub"',
+  '"clean hydrogen"',
+  '"fuel cell"',
+  '"electrolysis"',
+  '"hydrogen pipeline"',
+  '"FERC hydrogen"',
+  '"hydrogen production tax credit"',
+  '"45V"', // IRA hydrogen production tax credit section
+];
+
+const HYDROGEN_LEGISCAN_QUERY = '"hydrogen fuel" OR "hydrogen infrastructure" OR "hydrogen hub" OR "clean hydrogen" OR "fuel cell infrastructure"';
+
+export async function fetchHydrogenSignals(daysBack: number = 90): Promise<EmergingRawRecord[]> {
+  const [frRecords, lsRecords] = await Promise.all([
+    fetchFederalRegisterForMarket(HYDROGEN_FR_TERMS, "fed_reg_hydrogen", daysBack),
+    fetchLegiScanForMarket(HYDROGEN_LEGISCAN_QUERY, "legiscan_hydrogen"),
+  ]);
+
+  const all = [...frRecords, ...lsRecords];
+  log.info(`Hydrogen Fueling: ${all.length} total (${frRecords.length} FedReg, ${lsRecords.length} LegiScan)`);
+  return all;
+}
+
+// -------------------------------------------------------
+// Autonomous Vehicle Infrastructure
+// NHTSA (via Federal Register), LegiScan, SEC EDGAR
+// -------------------------------------------------------
+
+const AV_FR_TERMS = [
+  '"autonomous vehicle"',
+  '"self-driving"',
+  '"automated driving system"',
+  "NHTSA autonomous",
+  '"connected vehicle"',
+  '"vehicle-to-infrastructure"',
+  '"V2X"',
+  '"AV corridor"',
+  '"autonomous vehicle testing"',
+  '"ADS-equipped vehicle"',
+  '"FMVSS exemption"',
+];
+
+const AV_LEGISCAN_QUERY = '"autonomous vehicle" OR "self-driving" OR "automated driving" OR "connected vehicle" OR "AV testing" OR "AV corridor"';
+
+// SEC EDGAR: AV-relevant public companies
+const AV_SEC_CIKS: Record<string, string> = {
+  waymo_alphabet: "0001652044",  // Alphabet (Waymo parent)
+  cruise_gm: "0001467858",       // General Motors (Cruise parent)
+  aurora: "0001828723",          // Aurora Innovation
+  mobileye: "0001900119",       // Mobileye
+  tusimple: "0001810997",       // TuSimple
+};
+
+async function fetchAvSecFilings(daysBack: number): Promise<EmergingRawRecord[]> {
+  const records: EmergingRawRecord[] = [];
+  const since = new Date(Date.now() - daysBack * 86400000);
+
+  for (const [name, cik] of Object.entries(AV_SEC_CIKS)) {
+    try {
+      const url = `https://data.sec.gov/submissions/CIK${cik.padStart(10, "0")}.json`;
+      const res = await fetch(url, {
+        headers: { "User-Agent": "AirIndex/1.0 (support@airindex.io)" },
+      });
+      if (!res.ok) continue;
+
+      const data = await res.json();
+      const filings = data.filings?.recent;
+      if (!filings) continue;
+
+      const forms = filings.form ?? [];
+      const dates = filings.filingDate ?? [];
+      const accessions = filings.accessionNumber ?? [];
+      const descriptions = filings.primaryDocDescription ?? [];
+
+      for (let i = 0; i < forms.length && i < 20; i++) {
+        const filingDate = new Date(dates[i]);
+        if (filingDate < since) break;
+
+        // Only relevant filing types
+        const form = forms[i];
+        if (!["8-K", "10-K", "10-Q", "S-1", "DEF 14A"].includes(form)) continue;
+
+        const accession = accessions[i]?.replace(/-/g, "");
+        records.push({
+          sourceId: `sec_av_${cik}_${accessions[i]}`,
+          source: "sec_edgar_av",
+          title: `[${name}] ${form}: ${descriptions[i] ?? "SEC Filing"}`.slice(0, 300),
+          url: `https://www.sec.gov/Archives/edgar/data/${cik}/${accession}`,
+          date: dates[i],
+          summary: `${data.name ?? name} — ${form} filed ${dates[i]}. ${descriptions[i] ?? ""}`.slice(0, 500),
+          raw: { cik, form, filingDate: dates[i], accession: accessions[i] },
+        });
+      }
+
+      await delay(DELAY_MS); // SEC rate limit: 10 req/sec
+    } catch (err) {
+      log.error(`SEC fetch failed for ${name}:`, err);
+    }
+  }
+
+  log.info(`SEC EDGAR (AV): ${records.length} filings`);
+  return records;
+}
+
+export async function fetchAvSignals(daysBack: number = 90): Promise<EmergingRawRecord[]> {
+  const [frRecords, lsRecords, secRecords] = await Promise.all([
+    fetchFederalRegisterForMarket(AV_FR_TERMS, "fed_reg_av", daysBack),
+    fetchLegiScanForMarket(AV_LEGISCAN_QUERY, "legiscan_av"),
+    fetchAvSecFilings(daysBack),
+  ]);
+
+  const all = [...frRecords, ...lsRecords, ...secRecords];
+  log.info(`Autonomous Vehicle: ${all.length} total (${frRecords.length} FedReg, ${lsRecords.length} LegiScan, ${secRecords.length} SEC)`);
+  return all;
 }

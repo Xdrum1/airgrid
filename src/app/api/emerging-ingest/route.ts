@@ -15,23 +15,48 @@ export const maxDuration = 120;
  */
 async function runIngestion(): Promise<Response> {
   try {
-    const { fetchArpaEAwards, fetchClinicalTrials } = await import("@/lib/emerging-sources");
+    const {
+      fetchArpaEAwards,
+      fetchClinicalTrials,
+      fetchDroneSignals,
+      fetchHydrogenSignals,
+      fetchAvSignals,
+    } = await import("@/lib/emerging-sources");
     const { prisma } = await import("@/lib/prisma");
 
-    // 1. Fetch from both sources in parallel
-    const [arpaRecords, ctRecords] = await Promise.all([
+    // 1. Fetch from all sources in parallel
+    //    Phase 1: ARPA-E + ClinicalTrials
+    //    Phase 2: Commercial Drone + Hydrogen + Autonomous Vehicle
+    const [arpaRecords, ctRecords, droneRecords, hydrogenRecords, avRecords] = await Promise.all([
       fetchArpaEAwards(90),
       fetchClinicalTrials(90),
+      fetchDroneSignals(90),
+      fetchHydrogenSignals(90),
+      fetchAvSignals(90),
     ]);
 
-    const allRecords = [...arpaRecords, ...ctRecords];
+    const allRecords = [
+      ...arpaRecords,
+      ...ctRecords,
+      ...droneRecords,
+      ...hydrogenRecords,
+      ...avRecords,
+    ];
+
+    // All source identifiers for dedup
+    const allSources = [
+      "doe_arpa_e", "clinicaltrials_gov",
+      "fed_reg_drone", "legiscan_drone",
+      "fed_reg_hydrogen", "legiscan_hydrogen",
+      "fed_reg_av", "legiscan_av", "sec_edgar_av",
+    ];
 
     // 2. Deduplicate against existing records
     const existingIds = new Set(
       (
         await prisma.emergingMarketSignal.findMany({
           where: {
-            source: { in: ["doe_arpa_e", "clinicaltrials_gov"] },
+            source: { in: allSources },
             sourceId: { in: allRecords.map((r) => r.sourceId) },
           },
           select: { sourceId: true, source: true },
@@ -41,15 +66,20 @@ async function runIngestion(): Promise<Response> {
 
     const newRecords = allRecords.filter((r) => !existingIds.has(`${r.source}:${r.sourceId}`));
 
+    const sourceCounts = {
+      doe_arpa_e: arpaRecords.length,
+      clinicaltrials_gov: ctRecords.length,
+      commercial_drone: droneRecords.length,
+      hydrogen_fueling: hydrogenRecords.length,
+      autonomous_vehicle: avRecords.length,
+    };
+
     if (newRecords.length === 0) {
       return NextResponse.json({
         success: true,
         new: 0,
         persisted: 0,
-        sources: {
-          doe_arpa_e: arpaRecords.length,
-          clinicaltrials_gov: ctRecords.length,
-        },
+        sources: sourceCounts,
       });
     }
 
@@ -82,16 +112,17 @@ async function runIngestion(): Promise<Response> {
       }
     }
 
-    console.log(`[emerging-ingest] Complete: ${persisted} persisted, ${newRecords.length} new (${arpaRecords.length} ARPA-E, ${ctRecords.length} CT)`);
+    console.log(
+      `[emerging-ingest] Complete: ${persisted} persisted, ${newRecords.length} new ` +
+      `(ARPA-E: ${arpaRecords.length}, CT: ${ctRecords.length}, ` +
+      `Drone: ${droneRecords.length}, H2: ${hydrogenRecords.length}, AV: ${avRecords.length})`
+    );
 
     return NextResponse.json({
       success: true,
       new: newRecords.length,
       persisted,
-      sources: {
-        doe_arpa_e: arpaRecords.length,
-        clinicaltrials_gov: ctRecords.length,
-      },
+      sources: sourceCounts,
     });
   } catch (err) {
     console.error("[emerging-ingest] Error:", err);
