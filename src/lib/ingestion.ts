@@ -604,6 +604,18 @@ export async function runIngestion(): Promise<{
         console.error("[ingestion] RPL write failed (non-blocking):", err);
       }
 
+      // 11d. Refresh FKB scores from RPL evidence — update signal counts + confidence
+      try {
+        const { refreshAllMarketScores } = await import("@/lib/fkb");
+        const fkbResult = await refreshAllMarketScores();
+        console.log(
+          `[ingestion] FKB refresh: ${fkbResult.factorsUpdated} factors updated, ` +
+          `${fkbResult.confidenceUpgrades} confidence upgrades, ${fkbResult.totalSignals} signals`
+        );
+      } catch (err) {
+        console.error("[ingestion] FKB refresh failed (non-blocking):", err);
+      }
+
       // 12. Process corridor events
       if (corridorEvents.length > 0) {
         console.log(`[ingestion] Processing ${corridorEvents.length} corridor events`);
