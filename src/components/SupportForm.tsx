@@ -52,7 +52,7 @@ export default function SupportForm() {
           style={{
             display: "inline-block",
             padding: "12px 28px",
-            background: "#00d4ff",
+            background: "#5B8DB8",
             color: "#050508",
             fontSize: 13,
             fontWeight: 700,
@@ -90,7 +90,7 @@ export default function SupportForm() {
           Message sent
         </h2>
         <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 8 }}>
-          We&apos;ll get back to you at <span style={{ color: "#00d4ff" }}>{userEmail}</span> within 24 hours.
+          We&apos;ll get back to you at <span style={{ color: "#5B8DB8" }}>{userEmail}</span> within 24 hours.
         </p>
         <p style={{ color: "#666", fontSize: 12, marginBottom: 32 }}>
           Check your email for a confirmation.
@@ -182,7 +182,7 @@ export default function SupportForm() {
           style={{
             fontSize: 9,
             letterSpacing: 1,
-            color: userTier === "free" ? "#666" : "#00d4ff",
+            color: userTier === "free" ? "#666" : "#5B8DB8",
             textTransform: "uppercase",
             fontWeight: 600,
           }}
@@ -266,7 +266,7 @@ export default function SupportForm() {
         style={{
           width: "100%",
           padding: "14px 0",
-          background: !message.trim() ? "#1a1a2e" : state === "submitting" ? "#333" : "#00d4ff",
+          background: !message.trim() ? "#1a1a2e" : state === "submitting" ? "#333" : "#5B8DB8",
           border: "none",
           borderRadius: 6,
           color: !message.trim() ? "#555" : "#050508",
@@ -289,7 +289,7 @@ export default function SupportForm() {
 
       <p style={{ color: "#444", fontSize: 10, marginTop: 16, textAlign: "center", lineHeight: 1.6 }}>
         You can also email us directly at{" "}
-        <a href="mailto:support@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>
+        <a href="mailto:support@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>
           support@airindex.io
         </a>
       </p>

@@ -212,7 +212,7 @@ export default async function FeedItemPage({ params }: Props) {
                       width: 6,
                       height: 6,
                       borderRadius: "50%",
-                      background: "#00d4ff",
+                      background: "#5B8DB8",
                       flexShrink: 0,
                     }}
                   />

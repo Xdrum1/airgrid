@@ -98,7 +98,7 @@ export default async function LandingPage() {
             style={{
               display: "inline-block",
               padding: "12px 32px",
-              background: "#00d4ff",
+              background: "#5B8DB8",
               color: "#050508",
               fontSize: 11,
               fontWeight: 700,
@@ -136,7 +136,7 @@ export default async function LandingPage() {
               borderRadius: 12,
               overflow: "hidden",
               border: "1px solid rgba(255,255,255,0.08)",
-              boxShadow: "0 0 80px rgba(0,212,255,0.06), 0 0 160px rgba(124,58,237,0.04)",
+              boxShadow: "0 0 80px rgba(91,141,184,0.06), 0 0 160px rgba(124,58,237,0.04)",
             }}
           >
             <Link href="/request-access" className="dashboard-preview-link" style={{ display: "block", position: "relative" }}>
@@ -163,7 +163,7 @@ export default async function LandingPage() {
       {/* ======== What is AirIndex ======== */}
       <ScrollReveal>
         <section style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0", textAlign: "center" }}>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#00d4ff", display: "block", marginBottom: 16 }}>WHAT IS AIRINDEX</span>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#5B8DB8", display: "block", marginBottom: 16 }}>WHAT IS AIRINDEX</span>
           <p style={{ color: "#999", fontSize: 14, lineHeight: 1.8, margin: "0 0 10px" }}>
             Built for operators, infrastructure developers, government agencies, and investors
             making capital allocation decisions in advanced air mobility.
@@ -242,7 +242,7 @@ export default async function LandingPage() {
         <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
             <div>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#00d4ff" }}>MARKET SNAPSHOT</span>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#5B8DB8" }}>MARKET SNAPSHOT</span>
               <span style={{ color: "#333", fontSize: 9, marginLeft: 12 }}>|</span>
               <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 1, color: "#555", marginLeft: 12 }}>
                 {MARKET_COUNT} MARKETS · AVG {Math.round(scored.reduce((s, c) => s + c.score, 0) / scored.length)}
@@ -311,19 +311,19 @@ export default async function LandingPage() {
             {/* Market Pulse (inline) */}
             <div style={{
               background: "rgba(255,255,255,0.02)",
-              border: "1px solid rgba(0,212,255,0.12)",
+              border: "1px solid rgba(91,141,184,0.12)",
               borderRadius: 10,
               overflow: "hidden",
             }}>
               <div style={{
-                background: "rgba(0,212,255,0.05)",
-                borderBottom: "1px solid rgba(0,212,255,0.08)",
+                background: "rgba(91,141,184,0.05)",
+                borderBottom: "1px solid rgba(91,141,184,0.08)",
                 padding: "12px 20px",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
               }}>
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#00d4ff" }}>UAM MARKET PULSE</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#5B8DB8" }}>UAM MARKET PULSE</span>
                 <span style={{ fontSize: 9, color: "#555", letterSpacing: 1 }}>ISSUE 3 · MAR 27, 2026</span>
               </div>
               <div style={{ padding: "20px 20px 24px" }}>
@@ -339,11 +339,11 @@ export default async function LandingPage() {
                 <Link href="/insights" style={{
                   display: "inline-block",
                   padding: "10px 24px",
-                  background: "rgba(0,212,255,0.08)",
-                  border: "1px solid rgba(0,212,255,0.2)",
+                  background: "rgba(91,141,184,0.08)",
+                  border: "1px solid rgba(91,141,184,0.2)",
                   borderRadius: 6,
                   fontSize: 11,
-                  color: "#00d4ff",
+                  color: "#5B8DB8",
                   textDecoration: "none",
                   letterSpacing: 0.5,
                   fontWeight: 700,
@@ -373,7 +373,7 @@ export default async function LandingPage() {
               </div>
               <div style={{ padding: "8px 0" }}>
                 {signals.length > 0 ? signals.map((signal, i) => {
-                  const catColor = signal.category === "Regulatory" ? "#ff6b35" : signal.category === "Legislative" ? "#00ff88" : signal.category === "Operator" ? "#00d4ff" : "#f59e0b";
+                  const catColor = signal.category === "Regulatory" ? "#ff6b35" : signal.category === "Legislative" ? "#00ff88" : signal.category === "Operator" ? "#5B8DB8" : "#f59e0b";
                   const date = new Date(signal.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" });
                   return (
                     <div key={i} style={{
@@ -419,7 +419,7 @@ export default async function LandingPage() {
                 title: "UAM Market Readiness Report — March 2026",
                 description: "Full analysis across 21 markets. Scoring methodology v1.3, operator consolidation, federal activity tracking, and heliport infrastructure data.",
                 href: "/reports/march-2026",
-                accent: "#00d4ff",
+                accent: "#5B8DB8",
               },
               {
                 label: "METHODOLOGY",
@@ -515,7 +515,7 @@ export default async function LandingPage() {
               style={{
                 display: "inline-block",
                 padding: "14px 36px",
-                background: "#00d4ff",
+                background: "#5B8DB8",
                 color: "#050508",
                 fontSize: 12,
                 fontWeight: 700,

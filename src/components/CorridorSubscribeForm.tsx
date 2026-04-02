@@ -174,8 +174,8 @@ export default function CorridorSubscribeForm({
           href="/contact?tier=pro&ref=corridors"
           style={{
             width: "100%",
-            background: "rgba(0,212,255,0.04)",
-            border: "1px solid rgba(0,212,255,0.15)",
+            background: "rgba(91,141,184,0.04)",
+            border: "1px solid rgba(91,141,184,0.15)",
             borderRadius: 6,
             padding: "10px 14px",
             display: "flex",
@@ -187,7 +187,7 @@ export default function CorridorSubscribeForm({
             transition: "all 0.15s",
           }}
         >
-          <span style={{ color: "#00d4ff", fontSize: 9, letterSpacing: 1, fontWeight: 700 }}>
+          <span style={{ color: "#5B8DB8", fontSize: 9, letterSpacing: 1, fontWeight: 700 }}>
             REQUEST ACCESS TO TRACK
           </span>
         </Link>
@@ -218,9 +218,9 @@ export default function CorridorSubscribeForm({
         style={{
           width: "100%",
           background: isSubmitting
-            ? "rgba(0,212,255,0.06)"
-            : "rgba(0,212,255,0.1)",
-          border: "1px solid rgba(0,212,255,0.25)",
+            ? "rgba(91,141,184,0.06)"
+            : "rgba(91,141,184,0.1)",
+          border: "1px solid rgba(91,141,184,0.25)",
           borderRadius: 6,
           padding: "10px 14px",
           cursor: isSubmitting ? "default" : "pointer",
@@ -233,7 +233,7 @@ export default function CorridorSubscribeForm({
           opacity: isSubmitting ? 0.6 : 1,
         }}
       >
-        <span style={{ color: "#00d4ff", fontSize: 9, letterSpacing: 1, fontWeight: 700 }}>
+        <span style={{ color: "#5B8DB8", fontSize: 9, letterSpacing: 1, fontWeight: 700 }}>
           {isSubmitting
             ? "SUBSCRIBING..."
             : session?.user

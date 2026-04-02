@@ -108,7 +108,7 @@ function BreakdownRow({
                 href={safeHref(source.url)!}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: "#00d4ff", textDecoration: "none" }}
+                style={{ color: "#5B8DB8", textDecoration: "none" }}
               >
                 {source.citation}
               </a>
@@ -250,7 +250,7 @@ export default function BreakdownPanel({
               style={{
                 display: "inline-block",
                 padding: "8px 20px",
-                background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
+                background: "linear-gradient(135deg, #5B8DB8, #7c3aed)",
                 borderRadius: 5,
                 color: "#000",
                 fontSize: 10,

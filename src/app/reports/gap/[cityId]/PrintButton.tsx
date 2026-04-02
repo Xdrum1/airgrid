@@ -5,11 +5,11 @@ export default function PrintButton() {
     <button
       onClick={() => window.print()}
       style={{
-        background: "rgba(0,212,255,0.1)",
-        border: "1px solid rgba(0,212,255,0.3)",
+        background: "rgba(91,141,184,0.1)",
+        border: "1px solid rgba(91,141,184,0.3)",
         borderRadius: 6,
         padding: "8px 20px",
-        color: "#00d4ff",
+        color: "#5B8DB8",
         fontSize: 11,
         fontWeight: 700,
         letterSpacing: "0.08em",

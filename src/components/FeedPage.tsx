@@ -265,7 +265,7 @@ export default function FeedPage() {
                           borderRadius: 3,
                           background: "#0d0d15",
                           border: "1px solid #1a1a2e",
-                          color: "#00d4ff",
+                          color: "#5B8DB8",
                           textDecoration: "none",
                           transition: "border-color 0.15s",
                         }}

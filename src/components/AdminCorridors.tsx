@@ -465,11 +465,11 @@ export default function AdminCorridors({
                   <button
                     onClick={() => handleEdit(c)}
                     style={{
-                      background: "rgba(0,212,255,0.08)",
-                      border: "1px solid rgba(0,212,255,0.3)",
+                      background: "rgba(91,141,184,0.08)",
+                      border: "1px solid rgba(91,141,184,0.3)",
                       borderRadius: 4,
                       padding: "6px 14px",
-                      color: "#00d4ff",
+                      color: "#5B8DB8",
                       fontSize: 9,
                       fontWeight: 700,
                       letterSpacing: 1,

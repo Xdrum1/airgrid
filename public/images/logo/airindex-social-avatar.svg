@@ -1,24 +1,24 @@
 <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="120" height="120" rx="24" fill="#0d0d1a"/>
   <!-- Subtle grid -->
-  <line x1="60" y1="0" x2="60" y2="120" stroke="#00d4ff" stroke-width="0.3" opacity="0.1"/>
-  <line x1="0" y1="60" x2="120" y2="60" stroke="#00d4ff" stroke-width="0.3" opacity="0.1"/>
+  <line x1="60" y1="0" x2="60" y2="120" stroke="#5B8DB8" stroke-width="0.3" opacity="0.1"/>
+  <line x1="0" y1="60" x2="120" y2="60" stroke="#5B8DB8" stroke-width="0.3" opacity="0.1"/>
   <!-- Rings -->
-  <circle cx="60" cy="60" r="44" stroke="#00d4ff" stroke-width="1" fill="none" opacity="0.15"/>
-  <circle cx="60" cy="60" r="30" stroke="#00d4ff" stroke-width="1" fill="none" opacity="0.3"/>
-  <circle cx="60" cy="60" r="16" stroke="#00d4ff" stroke-width="1" fill="none" opacity="0.5"/>
+  <circle cx="60" cy="60" r="44" stroke="#5B8DB8" stroke-width="1" fill="none" opacity="0.15"/>
+  <circle cx="60" cy="60" r="30" stroke="#5B8DB8" stroke-width="1" fill="none" opacity="0.3"/>
+  <circle cx="60" cy="60" r="16" stroke="#5B8DB8" stroke-width="1" fill="none" opacity="0.5"/>
   <!-- Center dot -->
-  <circle cx="60" cy="60" r="4" fill="#00d4ff"/>
+  <circle cx="60" cy="60" r="4" fill="#5B8DB8"/>
   <!-- Cardinal lines -->
-  <line x1="60" y1="16" x2="60" y2="30" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="60" y1="90" x2="60" y2="104" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="16" y1="60" x2="30" y2="60" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="90" y1="60" x2="104" y2="60" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="60" y1="16" x2="60" y2="30" stroke="#5B8DB8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="60" y1="90" x2="60" y2="104" stroke="#5B8DB8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="16" y1="60" x2="30" y2="60" stroke="#5B8DB8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="90" y1="60" x2="104" y2="60" stroke="#5B8DB8" stroke-width="1.5" stroke-linecap="round"/>
   <!-- Active arc NE quadrant -->
-  <path d="M 60 16 A 44 44 0 0 1 104 60" stroke="#00d4ff" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 60 16 A 44 44 0 0 1 104 60" stroke="#5B8DB8" stroke-width="2" fill="none" stroke-linecap="round"/>
   <!-- Diagonal ticks -->
-  <line x1="28" y1="28" x2="36" y2="36" stroke="#00d4ff" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
-  <line x1="84" y1="84" x2="92" y2="92" stroke="#00d4ff" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
-  <line x1="92" y1="28" x2="84" y2="36" stroke="#00d4ff" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
-  <line x1="36" y1="84" x2="28" y2="92" stroke="#00d4ff" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+  <line x1="28" y1="28" x2="36" y2="36" stroke="#5B8DB8" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+  <line x1="84" y1="84" x2="92" y2="92" stroke="#5B8DB8" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+  <line x1="92" y1="28" x2="84" y2="36" stroke="#5B8DB8" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+  <line x1="36" y1="84" x2="28" y2="92" stroke="#5B8DB8" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
 </svg>

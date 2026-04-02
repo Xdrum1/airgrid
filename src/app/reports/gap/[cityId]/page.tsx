@@ -207,7 +207,7 @@ export default async function GapReportPage({
                   fontFamily: "'Courier New', monospace",
                   fontWeight: 400,
                   fontSize: 28,
-                  color: "#00d4ff",
+                  color: "#5B8DB8",
                   letterSpacing: "0.12em",
                 }}
               >
@@ -409,7 +409,7 @@ export default async function GapReportPage({
                         <td style={{ padding: "6px 4px", color: "#666", fontSize: 11 }}>
                           {si.citation || "\u2014"}
                           {si.peerNote && (
-                            <span style={{ color: "#00d4ff", marginLeft: 6, fontStyle: "italic" }}>
+                            <span style={{ color: "#5B8DB8", marginLeft: 6, fontStyle: "italic" }}>
                               ({si.peerNote})
                             </span>
                           )}
@@ -476,7 +476,7 @@ export default async function GapReportPage({
                               <span style={{ color, fontSize: 10, fontWeight: 700 }}>{icon}</span>
                               <span style={{ color: "#999", fontSize: 11 }}>{si.label}</span>
                               {si.peerNote && (
-                                <span style={{ color: "#00d4ff", fontSize: 10, fontStyle: "italic" }}>
+                                <span style={{ color: "#5B8DB8", fontSize: 10, fontStyle: "italic" }}>
                                   &mdash; {si.peerNote}
                                 </span>
                               )}
@@ -804,7 +804,7 @@ export default async function GapReportPage({
             </p>
             <p style={{ margin: "6px 0 0" }}>
               <span style={{ fontFamily: "'Courier New', monospace", fontWeight: 800, letterSpacing: "0.1em" }}>AIR</span>
-              <span className="neon-accent" style={{ fontFamily: "'Courier New', monospace", fontWeight: 400, color: "#00d4ff", letterSpacing: "0.1em" }}>INDEX</span>
+              <span className="neon-accent" style={{ fontFamily: "'Courier New', monospace", fontWeight: 400, color: "#5B8DB8", letterSpacing: "0.1em" }}>INDEX</span>
               {" "}&middot; Rate the sky.
             </p>
             <p className="screen-only" style={{ margin: "8px 0 0", color: "#777" }}>

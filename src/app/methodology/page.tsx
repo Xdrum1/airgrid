@@ -118,7 +118,7 @@ const FACTORS = [
 
 const TIERS = [
   { label: "ADVANCED", range: "75\u2013100", color: "#00ff88", description: "Market has most or all infrastructure, regulatory, and operator requirements in place. Commercial UAM operations are imminent or active." },
-  { label: "MODERATE", range: "50\u201374", color: "#00d4ff", description: "Significant progress across multiple factors. Key pieces are in place but gaps remain \u2014 typically missing infrastructure or operator commitment." },
+  { label: "MODERATE", range: "50\u201374", color: "#5B8DB8", description: "Significant progress across multiple factors. Key pieces are in place but gaps remain \u2014 typically missing infrastructure or operator commitment." },
   { label: "EARLY", range: "30\u201349", color: "#f59e0b", description: "Some foundational elements present. Regulatory posture may be favorable but physical infrastructure and operator activity are limited." },
   { label: "NASCENT", range: "0\u201329", color: "#ff4444", description: "Minimal UAM readiness. Market may have partial weather infrastructure or early regulatory signals but lacks substantive infrastructure or operator engagement." },
 ];
@@ -316,7 +316,7 @@ export default function MethodologyPage() {
                       fontFamily: "'Space Mono', monospace",
                       fontSize: 13,
                       fontWeight: 700,
-                      color: "#00d4ff",
+                      color: "#5B8DB8",
                     }}
                   >
                     {f.weight} pts
@@ -337,7 +337,7 @@ export default function MethodologyPage() {
                     style={{
                       width: `${(f.weight / totalWeight) * 100}%`,
                       height: "100%",
-                      background: "#00d4ff",
+                      background: "#5B8DB8",
                       borderRadius: 2,
                     }}
                   />
@@ -432,7 +432,7 @@ export default function MethodologyPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span style={{ color: "#fff", fontSize: 13 }}>Legislative Framework</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", color: "#00d4ff", fontSize: 13, fontWeight: 700 }}>20 pts</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", color: "#5B8DB8", fontSize: 13, fontWeight: 700 }}>20 pts</span>
               </div>
               <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
                 State Legislation &mdash; elevated to the highest weight in v1.3 based on field validation. Legislation creates the legal framework infrastructure developers require before committing capital. Community preparedness, reflected in legislative activity, precedes and enables operator engagement.
@@ -440,7 +440,7 @@ export default function MethodologyPage() {
               <div style={{ height: 1, background: "rgba(255,255,255,0.04)" }} />
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span style={{ color: "#fff", fontSize: 13 }}>Infrastructure &amp; Market Commitment</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", color: "#00d4ff", fontSize: 13, fontWeight: 700 }}>15 pts each</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", color: "#5B8DB8", fontSize: 13, fontWeight: 700 }}>15 pts each</span>
               </div>
               <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
                 Pilot Program, Approved Vertiport, Active Operator Presence, Vertiport Zoning &mdash; the operational and infrastructure signals. These require real capital, real approvals, and real operator commitment.
@@ -448,7 +448,7 @@ export default function MethodologyPage() {
               <div style={{ height: 1, background: "rgba(255,255,255,0.04)" }} />
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span style={{ color: "#fff", fontSize: 13 }}>Regulatory &amp; Environmental Readiness</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", color: "#00d4ff", fontSize: 13, fontWeight: 700 }}>10 pts each</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", color: "#5B8DB8", fontSize: 13, fontWeight: 700 }}>10 pts each</span>
               </div>
               <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
                 Regulatory Posture, Weather Infrastructure &mdash; necessary but not sufficient. A friendly regulatory environment and weather sensing infrastructure support operations but do not alone make a market ready.
@@ -476,7 +476,7 @@ export default function MethodologyPage() {
             }}
           >
             {FACTORS.map((f, i) => {
-              const colors = ["#00d4ff", "#00ff88", "#7c3aed", "#f59e0b", "#ff6b35", "#14b8a6", "#ff4444"];
+              const colors = ["#5B8DB8", "#00ff88", "#7c3aed", "#f59e0b", "#ff6b35", "#14b8a6", "#ff4444"];
               return (
                 <div
                   key={f.key}
@@ -491,7 +491,7 @@ export default function MethodologyPage() {
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px", marginBottom: 24 }}>
             {FACTORS.map((f, i) => {
-              const colors = ["#00d4ff", "#00ff88", "#7c3aed", "#f59e0b", "#ff6b35", "#14b8a6", "#ff4444"];
+              const colors = ["#5B8DB8", "#00ff88", "#7c3aed", "#f59e0b", "#ff6b35", "#14b8a6", "#ff4444"];
               return (
                 <div key={f.key} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#888" }}>
                   <div style={{ width: 8, height: 8, borderRadius: 2, background: colors[i % colors.length], opacity: 0.8 }} />
@@ -670,7 +670,7 @@ export default function MethodologyPage() {
                   alignItems: "baseline",
                 }}
               >
-                <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 13, color: "#00d4ff", minWidth: 28 }}>{p.version}</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 13, color: "#5B8DB8", minWidth: 28 }}>{p.version}</span>
                 <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#555", minWidth: 100, flexShrink: 0 }}>{p.date}</span>
                 <span style={{ color: "#999", fontSize: 13 }}>{p.desc}</span>
               </div>
@@ -772,7 +772,7 @@ export default function MethodologyPage() {
                   lineHeight: 1.6,
                 }}
               >
-                <span style={{ color: "#00d4ff", flexShrink: 0, marginTop: 2 }}>&mdash;</span>
+                <span style={{ color: "#5B8DB8", flexShrink: 0, marginTop: 2 }}>&mdash;</span>
                 <span>{item}</span>
               </li>
             ))}
@@ -781,7 +781,7 @@ export default function MethodologyPage() {
             Vertical Data Group actively supports research partnerships and data collaborations
             with government agencies, universities, and policy institutions. For research access
             or partnership inquiries, contact{" "}
-            <a href="mailto:info@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>
+            <a href="mailto:info@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               info@airindex.io
             </a>
           </p>
@@ -795,13 +795,13 @@ export default function MethodologyPage() {
           </p>
           <div
             style={{
-              background: "rgba(0, 212, 255, 0.04)",
-              border: "1px solid rgba(0, 212, 255, 0.12)",
+              background: "rgba(91, 141, 184, 0.04)",
+              border: "1px solid rgba(91, 141, 184, 0.12)",
               borderRadius: 8,
               padding: "20px 24px",
               fontFamily: "'Space Mono', monospace",
               fontSize: 13,
-              color: "#00d4ff",
+              color: "#5B8DB8",
               lineHeight: 1.8,
               marginBottom: 16,
             }}
@@ -811,13 +811,13 @@ export default function MethodologyPage() {
           <p style={{ color: "#999", fontSize: 13, marginBottom: 16 }}>
             A formal methodology paper with DOI assignment is forthcoming. Researchers requiring
             a citable reference should contact{" "}
-            <a href="mailto:info@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>
+            <a href="mailto:info@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               info@airindex.io
             </a>
           </p>
           <p style={{ color: "#999", fontSize: 13 }}>
             For press inquiries, data partnerships, or API access, contact{" "}
-            <a href="mailto:info@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>
+            <a href="mailto:info@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               info@airindex.io
             </a>
           </p>
@@ -833,7 +833,7 @@ export default function MethodologyPage() {
             fontSize: 12,
           }}
         >
-          <Link href="/dashboard" style={{ color: "#00d4ff", textDecoration: "none" }}>
+          <Link href="/dashboard" style={{ color: "#5B8DB8", textDecoration: "none" }}>
             View Dashboard
           </Link>
           <Link href="/terminology" style={{ color: "#555", textDecoration: "none" }}>

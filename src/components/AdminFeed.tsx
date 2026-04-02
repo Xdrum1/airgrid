@@ -216,7 +216,7 @@ export default function AdminFeed({
       <div style={{ marginBottom: 20 }}>
         <button
           onClick={() => (showForm ? resetForm() : setShowForm(true))}
-          style={btnStyle("#00d4ff")}
+          style={btnStyle("#5B8DB8")}
         >
           {showForm ? "CANCEL" : editingId ? "EDITING..." : "+ NEW FEED ITEM"}
         </button>
@@ -429,7 +429,7 @@ export default function AdminFeed({
                     href={safeHref(item.sourceUrl)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ fontSize: 9, color: "#00d4ff" }}
+                    style={{ fontSize: 9, color: "#5B8DB8" }}
                   >
                     SOURCE
                   </a>
@@ -443,7 +443,7 @@ export default function AdminFeed({
                       PUBLISH
                     </button>
                   )}
-                  <button onClick={() => handleEdit(item)} style={btnStyle("#00d4ff")}>
+                  <button onClick={() => handleEdit(item)} style={btnStyle("#5B8DB8")}>
                     EDIT
                   </button>
                   {item.status !== "archived" && (

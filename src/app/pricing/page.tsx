@@ -92,7 +92,7 @@ export default function PricingPage() {
           style={{
             display: "inline-block",
             padding: "14px 36px",
-            background: "#00d4ff",
+            background: "#5B8DB8",
             color: "#050508",
             fontSize: 12,
             fontWeight: 700,
@@ -145,7 +145,7 @@ export default function PricingPage() {
                       gap: 6,
                     }}
                   >
-                    <span style={{ color: "#00d4ff", fontSize: 8 }}>&#10003;</span>
+                    <span style={{ color: "#5B8DB8", fontSize: 8 }}>&#10003;</span>
                     {item}
                   </span>
                 ))}
@@ -175,7 +175,7 @@ export default function PricingPage() {
             "Economic Development Alliances",
           ].map((role) => (
             <div key={role} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ color: "#00d4ff", fontSize: 8, flexShrink: 0 }}>&#9646;</span>
+              <span style={{ color: "#5B8DB8", fontSize: 8, flexShrink: 0 }}>&#9646;</span>
               <span style={{ color: "#999", fontSize: 12 }}>{role}</span>
             </div>
           ))}
@@ -186,9 +186,9 @@ export default function PricingPage() {
             style={{
               display: "inline-block",
               padding: "12px 32px",
-              border: "1px solid rgba(0,212,255,0.4)",
+              border: "1px solid rgba(91,141,184,0.4)",
               borderRadius: 6,
-              color: "#00d4ff",
+              color: "#5B8DB8",
               fontSize: 11,
               fontWeight: 700,
               letterSpacing: "0.06em",

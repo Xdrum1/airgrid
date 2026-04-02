@@ -41,7 +41,7 @@ export default function AuthGate({ tab }: AuthGateProps) {
             left: 40,
             right: 40,
             height: 2,
-            background: "linear-gradient(90deg, #00d4ff, #7c3aed)",
+            background: "linear-gradient(90deg, #5B8DB8, #7c3aed)",
             borderRadius: "2px 2px 0 0",
           }}
         />
@@ -80,7 +80,7 @@ export default function AuthGate({ tab }: AuthGateProps) {
           onClick={() => router.push(`/login?mode=signup&callbackUrl=${encodeURIComponent(`/dashboard?tab=${tab}`)}`)}
           style={{
             padding: "13px 32px",
-            background: "linear-gradient(135deg, #00d4ff, #7c3aed)",
+            background: "linear-gradient(135deg, #5B8DB8, #7c3aed)",
             border: "none",
             borderRadius: 6,
             color: "#000",

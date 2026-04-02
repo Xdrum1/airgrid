@@ -39,19 +39,19 @@ const S = {
     marginBottom: 14,
   },
   link: {
-    color: "#00d4ff",
+    color: "#5B8DB8",
     textDecoration: "none" as const,
   },
   strong: {
     color: "#ccc",
   },
   code: {
-    color: "#00d4ff",
+    color: "#5B8DB8",
     fontSize: 12,
   },
   callout: {
-    background: "rgba(0,212,255,0.04)",
-    border: "1px solid rgba(0,212,255,0.12)",
+    background: "rgba(91,141,184,0.04)",
+    border: "1px solid rgba(91,141,184,0.12)",
     borderRadius: 8,
     padding: "16px 20px",
     marginBottom: 24,
@@ -130,7 +130,7 @@ export default function PrivacyPage() {
 
       {/* Content */}
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "48px 24px 80px" }}>
-        <p style={{ fontSize: 10, letterSpacing: "0.2em", color: "#00d4ff", textTransform: "uppercase" as const, marginBottom: 16 }}>
+        <p style={{ fontSize: 10, letterSpacing: "0.2em", color: "#5B8DB8", textTransform: "uppercase" as const, marginBottom: 16 }}>
           Legal
         </p>
 
@@ -155,7 +155,7 @@ export default function PrivacyPage() {
 
         {/* Privacy First callout */}
         <div style={S.callout}>
-          <strong style={{ color: "#00d4ff", display: "block", marginBottom: 8 }}>Privacy First — What This Means for You</strong>
+          <strong style={{ color: "#5B8DB8", display: "block", marginBottom: 8 }}>Privacy First — What This Means for You</strong>
           AirIndex is built on a privacy-respecting technology stack. We do not use Google Analytics,
           Facebook Pixel, or invasive tracking cookies. We use Plausible Analytics — a cookieless,
           GDPR-compliant analytics tool that does not track you across websites or build personal profiles.

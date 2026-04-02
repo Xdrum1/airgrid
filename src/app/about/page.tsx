@@ -77,7 +77,7 @@ export default async function AboutPage() {
           <div style={{
             fontSize: 9,
             letterSpacing: 3,
-            color: "#00d4ff",
+            color: "#5B8DB8",
             fontFamily: "'Space Mono', monospace",
             marginBottom: 16,
           }}>
@@ -119,7 +119,7 @@ export default async function AboutPage() {
                 href="https://verticaldatagroup.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: "#00d4ff", textDecoration: "none" }}
+                style={{ color: "#5B8DB8", textDecoration: "none" }}
               >
                 Vertical Data Group, LLC
               </a>
@@ -192,7 +192,7 @@ export default async function AboutPage() {
           <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 24 }}>
             Every market receives a 0-100 readiness score computed from seven weighted factors.
             Scores update continuously as conditions change. Methodology v1.3 is{" "}
-            <Link href="/methodology" style={{ color: "#00d4ff", textDecoration: "none" }}>
+            <Link href="/methodology" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               fully published
             </Link>.
           </p>
@@ -215,7 +215,7 @@ export default async function AboutPage() {
                     fontFamily: "'Space Mono', monospace",
                     fontSize: 14,
                     fontWeight: 700,
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     minWidth: 28,
                   }}>
                     {weight}
@@ -232,7 +232,7 @@ export default async function AboutPage() {
                     <div style={{
                       height: "100%",
                       width: `${weight * 5}%`,
-                      background: "rgba(0,212,255,0.4)",
+                      background: "rgba(91,141,184,0.4)",
                       borderRadius: 2,
                     }} />
                   </div>
@@ -290,7 +290,7 @@ export default async function AboutPage() {
                     fontFamily: "'Space Mono', monospace",
                     fontSize: 18,
                     fontWeight: 700,
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                   }}>
                     {m.value}
                   </div>
@@ -337,9 +337,9 @@ export default async function AboutPage() {
                   <span style={{
                     fontFamily: "'Space Mono', monospace",
                     fontSize: 10,
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     padding: "2px 6px",
-                    background: "rgba(0,212,255,0.08)",
+                    background: "rgba(91,141,184,0.08)",
                     borderRadius: 3,
                     letterSpacing: 1,
                   }}>
@@ -358,7 +358,7 @@ export default async function AboutPage() {
             to factor impact to market score. When a state enacts AAM legislation, the document enters
             RPL, maps to the LEG factor in FKB, and the market score updates with full provenance.
             See our{" "}
-            <Link href="/terminology" style={{ color: "#00d4ff", textDecoration: "none" }}>
+            <Link href="/terminology" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               terminology reference
             </Link>{" "}
             for standardized definitions used across the platform.
@@ -384,7 +384,7 @@ export default async function AboutPage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             {AUDIENCES.map((a) => (
               <div key={a.type} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                <span style={{ color: "#00d4ff", fontSize: 8, marginTop: 5, flexShrink: 0 }}>&#9646;</span>
+                <span style={{ color: "#5B8DB8", fontSize: 8, marginTop: 5, flexShrink: 0 }}>&#9646;</span>
                 <div>
                   <div style={{ color: "#ccc", fontSize: 12, fontWeight: 600 }}>{a.type}</div>
                   <div style={{ color: "#666", fontSize: 11, lineHeight: 1.5 }}>{a.desc}</div>
@@ -406,7 +406,7 @@ export default async function AboutPage() {
             style={{
               display: "inline-block",
               padding: "12px 24px",
-              background: "#00d4ff",
+              background: "#5B8DB8",
               color: "#050508",
               fontSize: 12,
               fontWeight: 700,
@@ -459,15 +459,15 @@ export default async function AboutPage() {
           <div style={{ color: "#666", fontSize: 12, lineHeight: 1.8 }}>
             <p>
               Research access, data partnerships, API inquiries:{" "}
-              <a href="mailto:info@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>info@airindex.io</a>
+              <a href="mailto:info@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>info@airindex.io</a>
             </p>
             <p>
               Platform and subscription questions:{" "}
-              <a href="mailto:hello@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>hello@airindex.io</a>
+              <a href="mailto:hello@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>hello@airindex.io</a>
             </p>
             <p>
               Legal and terms:{" "}
-              <a href="mailto:legal@airindex.io" style={{ color: "#00d4ff", textDecoration: "none" }}>legal@airindex.io</a>
+              <a href="mailto:legal@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>legal@airindex.io</a>
             </p>
           </div>
         </section>

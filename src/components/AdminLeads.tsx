@@ -35,7 +35,7 @@ interface MarketLead {
 type StatusKey = "new" | "researching" | "verified" | "added" | "dismissed";
 
 const STATUS_COLORS: Record<string, string> = {
-  new: "#00d4ff",
+  new: "#5B8DB8",
   researching: "#f59e0b",
   verified: "#00ff88",
   added: "#7c3aed",
@@ -338,14 +338,14 @@ function LeadCard({
           )}
           {isAutoDiscovered && (
             <span style={{
-              background: "rgba(0,212,255,0.1)",
-              color: "#00d4ff",
+              background: "rgba(91,141,184,0.1)",
+              color: "#5B8DB8",
               fontSize: 8,
               fontWeight: 700,
               letterSpacing: 1,
               padding: "2px 6px",
               borderRadius: 3,
-              border: "1px solid rgba(0,212,255,0.25)",
+              border: "1px solid rgba(91,141,184,0.25)",
             }}>
               AUTO
             </span>
@@ -495,7 +495,7 @@ function LeadCard({
                           href={s.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ color: "#00d4ff", fontSize: 9, textDecoration: "none" }}
+                          style={{ color: "#5B8DB8", fontSize: 9, textDecoration: "none" }}
                         >
                           Source →
                         </a>
@@ -577,11 +577,11 @@ function LeadCard({
               onClick={() => patchLead({ researchNotes: notes, factorSnapshot: factors }).then((ok) => ok && showToast("Saved"))}
               disabled={saving}
               style={{
-                background: "rgba(0,212,255,0.08)",
-                border: "1px solid rgba(0,212,255,0.3)",
+                background: "rgba(91,141,184,0.08)",
+                border: "1px solid rgba(91,141,184,0.3)",
                 borderRadius: 4,
                 padding: "7px 16px",
-                color: "#00d4ff",
+                color: "#5B8DB8",
                 fontSize: 9,
                 fontWeight: 700,
                 letterSpacing: 1,

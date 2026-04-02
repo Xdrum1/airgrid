@@ -147,7 +147,7 @@ export default function PreCheckoutModal({
           }}
         >
           Required before subscribing to{" "}
-          <span style={{ color: "#00d4ff" }}>
+          <span style={{ color: "#5B8DB8" }}>
             {tier === "institutional" ? "Institutional" : "Professional"}
           </span>
           {" "}({interval}).
@@ -272,7 +272,7 @@ export default function PreCheckoutModal({
               flex: 2,
               padding: "12px 0",
               background: canSubmit
-                ? "linear-gradient(135deg, #00d4ff, #7c3aed)"
+                ? "linear-gradient(135deg, #5B8DB8, #7c3aed)"
                 : "#1a1a2e",
               border: "none",
               borderRadius: 6,

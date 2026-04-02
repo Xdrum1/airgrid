@@ -59,7 +59,7 @@ const vpStatusLabel: Record<string, string> = {
 const vpStatusColor: Record<string, string> = {
   operational: "#00ff88",
   under_construction: "#f59e0b",
-  permitted: "#00d4ff",
+  permitted: "#5B8DB8",
   planned: "#7c3aed",
   proposed: "#666",
 };
@@ -67,7 +67,7 @@ const vpStatusColor: Record<string, string> = {
 const corStatusColor: Record<string, string> = {
   active: "#00ff88",
   proposed: "#f59e0b",
-  under_review: "#00d4ff",
+  under_review: "#5B8DB8",
   suspended: "#ff4444",
 };
 
@@ -215,9 +215,9 @@ export default async function OperatorDetailPage({ params }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  color: "#00d4ff",
+                  color: "#5B8DB8",
                   textDecoration: "none",
-                  borderBottom: "1px solid rgba(0,212,255,0.3)",
+                  borderBottom: "1px solid rgba(91,141,184,0.3)",
                 }}
               >
                 {op.website.replace(/^https?:\/\/(www\.)?/, "")}
@@ -330,7 +330,7 @@ export default async function OperatorDetailPage({ params }: Props) {
                   gap: 12,
                 }}
               >
-                <span style={{ color: "#00d4ff", fontSize: 10, flexShrink: 0 }}>&#9646;</span>
+                <span style={{ color: "#5B8DB8", fontSize: 10, flexShrink: 0 }}>&#9646;</span>
                 <span style={{ fontSize: 13, color: "#c0c8d8", lineHeight: 1.6 }}>{a}</span>
               </div>
             ))}
@@ -384,7 +384,7 @@ export default async function OperatorDetailPage({ params }: Props) {
                         fontFamily: "'Space Grotesk', sans-serif",
                         fontWeight: 700,
                         fontSize: 24,
-                        color: "#00d4ff",
+                        color: "#5B8DB8",
                       }}
                     >
                       {city.score}
@@ -572,9 +572,9 @@ export default async function OperatorDetailPage({ params }: Props) {
           href="/dashboard"
           style={{
             display: "inline-block",
-            background: "rgba(0,212,255,0.1)",
-            border: "1px solid rgba(0,212,255,0.3)",
-            color: "#00d4ff",
+            background: "rgba(91,141,184,0.1)",
+            border: "1px solid rgba(91,141,184,0.3)",
+            color: "#5B8DB8",
             fontWeight: 600,
             fontSize: 13,
             padding: "12px 28px",

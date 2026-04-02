@@ -31,10 +31,10 @@ export default function CityCard({
       onClick={onClick}
       style={{
         background: isSelected
-          ? "rgba(0,212,255,0.06)"
+          ? "rgba(91,141,184,0.06)"
           : "rgba(255,255,255,0.02)",
         border: isSelected
-          ? "1px solid rgba(0,212,255,0.4)"
+          ? "1px solid rgba(91,141,184,0.4)"
           : "1px solid rgba(255,255,255,0.05)",
         borderRadius: 8,
         padding: "12px 14px",
@@ -141,7 +141,7 @@ export default function CityCard({
           textAlign: "right",
           transition: "color 0.15s",
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#00d4ff")}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#5B8DB8")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
       >
         VIEW DETAILS →

@@ -62,7 +62,7 @@ export default function AnalyticsTab({
         marginBottom: 24,
       }}>
         {[
-          { label: "TOTAL MARKETS", value: cities.length, color: "#00d4ff" },
+          { label: "TOTAL MARKETS", value: cities.length, color: "#5B8DB8" },
           { label: "AVG SCORE", value: avgScore, color: "#00ff88" },
           { label: "VERTIPORT CITIES", value: vertiportCityCount, color: "#f59e0b" },
           { label: "OPERATORS", value: operatorCount, color: "#7c3aed" },
@@ -282,7 +282,7 @@ export default function AnalyticsTab({
             marginBottom: 24,
           }}>
             {[
-              { label: "TOTAL CORRIDORS", value: corridors.length, color: "#00d4ff" },
+              { label: "TOTAL CORRIDORS", value: corridors.length, color: "#5B8DB8" },
               { label: "PROPOSED", value: corridorStats.proposed, color: CORRIDOR_STATUS_COLORS["proposed"] },
               { label: "AUTHORIZED", value: corridorStats.authorized, color: CORRIDOR_STATUS_COLORS["authorized"] },
               { label: "ACTIVE", value: corridorStats.active, color: CORRIDOR_STATUS_COLORS["active"] },
@@ -313,7 +313,7 @@ export default function AnalyticsTab({
           {/* Average stats */}
           <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
             {[
-              { label: "AVG DISTANCE", value: `${corridorStats.avgDistance} km`, color: "#00d4ff" },
+              { label: "AVG DISTANCE", value: `${corridorStats.avgDistance} km`, color: "#5B8DB8" },
               { label: "AVG FLIGHT TIME", value: `${corridorStats.avgFlight} min`, color: "#00ff88" },
             ].map((stat) => (
               <div
@@ -367,14 +367,14 @@ export default function AnalyticsTab({
                         width={animate ? barWidth : 0}
                         height={20}
                         rx={3}
-                        fill="#00d4ff"
+                        fill="#5B8DB8"
                         opacity={0.85}
                         style={{ transition: `width 0.8s ease ${i * 0.05}s` }}
                       />
                       <text
                         x={120 + barWidth + 8}
                         y={i * 30 + 18}
-                        fill="#00d4ff"
+                        fill="#5B8DB8"
                         fontSize={10}
                         fontFamily="'Inter', sans-serif"
                         fontWeight={700}

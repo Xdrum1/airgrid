@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
 
       const html = `
         <div style="font-family: monospace; max-width: 600px;">
-          <h2 style="color: #00d4ff;">New AirIndex Inquiry</h2>
+          <h2 style="color: #5B8DB8;">New AirIndex Inquiry</h2>
           <table style="border-collapse: collapse; width: 100%;">
             <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Name</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeName}</td></tr>
             <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Email</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;"><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>
@@ -171,7 +171,7 @@ export async function POST(request: NextRequest) {
               <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 24px;">
                 ${confirm.body}
               </p>
-              <a href="${confirm.cta.href}" style="display:inline-block;padding:12px 28px;background:#00d4ff;color:#050508;font-size:13px;font-weight:700;text-decoration:none;border-radius:6px;">
+              <a href="${confirm.cta.href}" style="display:inline-block;padding:12px 28px;background:#5B8DB8;color:#050508;font-size:13px;font-weight:700;text-decoration:none;border-radius:6px;">
                 ${confirm.cta.label}
               </a>
               <p style="color:#bbb;font-size:11px;margin-top:32px;line-height:1.6;">

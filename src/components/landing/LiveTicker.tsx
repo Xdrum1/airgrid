@@ -69,7 +69,7 @@ export default function LiveTicker({
 
   // Add static stats at the end
   tickerItems.push(
-    { text: `${marketCount} markets rated`, color: "#00d4ff", time: "" },
+    { text: `${marketCount} markets rated`, color: "#5B8DB8", time: "" },
     { text: `${operatorCount} operators tracked`, color: "#00ff88", time: "" },
     { text: `${corridorCount} corridors mapped`, color: "#7c3aed", time: "" }
   );

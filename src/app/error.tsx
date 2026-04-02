@@ -45,11 +45,11 @@ export default function Error({
         <button
           onClick={reset}
           style={{
-            color: "#00d4ff",
+            color: "#5B8DB8",
             fontSize: 11,
             letterSpacing: 1,
             textDecoration: "none",
-            border: "1px solid rgba(0,212,255,0.3)",
+            border: "1px solid rgba(91,141,184,0.3)",
             borderRadius: 6,
             padding: "10px 20px",
             background: "transparent",

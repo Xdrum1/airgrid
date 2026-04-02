@@ -118,7 +118,7 @@ export default async function InstitutionalPage() {
             fontSize: 11,
             fontWeight: 600,
             letterSpacing: 3,
-            color: "#00d4ff",
+            color: "#5B8DB8",
             textTransform: "uppercase",
             marginBottom: 16,
           }}
@@ -258,7 +258,7 @@ export default async function InstitutionalPage() {
                   fontSize: 11,
                   fontWeight: 600,
                   letterSpacing: 2,
-                  color: "#00d4ff",
+                  color: "#5B8DB8",
                   marginBottom: 12,
                 }}
               >
@@ -334,7 +334,7 @@ export default async function InstitutionalPage() {
               >
                 <span
                   style={{
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     fontSize: 8,
                     flexShrink: 0,
                   }}
@@ -372,7 +372,7 @@ export default async function InstitutionalPage() {
           href="/contact?tier=institutional"
           style={{
             display: "inline-block",
-            background: "#00d4ff",
+            background: "#5B8DB8",
             color: "#050508",
             fontWeight: 700,
             fontSize: 14,
@@ -389,9 +389,9 @@ export default async function InstitutionalPage() {
           <a
             href="mailto:sales@airindex.io"
             style={{
-              color: "#00d4ff",
+              color: "#5B8DB8",
               textDecoration: "none",
-              borderBottom: "1px solid rgba(0,212,255,0.3)",
+              borderBottom: "1px solid rgba(91,141,184,0.3)",
             }}
           >
             sales@airindex.io

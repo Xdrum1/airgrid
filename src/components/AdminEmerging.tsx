@@ -159,7 +159,7 @@ export default function AdminEmerging({ showToast }: { showToast: (msg: string) 
             value={stats.unclassified}
             color={stats.unclassified > 0 ? "#f59e0b" : "#00ff88"}
           />
-          <StatBox label="SOURCES" value={sourceCount} color="#00d4ff" />
+          <StatBox label="SOURCES" value={sourceCount} color="#5B8DB8" />
         </div>
       )}
 
@@ -329,7 +329,7 @@ export default function AdminEmerging({ showToast }: { showToast: (msg: string) 
                       {signal.title}
                     </a>
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-                      <Badge label={signal.marketName} color="#00d4ff" />
+                      <Badge label={signal.marketName} color="#5B8DB8" />
                       <Badge label={signal.source} color="#888" />
                       <Badge label={signal.signalType} color="#7c3aed" />
                       <Badge label={signal.momentum} color={momentumColor} />

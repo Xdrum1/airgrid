@@ -146,7 +146,7 @@ export default async function CourtesyReportPage({
   const tierSegments = [
     { label: "NASCENT", min: 0, max: 24, color: "#ff4444", printColor: "#cc2222" },
     { label: "EARLY", min: 25, max: 49, color: "#f59e0b", printColor: "#b87a00" },
-    { label: "MODERATE", min: 50, max: 74, color: "#00d4ff", printColor: "#0077b6" },
+    { label: "MODERATE", min: 50, max: 74, color: "#5B8DB8", printColor: "#0077b6" },
     { label: "ADVANCED", min: 75, max: 100, color: "#00ff88", printColor: "#00884d" },
   ];
 
@@ -207,7 +207,7 @@ export default async function CourtesyReportPage({
                 <span style={{ fontFamily: "'Space Mono', 'Courier New', monospace", fontWeight: 700, fontSize: 14, color: "#e0e0e0", letterSpacing: "0.14em" }}>
                   AIR
                 </span>
-                <span className="accent" style={{ fontFamily: "'Space Mono', 'Courier New', monospace", fontWeight: 700, fontSize: 14, color: "#00d4ff", letterSpacing: "0.14em" }}>
+                <span className="accent" style={{ fontFamily: "'Space Mono', 'Courier New', monospace", fontWeight: 700, fontSize: 14, color: "#5B8DB8", letterSpacing: "0.14em" }}>
                   INDEX
                 </span>
               </div>
@@ -233,7 +233,7 @@ export default async function CourtesyReportPage({
               style={{
                 height: 2,
                 marginTop: 8,
-                background: "linear-gradient(90deg, #00d4ff, #00ff88)",
+                background: "linear-gradient(90deg, #5B8DB8, #00ff88)",
                 borderRadius: 1,
               }}
             />
@@ -460,7 +460,7 @@ export default async function CourtesyReportPage({
                     <td style={{ padding: "4px 6px", borderBottom: "none", textAlign: "center", color: "#555" }}>
                       →
                     </td>
-                    <td className="accent" style={{ padding: "4px 6px", borderBottom: "none", textAlign: "center", color: "#00d4ff", fontWeight: 700, fontSize: 10 }}>
+                    <td className="accent" style={{ padding: "4px 6px", borderBottom: "none", textAlign: "center", color: "#5B8DB8", fontWeight: 700, fontSize: 10 }}>
                       {projectedTotal}
                     </td>
                     <td style={{ padding: "4px 6px", borderBottom: "none", textAlign: "center", fontSize: 8, color: "#aaa" }}>

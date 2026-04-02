@@ -53,7 +53,7 @@ function StatItem({ value, label, duration, delay }: Stat & { duration: number; 
           fontFamily: "'Space Grotesk', sans-serif",
           fontWeight: 700,
           fontSize: 32,
-          color: "#00d4ff",
+          color: "#5B8DB8",
           lineHeight: 1,
           marginBottom: 6,
         }}

@@ -30,13 +30,13 @@ const TIER_COLORS: Record<string, string> = {
   pro: "#00ff88",
   institutional: "#7c3aed",
   enterprise: "#ff6b35",
-  grandfathered: "#00d4ff",
+  grandfathered: "#5B8DB8",
   free: "#555",
 };
 
 const STATUS_COLORS: Record<string, string> = {
   active: "#00ff88",
-  trialing: "#00d4ff",
+  trialing: "#5B8DB8",
   past_due: "#f59e0b",
   canceled: "#ff4444",
   unpaid: "#ff4444",
@@ -102,7 +102,7 @@ export default function AdminBilling({ showToast }: { showToast: (msg: string) =
           {[
             { label: "ACTIVE PRO", value: summary.activePro, color: "#00ff88" },
             { label: "INSTITUTIONAL", value: summary.activeInstitutional, color: "#7c3aed" },
-            { label: "GRANDFATHERED", value: summary.grandfathered, color: "#00d4ff" },
+            { label: "GRANDFATHERED", value: summary.grandfathered, color: "#5B8DB8" },
             { label: "TOTAL NON-FREE", value: summary.totalPaid, color: "#888" },
           ].map((s) => (
             <div

@@ -24,7 +24,7 @@ interface Insight {
 
 const CATEGORY_COLORS: Record<Insight["category"], string> = {
   market: "#00ff88",
-  methodology: "#00d4ff",
+  methodology: "#5B8DB8",
   industry: "#f59e0b",
   signal: "#7c3aed",
   platform: "#14b8a6",
@@ -169,8 +169,8 @@ export default function InsightsPage() {
         <div style={{
           marginBottom: 40,
           padding: "24px 28px",
-          background: "rgba(0,212,255,0.04)",
-          border: "1px solid rgba(0,212,255,0.15)",
+          background: "rgba(91,141,184,0.04)",
+          border: "1px solid rgba(91,141,184,0.15)",
           borderRadius: 10,
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
@@ -178,9 +178,9 @@ export default function InsightsPage() {
               fontSize: 9,
               fontWeight: 700,
               letterSpacing: "0.1em",
-              color: "#00d4ff",
-              background: "rgba(0,212,255,0.1)",
-              border: "1px solid rgba(0,212,255,0.25)",
+              color: "#5B8DB8",
+              background: "rgba(91,141,184,0.1)",
+              border: "1px solid rgba(91,141,184,0.25)",
               borderRadius: 3,
               padding: "3px 10px",
             }}>
@@ -214,7 +214,7 @@ export default function InsightsPage() {
           <Link
             href="/reports/march-2026"
             style={{
-              color: "#00d4ff",
+              color: "#5B8DB8",
               fontSize: 12,
               fontWeight: 600,
               textDecoration: "none",
@@ -321,7 +321,7 @@ export default function InsightsPage() {
                   style={{
                     display: "inline-block",
                     marginTop: 4,
-                    color: "#00d4ff",
+                    color: "#5B8DB8",
                     fontSize: 12,
                     textDecoration: "none",
                     letterSpacing: "0.04em",

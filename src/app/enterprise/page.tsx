@@ -323,9 +323,9 @@ export default async function EnterprisePage() {
           <a
             href="mailto:sales@airindex.io"
             style={{
-              color: "#00d4ff",
+              color: "#5B8DB8",
               textDecoration: "none",
-              borderBottom: "1px solid rgba(0,212,255,0.3)",
+              borderBottom: "1px solid rgba(91,141,184,0.3)",
             }}
           >
             sales@airindex.io
