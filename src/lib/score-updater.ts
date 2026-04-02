@@ -5,7 +5,7 @@
 
 import type { OverrideCandidate } from "@/lib/rules-engine";
 import { addChangelogEntries } from "@/lib/changelog";
-import { calculateReadinessScore, getScoreTier } from "@/lib/scoring";
+import { calculateReadinessScoreFromFkb, getScoreTier } from "@/lib/scoring";
 import { CITIES_MAP } from "@/data/seed";
 
 // Fields that require primary source documentation (Federal Register, FAA, LegiScan, etc.)
@@ -153,7 +153,7 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
 
       // Merge overrides onto the base city data
       const mergedCity = { ...baseCity, ...cityOverrides };
-      const { score: newScore } = calculateReadinessScore(mergedCity);
+      const { score: newScore } = await calculateReadinessScoreFromFkb(mergedCity);
 
       if (newScore !== oldScore) {
         scoreChanges.push({ cityId, oldScore, newScore });
@@ -178,12 +178,12 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
       }
 
       // Take score snapshots for affected cities
-      await prisma.scoreSnapshot.createMany({
-        data: scoreChanges.map((change) => {
+      const snapshotData = await Promise.all(
+        scoreChanges.map(async (change) => {
           const baseCity = CITIES_MAP[change.cityId];
           const cityOverrides = overridesByCity.get(change.cityId) ?? {};
           const mergedCity = { ...baseCity, ...cityOverrides };
-          const { breakdown } = calculateReadinessScore(mergedCity);
+          const { breakdown } = await calculateReadinessScoreFromFkb(mergedCity);
 
           return {
             cityId: change.cityId,
@@ -194,7 +194,10 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
             filingIngestedAt: now,
             capturedAt: now,
           };
-        }),
+        })
+      );
+      await prisma.scoreSnapshot.createMany({
+        data: snapshotData,
       });
     }
 

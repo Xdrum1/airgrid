@@ -1,5 +1,5 @@
 import { City, ScoreBreakdown, SubIndicator } from "@/types";
-import { SCORE_WEIGHTS, calculateReadinessScore, getScoreTier, getScoreColor } from "@/lib/scoring";
+import { SCORE_WEIGHTS, calculateReadinessScore, calculateReadinessScoreFromFkb, getScoreTier, getScoreColor, getWeightsFromFkb } from "@/lib/scoring";
 import { SCORE_COMPONENT_LABELS } from "@/lib/dashboard-constants";
 import { getSubIndicatorsWithPeers, getSubIndicatorSummary, getDefsForFactor, type SubIndicatorSummary } from "@/lib/sub-indicators";
 
@@ -75,15 +75,18 @@ const RECOMMENDATIONS: Record<keyof ScoreBreakdown, string> = {
 // Core analysis functions
 // -------------------------------------------------------
 
-export function analyzeGaps(city: City): GapAnalysis {
-  const { score, breakdown } = calculateReadinessScore(city);
+function buildGapAnalysis(
+  city: City,
+  score: number,
+  breakdown: ScoreBreakdown,
+  weights: Record<string, number>,
+): GapAnalysis {
   const tier = getScoreTier(score);
   const tierColor = getScoreColor(score);
-
   const factorKeys = Object.keys(SCORE_WEIGHTS) as (keyof ScoreBreakdown)[];
 
   const factors: FactorAnalysis[] = factorKeys.map((key) => {
-    const max = SCORE_WEIGHTS[key];
+    const max = (weights[key] ?? SCORE_WEIGHTS[key]) as number;
     const earned = breakdown[key];
     const isPartial = key === "regulatoryPosture" && city.regulatoryPosture === "neutral";
     const achieved = earned === max;
@@ -143,6 +146,25 @@ export function analyzeGaps(city: City): GapAnalysis {
   };
 }
 
+/**
+ * Async gap analysis — reads weights from FKB database.
+ * Use in server components, API routes, and report pages.
+ */
+export async function analyzeGaps(city: City): Promise<GapAnalysis> {
+  const { score, breakdown } = await calculateReadinessScoreFromFkb(city);
+  const weights = await getWeightsFromFkb();
+  return buildGapAnalysis(city, score, breakdown, weights);
+}
+
+/**
+ * Sync gap analysis — uses static weights.
+ * Use in client components where the City already has FKB-computed scores.
+ */
+export function analyzeGapsSync(city: City): GapAnalysis {
+  const { score, breakdown } = calculateReadinessScore(city);
+  return buildGapAnalysis(city, score, breakdown, { ...SCORE_WEIGHTS });
+}
+
 export function getPeerContext(city: City, allCities: City[]): PeerContext {
   const cityScore = city.score ?? 0;
   const cityTier = getScoreTier(cityScore);
@@ -182,8 +204,8 @@ export function getPeerContext(city: City, allCities: City[]): PeerContext {
  * Combined entry point: gap analysis + peer context + sub-indicator peer notes.
  * Used by the API and enhanced gap report page.
  */
-export function getEnhancedGapAnalysis(city: City, allCities: City[]): EnhancedGapAnalysis {
-  const gap = analyzeGaps(city);
+export async function getEnhancedGapAnalysis(city: City, allCities: City[]): Promise<EnhancedGapAnalysis> {
+  const gap = await analyzeGaps(city);
   const peers = getPeerContext(city, allCities);
 
   // Enrich sub-indicators with peer notes

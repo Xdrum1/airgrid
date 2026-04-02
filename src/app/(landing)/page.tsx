@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getCitiesWithOverrides, MARKET_COUNT } from "@/data/seed";
-import { calculateReadinessScore, getScoreTier, getScoreColor } from "@/lib/scoring";
+import { calculateReadinessScoreFromFkb, getScoreTier, getScoreColor } from "@/lib/scoring";
 import { getPublishedFeedItems } from "@/lib/feed";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import SiteNav from "@/components/SiteNav";
@@ -28,10 +28,13 @@ const MARKET_NOTES: Record<string, string> = {
 // -------------------------------------------------------
 export default async function LandingPage() {
   const cities = await getCitiesWithOverrides();
-  const scored = cities.map((city) => {
-    const { score } = calculateReadinessScore(city);
-    return { ...city, score };
-  }).sort((a, b) => b.score - a.score);
+  const scoredUnsorted = await Promise.all(
+    cities.map(async (city) => {
+      const { score } = await calculateReadinessScoreFromFkb(city);
+      return { ...city, score };
+    })
+  );
+  const scored = scoredUnsorted.sort((a, b) => b.score - a.score);
 
   // Top 10 for the market snapshot
   const topMarkets = scored.slice(0, 10);

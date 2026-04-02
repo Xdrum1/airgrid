@@ -9,7 +9,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { getPendingOverrides, approveOverride, rejectOverride } from "@/lib/admin";
 import { CITIES_MAP, CITIES } from "@/data/seed";
-import { calculateReadinessScore, getScoreTier } from "@/lib/scoring";
+import { calculateReadinessScoreFromFkb, getScoreTier } from "@/lib/scoring";
 import { addChangelogEntries } from "@/lib/changelog";
 import { createLogger } from "@/lib/logger";
 
@@ -689,7 +689,7 @@ async function recalculateScoresForCities(cityIds: string[]): Promise<void> {
     const oldScore = baseCity.score ?? 0;
     const cityOverrides = overridesByCity.get(cityId) ?? {};
     const mergedCity = { ...baseCity, ...cityOverrides };
-    const { score: newScore } = calculateReadinessScore(mergedCity);
+    const { score: newScore } = await calculateReadinessScoreFromFkb(mergedCity);
 
     if (newScore !== oldScore) {
       scoreChanges.push({ cityId, oldScore, newScore });
@@ -710,12 +710,12 @@ async function recalculateScoresForCities(cityIds: string[]): Promise<void> {
       cityToEntryId.set(entry.relatedEntityId, entry.id);
     }
 
-    await prisma.scoreSnapshot.createMany({
-      data: scoreChanges.map((change) => {
+    const snapshotData = await Promise.all(
+      scoreChanges.map(async (change) => {
         const baseCity = CITIES_MAP[change.cityId];
         const cityOverrides = overridesByCity.get(change.cityId) ?? {};
         const mergedCity = { ...baseCity, ...cityOverrides };
-        const { breakdown } = calculateReadinessScore(mergedCity);
+        const { breakdown } = await calculateReadinessScoreFromFkb(mergedCity);
 
         return {
           cityId: change.cityId,
@@ -726,7 +726,10 @@ async function recalculateScoresForCities(cityIds: string[]): Promise<void> {
           filingIngestedAt: now,
           capturedAt: now,
         };
-      }),
+      })
+    );
+    await prisma.scoreSnapshot.createMany({
+      data: snapshotData,
     });
 
     // Invalidate cities cache

@@ -42,7 +42,7 @@ export default async function SnapshotPage({
   const city = allCities.find((c) => c.id === cityId);
   if (!city) notFound();
 
-  const enhanced = getEnhancedGapAnalysis(city, allCities);
+  const enhanced = await getEnhancedGapAnalysis(city, allCities);
   const { peers } = enhanced;
 
   let rawHistory: Awaited<ReturnType<typeof getScoreHistoryFull>> = [];

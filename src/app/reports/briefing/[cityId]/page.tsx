@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getCitiesWithOverrides, CITIES } from "@/data/seed";
 import {
-  calculateReadinessScore,
+  calculateReadinessScoreFromFkb,
   getScoreTier,
   getScoreColor,
   SCORE_WEIGHTS,
@@ -103,7 +103,7 @@ export async function generateMetadata({
   const city = allCities.find((c) => c.id === cityId);
   if (!city) return { title: "Market Intelligence Briefing" };
 
-  const { score } = calculateReadinessScore(city);
+  const { score } = await calculateReadinessScoreFromFkb(city);
   const tier = getScoreTier(score);
 
   return {
@@ -124,10 +124,10 @@ export default async function BriefingPage({
   const city = allCities.find((c) => c.id === cityId);
   if (!city) notFound();
 
-  const { score, breakdown } = calculateReadinessScore(city);
+  const { score, breakdown } = await calculateReadinessScoreFromFkb(city);
   const tier = getScoreTier(score);
   const tierColor = getScoreColor(score);
-  const gap = analyzeGaps(city);
+  const gap = await analyzeGaps(city);
 
   // Rex integration flag — flip to true when Five-Alpha data is live
   const rexIntegrationActive = process.env.REX_INTEGRATION_ACTIVE === "true";

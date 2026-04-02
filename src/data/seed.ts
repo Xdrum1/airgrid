@@ -1,5 +1,5 @@
 import { Operator, City, Vertiport, Corridor, SubIndicator } from "@/types";
-import { calculateReadinessScore } from "@/lib/scoring";
+import { calculateReadinessScore, calculateReadinessScoreFromFkb } from "@/lib/scoring";
 
 // ============================================================
 // OPERATORS
@@ -1492,13 +1492,16 @@ export async function getCitiesWithOverrides(): Promise<City[]> {
       overridesByCity.set(override.cityId, existing);
     }
 
-    // Rebuild cities with overrides merged
-    const cities = RAW_CITIES.map((city) => {
-      const cityOverrides = overridesByCity.get(city.id);
-      const merged = cityOverrides ? { ...city, ...cityOverrides } : city;
-      const { score, breakdown } = calculateReadinessScore(merged as City);
-      return { ...merged, score, breakdown } as City;
-    }).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+    // Rebuild cities with overrides merged — use FKB weights from DB
+    const citiesUnsorted = await Promise.all(
+      RAW_CITIES.map(async (city) => {
+        const cityOverrides = overridesByCity.get(city.id);
+        const merged = cityOverrides ? { ...city, ...cityOverrides } : city;
+        const { score, breakdown } = await calculateReadinessScoreFromFkb(merged as City);
+        return { ...merged, score, breakdown } as City;
+      })
+    );
+    const cities = citiesUnsorted.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
     cachedCities = cities;
     cacheTimestamp = now;

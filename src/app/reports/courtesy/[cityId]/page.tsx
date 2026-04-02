@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCitiesWithOverrides, MARKET_COUNT } from "@/data/seed";
 import {
-  calculateReadinessScore,
+  calculateReadinessScoreFromFkb,
   getScoreTier,
   getScoreColor,
   SCORE_WEIGHTS,
@@ -79,15 +79,16 @@ export default async function CourtesyReportPage({
   const city = allCities.find((c) => c.id === cityId);
   if (!city) notFound();
 
-  const { score, breakdown } = calculateReadinessScore(city);
+  const { score, breakdown } = await calculateReadinessScoreFromFkb(city);
   const tier = getScoreTier(score);
   const tierColor = getScoreColor(score);
-  const gaps = analyzeGaps(city);
+  const gaps = await analyzeGaps(city);
 
   // Rank
-  const sorted = allCities
-    .map((c) => ({ id: c.id, score: calculateReadinessScore(c).score }))
-    .sort((a, b) => b.score - a.score);
+  const scoredCities = await Promise.all(
+    allCities.map(async (c) => ({ id: c.id, score: (await calculateReadinessScoreFromFkb(c)).score }))
+  );
+  const sorted = scoredCities.sort((a, b) => b.score - a.score);
   const rank = sorted.findIndex((c) => c.id === cityId) + 1;
 
   // Ordinance audit (optional)

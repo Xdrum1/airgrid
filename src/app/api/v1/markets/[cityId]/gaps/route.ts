@@ -23,7 +23,7 @@ export async function GET(
   }
 
   const allCities = await getCitiesWithOverrides();
-  const enhanced = getEnhancedGapAnalysis(city, allCities);
+  const enhanced = await getEnhancedGapAnalysis(city, allCities);
   const data = transformGapAnalysis(enhanced);
 
   return apiResponse(data, undefined, auth.headers);

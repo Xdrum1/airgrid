@@ -17,7 +17,7 @@ dotenv.config({ path: ".env.local" });
 import fs from "fs";
 import path from "path";
 import { CITIES } from "../src/data/seed";
-import { analyzeGaps, getPeerContext } from "../src/lib/gap-analysis";
+import { analyzeGapsSync, getPeerContext } from "../src/lib/gap-analysis";
 import { sendCityOutreachEmail } from "../src/lib/email";
 
 interface Contact {
@@ -78,7 +78,7 @@ async function main() {
       continue;
     }
 
-    const gap = analyzeGaps(city);
+    const gap = analyzeGapsSync(city);
     const peers = getPeerContext(city, CITIES);
 
     const topGaps = gap.gaps.slice(0, 3).map((g) => ({

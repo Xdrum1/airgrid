@@ -4,7 +4,7 @@
  */
 
 import { addChangelogEntries } from "@/lib/changelog";
-import { calculateReadinessScore, getScoreTier } from "@/lib/scoring";
+import { calculateReadinessScoreFromFkb, getScoreTier } from "@/lib/scoring";
 import { CITIES_MAP, invalidateCitiesCache } from "@/data/seed";
 
 async function getPrisma() {
@@ -90,7 +90,7 @@ export async function approveOverride(
     }
 
     const mergedCity = { ...baseCity, ...overrideMap };
-    const { score: newScore, breakdown } = calculateReadinessScore(mergedCity);
+    const { score: newScore, breakdown } = await calculateReadinessScoreFromFkb(mergedCity);
 
     if (newScore !== oldScore) {
       scoreChange = { cityId: resolvedCityId, oldScore, newScore };
