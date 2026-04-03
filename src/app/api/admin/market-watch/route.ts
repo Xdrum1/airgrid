@@ -6,6 +6,8 @@ import {
   updateMarketWatch,
   getWatchHistory,
   getPendingSuggestions,
+  getActivePipelineTriggers,
+  getRecentlyResolvedTriggers,
   WATCH_STATUSES,
   OUTLOOKS,
 } from "@/lib/market-watch";
@@ -26,11 +28,13 @@ export async function GET(request: NextRequest) {
   if (denied) return denied;
 
   try {
-    const [watches, suggestions] = await Promise.all([
+    const [watches, suggestions, triggers, resolved] = await Promise.all([
       getAllMarketWatchesAdmin(),
       getPendingSuggestions(),
+      getActivePipelineTriggers(),
+      getRecentlyResolvedTriggers(30),
     ]);
-    return NextResponse.json({ data: watches, suggestions });
+    return NextResponse.json({ data: watches, suggestions, triggers, resolved });
   } catch (err) {
     console.error("[admin/market-watch] GET error:", err);
     return NextResponse.json({ error: "Failed to fetch watches" }, { status: 500 });

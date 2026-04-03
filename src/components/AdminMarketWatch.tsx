@@ -40,6 +40,17 @@ interface WatchSuggestion {
   createdAt: string;
 }
 
+interface PipelineTrigger {
+  id: string;
+  cityId: string;
+  cityName: string;
+  state: string;
+  triggerType: string;
+  triggerDetail: string;
+  currentScore: number;
+  triggeredAt: string;
+}
+
 interface EditState {
   cityId: string;
   cityName: string;
@@ -60,6 +71,7 @@ const OUTLOOKS = ["IMPROVING", "STABLE", "DETERIORATING"];
 export default function AdminMarketWatch({ showToast }: { showToast: (msg: string) => void }) {
   const [watches, setWatches] = useState<MarketWatchData[]>([]);
   const [suggestions, setSuggestions] = useState<WatchSuggestion[]>([]);
+  const [triggers, setTriggers] = useState<PipelineTrigger[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<EditState | null>(null);
   const [saving, setSaving] = useState(false);
@@ -73,6 +85,7 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
       .then((json) => {
         setWatches(json.data || []);
         setSuggestions(json.suggestions || []);
+        setTriggers(json.triggers || []);
       })
       .catch(() => showToast("Failed to load watch data"))
       .finally(() => setLoading(false));
@@ -424,6 +437,82 @@ export default function AdminMarketWatch({ showToast }: { showToast: (msg: strin
 
   return (
     <div>
+      {/* Pipeline Triggers */}
+      {triggers.length > 0 && (
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ color: "#777", fontSize: 8, letterSpacing: 2, marginBottom: 12 }}>
+            PIPELINE TRIGGERS ({triggers.length} active)
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {triggers.map((t) => {
+              const typeColor = t.triggerType === "LEGISLATION" ? "#00ff88"
+                : t.triggerType === "PIPELINE_OVERRIDE" ? "#f59e0b"
+                : "#5B8DB8";
+              return (
+                <div
+                  key={t.id}
+                  style={{
+                    background: "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    borderLeft: `3px solid ${typeColor}`,
+                    borderRadius: 6,
+                    padding: "10px 14px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                      <span style={{ color: "#ccc", fontSize: 11, fontWeight: 600 }}>
+                        {t.cityName}, {t.state}
+                      </span>
+                      <span style={{
+                        fontSize: 8,
+                        letterSpacing: 1,
+                        color: typeColor,
+                        fontWeight: 700,
+                        padding: "1px 6px",
+                        background: `${typeColor}15`,
+                        borderRadius: 3,
+                      }}>
+                        {t.triggerType.replace(/_/g, " ")}
+                      </span>
+                      <span style={{ fontSize: 9, color: "#555", fontFamily: "'Space Mono', monospace" }}>
+                        {t.currentScore}/100
+                      </span>
+                    </div>
+                    <div style={{ color: "#777", fontSize: 10, lineHeight: 1.5 }}>
+                      {t.triggerDetail}
+                    </div>
+                    <div style={{ color: "#444", fontSize: 9, marginTop: 4 }}>
+                      {new Date(t.triggeredAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => startEdit(t.cityId)}
+                    style={{
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      borderRadius: 4,
+                      padding: "6px 12px",
+                      color: "#888",
+                      fontSize: 9,
+                      cursor: "pointer",
+                      fontFamily: "'Inter', sans-serif",
+                      letterSpacing: 0.5,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Set Watch
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* AI Suggestions */}
       {suggestions.length > 0 && (
         <div style={{ marginBottom: 28 }}>
