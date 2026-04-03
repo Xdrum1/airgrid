@@ -1,6 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
+import { sendSesEmail } from "@/lib/ses";
+import { readFileSync, readdirSync } from "fs";
+import { join } from "path";
+
+/**
+ * Find the latest Pulse HTML file in public/docs/ for the welcome email.
+ */
+function getLatestPulseHtml(): { html: string; issue: number } | null {
+  try {
+    const docsDir = join(process.cwd(), "public/docs");
+    const files = readdirSync(docsDir)
+      .filter((f) => f.startsWith("UAM_Market_Pulse_Issue") && f.endsWith(".html"))
+      .sort()
+      .reverse();
+
+    if (files.length === 0) return null;
+
+    const latest = files[0];
+    const issueMatch = latest.match(/Issue(\d+)/);
+    const issue = issueMatch ? parseInt(issueMatch[1]) : 0;
+    const html = readFileSync(join(docsDir, latest), "utf-8");
+
+    return { html, issue };
+  } catch {
+    return null;
+  }
+}
 
 export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
@@ -33,13 +60,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
     }
 
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Check if this is a new subscriber vs returning
+    const existing = await prisma.pulseSubscriber.findUnique({
+      where: { email: cleanEmail },
+    });
+    const isNew = !existing || existing.unsubscribedAt !== null;
+
     // Upsert — if they already subscribed, update their info
     await prisma.pulseSubscriber.upsert({
-      where: { email: email.trim().toLowerCase() },
+      where: { email: cleanEmail },
       create: {
         name: name.trim(),
         organization: (organization ?? "").trim(),
-        email: email.trim().toLowerCase(),
+        email: cleanEmail,
         source: source ?? "homepage",
       },
       update: {
@@ -48,6 +83,21 @@ export async function POST(req: NextRequest) {
         unsubscribedAt: null, // Re-subscribe if they had unsubscribed
       },
     });
+
+    // Send the latest Pulse as a welcome email for new subscribers
+    if (isNew) {
+      const pulse = getLatestPulseHtml();
+      if (pulse) {
+        sendSesEmail({
+          to: cleanEmail,
+          from: "AirIndex <hello@airindex.io>",
+          subject: `Welcome to Market Pulse — Here\u2019s Issue ${pulse.issue}`,
+          html: pulse.html,
+        }).catch((err) => {
+          console.error(`[pulse-subscribe] Welcome email failed for ${cleanEmail}:`, err);
+        }); // Fire and forget — don't block the subscribe response
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {
