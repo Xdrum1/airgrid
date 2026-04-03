@@ -16,7 +16,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: "Solutions",
     children: [
-      { label: "Dashboard", href: "/dashboard", desc: "Live market readiness scores across 21 US markets" },
+      { label: "Dashboard", href: "/dashboard", desc: "Live market readiness scores across US metro markets" },
       { label: "API", href: "/api", desc: "Programmatic access to market scores and regulatory data" },
       { label: "Market Reports", href: "/reports/march-2026", desc: "Monthly intelligence reports with full analysis" },
       { label: "Briefings", href: "/briefings", desc: "Custom market intelligence packages for your use case" },

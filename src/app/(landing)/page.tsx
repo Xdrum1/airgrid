@@ -169,7 +169,7 @@ export default async function LandingPage() {
             making capital allocation decisions in advanced air mobility.
           </p>
           <p style={{ color: "#666", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
-            We track readiness conditions across 21+ U.S. markets — scoring legislation,
+            We track readiness conditions across US metro markets — scoring legislation,
             infrastructure, operator activity, and regulatory posture against a published
             7-factor methodology. Updated continuously from primary sources.
           </p>
@@ -201,7 +201,7 @@ export default async function LandingPage() {
               {[
                 { tier: "Market Snapshot", desc: "1 city · 5 days", href: "/briefings" },
                 { tier: "Market Briefing", desc: "2–3 cities · 10 days", href: "/briefings" },
-                { tier: "Strategic Assessment", desc: "4–21 cities · 3–4 weeks", href: "/briefings" },
+                { tier: "Strategic Assessment", desc: "4+ cities · 3–4 weeks", href: "/briefings" },
               ].map((t) => (
                 <Link
                   key={t.tier}
@@ -417,7 +417,7 @@ export default async function LandingPage() {
               {
                 label: "MONTHLY REPORT",
                 title: "UAM Market Readiness Report — March 2026",
-                description: "Full analysis across 21 markets. Scoring methodology v1.3, operator consolidation, federal activity tracking, and heliport infrastructure data.",
+                description: "Full market analysis. Scoring methodology v1.3, operator consolidation, federal activity tracking, and heliport infrastructure data.",
                 href: "/reports/march-2026",
                 accent: "#5B8DB8",
               },

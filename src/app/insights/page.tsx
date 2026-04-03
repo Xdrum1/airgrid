@@ -209,7 +209,7 @@ export default function InsightsPage() {
             UAM Market Readiness Report — March 2026
           </Link>
           <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 12 }}>
-            Score movements, methodology v1.3, corridor intelligence, and operator analysis across 21 US markets.
+            Score movements, methodology v1.3, corridor intelligence, and operator analysis across US metro markets.
           </p>
           <Link
             href="/reports/march-2026"

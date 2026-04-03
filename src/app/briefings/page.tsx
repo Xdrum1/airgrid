@@ -34,7 +34,7 @@ const TIERS = [
     badge: "MOST POPULAR",
     scope: "2\u20133 cities, 12\u201318 pages",
     turnaround: "10 business days",
-    access: "Includes platform access for all 21 markets",
+    access: "Includes platform access for all tracked markets",
     includes: [
       "Everything in Snapshot",
       "Operator & infra landscape",
