@@ -6,6 +6,7 @@ import { getPublishedFeedItems } from "@/lib/feed";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import PulseSubscribe from "@/components/PulseSubscribe";
 
 // -------------------------------------------------------
 // Market intelligence notes (manually curated)
@@ -466,6 +467,11 @@ export default async function LandingPage() {
       {/* Divider */}
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(24px, 4vw, 48px) 20px 0" }}>
         <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
+      </div>
+
+      {/* Market Pulse Subscribe */}
+      <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 20px clamp(24px, 4vw, 40px)" }}>
+        <PulseSubscribe source="homepage" />
       </div>
 
       {/* ======== Who Uses + Closing CTA ======== */}

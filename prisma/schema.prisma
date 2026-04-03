@@ -560,6 +560,19 @@ model NewsletterEvent {
   @@index([createdAt])
 }
 
+model PulseSubscriber {
+  id           String   @id @default(cuid())
+  name         String
+  organization String
+  email        String   @unique
+  source       String   @default("homepage") // "homepage" | "report" | "heliport-audit"
+  subscribedAt DateTime @default(now())
+  unsubscribedAt DateTime?
+
+  @@index([source])
+  @@index([subscribedAt])
+}
+
 // ═══════════════════════════════════════════════════════════
 // MCS — Market Context Store (Foundation)
 // Canonical market registry. Every container references
