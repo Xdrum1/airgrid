@@ -183,7 +183,7 @@ export default async function LandingPage() {
       {/* ======== Animated Stats ======== */}
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(24px, 4vw, 40px) 20px 0" }}>
         <CountUpStats stats={[
-          { value: scored.length, label: "Markets Tracked" },
+          { value: scored.length, suffix: "+", label: "Markets Tracked" },
           { value: 2026, suffix: "+", label: "Regulatory Records" },
           { value: 5647, label: "Heliports Mapped" },
           { value: 7, label: "Scoring Factors" },
