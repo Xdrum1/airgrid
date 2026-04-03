@@ -80,7 +80,7 @@ async function runBatch(options: {
     return NextResponse.json(
       {
         success: false,
-        error: err instanceof Error ? err.message : String(err),
+        error: "Auto-review failed — check server logs",
       },
       { status: 500 }
     );

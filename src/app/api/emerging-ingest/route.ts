@@ -128,7 +128,7 @@ async function runIngestion(): Promise<Response> {
     console.error("[emerging-ingest] Error:", err);
     await alertCronFailure("emerging-ingest", err);
     return NextResponse.json(
-      { success: false, error: String(err) },
+      { success: false, error: "Emerging ingestion failed — check server logs" },
       { status: 500 }
     );
   }

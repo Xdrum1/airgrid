@@ -97,7 +97,7 @@ async function runClassification(): Promise<Response> {
     console.error("[emerging-classify] Error:", err);
     await alertCronFailure("emerging-classify", err);
     return NextResponse.json(
-      { success: false, error: String(err) },
+      { success: false, error: "Classification failed — check server logs" },
       { status: 500 }
     );
   }

@@ -1,6 +1,7 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { getStateContext } from "@/lib/mcs";
 import PrintButton from "../../gap/[cityId]/PrintButton";
@@ -8,6 +9,9 @@ import PrintButton from "../../gap/[cityId]/PrintButton";
 export const metadata: Metadata = {
   robots: "noindex, nofollow",
 };
+
+// SC is the public sample report linked from /heliport-audit
+const PUBLIC_SAMPLE_STATES = new Set(["SC"]);
 
 // ── State name lookup ──
 const STATE_NAMES: Record<string, string> = {
@@ -60,6 +64,12 @@ export default async function AuditReportPage({
   const code = stateCode.toUpperCase();
   const stateName = STATE_NAMES[code];
   if (!stateName) notFound();
+
+  // Gate: only SC is publicly accessible as a sample. All others require auth.
+  if (!PUBLIC_SAMPLE_STATES.has(code)) {
+    const session = await auth();
+    if (!session?.user) redirect(`/contact?inquiry=heliport-audit&ref=audit-${code.toLowerCase()}`);
+  }
 
   // Fetch all data in parallel
   const [heliports, compliance, stateCtx, ordinanceAudits] = await Promise.all([
