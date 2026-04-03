@@ -5,6 +5,7 @@ const footerLinkStyle: React.CSSProperties = {
   fontSize: 10,
   letterSpacing: 1,
   textDecoration: "none",
+  whiteSpace: "nowrap",
 };
 
 export default function SiteFooter() {
@@ -50,7 +51,7 @@ export default function SiteFooter() {
             rel="noopener noreferrer"
             style={footerLinkStyle}
           >
-            X (TWITTER)
+            X
           </a>
           <a
             href="https://www.linkedin.com/company/AirIndexHQ"
