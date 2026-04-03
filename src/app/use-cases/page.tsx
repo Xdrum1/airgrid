@@ -46,7 +46,7 @@ const USE_CASES = [
     title: "Insurance Carriers & Underwriters",
     subtitle: "Aviation liability carriers",
     description:
-      "Verify heliport compliance, screen portfolios, and build defensible underwriting baselines for AAM. Delivered in partnership with Rex Alexander / Five-Alpha LLC.",
+      "Verify heliport compliance, screen portfolios, and build defensible underwriting baselines for AAM. Automated pre-screening with physical verification by credentialed inspectors on flagged sites.",
     href: "/docs/AirIndex_UseCase_Insurance_2.pdf",
     color: "#ff6b35",
     buyers: ["Aviation Liability Carriers", "Underwriters", "Insurance Brokers", "Risk Managers"],
