@@ -65,7 +65,7 @@ const UPDATES: Update[] = [
     date: "2026-03-29",
     tag: "launch",
     title: "Market Intelligence Briefings",
-    body: "Custom market analysis is now available in three tiers: Market Snapshots (single city), Market Briefings (2-3 cities with discovery call), and Strategic Assessments (4-21 cities with quarterly reviews). Each briefing includes factor breakdown, gap analysis, score trajectory, and tailored recommendations.",
+    body: "Custom market analysis is now available in three tiers: Market Snapshots (single city), Market Briefings (2-3 cities with discovery call), and Strategic Assessments (4+ cities with quarterly reviews). Each briefing includes factor breakdown, gap analysis, score trajectory, and tailored recommendations.",
     link: { label: "Learn more", href: "/briefings" },
   },
   {
