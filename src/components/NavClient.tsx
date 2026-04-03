@@ -20,7 +20,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: "API", href: "/api", desc: "Programmatic access to market scores and regulatory data" },
       { label: "Market Reports", href: "/reports/march-2026", desc: "Monthly intelligence reports with full analysis" },
       { label: "Briefings", href: "/briefings", desc: "Custom market intelligence packages for your use case" },
-      { label: "Heliport Audit", href: "/reports/audit/SC", desc: "State-level heliport compliance screening" },
+      { label: "Heliport Audit", href: "/heliport-audit", desc: "State-level heliport compliance screening" },
     ],
   },
   {
