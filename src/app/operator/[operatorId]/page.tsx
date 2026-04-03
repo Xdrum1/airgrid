@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { OPERATORS_MAP, CITIES_MAP, VERTIPORTS, CORRIDORS } from "@/data/seed";
+import { getOperatorById, getMarketPresence, getOperatorEvents, getOperatorCertifications, getOperatorFinancing, getVertiportCommitments } from "@/lib/oid";
+import { prisma } from "@/lib/prisma";
 
 // -------------------------------------------------------
 // Metadata
@@ -119,6 +121,45 @@ export default async function OperatorDetailPage({ params }: Props) {
   const vertiports = VERTIPORTS.filter((v) => v.operatorId === operatorId);
   const corridors = CORRIDORS.filter((c) => c.operatorId === operatorId);
 
+  // Fetch OID enrichment data (falls back gracefully if not seeded)
+  const shortName = op.name.split(" ")[0]; // "Joby Aviation" → "Joby"
+  let oidEvents: Awaited<ReturnType<typeof getOperatorEvents>> = [];
+  let oidCerts: Awaited<ReturnType<typeof getOperatorCertifications>> = [];
+  let oidFinancing: Awaited<ReturnType<typeof getOperatorFinancing>> = [];
+  let oidCommitments: Awaited<ReturnType<typeof getVertiportCommitments>> = [];
+  let oidPresence: Awaited<ReturnType<typeof getMarketPresence>> = [];
+  let oidTicker: string | null = null;
+
+  try {
+    const oidOp = await prisma.oidOperator.findFirst({ where: { shortName } });
+    if (oidOp) {
+      oidTicker = oidOp.ticker;
+      const [events, certs, financing] = await Promise.all([
+        getOperatorEvents({ operatorId: oidOp.id, limit: 20 }),
+        getOperatorCertifications(oidOp.id),
+        getOperatorFinancing(oidOp.id),
+      ]);
+      oidEvents = events;
+      oidCerts = certs;
+      oidFinancing = financing;
+
+      // Get commitments and presence across all markets
+      const allMarketIds = [...op.activeMarkets];
+      const commitmentResults = await Promise.all(
+        allMarketIds.map((cityId) => getVertiportCommitments(cityId))
+      );
+      oidCommitments = commitmentResults.flat().filter((c) => c.operatorId === oidOp.id);
+
+      // Get deployment stage per market
+      const presenceResults = await Promise.all(
+        allMarketIds.map((cityId) => getMarketPresence(cityId))
+      );
+      oidPresence = presenceResults.flat().filter((p) => p.operatorId === oidOp.id);
+    }
+  } catch {
+    // OID data not available — page renders with seed data only
+  }
+
   return (
     <div
       style={{
@@ -206,7 +247,7 @@ export default async function OperatorDetailPage({ params }: Props) {
             maxWidth: 700,
           }}
         >
-          {typeLabel[op.type] || op.type} headquartered in {op.hq}.
+          {typeLabel[op.type] || op.type} headquartered in {op.hq}.{oidTicker && ` (${oidTicker})`}
           {op.website && (
             <>
               {" "}
@@ -334,6 +375,240 @@ export default async function OperatorDetailPage({ params }: Props) {
                 <span style={{ fontSize: 13, color: "#c0c8d8", lineHeight: 1.6 }}>{a}</span>
               </div>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── OID: Event Timeline ── */}
+      {oidEvents.length > 0 && (
+        <section style={{ maxWidth: 900, margin: "0 auto", padding: "48px 20px 0" }}>
+          <h2 style={sectionHeadingStyle}>Event Timeline</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {oidEvents.map((e) => {
+              const typeColor = e.eventType.includes("CERT") ? "#00ff88"
+                : e.eventType.includes("FINANCIAL") ? "#f59e0b"
+                : e.eventType.includes("ACQUISITION") ? "#ff6b35"
+                : "#5B8DB8";
+              return (
+                <div key={e.id} style={{
+                  ...cardStyle,
+                  display: "flex",
+                  gap: 16,
+                  alignItems: "flex-start",
+                  padding: "16px 20px",
+                }}>
+                  <div style={{ minWidth: 70, flexShrink: 0 }}>
+                    <div style={{ fontSize: 12, color: "#888", fontFamily: "'Space Mono', monospace" }}>
+                      {new Date(e.eventDate).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    </div>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                      <span style={{
+                        fontSize: 8,
+                        fontWeight: 700,
+                        letterSpacing: 1,
+                        color: typeColor,
+                        padding: "2px 6px",
+                        background: `${typeColor}15`,
+                        borderRadius: 3,
+                      }}>
+                        {e.eventType.replace(/_/g, " ")}
+                      </span>
+                      {e.isVerified && (
+                        <span style={{ fontSize: 8, color: "#00ff88" }}>&#10003; Verified</span>
+                      )}
+                    </div>
+                    <div style={{ fontSize: 13, color: "#ccc", lineHeight: 1.6 }}>
+                      {e.headline}
+                    </div>
+                    <div style={{ fontSize: 10, color: "#555", marginTop: 4 }}>
+                      {e.sourceName}
+                      {e.sourceUrl && (
+                        <> &middot; <a href={e.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: "#5B8DB8", textDecoration: "none" }}>Source</a></>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ── OID: Certifications ── */}
+      {oidCerts.length > 0 && (
+        <section style={{ maxWidth: 900, margin: "0 auto", padding: "48px 20px 0" }}>
+          <h2 style={sectionHeadingStyle}>Certifications</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+            {oidCerts.map((c) => (
+              <div key={c.id} style={cardStyle}>
+                <div style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: 1,
+                  color: c.isActive ? "#00ff88" : "#555",
+                  marginBottom: 8,
+                }}>
+                  {c.certType.replace(/_/g, " ")}
+                </div>
+                <div style={{ fontSize: 12, color: "#ccc", marginBottom: 4 }}>{c.issuingAuthority}</div>
+                {c.issuedDate && (
+                  <div style={{ fontSize: 11, color: "#666" }}>
+                    Issued: {new Date(c.issuedDate).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                  </div>
+                )}
+                {c.notes && (
+                  <div style={{ fontSize: 11, color: "#666", lineHeight: 1.5, marginTop: 6 }}>{c.notes}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── OID: Financing History ── */}
+      {oidFinancing.length > 0 && (
+        <section style={{ maxWidth: 900, margin: "0 auto", padding: "48px 20px 0" }}>
+          <h2 style={sectionHeadingStyle}>Financing History</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {oidFinancing.map((f) => (
+              <div key={f.id} style={{
+                ...cardStyle,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "16px 20px",
+              }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                    <span style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      letterSpacing: 1,
+                      color: "#f59e0b",
+                      padding: "2px 8px",
+                      background: "rgba(245,158,11,0.1)",
+                      borderRadius: 3,
+                    }}>
+                      {f.roundType.replace(/_/g, " ")}
+                    </span>
+                    <span style={{ fontSize: 11, color: "#666" }}>
+                      {new Date(f.announcedDate).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    </span>
+                  </div>
+                  {f.leadInvestor && (
+                    <div style={{ fontSize: 12, color: "#888" }}>Lead: {f.leadInvestor}</div>
+                  )}
+                  {f.notes && (
+                    <div style={{ fontSize: 11, color: "#555", lineHeight: 1.5, marginTop: 4, maxWidth: 500 }}>
+                      {f.notes}
+                    </div>
+                  )}
+                </div>
+                <div style={{ textAlign: "right", flexShrink: 0 }}>
+                  {f.amountUsd && (
+                    <div style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      color: "#ccc",
+                    }}>
+                      ${(Number(f.amountUsd) / 1e6).toFixed(0)}M
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {oidFinancing[0]?.totalRaisedToDate && (
+              <div style={{ textAlign: "right", fontSize: 11, color: "#555", marginTop: 4 }}>
+                Total raised to date: ${(Number(oidFinancing[0].totalRaisedToDate) / 1e9).toFixed(1)}B
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ── OID: Deployment Stage by Market ── */}
+      {oidPresence.length > 0 && (
+        <section style={{ maxWidth: 900, margin: "0 auto", padding: "48px 20px 0" }}>
+          <h2 style={sectionHeadingStyle}>Deployment Stage by Market</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+            {oidPresence.map((p) => {
+              const city = CITIES_MAP[p.cityId];
+              const stageColor = p.deploymentStage === "COMMERCIAL_OPS" ? "#00ff88"
+                : p.deploymentStage === "TESTING" ? "#5B8DB8"
+                : p.deploymentStage === "ANNOUNCED" ? "#f59e0b"
+                : "#555";
+              return (
+                <div key={p.cityId} style={{
+                  ...cardStyle,
+                  borderLeft: `3px solid ${stageColor}`,
+                  padding: "14px 18px",
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "#ccc" }}>
+                        {city?.city ?? p.cityId}, {city?.state ?? ""}
+                      </div>
+                      <div style={{
+                        fontSize: 9,
+                        fontWeight: 700,
+                        letterSpacing: 1,
+                        color: stageColor,
+                        marginTop: 4,
+                      }}>
+                        {p.deploymentStage.replace(/_/g, " ")}
+                      </div>
+                    </div>
+                    <div style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 18,
+                      fontWeight: 700,
+                      color: stageColor,
+                    }}>
+                      {p.stageScore}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* ── OID: Vertiport Commitments ── */}
+      {oidCommitments.length > 0 && (
+        <section style={{ maxWidth: 900, margin: "0 auto", padding: "48px 20px 0" }}>
+          <h2 style={sectionHeadingStyle}>Vertiport Commitments</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {oidCommitments.map((c) => {
+              const city = CITIES_MAP[c.cityId];
+              return (
+                <div key={c.id} style={{
+                  ...cardStyle,
+                  padding: "14px 18px",
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <div style={{ fontSize: 13, color: "#ccc", fontWeight: 600, marginBottom: 4 }}>
+                        {c.siteName ?? "Unnamed site"}
+                      </div>
+                      <div style={{ fontSize: 11, color: "#666" }}>
+                        {city?.city ?? c.cityId} &middot; {c.commitmentType.replace(/_/g, " ")}
+                        {c.partnerName && ` &middot; ${c.partnerName}`}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 10, color: "#555" }}>
+                      {new Date(c.announcedDate).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    </div>
+                  </div>
+                  {c.notes && (
+                    <div style={{ fontSize: 11, color: "#555", lineHeight: 1.5, marginTop: 6 }}>{c.notes}</div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </section>
       )}

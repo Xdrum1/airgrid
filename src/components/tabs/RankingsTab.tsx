@@ -1,11 +1,39 @@
 "use client";
 
 import { City, Operator } from "@/types";
-import { getScoreColor } from "@/lib/scoring";
+import { getScoreColor, SCORE_WEIGHTS } from "@/lib/scoring";
 import { OPERATORS_MAP } from "@/data/seed";
 import ScoreBar from "../ScoreBar";
 import WatchlistStar from "../WatchlistStar";
 import Link from "next/link";
+
+function exportCsv(cities: City[]) {
+  const headers = [
+    "Rank", "City", "State", "Score", "Tier",
+    "Pilot Program", "Vertiport", "Operator Presence",
+    "Vertiport Zoning", "Regulatory Posture", "State Legislation",
+    "Weather Infrastructure", "Heliports",
+  ];
+  const rows = cities.map((c, i) => {
+    const b = (c.breakdown ?? {}) as Record<string, number>;
+    const tier = (c.score ?? 0) >= 75 ? "ADVANCED" : (c.score ?? 0) >= 50 ? "MODERATE" : (c.score ?? 0) >= 30 ? "EARLY" : "NASCENT";
+    return [
+      i + 1, c.city, c.state, c.score ?? 0, tier,
+      b.activePilotProgram ?? 0, b.approvedVertiport ?? 0,
+      b.activeOperatorPresence ?? 0, b.vertiportZoning ?? 0,
+      b.regulatoryPosture ?? 0, b.stateLegislation ?? 0,
+      b.weatherInfrastructure ?? 0, c.heliportCount ?? 0,
+    ].join(",");
+  });
+  const csv = [headers.join(","), ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `airindex-market-scores-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 export default function RankingsTab({
   cities,
@@ -39,6 +67,30 @@ export default function RankingsTab({
     <div
       style={{ flex: 1, overflow: "auto", padding: isMobile ? "12px 12px" : "16px 20px", paddingLeft: isMobile ? 12 : 292, paddingRight: isMobile ? 12 : 316 }}
     >
+      {/* Export button */}
+      {isAuthenticated && (
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+          <button
+            onClick={() => exportCsv(cities)}
+            style={{
+              background: "rgba(91,141,184,0.08)",
+              border: "1px solid rgba(91,141,184,0.2)",
+              borderRadius: 5,
+              padding: "6px 14px",
+              color: "#5B8DB8",
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: "0.04em",
+              cursor: "pointer",
+              fontFamily: "'Inter', sans-serif",
+              transition: "opacity 0.15s",
+            }}
+          >
+            Export CSV
+          </button>
+        </div>
+      )}
+
       {/* Top Movers */}
       {movers.length > 0 && (
         <div
