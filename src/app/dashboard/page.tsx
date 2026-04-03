@@ -33,27 +33,27 @@ export default async function DashboardPage() {
   const features = [
     {
       label: "Market Readiness Scores",
-      desc: `${MARKET_COUNT} US markets scored daily across 7 verified factors. Every score change is sourced and traceable.`,
+      desc: `${MARKET_COUNT}+ US markets scored daily. Every score change is sourced, traceable, and connected to the regulatory event that caused it.`,
     },
     {
-      label: "Interactive Map",
-      desc: "5,647 FAA-registered heliports with compliance overlay. Market-level and facility-level views.",
+      label: "Gap-to-Action Roadmaps",
+      desc: "See exactly what actions move a market's score — which legislation to pass, which zoning to adopt, which federal programs fund each gap.",
     },
     {
-      label: "Regulatory Pipeline",
-      desc: "1,900+ classified documents from Federal Register, LegiScan, SEC EDGAR, Congress.gov, and regulations.gov.",
+      label: "Where the Money Is Moving",
+      desc: "Operator deployment signals, federal program selections, and legislative momentum detected 6-18 months before consensus forms.",
     },
     {
-      label: "Gap Analysis",
-      desc: "Per-market readiness gaps with specific score-moving actions, peer benchmarking, and federal program alignment.",
+      label: "Heliport Compliance Layer",
+      desc: "5,647 FAA heliports screened against 5 compliance questions. Know which sites are compliant, conditional, or a liability risk.",
     },
     {
       label: "Score Trajectories",
-      desc: "Historical score tracking with factor-level sparklines. See where markets are heading, not just where they are.",
+      desc: "Directional momentum tracking. See which markets are accelerating, which are stalling, and what changes the trajectory.",
     },
     {
-      label: "API Access",
-      desc: "Programmatic access to market scores, regulatory data, and score history for embedding into internal workflows.",
+      label: "API & Data Export",
+      desc: "Programmatic access to market scores, regulatory data, and score history. CSV export. Embed AirIndex intelligence into your workflow.",
     },
   ];
 
@@ -84,8 +84,9 @@ export default async function DashboardPage() {
             The AirIndex Dashboard
           </h1>
           <p style={{ color: "#888", fontSize: 14, lineHeight: 1.7, maxWidth: 560, margin: "0 auto" }}>
-            Live market readiness intelligence across {MARKET_COUNT} US markets.
-            Updated daily from primary sources. Every score is auditable.
+            Signal-to-action intelligence across {MARKET_COUNT}+ US markets.
+            See where capital is flowing, what legislation is moving, and which
+            infrastructure gaps close next.
           </p>
         </div>
 
