@@ -87,14 +87,15 @@ export default async function LandingPage() {
         <p
           className="hero-subtext"
           style={{
-            color: "#666",
-            fontSize: "clamp(12px, 1.3vw, 15px)",
+            color: "#888",
+            fontSize: "clamp(13px, 1.4vw, 16px)",
             lineHeight: 1.7,
-            maxWidth: 520,
+            maxWidth: 580,
             margin: "0 auto 28px",
           }}
         >
-          Market readiness data across {MARKET_COUNT}+ U.S. markets. Updated continuously from primary sources.
+          Where the next AAM market opens &mdash; and what moves it there.
+          Signal-to-action intelligence across {MARKET_COUNT}+ U.S. markets.
         </p>
         <div className="hero-cta" style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", marginBottom: 20 }}>
           <Link
@@ -167,15 +168,16 @@ export default async function LandingPage() {
       {/* ======== What is AirIndex ======== */}
       <ScrollReveal>
         <section style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0", textAlign: "center" }}>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#5B8DB8", display: "block", marginBottom: 16 }}>WHAT IS AIRINDEX</span>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#5B8DB8", display: "block", marginBottom: 16 }}>SIGNAL-TO-ACTION INTELLIGENCE</span>
           <p style={{ color: "#999", fontSize: 14, lineHeight: 1.8, margin: "0 0 10px" }}>
-            Built for operators, infrastructure developers, government agencies, and investors
-            making capital allocation decisions in advanced air mobility.
+            Every UAM market decision has the same problem: fragmented data, no baseline,
+            and no way to compare. AirIndex solves that with structured intelligence that
+            connects regulatory signals to capital allocation decisions.
           </p>
           <p style={{ color: "#666", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
-            We track readiness conditions across US metro markets — scoring legislation,
-            infrastructure, operator activity, and regulatory posture against a published
-            7-factor methodology. Updated continuously from primary sources.
+            We don&apos;t just score markets &mdash; we show you the specific actions that move
+            scores, the federal programs that fund those actions, and the operator signals
+            that tell you where commercial infrastructure is concentrating next.
           </p>
         </section>
       </ScrollReveal>
@@ -205,10 +207,12 @@ export default async function LandingPage() {
             <div>
               <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#7c3aed" }}>MARKET INTELLIGENCE BRIEFINGS</span>
               <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 18, color: "#fff", margin: "12px 0 10px" }}>
-                Need a custom market analysis?
+                You are here. Here&apos;s how you get there.
               </h3>
               <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
-                AirIndex scores tell you where a market stands. A Market Intelligence Briefing tells you why — and what it would take to change it.
+                Every briefing shows your market&apos;s current score, the specific gaps suppressing it,
+                the actions that close each gap, and the federal programs that fund those actions.
+                Not a forecast &mdash; a roadmap with cost, timeline, and score impact per step.
               </p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -576,10 +580,10 @@ export default async function LandingPage() {
                 color: "#fff",
               }}
             >
-              Ready to see your market?
+              Know where the market is going before it gets there.
             </h2>
             <p style={{ color: "#555", fontSize: 12, margin: "0 0 28px", lineHeight: 1.7, maxWidth: 440, marginLeft: "auto", marginRight: "auto" }}>
-              Market readiness scores, gap analysis, corridor intelligence, regulatory filings, and API access for your team.
+              Readiness scores, gap-to-action roadmaps, federal funding alignment, and operator signal tracking &mdash; scoped to the decision you need to make.
             </p>
             <Link
               href="/contact"

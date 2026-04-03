@@ -105,8 +105,8 @@ export default function HeliportAuditPage() {
           <p style={{ color: "#888", fontSize: 14, lineHeight: 1.8, maxWidth: 640 }}>
             Of the 5,647 FAA-registered heliports in the US, hundreds no longer exist, thousands have
             inaccurate data, and none have been verified against current standards. AirIndex screens
-            every facility against five compliance questions — automated pre-screening from public data,
-            with physical verification by qualified inspectors on flagged sites.
+            every facility against five compliance questions — then tells you exactly which sites
+            need remediation, what the liability exposure looks like, and how to prioritize action.
           </p>
         </div>
 

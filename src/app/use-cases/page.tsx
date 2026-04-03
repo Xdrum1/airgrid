@@ -87,11 +87,52 @@ export default function UseCasesPage() {
             margin: "0 0 16px",
             letterSpacing: "-0.02em",
           }}>
-            Use Cases
+            You are here. Here&apos;s how you get there.
           </h1>
-          <p style={{ color: "#888", fontSize: 14, lineHeight: 1.7, maxWidth: 560, margin: "0 auto" }}>
-            Every party to a UAM market decision needs independent data.
-            Here is how different buyers use AirIndex to make theirs.
+          <p style={{ color: "#888", fontSize: 14, lineHeight: 1.7, maxWidth: 600, margin: "0 auto" }}>
+            AirIndex doesn&apos;t just tell you where a market stands &mdash; it tells you what
+            moves it, what funds those moves, and where capital is concentrating next.
+          </p>
+        </div>
+
+        {/* Signal-to-Action narrative */}
+        <div style={{
+          padding: "28px 24px",
+          background: "rgba(91,141,184,0.04)",
+          border: "1px solid rgba(91,141,184,0.12)",
+          borderRadius: 10,
+          marginBottom: 32,
+        }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr auto 1fr",
+            gap: 16,
+            alignItems: "center",
+            marginBottom: 20,
+          }}>
+            {[
+              { label: "YOUR MARKET", value: "25 / NASCENT", color: "#ff4444", desc: "No vertiport zoning, no pilot program, legislation stalled" },
+              null,
+              { label: "ACTIONS IDENTIFIED", value: "4 gaps to close", color: "#f59e0b", desc: "Zoning amendment, FAA terminology, NFPA 418, pilot program application" },
+              null,
+              { label: "PROJECTED OUTCOME", value: "55 / MODERATE", color: "#00ff88", desc: "Operator-visible, federal program eligible, capital-ready" },
+            ].map((item, i) =>
+              item === null ? (
+                <div key={i} style={{ textAlign: "center", color: "#333", fontSize: 18 }}>&rarr;</div>
+              ) : (
+                <div key={i} style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 8, letterSpacing: 2, color: "#555", marginBottom: 6 }}>{item.label}</div>
+                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 18, fontWeight: 700, color: item.color, marginBottom: 4 }}>{item.value}</div>
+                  <div style={{ fontSize: 10, color: "#666", lineHeight: 1.5 }}>{item.desc}</div>
+                </div>
+              )
+            )}
+          </div>
+          <p style={{ color: "#888", fontSize: 12, lineHeight: 1.7, margin: 0, textAlign: "center" }}>
+            Every AirIndex briefing connects your current score to specific actions, timelines, and
+            federal funding pathways. When a city enacts a zoning amendment, the score moves. When a
+            federal program selects your market, the score moves. We show you which levers to pull and
+            what each one is worth.
           </p>
         </div>
 
@@ -184,7 +225,7 @@ export default function UseCasesPage() {
         {/* CTA */}
         <div style={{ textAlign: "center", marginTop: 48, padding: "32px 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <p style={{ color: "#666", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
-            Don&apos;t see your use case? We scope engagements around the decision you need to make.
+            Every engagement starts with your decision. Tell us what you&apos;re trying to allocate, approve, or underwrite &mdash; we&apos;ll show you the data that moves it forward.
           </p>
           <Link
             href="/contact"
