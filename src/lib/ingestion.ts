@@ -616,6 +616,19 @@ export async function runIngestion(): Promise<{
         console.error("[ingestion] FKB refresh failed (non-blocking):", err);
       }
 
+      // 11e. Auto-promote high-confidence signals to Intel Feed (drafts for review)
+      try {
+        const { promoteSignalsToFeed } = await import("@/lib/feed-promoter");
+        const feedResult = await promoteSignalsToFeed(7);
+        if (feedResult.promoted > 0) {
+          console.log(
+            `[ingestion] Feed promoter: ${feedResult.promoted} new drafts from ${feedResult.scanned} signals`
+          );
+        }
+      } catch (err) {
+        console.error("[ingestion] Feed promoter failed (non-blocking):", err);
+      }
+
       // 12. Process corridor events
       if (corridorEvents.length > 0) {
         console.log(`[ingestion] Processing ${corridorEvents.length} corridor events`);
