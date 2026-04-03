@@ -156,8 +156,8 @@ export default async function AuditReportPage({
       {/* ── Header ── */}
       <div className="no-print" style={{ padding: "16px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Link href="/dashboard" style={{ color: "#555", fontSize: 12, textDecoration: "none" }}>
-            &larr; Dashboard
+          <Link href="/" style={{ color: "#555", fontSize: 12, textDecoration: "none" }}>
+            &larr; Home
           </Link>
           <PrintButton />
         </div>
