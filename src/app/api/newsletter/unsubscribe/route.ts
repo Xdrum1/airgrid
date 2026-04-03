@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 import { verifyUnsubscribeToken } from "@/lib/newsletter-token";
 import { sendSesEmail } from "@/lib/ses";
 
 const ADMIN_EMAIL = process.env.ADMIN_NOTIFY_EMAIL || "alan@airindex.io";
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const rl = await rateLimit(`unsub:${ip}`, 10, 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Rate limited" }, { status: 429 });
+  }
+
   try {
     const { email, token } = await req.json();
 

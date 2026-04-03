@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,13 @@ export const dynamic = "force-dynamic";
  * previous stable score (one that appeared in at least 2 consecutive snapshots).
  * This filters out transient anomalies from auto-review false positives.
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const rl = await rateLimit(`score-deltas:${ip}`, 30, 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Rate limited" }, { status: 429 });
+  }
+
   try {
     const snapshots = await prisma.scoreSnapshot.findMany({
       orderBy: { capturedAt: "desc" },

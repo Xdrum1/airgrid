@@ -54,7 +54,7 @@ function streamIngestion(): Response {
         const error = JSON.stringify({
           status: "error",
           success: false,
-          error: String(err),
+          error: "Ingestion failed — check server logs",
         });
         controller.enqueue(encoder.encode(`data: ${error}\n\n`));
         controller.close();
