@@ -37,6 +37,7 @@ export default function SiteFooter() {
           <Link href="/about" style={footerLinkStyle}>ABOUT</Link>
           <Link href="/methodology" style={footerLinkStyle}>METHODOLOGY</Link>
           <Link href="/terminology" style={footerLinkStyle}>TERMINOLOGY</Link>
+          <Link href="/use-cases" style={footerLinkStyle}>USE CASES</Link>
           <Link href="/insights" style={footerLinkStyle}>INSIGHTS</Link>
           <Link href="/api" style={footerLinkStyle}>API</Link>
           <Link href="/pricing" style={footerLinkStyle}>PRICING</Link>
