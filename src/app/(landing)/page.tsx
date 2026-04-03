@@ -7,6 +7,7 @@ import ScrollReveal from "@/components/landing/ScrollReveal";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import PulseSubscribe from "@/components/PulseSubscribe";
+import CountUpStats from "@/components/landing/CountUpStats";
 
 // -------------------------------------------------------
 // Market intelligence notes (manually curated)
@@ -70,6 +71,7 @@ export default async function LandingPage() {
         }}
       >
         <h1
+          className="hero-headline"
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 700,
@@ -83,6 +85,7 @@ export default async function LandingPage() {
           The intelligence infrastructure for urban air mobility.
         </h1>
         <p
+          className="hero-subtext"
           style={{
             color: "#666",
             fontSize: "clamp(12px, 1.3vw, 15px)",
@@ -93,7 +96,7 @@ export default async function LandingPage() {
         >
           Market readiness data across {MARKET_COUNT}+ U.S. markets. Updated continuously from primary sources.
         </p>
-        <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", marginBottom: 20 }}>
+        <div className="hero-cta" style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", marginBottom: 20 }}>
           <Link
             href="/request-access"
             style={{
@@ -176,6 +179,16 @@ export default async function LandingPage() {
           </p>
         </section>
       </ScrollReveal>
+
+      {/* ======== Animated Stats ======== */}
+      <div style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(24px, 4vw, 40px) 20px 0" }}>
+        <CountUpStats stats={[
+          { value: scored.length, label: "Markets Tracked" },
+          { value: 2026, suffix: "+", label: "Regulatory Records" },
+          { value: 5647, label: "Heliports Mapped" },
+          { value: 7, label: "Scoring Factors" },
+        ]} />
+      </div>
 
       {/* ======== Briefings CTA ======== */}
       <ScrollReveal>

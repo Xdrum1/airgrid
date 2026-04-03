@@ -1,44 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Stat {
   value: number;
+  suffix?: string; // e.g. "+" for "1,900+"
   label: string;
 }
 
-// Staggered durations so counters finish at slightly different times
-const DURATIONS = [800, 600, 700, 500];
-const SETTLE_DELAY = 650;
+const DURATIONS = [1200, 900, 1100, 800];
 
-function useCountUp(target: number, duration: number, delay: number) {
+function useCountUp(target: number, duration: number, active: boolean) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      const start = performance.now();
-      let raf: number;
+    if (!active) return;
 
-      function tick(now: number) {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        setCount(Math.round(eased * target));
-        if (progress < 1) raf = requestAnimationFrame(tick);
-      }
+    const start = performance.now();
+    let raf: number;
 
-      raf = requestAnimationFrame(tick);
-      return () => cancelAnimationFrame(raf);
-    }, delay);
+    function tick(now: number) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * target));
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    }
 
-    return () => clearTimeout(timeout);
-  }, [target, duration, delay]);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration, active]);
 
   return count;
 }
 
-function StatItem({ value, label, duration, delay }: Stat & { duration: number; delay: number }) {
-  const count = useCountUp(value, duration, delay);
+function StatItem({
+  value,
+  suffix,
+  label,
+  duration,
+  active,
+  delay,
+}: Stat & { duration: number; active: boolean; delay: number }) {
+  const [delayDone, setDelayDone] = useState(false);
+
+  useEffect(() => {
+    if (!active) return;
+    const t = setTimeout(() => setDelayDone(true), delay);
+    return () => clearTimeout(t);
+  }, [active, delay]);
+
+  const count = useCountUp(value, duration, delayDone);
 
   return (
     <div
@@ -46,6 +59,8 @@ function StatItem({ value, label, duration, delay }: Stat & { duration: number; 
         background: "#050508",
         padding: "28px 24px",
         textAlign: "center",
+        opacity: delayDone ? 1 : 0.3,
+        transition: "opacity 0.3s ease",
       }}
     >
       <div
@@ -58,7 +73,7 @@ function StatItem({ value, label, duration, delay }: Stat & { duration: number; 
           marginBottom: 6,
         }}
       >
-        {count}
+        {count.toLocaleString()}{suffix ?? ""}
       </div>
       <div style={{ color: "#888", fontSize: 10, letterSpacing: 2 }}>
         {label.toUpperCase()}
@@ -68,8 +83,37 @@ function StatItem({ value, label, duration, delay }: Stat & { duration: number; 
 }
 
 export default function CountUpStats({ stats }: { stats: Stat[] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // If already in viewport on mount, activate immediately
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.9) {
+      setActive(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setActive(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
+      ref={ref}
       className="landing-stats-grid"
       style={{
         display: "grid",
@@ -84,9 +128,11 @@ export default function CountUpStats({ stats }: { stats: Stat[] }) {
         <StatItem
           key={s.label}
           value={s.value}
+          suffix={s.suffix}
           label={s.label}
-          duration={DURATIONS[i] ?? 700}
-          delay={SETTLE_DELAY}
+          duration={DURATIONS[i] ?? 900}
+          active={active}
+          delay={i * 150}
         />
       ))}
     </div>
