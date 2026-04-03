@@ -604,8 +604,32 @@ function LeadCard({
             {lead.status === "researching" && (
               <StatusButton label="MARK VERIFIED" color="#00ff88" onClick={() => patchLead({ status: "verified" }).then((ok) => ok && showToast("Verified"))} />
             )}
-            {lead.status === "verified" && (
-              <StatusButton label="MARK ADDED" color="#7c3aed" onClick={() => patchLead({ status: "added" }).then((ok) => ok && showToast("Marked as added"))} />
+            {(lead.status === "verified" || (lead.priority === "high" && lead.status !== "added" && lead.status !== "dismissed")) && lead.city !== "Unknown" && !lead.city.includes("(") && (
+              <StatusButton
+                label="ADD TO INDEX"
+                color="#7c3aed"
+                onClick={async () => {
+                  setSaving(true);
+                  try {
+                    const res = await fetch("/api/admin/leads/add-to-index", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ leadId: lead.id }),
+                    });
+                    const json = await res.json();
+                    if (res.ok) {
+                      showToast(json.message || `Added ${lead.city} to index`);
+                      onUpdate();
+                    } else {
+                      showToast(json.error || "Failed to add");
+                    }
+                  } catch {
+                    showToast("Failed to add to index");
+                  } finally {
+                    setSaving(false);
+                  }
+                }}
+              />
             )}
             {!["added", "dismissed"].includes(lead.status) && (
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
