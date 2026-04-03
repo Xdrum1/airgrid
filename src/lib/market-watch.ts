@@ -47,6 +47,37 @@ export async function getAllMarketWatchesAdmin() {
   }));
 }
 
+/**
+ * Get active pipeline-generated watch triggers (from WatchListEntry).
+ * These are automated signals — not the admin-curated MarketWatch records.
+ */
+export async function getActivePipelineTriggers() {
+  const prisma = await getPrisma();
+  const entries = await prisma.watchListEntry.findMany({
+    where: { resolvedAt: null },
+    orderBy: { triggeredAt: "desc" },
+  });
+  return entries.map((e) => ({
+    ...e,
+    cityName: CITIES_MAP[e.cityId]?.city ?? e.cityId,
+    state: CITIES_MAP[e.cityId]?.state ?? "",
+  }));
+}
+
+export async function getRecentlyResolvedTriggers(days = 30) {
+  const prisma = await getPrisma();
+  const since = new Date(Date.now() - days * 86400000);
+  const entries = await prisma.watchListEntry.findMany({
+    where: { resolvedAt: { gte: since } },
+    orderBy: { resolvedAt: "desc" },
+  });
+  return entries.map((e) => ({
+    ...e,
+    cityName: CITIES_MAP[e.cityId]?.city ?? e.cityId,
+    state: CITIES_MAP[e.cityId]?.state ?? "",
+  }));
+}
+
 export async function getWatchHistory(cityId: string, limit = 20) {
   const prisma = await getPrisma();
   return prisma.marketWatchHistory.findMany({
