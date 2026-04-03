@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import PulseSubscribe from "@/components/PulseSubscribe";
 import { CITIES, OPERATORS, VERTIPORTS, MARKET_COUNT } from "@/data/seed";
 import { getScoreColor, getScoreTier, SCORE_WEIGHTS } from "@/lib/scoring";
 // import ReportGate from "./ReportGate";
@@ -764,6 +765,11 @@ export default function MarchReportPage() {
           </Link>
         </section>
       </main>
+
+      {/* Pulse Subscribe */}
+      <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 20px 48px" }}>
+        <PulseSubscribe source="report" compact />
+      </div>
 
       <SiteFooter />
     </div>
