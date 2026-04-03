@@ -1,11 +1,20 @@
 import Link from "next/link";
 
-const footerLinkStyle: React.CSSProperties = {
-  color: "#888",
+const legalLinkStyle: React.CSSProperties = {
+  color: "#555",
   fontSize: 10,
   letterSpacing: 1,
   textDecoration: "none",
   whiteSpace: "nowrap",
+};
+
+const socialLinkStyle: React.CSSProperties = {
+  color: "#555",
+  fontSize: 10,
+  letterSpacing: 1,
+  textDecoration: "none",
+  whiteSpace: "nowrap",
+  transition: "color 0.15s",
 };
 
 export default function SiteFooter() {
@@ -13,7 +22,7 @@ export default function SiteFooter() {
     <footer
       style={{
         borderTop: "1px solid rgba(255,255,255,0.06)",
-        padding: "40px 20px",
+        padding: "32px 20px",
         maxWidth: 1120,
         margin: "0 auto",
       }}
@@ -27,29 +36,30 @@ export default function SiteFooter() {
           gap: 16,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        {/* Left — Logo + legal */}
+        <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
           <img
             src="/images/logo/airindex-wordmark.svg"
             alt="AirIndex"
-            style={{ height: 18, opacity: 0.7 }}
+            style={{ height: 16, opacity: 0.5 }}
           />
+          <span style={{ color: "#333", fontSize: 10 }}>|</span>
+          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+            <span style={{ color: "#444", fontSize: 9, letterSpacing: 1, whiteSpace: "nowrap" }}>
+              &copy; {new Date().getFullYear()} Vertical Data Group, LLC
+            </span>
+            <Link href="/terms" style={legalLinkStyle}>Terms</Link>
+            <Link href="/privacy" style={legalLinkStyle}>Privacy</Link>
+          </div>
         </div>
-        <div className="landing-footer-links" style={{ display: "flex", gap: 24 }}>
-          <Link href="/about" style={footerLinkStyle}>ABOUT</Link>
-          <Link href="/methodology" style={footerLinkStyle}>METHODOLOGY</Link>
-          <Link href="/terminology" style={footerLinkStyle}>TERMINOLOGY</Link>
-          <Link href="/use-cases" style={footerLinkStyle}>USE CASES</Link>
-          <Link href="/insights" style={footerLinkStyle}>INSIGHTS</Link>
-          <Link href="/api" style={footerLinkStyle}>API</Link>
-          <Link href="/pricing" style={footerLinkStyle}>PRICING</Link>
-          <Link href="/updates" style={footerLinkStyle}>UPDATES</Link>
-          <Link href="/reports/march-2026" style={footerLinkStyle}>REPORTS</Link>
-          <Link href="/contact" style={footerLinkStyle}>CONTACT</Link>
+
+        {/* Right — Social */}
+        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
           <a
             href="https://x.com/AirIndexHQ"
             target="_blank"
             rel="noopener noreferrer"
-            style={footerLinkStyle}
+            style={socialLinkStyle}
           >
             X
           </a>
@@ -57,22 +67,15 @@ export default function SiteFooter() {
             href="https://www.linkedin.com/company/AirIndexHQ"
             target="_blank"
             rel="noopener noreferrer"
-            style={footerLinkStyle}
+            style={socialLinkStyle}
           >
-            LINKEDIN
+            LinkedIn
           </a>
-          <Link href="/terms" style={footerLinkStyle}>TERMS</Link>
-          <Link href="/privacy" style={footerLinkStyle}>PRIVACY</Link>
-        </div>
-        <div style={{ color: "#555", fontSize: 9, letterSpacing: 1 }}>
-          &copy; {new Date().getFullYear()} AIRINDEX &middot;{" "}
           <a
-            href="https://verticaldatagroup.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#555", textDecoration: "none" }}
+            href="mailto:info@airindex.io"
+            style={socialLinkStyle}
           >
-            A Vertical Data Group product
+            info@airindex.io
           </a>
         </div>
       </div>
