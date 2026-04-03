@@ -353,12 +353,13 @@ export default function HeliportAuditPage() {
               PHYSICAL VERIFICATION
             </div>
             <p style={{ color: "#888", fontSize: 12, lineHeight: 1.6, marginBottom: 16 }}>
-              For sites flagged in pre-screening, physical verification is delivered in partnership with
-              Rex Alexander / Five-Alpha LLC. Rex chairs NFPA 418, is a Fellow of the Royal Aeronautical
-              Society, and his risk analysis methodology was adopted by the FAA in 2013.
+              For sites flagged in pre-screening, physical verification is recommended by a qualified
+              heliport inspector. AirIndex provides the automated screening layer &mdash; on-site SMS
+              risk analysis, obstruction surveys, and TLOF/FATO measurement are performed by
+              credentialed infrastructure consultants.
             </p>
             <div style={{ color: "#666", fontSize: 10, lineHeight: 1.6 }}>
-              Standards applied: Title 14 CFR Part 5, ICAO Annex 14, ISO 31000
+              Standards applied: Title 14 CFR Part 5, ICAO Annex 14, ISO 31000, AC 150/5390-2D
             </div>
           </div>
         </div>
