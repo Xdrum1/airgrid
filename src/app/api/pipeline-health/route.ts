@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { MARKET_COUNT } from "@/data/seed";
-import { requireAdmin } from "@/lib/admin-helpers";
+import { requireAdmin, refreshAdminCookie } from "@/lib/admin-helpers";
 
 export const dynamic = "force-dynamic";
 
@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
       sourceVolume[entry.changeType] = entry._count;
     }
 
-    return NextResponse.json({
+    return refreshAdminCookie(NextResponse.json({
       pipelines: {
         snapshot: {
           lastRun: latestSnapshot?.capturedAt ?? null,
@@ -110,7 +110,7 @@ export async function GET(req: NextRequest) {
         alertSent: r.alertSent,
       })),
       queriedAt: new Date().toISOString(),
-    });
+    }));
   } catch (err) {
     console.error("[API /pipeline-health] Error:", err);
     return NextResponse.json(
