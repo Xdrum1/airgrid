@@ -488,7 +488,7 @@ export default async function AboutPage() {
             &middot; PO Box 31172 &middot; Myrtle Beach, SC 29588
           </p>
           <p style={{ marginTop: 4, color: "#3a3a3a" }}>
-            SAM.gov Registered &middot; CAGE 1AUW7 &middot; South Carolina LLC
+            SAM.gov Registered &middot; UEI RB63W8RYCHY3 &middot; CAGE 1AUW7 &middot; South Carolina LLC
           </p>
           <p style={{ marginTop: 4 }}>
             <Link href="/" style={{ color: "#444", textDecoration: "none" }}>airindex.io</Link>
