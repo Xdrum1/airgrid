@@ -55,15 +55,22 @@ const DATA_SOURCE_LABELS: Record<string, string> = {
 export default function AdminPipelineHealth({ showToast }: { showToast: (msg: string) => void }) {
   const [health, setHealth] = useState<PipelineHealth | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(false);
 
   useEffect(() => {
     fetch("/api/pipeline-health")
-      .then((r) => {
+      .then(async (r) => {
+        if (r.status === 403) {
+          setAuthError(true);
+          throw new Error("auth");
+        }
         if (!r.ok) throw new Error();
         return r.json();
       })
       .then(setHealth)
-      .catch(() => showToast("Failed to load pipeline health"))
+      .catch((e) => {
+        if (e?.message !== "auth") showToast("Failed to load pipeline health");
+      })
       .finally(() => setLoading(false));
   }, [showToast]);
 
@@ -71,6 +78,36 @@ export default function AdminPipelineHealth({ showToast }: { showToast: (msg: st
     return (
       <div style={{ color: "#777", fontSize: 10, letterSpacing: 2, textAlign: "center", padding: 60 }}>
         LOADING...
+      </div>
+    );
+  }
+
+  if (authError) {
+    return (
+      <div style={{ textAlign: "center", padding: 80 }}>
+        <div style={{ color: "#f59e0b", fontSize: 11, letterSpacing: 2, marginBottom: 12 }}>
+          ADMIN SESSION EXPIRED
+        </div>
+        <div style={{ color: "#666", fontSize: 12, marginBottom: 16 }}>
+          Your admin session has timed out. Re-enter your PIN to continue.
+        </div>
+        <a
+          href="/admin/review"
+          style={{
+            display: "inline-block",
+            padding: "10px 24px",
+            background: "rgba(245,158,11,0.1)",
+            border: "1px solid rgba(245,158,11,0.3)",
+            borderRadius: 6,
+            color: "#f59e0b",
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.06em",
+            textDecoration: "none",
+          }}
+        >
+          RE-AUTHENTICATE
+        </a>
       </div>
     );
   }

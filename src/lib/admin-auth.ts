@@ -12,7 +12,7 @@ function getAdminEmail(): string {
   return val;
 }
 const COOKIE_NAME = "admin-verified";
-const MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
+const MAX_AGE_MS = 4 * 60 * 60 * 1000; // 4 hours
 
 /**
  * Create a signed admin cookie value.
