@@ -90,6 +90,7 @@ export async function processMarketLeadSignals(
 
   let created = 0;
   let updated = 0;
+  const changedLeadIds: string[] = [];
 
   for (const [, groupSignals] of grouped) {
     const first = groupSignals[0];
@@ -144,11 +145,12 @@ export async function processMarketLeadSignals(
           },
         });
         updated++;
+        changedLeadIds.push(existing.id);
       } else {
         // Create new lead
         const priority = initialPriority(first);
 
-        await prisma.marketLead.create({
+        const newLead = await prisma.marketLead.create({
           data: {
             city,
             state,
@@ -164,6 +166,7 @@ export async function processMarketLeadSignals(
           },
         });
         created++;
+        changedLeadIds.push(newLead.id);
       }
     } catch (err) {
       // Log but don't fail — unique constraint violations are expected
@@ -176,6 +179,30 @@ export async function processMarketLeadSignals(
     console.log(
       `[market-leads] Processed ${signals.length} signals → ${created} created, ${updated} updated`
     );
+  }
+
+  // Auto-evaluate changed leads with AI (background, non-blocking)
+  if (changedLeadIds.length > 0) {
+    try {
+      const { evaluateLead } = await import("@/lib/lead-evaluator");
+      for (const leadId of changedLeadIds) {
+        const evaluation = await evaluateLead(leadId);
+        if (evaluation) {
+          await prisma.marketLead.update({
+            where: { id: leadId },
+            data: {
+              aiRecommendation: evaluation.recommendation,
+              aiReasoning: evaluation.reasoning,
+              aiConfidence: evaluation.confidence,
+              aiEvaluatedAt: new Date(),
+            },
+          });
+        }
+      }
+      console.log(`[market-leads] Auto-evaluated ${changedLeadIds.length} leads with AI`);
+    } catch (err) {
+      console.error("[market-leads] AI auto-evaluation failed:", err);
+    }
   }
 
   return { created, updated };

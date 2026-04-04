@@ -440,6 +440,9 @@ model MarketLead {
   aiReasoning     String?   @db.Text // Claude's reasoning for the recommendation
   aiConfidence    String?   // high | medium | low
   aiEvaluatedAt   DateTime? // when AI last evaluated this lead
+  // Feedback loop — compare AI recommendation to actual human decision
+  aiOutcome       String?   // correct | false_positive | false_negative | pending
+  aiOutcomeAt     DateTime? // when outcome was recorded (at approval/dismissal)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 

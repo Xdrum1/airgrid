@@ -3,6 +3,7 @@ import { requireAdmin } from "@/lib/admin-helpers";
 import { rateLimit } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
 import { invalidateCitiesCache } from "@/data/seed";
+import { recordLeadOutcome } from "@/lib/lead-evaluator";
 
 /**
  * POST /api/admin/leads/add-to-index
@@ -112,6 +113,9 @@ export async function POST(request: NextRequest) {
       where: { id: leadId },
       data: { status: "added", addedAsCityId: cityId },
     });
+
+    // Record AI outcome for feedback loop
+    await recordLeadOutcome(leadId, "added").catch(() => {});
 
     // Invalidate cache so the market appears on the dashboard
     invalidateCitiesCache();
