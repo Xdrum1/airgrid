@@ -123,6 +123,14 @@ export async function approveOverride(
     invalidateCitiesCache();
   }
 
+  // Record human outcome for auto-reviewer feedback loop
+  try {
+    const { recordOverrideOutcome } = await import("@/lib/auto-reviewer");
+    await recordOverrideOutcome(overrideId, "approve");
+  } catch {
+    // Non-blocking — feedback is best-effort
+  }
+
   return {
     override: {
       id: updated.id,
@@ -158,6 +166,14 @@ export async function rejectOverride(
     where: { id: overrideId },
     data: { supersededAt: now },
   });
+
+  // Record human outcome for auto-reviewer feedback loop
+  try {
+    const { recordOverrideOutcome } = await import("@/lib/auto-reviewer");
+    await recordOverrideOutcome(overrideId, "reject");
+  } catch {
+    // Non-blocking — feedback is best-effort
+  }
 
   return { id: overrideId, supersededAt: now.toISOString() };
 }
