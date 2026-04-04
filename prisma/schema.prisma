@@ -436,6 +436,10 @@ model MarketLead {
   signalCount     Int       @default(1)      // number of distinct signals accumulated
   lastSignalAt    DateTime? // when the most recent signal was detected
   signalSources   Json?     // array of { source, url, date, summary } for audit trail
+  aiRecommendation String?  // ADD | WATCH | DISMISS | ENRICH
+  aiReasoning     String?   @db.Text // Claude's reasoning for the recommendation
+  aiConfidence    String?   // high | medium | low
+  aiEvaluatedAt   DateTime? // when AI last evaluated this lead
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 

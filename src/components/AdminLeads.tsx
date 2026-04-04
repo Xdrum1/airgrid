@@ -28,9 +28,20 @@ interface MarketLead {
   signalCount: number;
   lastSignalAt: string | null;
   signalSources: SignalSourceEntry[] | null;
+  aiRecommendation: string | null;
+  aiReasoning: string | null;
+  aiConfidence: string | null;
+  aiEvaluatedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
+
+const AI_REC_COLORS: Record<string, string> = {
+  ADD: "#00ff88",
+  WATCH: "#f59e0b",
+  DISMISS: "#ff4444",
+  ENRICH: "#5B8DB8",
+};
 
 type StatusKey = "new" | "researching" | "verified" | "added" | "dismissed";
 
@@ -95,23 +106,57 @@ export default function AdminLeads({ showToast }: { showToast: (msg: string) => 
             Track tips and leads on potential new markets before they&apos;re scored publicly.
           </div>
         </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          style={{
-            background: "rgba(124,58,237,0.15)",
-            border: "1px solid rgba(124,58,237,0.4)",
-            borderRadius: 6,
-            padding: "8px 16px",
-            color: "#7c3aed",
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: 1,
-            cursor: "pointer",
-            fontFamily: "'Inter', sans-serif",
-          }}
-        >
-          {showForm ? "CANCEL" : "+ NEW LEAD"}
-        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button
+            onClick={async () => {
+              showToast("Evaluating all pending leads...");
+              try {
+                const res = await fetch("/api/admin/leads/evaluate", { method: "POST" });
+                const json = await res.json();
+                if (res.ok) {
+                  const r = json.recommendations || {};
+                  showToast(`Evaluated ${json.evaluated}: ADD ${r.ADD ?? 0}, WATCH ${r.WATCH ?? 0}, DISMISS ${r.DISMISS ?? 0}, ENRICH ${r.ENRICH ?? 0}`);
+                  fetchLeads();
+                } else {
+                  showToast("Evaluation failed");
+                }
+              } catch {
+                showToast("Evaluation failed");
+              }
+            }}
+            style={{
+              background: "rgba(91,141,184,0.12)",
+              border: "1px solid rgba(91,141,184,0.35)",
+              borderRadius: 6,
+              padding: "8px 16px",
+              color: "#5B8DB8",
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: 1,
+              cursor: "pointer",
+              fontFamily: "'Inter', sans-serif",
+            }}
+          >
+            AI EVALUATE
+          </button>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            style={{
+              background: "rgba(124,58,237,0.15)",
+              border: "1px solid rgba(124,58,237,0.4)",
+              borderRadius: 6,
+              padding: "8px 16px",
+              color: "#7c3aed",
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: 1,
+              cursor: "pointer",
+              fontFamily: "'Inter', sans-serif",
+            }}
+          >
+            {showForm ? "CANCEL" : "+ NEW LEAD"}
+          </button>
+        </div>
       </div>
 
       {/* New lead form */}
@@ -350,6 +395,24 @@ function LeadCard({
               AUTO
             </span>
           )}
+          {lead.aiRecommendation && (
+            <span
+              title={lead.aiReasoning ?? ""}
+              style={{
+                background: `${AI_REC_COLORS[lead.aiRecommendation] ?? "#555"}15`,
+                color: AI_REC_COLORS[lead.aiRecommendation] ?? "#555",
+                fontSize: 8,
+                fontWeight: 700,
+                letterSpacing: 1,
+                padding: "2px 6px",
+                borderRadius: 3,
+                border: `1px solid ${AI_REC_COLORS[lead.aiRecommendation] ?? "#555"}40`,
+                cursor: lead.aiReasoning ? "help" : "default",
+              }}
+            >
+              AI: {lead.aiRecommendation}
+            </span>
+          )}
           <span style={{ color: "#fff", fontSize: 14, fontWeight: 700 }}>
             {lead.city}, {lead.state}
           </span>
@@ -543,6 +606,38 @@ function LeadCard({
               ))}
             </div>
           </div>
+
+          {/* AI Recommendation */}
+          {lead.aiRecommendation && lead.aiReasoning && (
+            <div style={{
+              marginBottom: 16,
+              padding: "12px 14px",
+              background: `${AI_REC_COLORS[lead.aiRecommendation] ?? "#555"}08`,
+              border: `1px solid ${AI_REC_COLORS[lead.aiRecommendation] ?? "#555"}25`,
+              borderRadius: 6,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                <span style={{
+                  fontSize: 8,
+                  fontWeight: 700,
+                  letterSpacing: 1,
+                  color: AI_REC_COLORS[lead.aiRecommendation] ?? "#555",
+                }}>
+                  AI RECOMMENDATION
+                </span>
+                <span style={{
+                  fontSize: 9,
+                  fontWeight: 700,
+                  color: AI_REC_COLORS[lead.aiRecommendation] ?? "#555",
+                }}>
+                  {lead.aiRecommendation} &middot; {(lead.aiConfidence ?? "").toUpperCase()} CONFIDENCE
+                </span>
+              </div>
+              <div style={{ color: "#aaa", fontSize: 11, lineHeight: 1.6 }}>
+                {lead.aiReasoning}
+              </div>
+            </div>
+          )}
 
           {/* Research notes */}
           <div style={{ marginBottom: 16 }}>

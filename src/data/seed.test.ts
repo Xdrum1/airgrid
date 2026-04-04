@@ -12,8 +12,8 @@ import { analyzeGapsSync } from "@/lib/gap-analysis";
 
 // ----- CITIES -----
 describe("CITIES", () => {
-  it("has 24 entries", () => {
-    expect(CITIES).toHaveLength(24);
+  it("has 25 entries", () => {
+    expect(CITIES).toHaveLength(25);
   });
 
   it("has unique IDs", () => {
