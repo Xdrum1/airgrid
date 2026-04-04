@@ -158,12 +158,16 @@ export { KEY_TO_FKB_CODE };
 // Cached FKB weights — refreshed on first call, then cached for process lifetime
 let fkbWeightsCache: Record<string, number> | null = null;
 let fkbWeightsCacheTime = 0;
+let fkbWeightsPending: Promise<Record<string, number>> | null = null;
 const FKB_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 /**
  * Fetch current active weights from FKB database.
  * Returns weights keyed by seed.ts field names (e.g. "activePilotProgram": 15)
  * for drop-in compatibility with existing scoring.
+ *
+ * Uses a pending-promise guard to prevent thundering herd on cold cache —
+ * concurrent callers share a single DB fetch instead of each firing their own.
  *
  * Falls back to hardcoded SCORE_WEIGHTS if DB is unreachable.
  */
@@ -173,6 +177,21 @@ export async function getWeightsFromFkb(): Promise<Record<string, number>> {
     return fkbWeightsCache;
   }
 
+  // If another call is already fetching, wait for it instead of hitting DB again
+  if (fkbWeightsPending) {
+    return fkbWeightsPending;
+  }
+
+  fkbWeightsPending = fetchFkbWeights();
+
+  try {
+    return await fkbWeightsPending;
+  } finally {
+    fkbWeightsPending = null;
+  }
+}
+
+async function fetchFkbWeights(): Promise<Record<string, number>> {
   try {
     // Dynamic import to avoid bundling Prisma in client components
     const { prisma } = await import("@/lib/prisma");
@@ -199,7 +218,7 @@ export async function getWeightsFromFkb(): Promise<Record<string, number>> {
     // Verify we got all 7 active factors
     if (Object.keys(weights).length === 7) {
       fkbWeightsCache = weights;
-      fkbWeightsCacheTime = now;
+      fkbWeightsCacheTime = Date.now();
       return weights;
     }
 
