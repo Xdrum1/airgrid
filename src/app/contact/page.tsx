@@ -318,9 +318,15 @@ export default function ContactPage() {
               <div style={{ fontSize: 10, color: "#444", letterSpacing: 1, marginBottom: 4 }}>PHONE</div>
               <div style={{ fontSize: 13, color: "#999" }}>(202) 949-2709</div>
             </div>
-            <div>
+            <div style={{ marginBottom: 20 }}>
               <div style={{ fontSize: 10, color: "#444", letterSpacing: 1, marginBottom: 4 }}>EMAIL</div>
               <div style={{ fontSize: 13, color: "#999" }}>sales@airindex.io</div>
+            </div>
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 16 }}>
+              <div style={{ fontSize: 9, color: "#333", letterSpacing: 1, lineHeight: 1.8 }}>
+                SAM.GOV REGISTERED<br />
+                CAGE 1AUW7
+              </div>
             </div>
           </div>
           <Suspense fallback={null}>
