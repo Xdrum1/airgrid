@@ -214,8 +214,105 @@ async function fetchSourceContent(url: string): Promise<string | null> {
 // -------------------------------------------------------
 // Prompt building
 // -------------------------------------------------------
+// Feedback loop — record human outcomes for AI accuracy tracking
+// -------------------------------------------------------
 
-const SYSTEM_PROMPT = `You are a senior reviewer for AirIndex, a UAM (Urban Air Mobility) market readiness platform. Your job is to review pending scoring overrides that were created by an automated ingestion pipeline and decide whether they should be approved, rejected, or left for human review.
+/**
+ * Record the human decision on an override to train the auto-reviewer.
+ * Called when an admin manually approves or rejects an override —
+ * compares against the AI's prior decision.
+ */
+export async function recordOverrideOutcome(
+  overrideId: string,
+  humanDecision: "approve" | "reject"
+): Promise<void> {
+  const prisma = await getPrisma();
+  const review = await prisma.autoReviewResult.findFirst({
+    where: { overrideId },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (!review) return; // No AI review to compare against
+
+  // Compare AI decision to human decision
+  let outcome: "correct" | "false_positive" | "false_negative";
+
+  if (humanDecision === "approve") {
+    outcome = review.decision === "approve" ? "correct" : "false_negative";
+  } else {
+    // reject
+    outcome = review.decision === "reject" ? "correct" : "false_positive";
+  }
+
+  await prisma.autoReviewResult.update({
+    where: { id: review.id },
+    data: { humanOutcome: outcome, humanOutcomeAt: new Date() },
+  });
+}
+
+/**
+ * Get auto-reviewer accuracy metrics over the last N days.
+ */
+export async function getAutoReviewAccuracyStats(days = 30): Promise<{
+  total: number;
+  correct: number;
+  falsePositive: number;
+  falseNegative: number;
+  accuracyPct: number;
+}> {
+  const prisma = await getPrisma();
+  const since = new Date(Date.now() - days * 86400000);
+
+  const results = await prisma.autoReviewResult.findMany({
+    where: { humanOutcomeAt: { gte: since }, humanOutcome: { not: null } },
+    select: { humanOutcome: true },
+  });
+
+  const total = results.length;
+  const correct = results.filter((r) => r.humanOutcome === "correct").length;
+  const falsePositive = results.filter((r) => r.humanOutcome === "false_positive").length;
+  const falseNegative = results.filter((r) => r.humanOutcome === "false_negative").length;
+  const accuracyPct = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+  return { total, correct, falsePositive, falseNegative, accuracyPct };
+}
+
+// -------------------------------------------------------
+// Few-shot learning — inject recent correct decisions as examples
+// -------------------------------------------------------
+
+async function getFewShotReviewExamples(): Promise<string> {
+  try {
+    const prisma = await getPrisma();
+    const correct = await prisma.autoReviewResult.findMany({
+      where: { humanOutcome: "correct", reasoning: { not: "" } },
+      orderBy: { humanOutcomeAt: "desc" },
+      take: 6,
+      select: {
+        decision: true,
+        confidence: true,
+        reasoning: true,
+      },
+    });
+
+    if (correct.length === 0) return "";
+
+    const examples = correct
+      .map(
+        (d, i) =>
+          `Example ${i + 1}: Decision=${d.decision.toUpperCase()}, Confidence=${d.confidence.toFixed(2)}\nReasoning: ${d.reasoning.slice(0, 300)}`
+      )
+      .join("\n\n");
+
+    return `\n## Recent Verified-Correct Decisions (Apply the Same Pattern)\n\n${examples}\n`;
+  } catch {
+    return "";
+  }
+}
+
+// -------------------------------------------------------
+
+const SYSTEM_PROMPT_BASE = `You are a senior reviewer for AirIndex, a UAM (Urban Air Mobility) market readiness platform. Your job is to review pending scoring overrides that were created by an automated ingestion pipeline and decide whether they should be approved, rejected, or left for human review.
 
 ## Scoring Model (7 factors, 0–100 scale)
 
@@ -244,7 +341,9 @@ Return ONLY a JSON object (no markdown, no wrapping):
   "reasoning": "Brief explanation of your decision"
 }
 
-If the override has cityId "__unresolved__", try to determine the correct city from the reason/source content and set assignedCityId. Otherwise set assignedCityId to null.`;
+If the override has cityId "__unresolved__", try to determine the correct city from the reason/source content and set assignedCityId. Otherwise set assignedCityId to null.
+
+{FEW_SHOT_EXAMPLES}`;
 
 function buildUserPrompt(
   override: {
@@ -770,11 +869,15 @@ async function reviewOverride(
     sourceContent = await fetchSourceContent(override.sourceUrl);
   }
 
+  // Inject few-shot examples from recently verified-correct decisions
+  const fewShot = await getFewShotReviewExamples();
+  const systemPrompt = SYSTEM_PROMPT_BASE.replace("{FEW_SHOT_EXAMPLES}", fewShot);
+
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
     temperature: 0,
-    system: SYSTEM_PROMPT,
+    system: systemPrompt,
     messages: [
       {
         role: "user",

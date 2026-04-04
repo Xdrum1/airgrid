@@ -87,11 +87,26 @@ async function runClassification(): Promise<Response> {
 
     console.log(`[emerging-classify] Classified ${updated} records (${relevant} relevant), ${remaining} remaining`);
 
+    // Aggregate leads when there are no more records to classify (final batch)
+    let aggregationResult: { leadsCreated: number; leadsUpdated: number; signalsProcessed: number } | null = null;
+    if (remaining === 0 && relevant > 0) {
+      try {
+        const { aggregateEmergingLeads } = await import("@/lib/emerging-leads");
+        aggregationResult = await aggregateEmergingLeads(90);
+        console.log(
+          `[emerging-classify] Aggregated ${aggregationResult.signalsProcessed} signals → ${aggregationResult.leadsCreated} new leads, ${aggregationResult.leadsUpdated} updated`
+        );
+      } catch (err) {
+        console.error("[emerging-classify] Aggregation failed:", err);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       classified: updated,
       relevant,
       remaining,
+      aggregation: aggregationResult,
     });
   } catch (err) {
     console.error("[emerging-classify] Error:", err);

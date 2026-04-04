@@ -228,11 +228,15 @@ model AutoReviewResult {
   dryRun          Boolean  @default(false)
   modelUsed       String
   sourceContent   String?  // truncated source text if fetched
+  // Feedback loop — compare AI decision to human decision
+  humanOutcome    String?  // correct | false_positive | false_negative
+  humanOutcomeAt  DateTime?
   createdAt       DateTime @default(now())
 
   @@index([overrideId])
   @@index([decision])
   @@index([createdAt])
+  @@index([humanOutcome])
 }
 
 model ContactInquiry {
@@ -527,6 +531,36 @@ model EmergingMarketSignal {
   @@index([source])
   @@index([signalType])
   @@index([relevant, ingestedAt])
+}
+
+// Aggregated city/state leads for emerging markets — mirror of MarketLead
+// but scoped to stealth domains (Drone, Hydrogen, AV, SMR, etc.)
+model EmergingMarketLead {
+  id              String   @id @default(cuid())
+  domain          String   // "Commercial Drone" | "Hydrogen Fueling" | "Autonomous Vehicle" | "Nuclear SMR" | ...
+  city            String
+  state           String
+  country         String   @default("US")
+  signalCount     Int      @default(1)
+  lastSignalAt    DateTime?
+  priority        String   @default("low") // low | normal | high
+  status          String   @default("new") // new | researching | watching | archived
+  signalSources   Json?    // array of { source, url, date, summary, signalType }
+  researchNotes   String?  @db.Text
+  // AI evaluation (same pattern as MarketLead)
+  aiRecommendation String? // WATCH | ELEVATE | ARCHIVE | ENRICH
+  aiReasoning     String?  @db.Text
+  aiConfidence    String?
+  aiEvaluatedAt   DateTime?
+  aiOutcome       String?
+  aiOutcomeAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([domain, city, state, country])
+  @@index([domain])
+  @@index([status])
+  @@index([priority])
 }
 
 // ── Login Device Tracking ────────────────────────────────
