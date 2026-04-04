@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-helpers";
 import { prisma } from "@/lib/prisma";
+import { recordLeadOutcome, getAiAccuracyStats } from "@/lib/lead-evaluator";
 
 const VALID_STATUSES = ["new", "researching", "verified", "added", "dismissed"];
 const VALID_PRIORITIES = ["low", "normal", "high"];
@@ -13,11 +14,14 @@ export async function GET(req: NextRequest) {
   const status = url.searchParams.get("status") ?? undefined;
 
   try {
-    const leads = await prisma.marketLead.findMany({
-      where: status ? { status } : undefined,
-      orderBy: [{ priority: "desc" }, { updatedAt: "desc" }],
-    });
-    return NextResponse.json({ data: leads, count: leads.length });
+    const [leads, aiAccuracy] = await Promise.all([
+      prisma.marketLead.findMany({
+        where: status ? { status } : undefined,
+        orderBy: [{ priority: "desc" }, { updatedAt: "desc" }],
+      }),
+      getAiAccuracyStats(30).catch(() => null),
+    ]);
+    return NextResponse.json({ data: leads, count: leads.length, aiAccuracy });
   } catch {
     return NextResponse.json({ error: "Failed to fetch leads" }, { status: 500 });
   }
@@ -88,6 +92,11 @@ export async function PATCH(req: NextRequest) {
       where: { id },
       data,
     });
+
+    // Record AI outcome when a lead is resolved (added or dismissed)
+    if (status === "dismissed" || status === "added") {
+      await recordLeadOutcome(id, status).catch(() => {});
+    }
 
     return NextResponse.json({ data: lead });
   } catch {

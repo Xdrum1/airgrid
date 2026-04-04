@@ -72,8 +72,17 @@ const FACTOR_LABELS: Record<string, string> = {
 
 const ALL_FACTORS = Object.keys(FACTOR_LABELS);
 
+interface AiAccuracy {
+  total: number;
+  correct: number;
+  falsePositive: number;
+  falseNegative: number;
+  accuracyPct: number;
+}
+
 export default function AdminLeads({ showToast }: { showToast: (msg: string) => void }) {
   const [leads, setLeads] = useState<MarketLead[]>([]);
+  const [aiAccuracy, setAiAccuracy] = useState<AiAccuracy | null>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("active");
   const [showForm, setShowForm] = useState(false);
@@ -83,7 +92,10 @@ export default function AdminLeads({ showToast }: { showToast: (msg: string) => 
     const params = filter === "active" ? "" : filter === "all" ? "" : `?status=${filter}`;
     fetch(`/api/admin/leads${params}`)
       .then((r) => r.json())
-      .then((json) => setLeads(json.data ?? []))
+      .then((json) => {
+        setLeads(json.data ?? []);
+        setAiAccuracy(json.aiAccuracy ?? null);
+      })
       .catch(() => showToast("Failed to load leads"))
       .finally(() => setLoading(false));
   }, [filter, showToast]);
@@ -165,6 +177,38 @@ export default function AdminLeads({ showToast }: { showToast: (msg: string) => 
           onCreated={() => { setShowForm(false); fetchLeads(); showToast("Lead created"); }}
           onCancel={() => setShowForm(false)}
         />
+      )}
+
+      {/* AI Accuracy Stats */}
+      {aiAccuracy && aiAccuracy.total > 0 && (
+        <div style={{
+          display: "flex",
+          gap: 16,
+          padding: "12px 16px",
+          background: "rgba(91,141,184,0.04)",
+          border: "1px solid rgba(91,141,184,0.12)",
+          borderRadius: 6,
+          marginBottom: 16,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 8, letterSpacing: 2, color: "#5B8DB8", fontWeight: 700 }}>
+              AI ACCURACY (30D)
+            </span>
+            <span style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 14,
+              fontWeight: 700,
+              color: aiAccuracy.accuracyPct >= 80 ? "#00ff88" : aiAccuracy.accuracyPct >= 60 ? "#f59e0b" : "#ff4444",
+            }}>
+              {aiAccuracy.accuracyPct}%
+            </span>
+          </div>
+          <div style={{ color: "#555", fontSize: 10, letterSpacing: 0.5, display: "flex", gap: 12, alignItems: "center" }}>
+            <span>{aiAccuracy.correct}/{aiAccuracy.total} correct</span>
+            {aiAccuracy.falsePositive > 0 && <span>&middot; {aiAccuracy.falsePositive} false positive</span>}
+            {aiAccuracy.falseNegative > 0 && <span>&middot; {aiAccuracy.falseNegative} false negative</span>}
+          </div>
+        </div>
       )}
 
       {/* Filters */}

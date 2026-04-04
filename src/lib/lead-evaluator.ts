@@ -30,7 +30,7 @@ export interface LeadEvaluation {
   reasoning: string;
 }
 
-const SYSTEM_PROMPT = `You are an intelligence analyst for AirIndex, a UAM (Urban Air Mobility) market readiness platform. Your job is to evaluate MarketLead records — candidate cities detected by our pipeline — and recommend whether they should be added to the tracked markets index.
+const SYSTEM_PROMPT_BASE = `You are an intelligence analyst for AirIndex, a UAM (Urban Air Mobility) market readiness platform. Your job is to evaluate MarketLead records — candidate cities detected by our pipeline — and recommend whether they should be added to the tracked markets index.
 
 ## Context
 
@@ -58,6 +58,8 @@ Analyze the MarketLead below and output one of four recommendations:
 
 4. **ENRICH** — City name is "Unknown" or ambiguous. Needs manual city name resolution before any other decision can be made.
 
+{FEW_SHOT_EXAMPLES}
+
 ## Output Format
 
 Return ONLY a JSON object with these fields:
@@ -68,6 +70,41 @@ Return ONLY a JSON object with these fields:
 }
 
 No markdown, no preamble. Just the JSON object.`;
+
+/**
+ * Fetch recent correct AI decisions to use as few-shot examples.
+ * Injects them into the prompt so the AI learns the user's pattern.
+ */
+async function getFewShotExamples(): Promise<string> {
+  try {
+    const prisma = await getPrisma();
+    const correctDecisions = await prisma.marketLead.findMany({
+      where: { aiOutcome: "correct", aiReasoning: { not: null } },
+      orderBy: { aiOutcomeAt: "desc" },
+      take: 8,
+      select: {
+        city: true,
+        state: true,
+        aiRecommendation: true,
+        aiReasoning: true,
+        signalCount: true,
+      },
+    });
+
+    if (correctDecisions.length === 0) return "";
+
+    const examples = correctDecisions
+      .map(
+        (d, i) =>
+          `Example ${i + 1}: ${d.city}, ${d.state} (${d.signalCount} signals) → ${d.aiRecommendation}\nReasoning: ${d.aiReasoning}`
+      )
+      .join("\n\n");
+
+    return `\n## Recent Correct Decisions (Learn the Pattern)\n\nThe following evaluations were verified as correct by a human analyst. Apply the same reasoning pattern:\n\n${examples}\n`;
+  } catch {
+    return "";
+  }
+}
 
 /**
  * Evaluate a single MarketLead and return a recommendation.
@@ -100,7 +137,10 @@ export async function evaluateLeadData(lead: {
 
   // Build tracked markets list for context
   const trackedList = CITIES.map((c) => `- ${c.city}, ${c.state} (score ${c.score})`).join("\n");
-  const systemPrompt = SYSTEM_PROMPT.replace("{TRACKED_MARKETS}", trackedList);
+  const fewShot = await getFewShotExamples();
+  const systemPrompt = SYSTEM_PROMPT_BASE
+    .replace("{TRACKED_MARKETS}", trackedList)
+    .replace("{FEW_SHOT_EXAMPLES}", fewShot);
 
   // Build lead description
   const sources = lead.signalSources ?? [];
@@ -152,6 +192,67 @@ Evaluate this lead.`;
     logger.error(`Evaluation failed for ${lead.city}, ${lead.state}:`, err);
     return null;
   }
+}
+
+/**
+ * Record the outcome of a lead decision to train the AI via feedback loop.
+ * Called when a lead is promoted to "added" or "dismissed" by an admin.
+ */
+export async function recordLeadOutcome(
+  leadId: string,
+  humanDecision: "added" | "dismissed"
+): Promise<void> {
+  const prisma = await getPrisma();
+  const lead = await prisma.marketLead.findUnique({
+    where: { id: leadId },
+    select: { aiRecommendation: true },
+  });
+
+  if (!lead?.aiRecommendation) return; // No AI rec to compare against
+
+  // Compare AI recommendation to human decision
+  let outcome: "correct" | "false_positive" | "false_negative" | "pending";
+
+  if (humanDecision === "added") {
+    outcome = lead.aiRecommendation === "ADD" ? "correct" : "false_negative";
+  } else {
+    // dismissed
+    outcome = lead.aiRecommendation === "DISMISS" ? "correct"
+      : lead.aiRecommendation === "ADD" ? "false_positive"
+      : "correct"; // WATCH or ENRICH that got dismissed counts as correct
+  }
+
+  await prisma.marketLead.update({
+    where: { id: leadId },
+    data: { aiOutcome: outcome, aiOutcomeAt: new Date() },
+  });
+}
+
+/**
+ * Get AI accuracy metrics over the last N days.
+ */
+export async function getAiAccuracyStats(days = 30): Promise<{
+  total: number;
+  correct: number;
+  falsePositive: number;
+  falseNegative: number;
+  accuracyPct: number;
+}> {
+  const prisma = await getPrisma();
+  const since = new Date(Date.now() - days * 86400000);
+
+  const results = await prisma.marketLead.findMany({
+    where: { aiOutcomeAt: { gte: since }, aiOutcome: { not: null } },
+    select: { aiOutcome: true },
+  });
+
+  const total = results.length;
+  const correct = results.filter((r) => r.aiOutcome === "correct").length;
+  const falsePositive = results.filter((r) => r.aiOutcome === "false_positive").length;
+  const falseNegative = results.filter((r) => r.aiOutcome === "false_negative").length;
+  const accuracyPct = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+  return { total, correct, falsePositive, falseNegative, accuracyPct };
 }
 
 /**
