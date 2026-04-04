@@ -71,12 +71,6 @@ export default function SiteFooter() {
           >
             LinkedIn
           </a>
-          <a
-            href="mailto:info@airindex.io"
-            style={socialLinkStyle}
-          >
-            info@airindex.io
-          </a>
         </div>
       </div>
     </footer>

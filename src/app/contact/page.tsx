@@ -307,11 +307,26 @@ export default function ContactPage() {
         </p>
       </section>
 
-      {/* Form */}
-      <section style={{ padding: "0 20px 80px" }}>
-        <Suspense fallback={null}>
-          <ContactForm />
-        </Suspense>
+      {/* Form + Direct Contact side by side */}
+      <section style={{ maxWidth: 720, margin: "0 auto", padding: "0 20px 80px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 40, alignItems: "start" }}>
+          <div style={{ paddingTop: 8 }}>
+            <div style={{ fontSize: 9, letterSpacing: 2, color: "#555", marginBottom: 16 }}>
+              DIRECT CONTACT
+            </div>
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: 10, color: "#444", letterSpacing: 1, marginBottom: 4 }}>PHONE</div>
+              <div style={{ fontSize: 13, color: "#999" }}>(202) 949-2709</div>
+            </div>
+            <div>
+              <div style={{ fontSize: 10, color: "#444", letterSpacing: 1, marginBottom: 4 }}>EMAIL</div>
+              <div style={{ fontSize: 13, color: "#999" }}>sales@airindex.io</div>
+            </div>
+          </div>
+          <Suspense fallback={null}>
+            <ContactForm />
+          </Suspense>
+        </div>
       </section>
 
       <SiteFooter />
