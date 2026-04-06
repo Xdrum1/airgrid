@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
   const issue = parseInt(req.nextUrl.searchParams.get("i") ?? "0", 10);
   const token = req.nextUrl.searchParams.get("t");
   const url = req.nextUrl.searchParams.get("url");
+  const series = req.nextUrl.searchParams.get("s") ?? "newsletter";
 
   const isValid = !!(email && issue && token && url && verifyTrackingToken(email, issue, token));
 
@@ -17,6 +18,7 @@ export async function GET(req: NextRequest) {
   try {
     await prisma.newsletterEvent.create({
       data: {
+        series,
         email: email!,
         issue,
         event: "click",

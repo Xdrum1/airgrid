@@ -12,11 +12,13 @@ export async function GET(req: NextRequest) {
   const email = req.nextUrl.searchParams.get("e");
   const issue = parseInt(req.nextUrl.searchParams.get("i") ?? "0", 10);
   const token = req.nextUrl.searchParams.get("t");
+  const series = req.nextUrl.searchParams.get("s") ?? "newsletter";
 
   if (email && issue && token && verifyTrackingToken(email, issue, token)) {
     try {
       await prisma.newsletterEvent.create({
         data: {
+          series,
           email,
           issue,
           event: "open",

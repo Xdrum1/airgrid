@@ -17,9 +17,12 @@ const issueFilter = parseInt(
   process.argv.find((a) => a.startsWith("--issue="))?.split("=")[1] ?? "0",
   10
 );
+const seriesFilter = process.argv.find((a) => a.startsWith("--series="))?.split("=")[1];
 
 async function main() {
-  const where = issueFilter ? { issue: issueFilter } : {};
+  const where: Record<string, unknown> = {};
+  if (issueFilter) where.issue = issueFilter;
+  if (seriesFilter) where.series = seriesFilter;
 
   const events = await prisma.newsletterEvent.findMany({
     where,
@@ -31,22 +34,31 @@ async function main() {
     return;
   }
 
-  // Group by issue
-  const byIssue = new Map<number, typeof events>();
+  // Group by series + issue
+  const byKey = new Map<string, typeof events>();
   for (const e of events) {
-    const arr = byIssue.get(e.issue) ?? [];
+    const key = `${(e as { series?: string }).series ?? "newsletter"}:${e.issue}`;
+    const arr = byKey.get(key) ?? [];
     arr.push(e);
-    byIssue.set(e.issue, arr);
+    byKey.set(key, arr);
   }
 
-  for (const [issue, issueEvents] of [...byIssue.entries()].sort((a, b) => a[0] - b[0])) {
+  const SERIES_LABELS: Record<string, string> = {
+    newsletter: "NEWSLETTER",
+    pulse: "PULSE",
+    monday: "ONE MARKET MONDAY",
+  };
+
+  for (const [key, issueEvents] of [...byKey.entries()].sort()) {
+    const [series, issueStr] = key.split(":");
+    const issue = parseInt(issueStr);
     const opens = issueEvents.filter((e) => e.event === "open");
     const clicks = issueEvents.filter((e) => e.event === "click");
     const uniqueOpeners = new Set(opens.map((e) => e.email));
     const uniqueClickers = new Set(clicks.map((e) => e.email));
 
     console.log(`\n${"═".repeat(60)}`);
-    console.log(`  ISSUE ${issue} — ENGAGEMENT REPORT`);
+    console.log(`  ${SERIES_LABELS[series] ?? series.toUpperCase()} #${issue} — ENGAGEMENT REPORT`);
     console.log(`${"═".repeat(60)}\n`);
 
     console.log(`  Opens: ${opens.length} total, ${uniqueOpeners.size} unique`);
