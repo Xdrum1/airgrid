@@ -1247,6 +1247,39 @@ model HeliportCompliance {
   @@index([q5EvtolViability])
 }
 
+model OeaaaDetermination {
+  id                    String    @id @default(cuid())
+  asn                   String    @unique                // Aeronautical Study Number — natural key
+  caseId                String?
+  caseType              String    @db.VarChar(10)        // OE | NRA
+  statusCode            String    @db.VarChar(30)        // DET-DNE, DET-to-Prop, DET-Conditional, CIR, etc.
+  nearestAirportName    String?   @db.VarChar(200)
+  nearestCity           String    @db.VarChar(100)
+  nearestState          String    @db.Char(2)
+  lat                   Decimal   @db.Decimal(9, 6)
+  lng                   Decimal   @db.Decimal(9, 6)
+  structureType         String?   @db.VarChar(100)
+  structureDescription  String?   @db.Text
+  aglHeight             Int?                             // feet AGL
+  amslHeight            Int?                             // feet AMSL
+  filingDate            DateTime? @db.Date
+  determinationDate     DateTime? @db.Date
+  expirationDate        DateTime? @db.Date
+  year                  Int       @db.SmallInt
+  sourceEndpoint        String    @db.VarChar(30)        // NRA_state | CIRC_state | case_asn
+  marketId              String?                          // Nearest tracked market if geo-matched
+  linkedHeliportId      String?                          // Matched Heliport.id by proximity
+  raw                   Json                             // Full parsed XML record for audit
+  ingestedAt            DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([nearestState])
+  @@index([statusCode])
+  @@index([marketId])
+  @@index([linkedHeliportId])
+  @@index([year])
+}
+
 model AirIndexTerm {
   id                  String   @id                     // Slug format: "vertiport", "heliport", etc.
   term                String   @db.VarChar(200)        // The correct term as it appears in source
