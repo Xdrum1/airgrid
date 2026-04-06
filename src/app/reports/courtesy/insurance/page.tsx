@@ -99,7 +99,7 @@ export default async function InsuranceCourtesyBrief() {
           {[
             { value: t.total_heliports.toLocaleString(), label: "Registered Heliports", sub: "FAA NASR 5010 database", color: "#111" },
             { value: `${q2Pct}%`, label: "No Determination on File", sub: `${t.q2_unknown.toLocaleString()} of ${t.total_heliports.toLocaleString()} sites`, color: "#dc2626" },
-            { value: t.total_determinations.toLocaleString(), label: "FAA Determinations Ingested", sub: "OE/AAA NRA + CIRC (2024\u20132026)", color: S.accent },
+            { value: String(t.q2_on_file), label: "Sites with FAA Data Verified", sub: `of ${t.total_heliports.toLocaleString()} \u2014 from ${t.total_determinations.toLocaleString()} OE/AAA records`, color: S.accent },
             { value: t.hospitals.toLocaleString(), label: "Hospital Heliports", sub: `${hospitalPct}% of all registered sites`, color: "#111" },
           ].map((s) => (
             <div key={s.label} style={{ ...S.statBox, background: "#fff" }}>
@@ -114,7 +114,8 @@ export default async function InsuranceCourtesyBrief() {
         <div style={S.callout}>
           <strong>{q2Pct}% of FAA-registered heliports have no airspace determination on file.</strong>{" "}
           AirIndex ingested {t.total_determinations.toLocaleString()} FAA OE/AAA airspace determinations across 17 states.
-          Only {t.linked_determinations} matched to registered heliport facilities within proximity.
+          These {t.linked_determinations} determination records cover just {t.q2_on_file} unique heliport facilities &mdash;
+          meaning only {t.q2_on_file} of {t.total_heliports.toLocaleString()} registered sites have any verified FAA airspace data on file.
           For the remaining {t.q2_unknown.toLocaleString()} sites, there is no federal record confirming that airspace
           evaluation conditions were met, modified, or monitored. FAA Advisory Circulars are used as the
           &ldquo;standard of care&rdquo; in civil litigation. Deviation from them has been treated as evidence of negligence.
