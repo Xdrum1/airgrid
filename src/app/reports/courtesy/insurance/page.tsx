@@ -182,7 +182,7 @@ export default async function InsuranceCourtesyBrief() {
         <p style={{ fontSize: 13, color: "#444", lineHeight: 1.7 }}>
           {t.hospitals.toLocaleString()} of {t.total_heliports.toLocaleString()} registered heliports ({hospitalPct}%) are hospital facilities.
           Most were built to 40&times;40 ft TLOF standards for helicopter operations. eVTOL aircraft require a minimum
-          50&times;50 ft TLOF. Fewer than 20% of hospital helipads can physically accommodate eVTOL operations without
+          50&times;50 ft TLOF. Most hospital helipads cannot physically accommodate eVTOL operations without
           structural modification. For carriers covering hospital heliport liability, this creates a dimensional
           compliance gap that will surface when eVTOL operators begin commercial service in ADVANCED-tier markets
           (Los Angeles, Dallas, Miami, Orlando, San Francisco).

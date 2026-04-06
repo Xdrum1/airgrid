@@ -475,9 +475,8 @@ export default async function BriefingPage({
             )}
             <p style={{ fontSize: 12, color: "#666", margin: 0 }}>
               {city.heliportCount ?? 0} FAA-registered heliports in{" "}
-              {city.city} metro area. Research indicates fewer than 20% of
-              existing U.S. heliports meet the dimensional requirements for
-              eVTOL vertiport conversion.
+              {city.city} metro area. Most existing U.S. heliports do not meet
+              the dimensional requirements for eVTOL vertiport conversion.
             </p>
           </div>
 
