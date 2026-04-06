@@ -48,15 +48,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {/* Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-PGG95SB0PP"
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PGG95SB0PP');`}
-        </Script>
-        {/* Plausible Analytics */}
+        {/* Plausible Analytics (cookieless, GDPR-compliant) */}
         <Script
           src="https://plausible.io/js/pa-d8Fqfg9wRL9bqO620StZS.js"
           strategy="afterInteractive"

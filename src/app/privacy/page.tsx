@@ -236,14 +236,18 @@ export default function PrivacyPage() {
 
         <h3 style={S.h3}>No Tracking Cookies</h3>
         <p style={S.p}>
-          AirIndex does not set any tracking cookies. The site sets zero cookies. We use Plausible Analytics,
+          AirIndex does not set any tracking, marketing, or analytics cookies. We use Plausible Analytics,
           which is specifically designed to operate without cookies and without collecting personal data.
+          Browsing the site without signing in sets zero cookies.
         </p>
 
-        <h3 style={S.h3}>3.1 Cookies</h3>
+        <h3 style={S.h3}>3.1 Authentication Cookies</h3>
         <p style={S.p}>
-          We do not set first-party cookies. Stripe may set cookies during the checkout flow on their hosted
-          payment pages, governed by Stripe&apos;s own privacy policy.
+          When you sign in, AirIndex sets a strictly necessary session cookie to maintain your authenticated
+          session. This cookie is required for the login to function, contains no tracking data, and is
+          exempt from consent requirements under GDPR/ePrivacy. It is deleted when you sign out or when the
+          session expires. We do not set any other first-party cookies.
+          Stripe may set cookies during checkout on their hosted payment pages, governed by Stripe&apos;s own privacy policy.
         </p>
 
         <h3 style={S.h3}>3.2 Browser Local Storage</h3>
