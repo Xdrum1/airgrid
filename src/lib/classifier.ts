@@ -66,13 +66,14 @@ ${OPERATOR_TABLE}
 
 Classify each record into exactly one event type:
 - \`state_legislation_signed\` — A specific STATE bill signed/enacted that enables UAM operations. Only factors affected: hasStateLegislation. NOT for federal actions.
+- \`state_legislation_failed\` — A specific STATE AAM/UAM bill that FAILED in committee, was withdrawn, tabled, or died. This is a HIGH RELEVANCE negative signal — it means a market's legislative momentum has reversed. Factors affected: hasStateLegislation (value should reflect regression, e.g. from "actively_moving" to "none"). Look for keywords: "failed to pass", "withdrawn", "tabled indefinitely", "died in committee".
 - \`vertiport_zoning_approved\` — Zoning ordinance for vertiport construction approved in a specific city. Only factors affected: hasVertiportZoning, approvedVertiport.
 - \`faa_corridor_filing\` — FAA filing related to air corridors, airspace design, or powered-lift operations. Only factors affected: regulatoryPosture.
 - \`faa_certification_milestone\` — FAA type certificate, airworthiness, or Part 135 milestone for an operator. This does NOT directly affect any city scoring factor unless it mentions a specific city launch. If no city is mentioned, classify as not_relevant.
 - \`operator_market_expansion\` — Operator announcing expansion into a specific new city/market. Only factors affected: activeOperatorPresence, hasActivePilotProgram.
 - \`regulatory_posture_change\` — Change in city/state regulatory stance toward UAM. Only factors affected: regulatoryPosture.
 - \`infrastructure_development\` — New vertiport, charging infrastructure, or ground support in a specific city. Only factors affected: approvedVertiport, hasVertiportZoning.
-- \`not_relevant\` — Document does not affect any specific city's readiness score. Use this for: general industry news, corporate earnings/financials, stock offerings, fundraising, federal policy without city-specific impact, opinion pieces, and analyst commentary.
+- \`not_relevant\` — Document does not affect any specific city's readiness score. Use this for: general industry news, corporate earnings/financials, stock offerings, fundraising, federal policy without city-specific impact, opinion pieces, and analyst commentary. IMPORTANT: Do NOT classify failed/withdrawn/dead legislation as not_relevant — bill failures are negative scoring signals that affect hasStateLegislation. Use \`state_legislation_failed\` instead.
 
 ## Output Schema
 

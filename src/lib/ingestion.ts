@@ -110,6 +110,8 @@ async function writeIngested(records: IngestedRecord[]): Promise<void> {
           update: {
             summary: r.summary,
             status: r.status,
+            date: r.date,
+            url: r.url,
             raw: r.raw as unknown as Record<string, never>,
           },
         })
@@ -137,14 +139,31 @@ function normalizeFederalFiling(f: FederalFiling): IngestedRecord {
   };
 }
 
+// LegiScan status codes → human-readable
+const LEGISCAN_STATUS: Record<string, string> = {
+  "1": "introduced",
+  "2": "engrossed",       // passed one chamber
+  "3": "enrolled",        // passed both chambers
+  "4": "enacted",         // signed into law
+  "5": "vetoed",
+  "6": "failed",          // failed in committee or on floor
+};
+
 function normalizeStateBill(b: StateBill): IngestedRecord {
+  const statusNum = String(b.status ?? "");
+  const statusLabel = LEGISCAN_STATUS[statusNum] ?? "unknown";
+  // Detect failure from last_action text as well (LegiScan doesn't always set status=6)
+  const lastAction = b.last_action ?? "";
+  const isFailed = statusLabel === "failed" ||
+    /failed|withdrawn|dead|tabled indefinitely/i.test(lastAction);
+
   return {
     id: `legiscan_${b.bill_id}`,
     source: "legiscan",
     sourceId: String(b.bill_id),
     title: `${b.state} ${b.bill_number}: ${b.title}`,
-    summary: b.description ?? b.last_action ?? "",
-    status: b.status ?? "unknown",
+    summary: b.description ?? lastAction,
+    status: isFailed ? "failed" : statusLabel,
     date: b.last_action_date ?? "",
     url: b.url,
     state: b.state,
@@ -317,7 +336,7 @@ function diffRecords(
     const prev = existingMap.get(record.id);
     if (!prev) {
       newRecords.push(record);
-    } else if (prev.status !== record.status || prev.summary !== record.summary) {
+    } else if (prev.status !== record.status || prev.summary !== record.summary || prev.date !== record.date) {
       updatedRecords.push(record);
     } else {
       unchangedCount++;
