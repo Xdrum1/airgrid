@@ -1,0 +1,48 @@
+name: Monthly OE/AAA determination ingestion
+
+on:
+  schedule:
+    # Run 1st of each month at 07:00 UTC (2am EST)
+    - cron: "0 7 1 * *"
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run OE/AAA ingestion (current year + compliance update)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        run: |
+          YEAR=$(date +%Y)
+          echo "Ingesting OE/AAA NRA + CIRC data for $YEAR..."
+          npx tsx scripts/ingest-oeaaa.ts --year=$YEAR --update-compliance
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          curl -s -X POST "$URL/api/admin/cron-alert" \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            -H "Content-Type: application/json" \
+            -d '{"cron":"oeaaa-ingest","status":"failed","message":"Monthly OE/AAA ingestion failed"}'
