@@ -58,10 +58,10 @@ const INSIGHTS: Insight[] = [
     category: "methodology",
     title: "Why We Weight Legislation at 20%",
     summary:
-      "State-level legislation is the single highest-weighted factor in the AirIndex scoring model. Here's the reasoning — and what Rex, our design partner in vertiport development, taught us about why it matters.",
+      "State-level legislation is the single highest-weighted factor in the AirIndex scoring model. Here's the reasoning — and what infrastructure developers taught us about why it matters.",
     body: [
       "In version 1.3 of our scoring methodology, state legislation carries a 20% weight — the highest of any single factor. This isn't arbitrary. It reflects a structural reality: without enabling state legislation, no amount of operator interest or vertiport construction can create a commercially viable UAM market.",
-      "We learned this directly from Rex, a vertiport developer who stress-tests our 7-factor model against real capital allocation decisions. His feedback was clear: when he evaluates a market for vertiport investment, the first question isn't 'are there operators here?' It's 'does the state legal framework allow what we need to build?' Legislation creates the floor that everything else stands on.",
+      "We learned this directly from infrastructure developers who stress-test our 7-factor model against real capital allocation decisions. Their feedback was clear: when they evaluate a market for vertiport investment, the first question isn't 'are there operators here?' It's 'does the state legal framework allow what we need to build?' Legislation creates the floor that everything else stands on.",
       "The graduated scoring (enacted legislation = full points, actively moving = partial, nothing = zero) captures the reality that legislative progress is a spectrum, not a binary. A state with a UAM bill in committee is meaningfully different from one with no activity at all — and both are different from one where comprehensive frameworks are already signed into law.",
       "This weighting has proven predictive. Markets with enacted legislation (Texas, Florida, Nevada) consistently cluster at the top of our index, while markets with strong operator interest but no legislative framework (several Northeast cities) score lower than their press coverage would suggest.",
     ],

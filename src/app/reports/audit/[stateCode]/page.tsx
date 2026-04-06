@@ -561,7 +561,7 @@ export default async function AuditReportPage({
             facilities against five questions derived from FAA NASR 5010 records, MCS state enforcement
             data, municipality ordinance audits, and site classification analysis. Q2 (Airspace Determination)
             is pending integration of FAA OE/AAA determined cases data. Compliance status is algorithmically
-            assessed &mdash; field verification by a qualified inspector (e.g., Five-Alpha LLC) is recommended
+            assessed &mdash; field verification by a qualified inspector is recommended
             before regulatory action. See{" "}
             <a href="https://airindex.io/methodology" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               airindex.io/methodology
