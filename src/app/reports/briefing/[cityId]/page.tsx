@@ -129,8 +129,8 @@ export default async function BriefingPage({
   const tierColor = getScoreColor(score);
   const gap = await analyzeGaps(city);
 
-  // Rex integration flag — flip to true when Five-Alpha data is live
-  const rexIntegrationActive = process.env.REX_INTEGRATION_ACTIVE === "true";
+  // Site audit integration flag — flip to true when credentialed audit data is live
+  const rexIntegrationActive = process.env.SITE_AUDIT_ACTIVE === "true";
 
   // Compute national rank (cities sorted by score descending)
   const sortedCities = [...allCities].sort(
@@ -425,13 +425,13 @@ export default async function BriefingPage({
             {rexIntegrationActive ? (
               <div style={{ marginBottom: 16 }}>
                 <p style={{ fontSize: 13, lineHeight: 1.7, color: "#ccc", margin: "0 0 12px" }}>
-                  Site-level conversion viability analysis powered by Five-Alpha LLC site audit methodology.
+                  Site-level conversion viability analysis powered by credentialed infrastructure audit methodology.
                   FATO and safety area compliance, approach path obstruction mapping, and greenfield vs. conversion
                   recommendations are included below.
                 </p>
-                {/* TODO: Render Five-Alpha site audit data when available */}
+                {/* TODO: Render site audit data when available */}
                 <div style={{ background: "rgba(0,255,136,0.04)", border: "1px solid rgba(0,255,136,0.15)", borderRadius: 8, padding: "16px 20px" }}>
-                  <p style={{ color: "#00ff88", fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: "0 0 8px" }}>FIVE-ALPHA SITE AUDIT DATA</p>
+                  <p style={{ color: "#00ff88", fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: "0 0 8px" }}>SITE AUDIT DATA</p>
                   <p style={{ color: "#888", fontSize: 12, margin: 0 }}>Detailed site audit data for this market will render here when integrated.</p>
                 </div>
               </div>
@@ -458,7 +458,7 @@ export default async function BriefingPage({
                   safety area compliance per site, approach path obstruction
                   mapping, and greenfield vs. conversion recommendations — is
                   available as part of an enhanced engagement. This section is
-                  powered by Five-Alpha LLC site audit data.
+                  powered by credentialed site audit data.
                 </p>
                 <a
                   href="/contact?tier=briefing&ref=site-audit"
