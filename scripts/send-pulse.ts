@@ -14,6 +14,10 @@ import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 import { PrismaClient } from "@prisma/client";
 import { sendSesEmail } from "../src/lib/ses";
+import {
+  buildTrackingPixelUrl,
+  buildClickTrackUrl,
+} from "../src/lib/newsletter-token";
 
 const prisma = new PrismaClient();
 
@@ -26,6 +30,23 @@ const INNER_CIRCLE = [
   "kennethswartz@me.com",
   "Don.Berchoff@truweathersolutions.com",
 ];
+
+function injectTracking(html: string, email: string, issue: number): string {
+  // Wrap airindex.io links with click tracking
+  let tracked = html.replace(
+    /href="(https?:\/\/(?:www\.)?airindex\.io[^"]*)"/g,
+    (_match, url: string) => {
+      return `href="${buildClickTrackUrl(email, issue, url, "pulse")}"`;
+    },
+  );
+
+  // Inject tracking pixel before </body>
+  const pixelUrl = buildTrackingPixelUrl(email, issue, "pulse");
+  const pixel = `<img src="${pixelUrl}" width="1" height="1" alt="" style="display:none;width:1px;height:1px;border:0;" />`;
+  tracked = tracked.replace("</body>", `${pixel}\n</body>`);
+
+  return tracked;
+}
 
 function findPulseFile(issueNum?: number): { path: string; issue: number; subject: string } {
   const docsDir = join(__dirname, "../public/docs");
@@ -104,15 +125,16 @@ async function main() {
     return;
   }
 
-  // Send
+  // Send (per-recipient HTML with tracking)
   const from = "AirIndex <hello@airindex.io>";
   let sent = 0;
   let failed = 0;
 
   for (const to of recipients) {
     try {
-      await sendSesEmail({ to, from, subject: pulse.subject, html });
-      console.log(`[ok]   ${to}`);
+      const trackedHtml = injectTracking(html, to, pulse.issue);
+      await sendSesEmail({ to, from, subject: pulse.subject, html: trackedHtml });
+      console.log(`[ok]   ${to} (tracked)`);
       sent++;
     } catch (err) {
       console.error(`[fail] ${to}:`, err);

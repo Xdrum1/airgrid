@@ -28,6 +28,10 @@ import {
   getScoreTier,
   SCORE_WEIGHTS,
 } from "../src/lib/scoring";
+import {
+  buildTrackingPixelUrl,
+  buildClickTrackUrl,
+} from "../src/lib/newsletter-token";
 
 const prisma = new PrismaClient();
 
@@ -80,12 +84,19 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function renderEmailHtml(issue: OneMarketMondayIssue): string {
+function renderEmailHtml(issue: OneMarketMondayIssue, recipientEmail?: string): string {
   const city = CITIES.find((c) => c.id === issue.cityId);
   if (!city) throw new Error(`City not found: ${issue.cityId}`);
 
   const { score, breakdown } = calculateReadinessScore(city);
   const tier = getScoreTier(score);
+
+  // When tracking is enabled, wrap links with click tracking
+  const track = (url: string) =>
+    recipientEmail
+      ? buildClickTrackUrl(recipientEmail, issue.issueNumber, url, "monday")
+      : url;
+
   const issueUrl = `${BASE_URL}/insights/one-market-monday/${issue.slug}`;
   const cityUrl = `${BASE_URL}/city/${city.id}`;
 
@@ -180,7 +191,7 @@ function renderEmailHtml(issue: OneMarketMondayIssue): string {
 
               <div style="margin-top:22px;padding-top:16px;border-top:1px solid #d8dde3;font:12px/1.5 'Courier New',monospace;color:#444;">
                 Last updated ${city.lastUpdated} ·
-                <a href="${cityUrl}" style="color:#5B8DB8;text-decoration:none;font-weight:600;">view full market profile →</a>
+                <a href="${track(cityUrl)}" style="color:#5B8DB8;text-decoration:none;font-weight:600;">view full market profile →</a>
               </div>
             </td></tr>
           </table>
@@ -193,7 +204,7 @@ function renderEmailHtml(issue: OneMarketMondayIssue): string {
 
         <!-- Read on web -->
         <tr><td style="padding:24px 48px 16px;" align="center">
-          <a href="${issueUrl}" style="display:inline-block;padding:12px 28px;background:#5B8DB8;color:#ffffff;font:700 12px/1 'Helvetica Neue',Arial,sans-serif;text-decoration:none;border-radius:6px;letter-spacing:0.06em;">
+          <a href="${track(issueUrl)}" style="display:inline-block;padding:12px 28px;background:#5B8DB8;color:#ffffff;font:700 12px/1 'Helvetica Neue',Arial,sans-serif;text-decoration:none;border-radius:6px;letter-spacing:0.06em;">
             READ THIS ISSUE ON AIRINDEX →
           </a>
         </td></tr>
@@ -204,13 +215,14 @@ function renderEmailHtml(issue: OneMarketMondayIssue): string {
             ${escapeHtml(issue.footerNote)}
           </p>
           <p style="font:11px/1.6 'Helvetica Neue',Arial,sans-serif;color:#aaa;margin:0;">
-            AirIndex · UAM Market Readiness Intelligence · <a href="${BASE_URL}" style="color:#5B8DB8;text-decoration:none;">airindex.io</a>
+            AirIndex · UAM Market Readiness Intelligence · <a href="${track(BASE_URL)}" style="color:#5B8DB8;text-decoration:none;">airindex.io</a>
           </p>
         </td></tr>
 
       </table>
     </td></tr>
   </table>
+  ${recipientEmail ? `<img src="${buildTrackingPixelUrl(recipientEmail, issue.issueNumber, "monday")}" width="1" height="1" alt="" style="display:none;width:1px;height:1px;border:0;" />` : ""}
 </body>
 </html>`;
 }
@@ -242,7 +254,6 @@ async function main() {
     if (!issue) throw new Error("No issues defined in one-market-monday.ts");
   }
 
-  const html = renderEmailHtml(issue);
   const subject = `One Market Monday #${String(issue.issueNumber).padStart(2, "0")} — ${issue.headline}`;
 
   console.log(`\nIssue: ${issue.slug} (#${issue.issueNumber})`);
@@ -287,7 +298,8 @@ async function main() {
       console.log(`  ${email} ${tag}`);
     }
     console.log(`\nTotal: ${recipients.length} recipients`);
-    console.log(`\nHTML length: ${html.length} bytes`);
+    const previewHtml = renderEmailHtml(issue);
+    console.log(`\nHTML length: ${previewHtml.length} bytes (without tracking)`);
     await prisma.$disconnect();
     return;
   }
@@ -298,8 +310,9 @@ async function main() {
 
   for (const to of recipients) {
     try {
+      const html = renderEmailHtml(issue, to);
       await sendSesEmail({ to, from, subject, html });
-      console.log(`[ok]   ${to}`);
+      console.log(`[ok]   ${to} (tracked)`);
       sent++;
     } catch (err) {
       console.error(`[fail] ${to}:`, err);

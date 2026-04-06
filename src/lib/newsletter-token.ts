@@ -45,14 +45,14 @@ export function verifyTrackingToken(email: string, issue: number, token: string)
   return timingSafeEqual(Buffer.from(token), Buffer.from(expected));
 }
 
-export function buildTrackingPixelUrl(email: string, issue: number): string {
+export function buildTrackingPixelUrl(email: string, issue: number, series = "newsletter"): string {
   const token = generateTrackingToken(email, issue);
   const base = process.env.APP_URL || "https://www.airindex.io";
-  return `${base}/api/newsletter/track?e=${encodeURIComponent(email)}&i=${issue}&t=${token}`;
+  return `${base}/api/newsletter/track?e=${encodeURIComponent(email)}&i=${issue}&t=${token}&s=${series}`;
 }
 
-export function buildClickTrackUrl(email: string, issue: number, destinationUrl: string): string {
+export function buildClickTrackUrl(email: string, issue: number, destinationUrl: string, series = "newsletter"): string {
   const token = generateTrackingToken(email, issue);
   const base = process.env.APP_URL || "https://www.airindex.io";
-  return `${base}/api/newsletter/click?e=${encodeURIComponent(email)}&i=${issue}&t=${token}&url=${encodeURIComponent(destinationUrl)}`;
+  return `${base}/api/newsletter/click?e=${encodeURIComponent(email)}&i=${issue}&t=${token}&s=${series}&url=${encodeURIComponent(destinationUrl)}`;
 }

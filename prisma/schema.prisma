@@ -588,6 +588,7 @@ model LoginEvent {
 
 model NewsletterEvent {
   id        String   @id @default(cuid())
+  series    String   @default("newsletter") // "newsletter" | "pulse" | "monday"
   email     String
   issue     Int
   event     String   // "open" | "click"
@@ -598,6 +599,7 @@ model NewsletterEvent {
 
   @@index([email, issue])
   @@index([issue, event])
+  @@index([series, issue])
   @@index([createdAt])
 }
 
