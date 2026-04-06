@@ -17,7 +17,7 @@ const USE_CASES = [
     subtitle: "City planners and state DOTs",
     description:
       "Identify regulatory gaps, prioritize city council actions, and track readiness for commercial eVTOL operations. Includes five-question ordinance audit with specific score-moving actions.",
-    href: "/docs/AirIndex_UseCase_Municipality_StateAgency_2.pdf",
+    href: "/reports/use-case/municipality",
     color: "#00ff88",
     buyers: ["City Planners", "State DOTs", "Airport Authorities", "Economic Development Alliances"],
   },
@@ -27,7 +27,7 @@ const USE_CASES = [
     subtitle: "Developers and engineering firms",
     description:
       "Qualify markets, de-risk capital allocation, and align project timelines with regulatory readiness. Heliport compliance data across 5,647 FAA-registered sites.",
-    href: "/docs/AirIndex_UseCase_Infrastructure_Developer_2.pdf",
+    href: "/reports/use-case/infrastructure",
     color: "#f59e0b",
     buyers: ["Vertiport Developers", "A&E Firms", "Real Estate Investors", "Airport Authorities"],
   },
@@ -37,7 +37,7 @@ const USE_CASES = [
     subtitle: "Defense and aerospace organizations",
     description:
       "Track AAM market formation, align product development with infrastructure readiness, and monitor federal program activity across 10 active programs.",
-    href: "/docs/AirIndex_UseCase_Aerospace_Defense_2.pdf",
+    href: "/reports/use-case/aerospace-defense",
     color: "#5B8DB8",
     buyers: ["Systems Integrators", "Defense Primes", "Government Affairs", "Strategy Teams"],
   },
@@ -47,7 +47,7 @@ const USE_CASES = [
     subtitle: "Aviation liability carriers",
     description:
       "Verify heliport compliance, screen portfolios, and build defensible underwriting baselines for AAM. Automated pre-screening with physical verification by credentialed inspectors on flagged sites.",
-    href: "/docs/AirIndex_UseCase_Insurance_2.pdf",
+    href: "/reports/use-case/insurance",
     color: "#ff6b35",
     buyers: ["Aviation Liability Carriers", "Underwriters", "Insurance Brokers", "Risk Managers"],
   },
@@ -175,8 +175,6 @@ export default function UseCasesPage() {
                 </div>
                 <a
                   href={uc.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -194,7 +192,7 @@ export default function UseCasesPage() {
                     flexShrink: 0,
                   }}
                 >
-                  DOWNLOAD PDF
+                  VIEW DETAILS
                 </a>
               </div>
               <p style={{ color: "#999", fontSize: 13, lineHeight: 1.7, margin: "0 0 16px" }}>
