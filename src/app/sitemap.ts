@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getPublishedFeedItems } from "@/lib/feed";
 import { getCitiesWithOverrides } from "@/data/seed";
 import { getCorridors } from "@/lib/corridors";
+import { ONE_MARKET_MONDAY_ISSUES } from "@/data/one-market-monday";
 
 const BASE = "https://www.airindex.io";
 
@@ -46,5 +47,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...staticPages, ...cityPages, ...corridorPages, ...feedPages];
+  // One Market Monday issues
+  const mondayPages: MetadataRoute.Sitemap = ONE_MARKET_MONDAY_ISSUES.map((issue) => ({
+    url: `${BASE}/insights/one-market-monday/${issue.slug}`,
+    lastModified: issue.publishDate,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  return [
+    ...staticPages,
+    ...cityPages,
+    ...corridorPages,
+    ...feedPages,
+    ...mondayPages,
+  ];
 }

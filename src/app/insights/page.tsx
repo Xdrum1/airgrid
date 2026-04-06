@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import { getLatestIssue as getLatestMondayIssue } from "@/data/one-market-monday";
 
 export const metadata: Metadata = {
   title: "Insights — AirIndex",
@@ -119,6 +120,7 @@ function formatDate(iso: string): string {
 }
 
 export default function InsightsPage() {
+  const latestMonday = getLatestMondayIssue();
   return (
     <div
       style={{
@@ -164,6 +166,69 @@ export default function InsightsPage() {
             the AirIndex research team.
           </p>
         </div>
+
+        {/* Featured — One Market Monday */}
+        {latestMonday && (
+          <div style={{
+            marginBottom: 16,
+            padding: "24px 28px",
+            background: "rgba(91,141,184,0.04)",
+            border: "1px solid rgba(91,141,184,0.15)",
+            borderRadius: 10,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+              <span style={{
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: "0.1em",
+                color: "#5B8DB8",
+                background: "rgba(91,141,184,0.1)",
+                border: "1px solid rgba(91,141,184,0.25)",
+                borderRadius: 3,
+                padding: "3px 10px",
+              }}>
+                ONE MARKET MONDAY · ISSUE {String(latestMonday.issueNumber).padStart(2, "0")}
+              </span>
+              <span style={{
+                color: "#555",
+                fontSize: 12,
+                fontFamily: "'Space Mono', monospace",
+              }}>
+                {formatDate(latestMonday.publishDate)}
+              </span>
+            </div>
+            <Link
+              href={`/insights/one-market-monday/${latestMonday.slug}`}
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: "clamp(18px, 2vw, 22px)",
+                fontWeight: 700,
+                color: "#fff",
+                textDecoration: "none",
+                display: "block",
+                marginBottom: 8,
+                lineHeight: 1.3,
+              }}
+            >
+              {latestMonday.headline}
+            </Link>
+            <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 12 }}>
+              Weekly single-market deep-dive. Primary sources only.
+            </p>
+            <Link
+              href={`/insights/one-market-monday/${latestMonday.slug}`}
+              style={{
+                color: "#5B8DB8",
+                fontSize: 12,
+                fontWeight: 600,
+                textDecoration: "none",
+                letterSpacing: "0.04em",
+              }}
+            >
+              Read the issue &rarr;
+            </Link>
+          </div>
+        )}
 
         {/* Featured report */}
         <div style={{

@@ -702,13 +702,13 @@ const RAW_CITIES: City[] = [
     regulatoryPosture: "neutral", stateLegislationStatus: "actively_moving", weatherInfraLevel: "partial",
     heliportCount: 48, heliportPublicCount: 0,
     scoreSources: {
-      stateLegislation: { citation: "AZ SB1827 (Office of Advanced Air Mobility) transmit to House; SB1819 (Vertiports; design; zoning) on consent calendar; SB1826 (AAM appropriation) House 2nd reading", date: "2026-03", url: "https://www.azleg.gov/" },
+      stateLegislation: { citation: "AZ SB1827 (Office of AAM) FAILED 6-12 in House Appropriations (Mar 31, 2026); SB1826 (AAM appropriation) WITHDRAWN in House Appropriations (Mar 25, 2026); SB1819 (Vertiports; design; zoning) remains on Senate consent calendar with no House action since Mar 2, 2026", date: "2026-04", url: "https://www.azleg.gov/" },
     },
     subIndicators: {
       stateLegislation: [
-        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing", citation: "AZ bills actively moving but not yet enacted", citationDate: "2026-03" },
-        { id: "leg_active_bill", label: "Active bill in current session", status: "achieved", citation: "AZ SB1827, SB1826, SB1819 — coordinated AAM legislative package", citationDate: "2026-03", citationUrl: "https://www.azleg.gov/" },
-        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "AZ bills designed to complement federal framework", citationDate: "2026-03" },
+        { id: "leg_enacted_bill", label: "Enacted state UAM bill", status: "missing", citation: "No AZ UAM bill enacted; SB1827 failed and SB1826 withdrawn in House Appropriations (March 2026)", citationDate: "2026-04" },
+        { id: "leg_active_bill", label: "Active bill in current session", status: "partial", citation: "Of the three-bill AAM package, only SB1819 (vertiport zoning) remains technically active, stalled on Senate consent calendar; SB1827 and SB1826 died in House Appropriations", citationDate: "2026-04", citationUrl: "https://www.azleg.gov/" },
+        { id: "leg_federal_alignment", label: "Federal preemption risk low", status: "achieved", citation: "Remaining AZ vertiport bill designed to complement federal framework", citationDate: "2026-04" },
       ],
       activePilotProgram: [
         { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "achieved", citation: "Joby conducting autonomous flight testing in Arizona", citationDate: "2026-03" },
@@ -726,13 +726,13 @@ const RAW_CITIES: City[] = [
         { id: "op_multiple", label: "Multiple operators present", status: "missing", citation: "Only Joby active in Phoenix market", citationDate: "2026-03" },
       ],
       vertiportZoning: [
-        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing", citation: "No vertiport zoning ordinance in Phoenix", citationDate: "2026-03" },
-        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "partial", citation: "AZ SB1819 would add vertiport zoning language if enacted", citationDate: "2026-03" },
-        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing", citation: "No eVTOL-specific permitting pathway", citationDate: "2026-03" },
+        { id: "zone_ordinance", label: "Vertiport zoning ordinance adopted", status: "missing", citation: "No vertiport zoning ordinance in Phoenix", citationDate: "2026-04" },
+        { id: "zone_aam_terminology", label: "AAM/eVTOL terminology in codes", status: "partial", citation: "AZ SB1819 would add vertiport zoning language; stalled on Senate consent calendar with no House action since Mar 2, 2026", citationDate: "2026-04" },
+        { id: "zone_permitting", label: "Clear permitting pathway defined", status: "missing", citation: "No eVTOL-specific permitting pathway", citationDate: "2026-04" },
       ],
       regulatoryPosture: [
-        { id: "reg_task_force", label: "Executive order or UAM task force", status: "partial", citation: "AZ SB1827 would create Office of AAM; not yet enacted", citationDate: "2026-03" },
-        { id: "reg_proactive", label: "Proactive regulatory stance", status: "partial", citation: "Neutral overall but legislative activity shows momentum", citationDate: "2026-03" },
+        { id: "reg_task_force", label: "Executive order or UAM task force", status: "missing", citation: "SB1827 (Office of AAM) failed 6-12 in House Appropriations (Mar 31, 2026); no other task force mechanism", citationDate: "2026-04" },
+        { id: "reg_proactive", label: "Proactive regulatory stance", status: "partial", citation: "Operator testing active (Joby); legislative package collapsed in committee — posture under review", citationDate: "2026-04" },
         { id: "reg_engagement", label: "Community engagement process", status: "unknown" },
       ],
       weatherInfrastructure: [
@@ -740,9 +740,9 @@ const RAW_CITIES: City[] = [
         { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing", citation: "No dedicated low-altitude AAM sensing deployed", citationDate: "2026-03" },
       ],
     },
-    notes: "Arizona has three coordinated AAM bills actively moving through the legislature — SB1827 (Office of Advanced Air Mobility), SB1826 (AAM appropriation), and SB1819 (Vertiports; design; zoning). This coordinated multi-bill pattern mirrors Texas and Florida before their legislation passed. Joby Aviation conducting autonomous flight technology testing in Arizona (2026). Chandler/Tempe testing corridor activity exists. Excellent weather for year-round operations.",
-    keyMilestones: ["Joby autonomous flight testing in Arizona (2026)", "AZ SB1827 Office of AAM transmit to House (Mar 2026)", "AZ SB1819 Vertiport zoning on consent calendar", "AZ SB1826 AAM appropriation in House", "Chandler/Tempe drone testing activity"],
-    lastUpdated: "2026-03-20",
+    notes: "Arizona's three-bill AAM legislative package collapsed in House Appropriations in late March 2026. SB1827 (Office of Advanced Air Mobility) failed on a 6-12 vote on Mar 31; SB1826 (AAM appropriation) was withdrawn on Mar 25; SB1819 (Vertiports; design; zoning) remains technically alive on a Senate consent calendar but has shown no House movement since Mar 2. The `stateLegislationStatus: actively_moving` flag is under methodology review — SB1819's technical status preserves it for now, but a downgrade to `none` would drop Phoenix to 40 and a tier boundary. Joby Aviation continues autonomous flight technology testing in Arizona (2026) and Chandler/Tempe testing corridor activity persists, but operator presence does not compensate for the regulatory layer contracting.",
+    keyMilestones: ["Joby autonomous flight testing in Arizona (2026)", "AZ SB1827 Office of AAM FAILED 6-12 in House Appropriations (Mar 31, 2026)", "AZ SB1826 AAM appropriation withdrawn in House Appropriations (Mar 25, 2026)", "AZ SB1819 Vertiport zoning stalled on Senate consent calendar", "Chandler/Tempe drone testing activity"],
+    lastUpdated: "2026-04-05",
   },
   {
     id: "houston", city: "Houston", metro: "Greater Houston Metro", state: "TX", country: "US",
