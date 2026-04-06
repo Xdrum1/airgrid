@@ -72,7 +72,7 @@ export default async function AuditReportPage({
   }
 
   // Fetch all data in parallel
-  const [heliports, compliance, stateCtx, ordinanceAudits] = await Promise.all([
+  const [heliports, compliance, stateCtx, ordinanceAudits, oeaaaDeterminations] = await Promise.all([
     prisma.heliport.findMany({
       where: { state: code },
       orderBy: { facilityName: "asc" },
@@ -86,6 +86,11 @@ export default async function AuditReportPage({
       where: { market: { state: code } },
       include: { market: { select: { id: true, city: true } } },
     }),
+    prisma.oeaaaDetermination.groupBy({
+      by: ["statusCode"],
+      where: { nearestState: code },
+      _count: { _all: true },
+    }),
   ]);
 
   if (heliports.length === 0) notFound();
@@ -96,6 +101,13 @@ export default async function AuditReportPage({
   const privateUse = heliports.filter(h => h.useType === "PR").length;
   const military = heliports.filter(h => ["MA", "MN", "MR"].includes(h.ownershipType)).length;
   const operational = heliports.filter(h => h.statusCode === "O").length;
+
+  // OE/AAA determination stats
+  const totalDeterminations = oeaaaDeterminations.reduce((sum, g) => sum + g._count._all, 0);
+  const circulatedCount = oeaaaDeterminations.find(g => g.statusCode === "CIR")?._count._all ?? 0;
+  const linkedToHeliports = await prisma.oeaaaDetermination.count({
+    where: { nearestState: code, linkedHeliportId: { not: null } },
+  });
 
   // Compliance distribution
   const compByStatus: Record<string, number> = { compliant: 0, conditional: 0, objectionable: 0, unknown: 0 };
@@ -229,6 +241,46 @@ export default async function AuditReportPage({
             {hospitalSites.length > 0 && ` ${hospitalSites.length} hospital helipad${hospitalSites.length === 1 ? "" : "s"} identified, ${hospitalAtRisk.length} flagged for eVTOL dimensional viability concerns.`}
           </p>
         </div>
+
+        {/* ── FAA Airspace Determinations ── */}
+        {totalDeterminations > 0 && (
+          <div style={cardStyle}>
+            <h2 style={sectionHeadStyle}>FAA Airspace Determinations (OE/AAA)</h2>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 20 }}>
+              {[
+                { value: totalDeterminations.toLocaleString(), label: "Total Determinations", color: "#5B8DB8" },
+                { value: linkedToHeliports.toLocaleString(), label: "Linked to Heliports", color: "#00ff88" },
+                { value: circulatedCount.toLocaleString(), label: "Circularized (CIR)", color: "#ff6b35" },
+              ].map(s => (
+                <div key={s.label} style={{ textAlign: "center" }}>
+                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 24, fontWeight: 700, color: s.color }}>
+                    {s.value}
+                  </div>
+                  <div style={{ fontSize: 9, letterSpacing: 1.5, color: "#666", marginTop: 4 }}>
+                    {s.label.toUpperCase()}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+              {oeaaaDeterminations.map(g => (
+                <span key={g.statusCode} style={{
+                  fontSize: 10, padding: "4px 10px", borderRadius: 4,
+                  background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)",
+                  color: "#888", fontFamily: "'Space Mono', monospace",
+                }}>
+                  {g.statusCode}: {g._count._all}
+                </span>
+              ))}
+            </div>
+            <p style={{ fontSize: 12, color: "#777", lineHeight: 1.7 }}>
+              FAA OE/AAA airspace determinations for {stateName} (NRA + CIRC cases, 2024&ndash;2026).
+              {linkedToHeliports > 0 && ` ${linkedToHeliports} determinations matched to registered heliport facilities within 0.5 NM proximity.`}
+              {circulatedCount > 0 && ` ${circulatedCount} case${circulatedCount === 1 ? "" : "s"} circularized for public comment — typically indicating airspace safety concerns.`}
+              {" "}Source: FAA OE/AAA RESTful Web Services API.
+            </p>
+          </div>
+        )}
 
         {/* ── Compliance Distribution ── */}
         <div style={cardStyle}>
