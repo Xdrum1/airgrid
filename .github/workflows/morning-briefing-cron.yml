@@ -1,0 +1,34 @@
+name: Daily morning briefing
+
+on:
+  schedule:
+    # Run daily at 09:00 UTC (5am ET / 4am CT) — after all pipeline stages complete
+    # Ingestion: 06:00, Snapshot: 06:00, Auto-review: 08:00, Alerts: 09:00
+    # Briefing fires last so it captures all overnight activity
+    - cron: "15 9 * * *"
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  briefing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send morning briefing
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 30 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$URL/api/admin/morning-briefing")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "Status: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Morning briefing failed with status $HTTP_CODE"
+          fi
