@@ -78,7 +78,7 @@ export default function UpgradeGate({ feature }: UpgradeGateProps) {
             margin: "0 0 8px",
           }}
         >
-          Upgrade to Pro
+          Get Full Access
         </h2>
         <p
           style={{
@@ -93,7 +93,7 @@ export default function UpgradeGate({ feature }: UpgradeGateProps) {
         </p>
 
         <Link
-          href="/contact?tier=pro&ref=upgrade"
+          href="/contact?ref=access"
           style={{
             display: "inline-block",
             padding: "13px 32px",
@@ -114,7 +114,7 @@ export default function UpgradeGate({ feature }: UpgradeGateProps) {
 
         <div style={{ marginTop: 16, display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
           <Link
-            href="/pricing"
+            href="/use-cases"
             style={{
               color: "#555",
               fontSize: 10,
@@ -123,7 +123,7 @@ export default function UpgradeGate({ feature }: UpgradeGateProps) {
               transition: "color 0.15s",
             }}
           >
-            or view plans →
+            learn how organizations use AirIndex →
           </Link>
         </div>
       </div>

@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
   if (!hasProAccess(auth.ctx.tier)) {
     return apiError(
-      "Signal feed requires a Professional or higher tier. Upgrade at https://airindex.io/pricing",
+      "Signal feed requires authorized access. Contact sales@airindex.io to discuss your requirements.",
       403,
       auth.headers,
     );

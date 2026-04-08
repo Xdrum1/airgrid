@@ -63,7 +63,7 @@ export async function requirePro(): Promise<{ session: { user: { id: string; ema
   if (!hasProAccess(tier)) {
     return {
       session: null,
-      denied: NextResponse.json({ error: "Pro subscription required" }, { status: 403 }),
+      denied: NextResponse.json({ error: "Authorized access required. Contact sales@airindex.io" }, { status: 403 }),
     };
   }
 

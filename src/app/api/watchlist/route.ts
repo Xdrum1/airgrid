@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     if (err instanceof Error && err.message.startsWith("WATCHLIST_LIMIT:")) {
       const max = err.message.split(":")[1];
       return NextResponse.json(
-        { error: "watchlist_limit", limit: Number(max), upgrade: "/pricing" },
+        { error: "watchlist_limit", limit: Number(max), contact: "sales@airindex.io" },
         { status: 403 }
       );
     }

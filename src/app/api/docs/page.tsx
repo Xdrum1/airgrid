@@ -85,7 +85,7 @@ const tdStyle = {
 };
 
 // -------------------------------------------------------
-// Upgrade wall component
+// Access wall component
 // -------------------------------------------------------
 
 function UpgradeWall() {
@@ -134,7 +134,7 @@ function UpgradeWall() {
             marginBottom: 16,
           }}
         >
-          Institutional &amp; Enterprise
+          Authorized Access
         </div>
         <h1
           style={{
@@ -149,10 +149,10 @@ function UpgradeWall() {
         </h1>
         <p style={{ color: "#888", fontSize: 15, marginBottom: 32, lineHeight: 1.7 }}>
           Full API documentation including schemas, response structures, code examples,
-          and authentication details is available on Institutional and Enterprise plans.
+          and authentication details is available to authorized organizations.
         </p>
         <Link
-          href="/pricing"
+          href="/contact?ref=api-docs"
           style={{
             display: "inline-block",
             background: "#7c3aed",
@@ -166,10 +166,10 @@ function UpgradeWall() {
             marginBottom: 16,
           }}
         >
-          Upgrade to Access
+          Request Access
         </Link>
         <div style={{ fontSize: 12, color: "#555" }}>
-          Already subscribed?{" "}
+          Already have access?{" "}
           <Link href="/login" style={{ color: "#5B8DB8", textDecoration: "none" }}>
             Sign in
           </Link>

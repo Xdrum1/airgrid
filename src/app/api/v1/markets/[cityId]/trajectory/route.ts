@@ -18,7 +18,7 @@ export async function GET(
   // Trajectory requires Pro+
   if (!hasProAccess(auth.ctx.tier)) {
     return apiError(
-      "Trajectory data requires a Professional or higher tier. Upgrade at https://airindex.io/pricing",
+      "Trajectory data requires authorized access. Contact sales@airindex.io to discuss your requirements.",
       403,
       auth.headers,
     );
