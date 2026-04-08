@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import PulseSubscribe from "@/components/PulseSubscribe";
 import {
   ONE_MARKET_MONDAY_ISSUES,
   getIssueBySlug,
@@ -361,6 +362,11 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
           }}
         >
           {issue.footerNote}
+        </div>
+
+        {/* Subscribe CTA */}
+        <div style={{ marginTop: 48, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
+          <PulseSubscribe source="one-market-monday" compact />
         </div>
       </main>
 

@@ -15,6 +15,7 @@ import WatchlistStar from "./WatchlistStar";
 import TrackPageView from "./TrackPageView";
 import SubscribeForm from "./SubscribeForm";
 import ScoreTrend from "./ScoreTrend";
+import PulseSubscribe from "./PulseSubscribe";
 import FactorSparklines from "./FactorSparklines";
 import { safeHref } from "@/lib/safe-url";
 import { hasProAccess } from "@/lib/billing-shared";
@@ -981,6 +982,11 @@ export default function CityDetail({
           >
             ← BACK TO DASHBOARD
           </Link>
+        </div>
+
+        {/* Subscribe CTA */}
+        <div style={{ marginTop: 32, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
+          <PulseSubscribe source={`city-${city.id}`} compact />
         </div>
       </div>
     </div>
