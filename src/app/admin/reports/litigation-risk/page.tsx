@@ -158,7 +158,7 @@ export default async function LitigationRiskAssessment() {
         <p style={S.p}>
           The bottom line: a quantified exposure profile exists in federal data that no underwriting carrier currently has
           visibility into. AirIndex provides the first productized cross-reference of this data into per-site compliance
-          scores, deliverable as portfolio screening, underwriting intelligence reports, and direct API access.
+          scores, deliverable as portfolio screening, underwriting intelligence reports, and structured data exports.
         </p>
 
         {/* ═══════ SECTION 2: THE LEGAL MECHANISM ═══════ */}
@@ -403,9 +403,10 @@ export default async function LitigationRiskAssessment() {
           reports with supporting data appendix.
         </p>
         <p style={S.p}>
-          <strong>API Access.</strong> Direct database integration for carriers operating automated risk pricing or quote-bind
-          workflows. Endpoints return compliance score, determination history, and exposure flags by heliport identifier or
-          geographic coordinate. Suitable for integration with existing underwriting systems or actuarial models.
+          <strong>Structured Data Export.</strong> For carriers operating automated risk pricing or quote-bind workflows,
+          AirIndex delivers compliance data as structured files (CSV, JSON) keyed by heliport identifier or geographic
+          coordinate. Includes compliance score, determination history, and exposure flags per site. Suitable for integration
+          with existing underwriting systems or actuarial models. Format and delivery cadence scoped during engagement.
         </p>
 
         <h3 style={S.h3}>Methodology transparency</h3>
