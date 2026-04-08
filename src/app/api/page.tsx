@@ -139,10 +139,10 @@ export default function ApiLandingPage() {
             Institutional &amp; Enterprise
           </span>
           <span style={{ color: "#888", fontSize: 13 }}>
-            API access is available on Institutional and Enterprise plans.
+            API access is available to authorized organizations.
           </span>
           <Link
-            href="/pricing"
+            href="/contact?ref=api"
             style={{
               color: "#7c3aed",
               fontSize: 12,
@@ -151,7 +151,7 @@ export default function ApiLandingPage() {
               marginLeft: "auto",
             }}
           >
-            VIEW PLANS &rarr;
+            REQUEST ACCESS &rarr;
           </Link>
         </div>
 
