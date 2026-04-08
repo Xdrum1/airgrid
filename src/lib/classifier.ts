@@ -412,37 +412,49 @@ export async function classifyRecords(
     batches.push(records.slice(i, i + BATCH_SIZE));
   }
 
+  // Process batches in parallel groups of MAX_PARALLEL to balance speed vs rate limits.
+  // Pure sequential was too slow (exceeded Lambda timeout with 1s delays).
+  // Pure parallel (Promise.all) caused all batches to fail on rate limit.
+  // Compromise: parallel groups of 3 with retry per batch.
+  const MAX_PARALLEL = 3;
   console.log(
-    `[classifier] Processing ${batches.length} batches (${records.length} records) sequentially with retry`
+    `[classifier] Processing ${batches.length} batches (${records.length} records) in groups of ${MAX_PARALLEL} with retry`
   );
 
-  // Process batches sequentially with retry to avoid API rate limits.
-  // Previous approach (Promise.all) caused all batches to fail when one hit a rate limit.
-  for (let i = 0; i < batches.length; i++) {
-    const batch = batches[i];
-    let attempt = 0;
-    const maxRetries = 2;
-    while (attempt <= maxRetries) {
-      try {
-        const classifications = await classifyBatch(batch);
-        allClassifications.push(...classifications);
-        allRawResponses.push({ batch: i + 1, classifications });
-        break;
-      } catch (err) {
-        attempt++;
-        if (attempt > maxRetries) {
-          console.error(`[classifier] Batch ${i + 1}/${batches.length} failed after ${maxRetries} retries:`, err);
-          // Continue with remaining batches — don't let one failure kill all classifications
-          break;
+  for (let g = 0; g < batches.length; g += MAX_PARALLEL) {
+    const group = batches.slice(g, g + MAX_PARALLEL);
+    const groupResults = await Promise.allSettled(
+      group.map(async (batch, localIdx) => {
+        const batchNum = g + localIdx + 1;
+        let attempt = 0;
+        const maxRetries = 1;
+        while (attempt <= maxRetries) {
+          try {
+            const classifications = await classifyBatch(batch);
+            return { batch: batchNum, classifications };
+          } catch (err) {
+            attempt++;
+            if (attempt > maxRetries) {
+              console.error(`[classifier] Batch ${batchNum}/${batches.length} failed after ${maxRetries + 1} attempts:`, err);
+              return { batch: batchNum, classifications: [] };
+            }
+            await new Promise((r) => setTimeout(r, 2000));
+          }
         }
-        const delay = attempt * 3000; // 3s, 6s backoff
-        console.warn(`[classifier] Batch ${i + 1} failed (attempt ${attempt}/${maxRetries + 1}), retrying in ${delay / 1000}s...`);
-        await new Promise((r) => setTimeout(r, delay));
+        return { batch: g + localIdx + 1, classifications: [] };
+      })
+    );
+
+    for (const result of groupResults) {
+      if (result.status === "fulfilled") {
+        allClassifications.push(...result.value.classifications);
+        allRawResponses.push(result.value);
       }
     }
-    // Small delay between batches to stay under rate limits
-    if (i < batches.length - 1) {
-      await new Promise((r) => setTimeout(r, 1000));
+
+    // Brief pause between groups if more remain
+    if (g + MAX_PARALLEL < batches.length) {
+      await new Promise((r) => setTimeout(r, 500));
     }
   }
 
