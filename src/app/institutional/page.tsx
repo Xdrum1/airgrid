@@ -295,7 +295,7 @@ export default async function InstitutionalPage() {
               marginBottom: 8,
             }}
           >
-            $499/month or $4,990/year
+            Scoped per engagement
           </div>
           <div
             style={{
@@ -304,7 +304,7 @@ export default async function InstitutionalPage() {
               marginBottom: 24,
             }}
           >
-            3 seats included (+$99/seat)
+            Pricing based on market coverage, delivery format, and team size
           </div>
           <div
             style={{

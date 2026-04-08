@@ -276,8 +276,8 @@ export default async function EnterprisePage() {
             textAlign: "center",
           }}
         >
-          Pricing is based on data scope, delivery method, and redistribution
-          rights. Minimum engagement starts at $2,500/month.
+          Pricing is based on data scope, delivery format, and redistribution
+          rights. All engagements are scoped through a discovery call.
         </p>
       </section>
 
