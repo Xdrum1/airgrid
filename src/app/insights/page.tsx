@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import PulseSubscribe from "@/components/PulseSubscribe";
 import { getLatestIssue as getLatestMondayIssue } from "@/data/one-market-monday";
 
 export const metadata: Metadata = {
@@ -399,6 +400,11 @@ export default function InsightsPage() {
               )}
             </article>
           ))}
+        </div>
+
+        {/* Subscribe CTA */}
+        <div style={{ marginTop: 48, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
+          <PulseSubscribe source="insights" compact />
         </div>
       </main>
 
