@@ -135,11 +135,12 @@ export default async function LitigationRiskAssessment() {
         <h3 style={S.h3}>Three findings define the exposure</h3>
 
         <p style={S.p}>
-          <strong>One.</strong> The FAA&rsquo;s own determination database documents 3,868 heliports operating under
-          &ldquo;conditional&rdquo; airspace status with no federal mechanism to verify whether the conditions have been met,
-          plus 42 heliports formally classified as objectionable due to operational safety concerns. Of those,
-          1,841 conditional and 31 objectionable sites are medical-use facilities &mdash; the highest-concentration
-          risk category in the national heliport population.
+          <strong>One.</strong> AirIndex has ingested {t.total_determinations.toLocaleString()} FAA airspace determination records
+          across 17 states. Of the {t.total_heliports.toLocaleString()} registered heliports in the United States,
+          only {t.q2_on_file} have any FAA airspace determination on file &mdash; meaning {t.q2_pct_unknown}% of the
+          national heliport population has no federal verification of airspace compliance. There is no mechanism to confirm
+          whether conditions in existing determinations were ever met or maintained. Of the {t.total_heliports.toLocaleString()} registered
+          sites, {t.hospitals.toLocaleString()} are medical-use facilities &mdash; the highest-concentration risk category.
         </p>
         <p style={S.p}>
           <strong>Two.</strong> Approximately {t.q2_pct_unknown}% of the {t.total_heliports.toLocaleString()} FAA-registered
@@ -228,63 +229,63 @@ export default async function LitigationRiskAssessment() {
           of operations, and the building-integrated infrastructure.
         </p>
 
-        <h3 style={S.h3}>Airspace determination breakdown</h3>
+        <h3 style={S.h3}>AirIndex compliance database</h3>
         <p style={S.p}>
-          FAA airspace determination records (Obstruction Evaluation / Airport Airspace Analysis, OE/AAA) document the federal
-          review status of heliports that have been formally evaluated. The breakdown of determinations across the heliport
-          population is as follows:
+          AirIndex has ingested and cross-referenced {t.total_determinations.toLocaleString()} FAA airspace determination
+          records (OE/AAA NRA + CIRC cases, 2024&ndash;2026) against the {t.total_heliports.toLocaleString()} registered
+          heliports in the FAA NASR database. The results:
         </p>
 
         <table style={S.table}>
           <thead>
             <tr>
-              <th style={S.th}>DETERMINATION</th>
-              <th style={{ ...S.th, textAlign: "right" }}>ALL HELIPORTS</th>
-              <th style={{ ...S.th, textAlign: "right" }}>MEDICAL-USE</th>
+              <th style={S.th}>METRIC</th>
+              <th style={{ ...S.th, textAlign: "right" }}>COUNT</th>
+              <th style={{ ...S.th, textAlign: "right" }}>% OF TOTAL</th>
             </tr>
           </thead>
           <tbody>
             {[
-              { label: "No Objection", all: "1,941", med: "822" },
-              { label: "Conditional", all: "3,868", med: "1,841" },
-              { label: "Objectionable", all: "42", med: "31" },
-              { label: "Not Analyzed", all: "150", med: "34" },
-              { label: "Unknown / Blank", all: "109", med: "20" },
+              { label: "Registered heliports (FAA NASR)", count: t.total_heliports, pct: "100%" },
+              { label: "Hospital / medical-use facilities", count: t.hospitals, pct: `${t.hospital_pct}%` },
+              { label: "Heliports with FAA determination on file", count: t.q2_on_file, pct: `${Math.round((t.q2_on_file / t.total_heliports) * 100)}%` },
+              { label: "Heliports with NO determination on file", count: t.q2_unknown, pct: `${t.q2_pct_unknown}%` },
+              { label: "FAA determination records ingested", count: t.total_determinations, pct: "\u2014" },
+              { label: "Determinations linked to registered heliports", count: t.linked_determinations, pct: "\u2014" },
             ].map((row) => (
               <tr key={row.label}>
                 <td style={{ ...S.td, fontWeight: 600 }}>{row.label}</td>
-                <td style={{ ...S.td, textAlign: "right", fontFamily: "'Space Mono', monospace" }}>{row.all}</td>
-                <td style={{ ...S.td, textAlign: "right", fontFamily: "'Space Mono', monospace" }}>{row.med}</td>
+                <td style={{ ...S.td, textAlign: "right", fontFamily: "'Space Mono', monospace" }}>{row.count.toLocaleString()}</td>
+                <td style={{ ...S.td, textAlign: "right", fontFamily: "'Space Mono', monospace", color: "#888" }}>{row.pct}</td>
               </tr>
             ))}
           </tbody>
         </table>
         <p style={S.footnote}>
-          Source: FAA OE/AAA airspace determination records. Note: AirIndex is independently re-verifying these counts pending
-          full restoration of OE/AAA endpoint access. Numbers will be updated and republished as direct AirIndex-verified data
-          when reconciliation completes.
+          Source: AirIndex analysis of FAA OE/AAA airspace determination records (NRA + CIRC cases) and FAA National Airspace
+          System Resource (NASR) heliport registration database. All numbers are independently verified by AirIndex.
         </p>
 
-        <h3 style={S.h3}>The conditional category is the buried risk</h3>
+        <h3 style={S.h3}>The unverified majority is the buried risk</h3>
         <p style={S.p}>
-          The 3,868 conditional determinations are the most consequential finding. Under 14 CFR &sect; 157.7, a conditional
-          determination identifies objectionable aspects of a project and specifies the conditions that must be met and sustained
-          to preclude an objectionable determination. However, no current federal mechanism exists to verify whether those
-          conditions are actually met or maintained over time, particularly for private-use facilities. A heliport that received
-          a conditional determination years or decades ago may or may not still be operating in compliance with the conditions
-          that were imposed at the time. From an underwriting perspective, the entire conditional population represents
-          documented federal concern with unverified resolution status.
+          {t.q2_pct_unknown}% of FAA-registered heliports have no airspace determination on file. They have not been formally
+          evaluated; their compliance status with respect to surrounding airspace, obstructions, and approach paths is
+          undocumented at the federal level. Under 14 CFR &sect; 157.7, heliport determinations may be issued as &ldquo;No
+          Objection,&rdquo; &ldquo;Conditional&rdquo; (with conditions that must be met and sustained), or
+          &ldquo;Objectionable&rdquo; (clearly unacceptable due to operational safety). For the {t.q2_pct_unknown}% without
+          any determination, the question isn&rsquo;t whether the site is conditional or objectionable &mdash; it&rsquo;s that
+          no federal review has occurred at all.
         </p>
-
-        <h3 style={S.h3}>The unverified majority</h3>
         <p style={S.p}>
-          The arithmetic is unforgiving. The FAA OE/AAA determination records cover approximately {t.q2_on_file} unique heliport
-          facilities at the time of this assessment. Against the registered population of {t.total_heliports.toLocaleString()} heliports,
-          this means roughly {t.q2_pct_unknown}% of FAA-registered sites have no airspace determination on file at all. They have
-          not been formally evaluated; their compliance status with respect to surrounding airspace, obstructions, and approach
-          paths is undocumented at the federal level. Carriers writing liability policies on the operators, owners, designers, or
-          facility owners of these sites are exposed to a standard-of-care argument supported by no verifying federal record
-          either way.
+          For the {t.q2_on_file} heliports that do have determinations on file, no current federal mechanism exists to verify
+          whether conditions imposed in those determinations were ever met or maintained over time, particularly for private-use
+          facilities. A heliport that received a conditional determination years or decades ago may or may not still be operating
+          in compliance with the conditions that were imposed. From an underwriting perspective, even the evaluated population
+          carries unverified resolution status.
+        </p>
+        <p style={S.p}>
+          Carriers writing liability policies on the operators, owners, designers, or facility owners of any of these sites are
+          exposed to a standard-of-care argument supported by either no verifying federal record or an unverified one.
         </p>
 
         {/* ═══════ SECTION 4: SIX LIABILITY PATTERNS ═══════ */}
