@@ -413,20 +413,37 @@ export async function classifyRecords(
   }
 
   console.log(
-    `[classifier] Processing ${batches.length} batches (${records.length} records) in parallel`
+    `[classifier] Processing ${batches.length} batches (${records.length} records) sequentially with retry`
   );
 
-  // Process all batches in parallel to stay within Lambda timeout
-  const results = await Promise.all(
-    batches.map(async (batch, idx) => {
-      const classifications = await classifyBatch(batch);
-      return { batch: idx + 1, classifications };
-    })
-  );
-
-  for (const result of results) {
-    allClassifications.push(...result.classifications);
-    allRawResponses.push(result);
+  // Process batches sequentially with retry to avoid API rate limits.
+  // Previous approach (Promise.all) caused all batches to fail when one hit a rate limit.
+  for (let i = 0; i < batches.length; i++) {
+    const batch = batches[i];
+    let attempt = 0;
+    const maxRetries = 2;
+    while (attempt <= maxRetries) {
+      try {
+        const classifications = await classifyBatch(batch);
+        allClassifications.push(...classifications);
+        allRawResponses.push({ batch: i + 1, classifications });
+        break;
+      } catch (err) {
+        attempt++;
+        if (attempt > maxRetries) {
+          console.error(`[classifier] Batch ${i + 1}/${batches.length} failed after ${maxRetries} retries:`, err);
+          // Continue with remaining batches — don't let one failure kill all classifications
+          break;
+        }
+        const delay = attempt * 3000; // 3s, 6s backoff
+        console.warn(`[classifier] Batch ${i + 1} failed (attempt ${attempt}/${maxRetries + 1}), retrying in ${delay / 1000}s...`);
+        await new Promise((r) => setTimeout(r, delay));
+      }
+    }
+    // Small delay between batches to stay under rate limits
+    if (i < batches.length - 1) {
+      await new Promise((r) => setTimeout(r, 1000));
+    }
   }
 
   // Persist audit trail
