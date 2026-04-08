@@ -21,6 +21,7 @@ async function getPrisma() {
 const PROMOTABLE_EVENTS = new Set([
   "state_legislation_signed",
   "state_legislation_enacted",
+  "state_legislation_failed",
   "vertiport_zoning_approved",
   "vertiport_development",
   "faa_corridor_filing",
@@ -32,8 +33,15 @@ const PROMOTABLE_EVENTS = new Set([
   "infrastructure_development",
 ]);
 
+function sourceIsPrimary(url: string | null | undefined): boolean {
+  if (!url) return false;
+  const lower = url.toLowerCase();
+  return lower.includes(".gov/") || lower.includes("legiscan.com") || lower.includes("sec.gov");
+}
+
 // Map event type → feed category
 function eventToCategory(eventType: string): string {
+  if (eventType === "state_legislation_failed") return "Legislative";
   if (eventType.startsWith("state_legislation")) return "Legislative";
   if (eventType.startsWith("vertiport") || eventType === "infrastructure_development") return "Infrastructure";
   if (eventType.startsWith("operator")) return "Operator";
@@ -122,6 +130,11 @@ export async function promoteSignalsToFeed(daysBack = 7): Promise<PromoteResult>
     // Create a short editorial summary from the title
     const summary = `${title}. Classified as ${cls.eventType.replace(/_/g, " ")} with high confidence.`;
 
+    // Auto-publish high-confidence items with primary source URLs
+    // Everything else goes to draft for review
+    const isPrimary = sourceIsPrimary(record?.url);
+    const autoPublish = cls.confidence === "high" && isPrimary;
+
     await prisma.feedItem.create({
       data: {
         slug,
@@ -131,8 +144,9 @@ export async function promoteSignalsToFeed(daysBack = 7): Promise<PromoteResult>
         category,
         cityIds: cls.affectedCities ?? [],
         scoreImpact: false,
-        status: "draft",
-        promotedBy: "auto",
+        status: autoPublish ? "published" : "draft",
+        publishedAt: autoPublish ? new Date() : null,
+        promotedBy: autoPublish ? "auto-pipeline" : "auto",
         sourceRecordId: cls.recordId,
         classificationResultId: cls.id,
       },

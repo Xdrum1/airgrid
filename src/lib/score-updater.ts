@@ -79,7 +79,11 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
       effectiveConfidence = "medium";
     }
 
-    const shouldAutoApply = effectiveConfidence === "high" && isResolvable;
+    // Auto-apply high confidence always, medium confidence when backed by primary source
+    const shouldAutoApply = isResolvable && (
+      effectiveConfidence === "high" ||
+      (effectiveConfidence === "medium" && sourceIsPrimary(candidate.sourceUrl))
+    );
 
     // Supersede any existing active override for the same cityId+field
     if (isResolvable) {
