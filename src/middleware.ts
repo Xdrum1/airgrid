@@ -58,7 +58,15 @@ export async function middleware(request: NextRequest) {
   // Admin API routes are protected by signed PIN cookie (admin-helpers.ts).
   // No middleware gate — avoids magic link dependency.
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+
+  // Security headers
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+
+  return response;
 }
 
 export const config = {
