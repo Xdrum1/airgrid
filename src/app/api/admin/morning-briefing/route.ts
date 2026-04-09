@@ -1,17 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendSesEmail } from "@/lib/ses";
+import { authorizeCron } from "@/lib/admin-helpers";
 
-const ADMIN_EMAIL = "alan@airindex.io";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "alan@airindex.io";
 const FROM = "AirIndex Pipeline <hello@airindex.io>";
 
 export async function GET(req: NextRequest) {
-  // Auth: CRON_SECRET or admin session
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = authorizeCron(req);
+  if (denied) return denied;
 
   try {
     const since = new Date(Date.now() - 24 * 60 * 60 * 1000); // last 24h
