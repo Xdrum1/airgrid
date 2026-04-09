@@ -32,42 +32,62 @@ jobs:
           if [ "$WARMUP_CODE" != "200" ]; then
             echo "::warning::Warmup returned $WARMUP_CODE — cold start may still be in progress"
           fi
-          sleep 3
+          # Wait longer for Lambda to stay warm — 3s was too short,
+          # Amplify may spin up a new instance for the next request
+          sleep 8
 
-      - name: Trigger ingestion endpoint
+      - name: Trigger ingestion endpoint (with retry)
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           APP_URL: ${{ vars.APP_URL }}
         run: |
           URL="${APP_URL:-https://www.airindex.io}"
-          # Streaming response — collect full output, check last event for result
-          RESPONSE=$(curl -s -w "\n%{http_code}" \
-            --max-time 120 \
-            -H "Authorization: Bearer $CRON_SECRET" \
-            "$URL/api/ingest")
+          MAX_ATTEMPTS=3
 
-          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
-          BODY=$(echo "$RESPONSE" | sed '$d')
+          for ATTEMPT in $(seq 1 $MAX_ATTEMPTS); do
+            echo "Attempt $ATTEMPT/$MAX_ATTEMPTS..."
 
-          echo "Status: $HTTP_CODE"
-          echo "Response: $BODY"
+            RESPONSE=$(curl -s -w "\n%{http_code}" \
+              --max-time 120 \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              "$URL/api/ingest")
 
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "::error::Ingestion failed with status $HTTP_CODE"
-            exit 1
-          fi
+            HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+            BODY=$(echo "$RESPONSE" | sed '$d')
 
-          # Check the final SSE event for success
-          LAST_EVENT=$(echo "$BODY" | grep "^data:" | tail -1 | sed 's/^data: //')
-          echo "Final event: $LAST_EVENT"
+            echo "Status: $HTTP_CODE"
 
-          if echo "$LAST_EVENT" | grep -q '"status":"error"'; then
-            echo "::error::Ingestion completed with error"
-            exit 1
-          fi
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "Response: $BODY"
 
-          if echo "$LAST_EVENT" | grep -q '"status":"complete"'; then
-            echo "Ingestion completed successfully"
-          else
-            echo "::warning::Unexpected final event status"
-          fi
+              # Check the final SSE event for success
+              LAST_EVENT=$(echo "$BODY" | grep "^data:" | tail -1 | sed 's/^data: //')
+              echo "Final event: $LAST_EVENT"
+
+              if echo "$LAST_EVENT" | grep -q '"status":"error"'; then
+                echo "::error::Ingestion completed with error"
+                exit 1
+              fi
+
+              if echo "$LAST_EVENT" | grep -q '"status":"complete"'; then
+                echo "Ingestion completed successfully"
+                exit 0
+              else
+                echo "::warning::Unexpected final event status"
+                exit 0
+              fi
+            fi
+
+            # Non-200: retry after delay (unless last attempt)
+            if [ "$ATTEMPT" -lt "$MAX_ATTEMPTS" ]; then
+              echo "::warning::Attempt $ATTEMPT failed with status $HTTP_CODE — retrying in 15s..."
+              # Re-warm before retry
+              curl -s -o /dev/null -w "Re-warm: %{http_code}\n" --max-time 45 \
+                -H "Authorization: Bearer $CRON_SECRET" \
+                "$URL/api/ingest?warmup=true"
+              sleep 15
+            else
+              echo "::error::Ingestion failed after $MAX_ATTEMPTS attempts (last status: $HTTP_CODE)"
+              exit 1
+            fi
+          done
