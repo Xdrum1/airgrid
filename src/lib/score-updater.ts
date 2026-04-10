@@ -56,13 +56,22 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
   const affectedCityIds = new Set<string>();
 
   for (const candidate of candidates) {
-    // Dedup: skip if an override already exists for this source record
+    // Dedup: skip only if an override with the SAME (sourceRecordId, field, value)
+    // already exists. This allows status updates from the same source record to
+    // pass through (e.g. SB1827 going from "actively_moving" to "none" when the
+    // bill fails) and supersede the prior override below.
     if (candidate.sourceRecordId) {
+      const candidateValueJson = JSON.stringify(candidate.value);
       const existing = await prisma.scoringOverride.findFirst({
-        where: { sourceRecordId: candidate.sourceRecordId },
-        select: { id: true },
+        where: {
+          sourceRecordId: candidate.sourceRecordId,
+          field: candidate.field,
+        },
+        select: { id: true, value: true },
       });
-      if (existing) continue;
+      if (existing && JSON.stringify(existing.value) === candidateValueJson) {
+        continue;
+      }
     }
 
     // Skip unresolved city placeholders for auto-apply (still persist them)
@@ -141,6 +150,11 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
         const current = (existing["activeOperators"] as string[]) ?? [];
         if (!current.includes("__override__")) current.push("__override__");
         existing["activeOperators"] = current;
+      } else if (override.field === "hasStateLegislation") {
+        // Legacy alias — classifier emits "hasStateLegislation" with value
+        // "enacted" | "actively_moving" | "none". The City interface uses
+        // stateLegislationStatus, which is what scoring reads.
+        existing["stateLegislationStatus"] = override.value;
       } else {
         existing[override.field] = override.value;
       }

@@ -1592,11 +1592,22 @@ export async function getCitiesWithOverrides(): Promise<City[]> {
       return CITIES;
     }
 
-    // Group overrides by city
+    // Group overrides by city, translating legacy override field names to
+    // the canonical City interface field names that scoring reads.
     const overridesByCity = new Map<string, Record<string, unknown>>();
     for (const override of overrides) {
       const existing = overridesByCity.get(override.cityId) ?? {};
-      existing[override.field] = override.value;
+      if (override.field === "approvedVertiport" && override.value === true) {
+        existing["vertiportCount"] = Math.max((existing["vertiportCount"] as number) ?? 0, 1);
+      } else if (override.field === "activeOperatorPresence" && override.value === true) {
+        const current = (existing["activeOperators"] as string[]) ?? [];
+        if (!current.includes("__override__")) current.push("__override__");
+        existing["activeOperators"] = current;
+      } else if (override.field === "hasStateLegislation") {
+        existing["stateLegislationStatus"] = override.value;
+      } else {
+        existing[override.field] = override.value;
+      }
       overridesByCity.set(override.cityId, existing);
     }
 
