@@ -648,6 +648,22 @@ export async function runIngestion(): Promise<{
         console.error("[ingestion] Feed promoter failed (non-blocking):", err);
       }
 
+      // 11f. Derive MarketWatch status from recent classifier signals.
+      // Populates the ratings-agency layer (POSITIVE_WATCH / NEGATIVE_WATCH /
+      // DEVELOPING) so the conditional-forecast story isn't just narrative
+      // text — it's queryable platform output.
+      try {
+        const { deriveMarketWatchesFromSignals } = await import("@/lib/market-watch");
+        const watchResult = await deriveMarketWatchesFromSignals();
+        if (watchResult.changed > 0) {
+          console.log(
+            `[ingestion] MarketWatch derivation: ${watchResult.changed} of ${watchResult.evaluated} markets updated`
+          );
+        }
+      } catch (err) {
+        console.error("[ingestion] MarketWatch derivation failed (non-blocking):", err);
+      }
+
       // 12. Process corridor events
       if (corridorEvents.length > 0) {
         console.log(`[ingestion] Processing ${corridorEvents.length} corridor events`);

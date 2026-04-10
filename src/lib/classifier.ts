@@ -266,11 +266,77 @@ async function classifyBatch(
 // Derived from seed data — stays in sync automatically when markets are added
 const VALID_CITY_IDS = new Set(CITIES.map((c) => c.id));
 
+// Map cityId → state code, for cross-state validation
+const CITY_TO_STATE = new Map(CITIES.map((c) => [c.id, c.state]));
+
 const VALID_FIELDS = new Set([
   "hasActivePilotProgram", "hasVertiportZoning", "approvedVertiport",
   "activeOperatorPresence", "regulatoryPosture", "hasStateLegislation",
   "weatherInfraLevel",
 ]);
+
+// Metro suburbs the classifier sometimes emits as standalone city IDs.
+// These are not tracked markets — they should normalize to the parent metro.
+// Mirrors the metro mapping in the system prompt so we don't lose signals
+// when the model fails to apply the rule itself.
+const METRO_SUBURB_TO_PARENT: Record<string, string> = {
+  // SF Bay Area
+  oakland: "san_francisco", san_jose: "san_francisco", berkeley: "san_francisco",
+  palo_alto: "san_francisco", mountain_view: "san_francisco", fremont: "san_francisco",
+  // DFW
+  fort_worth: "dallas", arlington_tx: "dallas", plano: "dallas", irving: "dallas",
+  // South Florida
+  fort_lauderdale: "miami", boca_raton: "miami", west_palm_beach: "miami", hialeah: "miami",
+  // NYC
+  jersey_city: "new_york", newark: "new_york", hoboken: "new_york",
+  brooklyn: "new_york", queens: "new_york",
+  // LA metro
+  long_beach: "los_angeles", pasadena: "los_angeles", santa_monica: "los_angeles",
+  burbank: "los_angeles", inglewood: "los_angeles",
+  // Denver
+  aurora: "denver", lakewood: "denver", boulder: "denver",
+  // Seattle
+  renton: "seattle", bellevue: "seattle", tacoma: "seattle", everett: "seattle",
+  // Phoenix metro — the cities Pulse Issue 5 named that don't exist
+  tempe: "phoenix", scottsdale: "phoenix", mesa: "phoenix", chandler: "phoenix",
+  // Atlanta
+  sandy_springs: "atlanta", marietta: "atlanta", decatur: "atlanta",
+  // Boston
+  cambridge: "boston", somerville: "boston", quincy: "boston",
+  // Houston
+  the_woodlands: "houston", sugar_land: "houston", katy: "houston", galveston: "houston",
+  // Austin
+  round_rock: "austin", cedar_park: "austin", san_marcos: "austin",
+  // Minneapolis
+  st_paul: "minneapolis", bloomington: "minneapolis", eden_prairie: "minneapolis",
+  // DC area
+  arlington_va: "washington_dc", alexandria: "washington_dc", tysons: "washington_dc",
+  fairfax: "washington_dc",
+  // Las Vegas
+  henderson: "las_vegas", north_las_vegas: "las_vegas", summerlin: "las_vegas",
+  // Orlando
+  kissimmee: "orlando", sanford: "orlando", lake_nona: "orlando",
+};
+
+// Match operator mentions in record content so federal/operator news without
+// a specific city can route to the operator's known markets instead of
+// black-holing into __unresolved__.
+const OPERATOR_NAME_PATTERNS: { id: string; pattern: RegExp }[] = [
+  { id: "op_joby",        pattern: /\bjoby\b/i },
+  { id: "op_archer",      pattern: /\barcher\b/i },
+  { id: "op_wisk",        pattern: /\bwisk\b/i },
+  { id: "op_volocopter",  pattern: /\bvolocopter\b/i },
+  { id: "op_blade",       pattern: /\bblade\b/i },
+];
+
+function detectOperators(text: string): string[] {
+  return OPERATOR_NAME_PATTERNS.filter((p) => p.pattern.test(text)).map((p) => p.id);
+}
+
+function getOperatorCities(operatorId: string): string[] {
+  const op = OPERATORS.find((o) => o.id === operatorId);
+  return op?.activeMarkets ?? [];
+}
 
 function mapToOverrideCandidates(
   classifications: ClassificationItem[],
@@ -285,16 +351,48 @@ function mapToOverrideCandidates(
     const record = recordsById.get(item.recordId);
     if (!record) continue;
 
-    // Resolve city IDs
-    let cityIds = item.affectedCityIds.filter((id) => VALID_CITY_IDS.has(id));
+    // Step 1: Normalize metro suburbs to their parent city BEFORE filtering.
+    // The classifier sometimes emits "scottsdale", "mesa", etc. as standalone
+    // IDs even though the prompt says to map them to the metro. Catch them
+    // here so we don't lose the signal.
+    const normalized = item.affectedCityIds.map((id) => METRO_SUBURB_TO_PARENT[id] ?? id);
 
-    // If no specific cities but record has a state, use state mapping
+    // Step 2: Filter to only valid tracked city IDs (dedup after normalization)
+    let cityIds = Array.from(new Set(normalized.filter((id) => VALID_CITY_IDS.has(id))));
+
+    // Step 2b: Cross-state guard. If the source record has an explicit state
+    // (e.g. LegiScan bill from AZ), the classifier sometimes still emits
+    // out-of-state cityIds (las_vegas on an AZ bill, washington_dc on a VA
+    // bill). Drop any cityId whose home state doesn't match the source state.
+    // Only applies when the source record has a state — operator news has
+    // none, in which case we trust the classifier's geographic inference.
+    if (record.state && cityIds.length > 0) {
+      const sourceState = record.state.toUpperCase();
+      cityIds = cityIds.filter((id) => CITY_TO_STATE.get(id) === sourceState);
+    }
+
+    // Step 3: If no specific cities but record has a state, use state mapping
     if (cityIds.length === 0 && record.state) {
       const stateKey = record.state.toUpperCase();
       cityIds = STATE_TO_CITIES[stateKey] ?? [];
     }
 
-    // If still no cities, mark as unresolved
+    // Step 4: If still no cities, try operator → markets routing.
+    // Catches "Joby announces national thing" → route to all 6 Joby markets
+    // instead of black-holing into __unresolved__.
+    if (cityIds.length === 0) {
+      const text = `${record.title} ${record.summary}`;
+      const operators = detectOperators(text);
+      const operatorCities = new Set<string>();
+      for (const opId of operators) {
+        for (const c of getOperatorCities(opId)) operatorCities.add(c);
+      }
+      if (operatorCities.size > 0) {
+        cityIds = Array.from(operatorCities);
+      }
+    }
+
+    // Step 5: If still no cities, mark as unresolved
     if (cityIds.length === 0) {
       cityIds = ["__unresolved__"];
     }
@@ -311,6 +409,8 @@ function mapToOverrideCandidates(
           reason: `[NLP] ${item.summary} — ${factor.reason}`,
           sourceRecordId: record.id,
           sourceUrl: record.url,
+          // Operator-routed (no explicit city in source) gets needs_review
+          // since it's a fan-out, not a direct attribution.
           confidence: cityId === "__unresolved__" ? "needs_review" : item.confidence,
         });
       }

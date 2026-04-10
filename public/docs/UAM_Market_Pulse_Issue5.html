@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UAM Market Pulse — Issue 5</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #ffffff; color: #333; font-family: 'Inter', sans-serif; }
+    @media print {
+      body { background: #ffffff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .page-break { page-break-before: always; }
+    }
+    @page { size: letter; margin: 0.5in; }
+  </style>
+</head>
+<body>
+  <div style="max-width:760px;margin:0 auto;padding:40px 24px;">
+
+    <!-- HEADER -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding:20px 24px;background:#0a0a12;border-radius:8px;">
+      <div>
+        <h1 style="color:#ffffff;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;margin:0 0 4px;">UAM MARKET PULSE</h1>
+        <div style="color:#999;font-size:13px;">by AirIndex &middot; airindex.io</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="color:#5B8DB8;font-size:18px;font-weight:700;">ISSUE 5</div>
+        <div style="color:#999;font-size:12px;margin-top:2px;">Week of April 10, 2026</div>
+        <div style="color:#777;font-size:11px;">UAM Intelligence</div>
+      </div>
+    </div>
+
+    <!-- NARRATIVE -->
+    <div style="margin-bottom:36px;">
+      <p style="color:#333;font-size:15px;line-height:1.8;margin-bottom:20px;">
+        This was the week the AirIndex pipeline proved itself. On March 31, Arizona&rsquo;s flagship Advanced Air Mobility bill SB1827 failed 6-12 in House Appropriations. Six days earlier, its companion appropriation SB1826 was withdrawn. We covered this manually in Monday&rsquo;s One Market Monday issue. <strong style="color:#111;">This week, our automated classification pipeline caught the same collapse independently and downgraded Phoenix&rsquo;s legislative scoring signal without human intervention.</strong>
+      </p>
+      <p style="color:#333;font-size:15px;line-height:1.8;margin-bottom:20px;">
+        The classifier flagged the SB1827 failure with high confidence as a <em>state_legislation_failed</em> event &mdash; a new event type we shipped specifically to catch negative legislative signals that the previous version was missing. The Phoenix scoring override was generated automatically and applied to all five Arizona-area markets in our index: Phoenix, Scottsdale, Mesa, Chandler, and Tempe. This is the first time AirIndex has caught a legislative reversal in real time without manual intervention.
+      </p>
+      <p style="color:#333;font-size:15px;line-height:1.8;margin-bottom:20px;">
+        The pattern matters because it&rsquo;s the difference between &ldquo;data product&rdquo; and &ldquo;intelligence platform.&rdquo; A data product reports what already happened. An intelligence platform catches what changed and recalibrates the model before the consensus shifts. Phoenix&rsquo;s collapse was visible to anyone watching the Arizona legislature on March 31. It became visible to AirIndex subscribers on April 1. That latency &mdash; trade press to platform &mdash; is the value gap institutional buyers care about.
+      </p>
+      <p style="color:#333;font-size:15px;line-height:1.8;margin-bottom:20px;">
+        Florida is the other state to watch. FL H1093 (Vertiports) appeared in our LegiScan ingestion this week. Florida already has enacted AAM legislation &mdash; this is a deeper layer, vertiport-specific zoning legislation that would push Miami, Orlando, and Tampa from solid scoring foundations into specialized infrastructure-ready markets. Bill movement is early but worth tracking.
+      </p>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div style="margin-bottom:36px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <span style="background:#5B8DB8;color:#000;font-size:11px;font-weight:700;padding:6px 12px;border-radius:4px;letter-spacing:0.5px;">CURRENT LEADERBOARD</span>
+        <span style="color:#888;font-size:11px;">No tier changes this week &mdash; Phoenix legislative status under methodology review</span>
+      </div>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:2px solid #e5e7eb;">
+            <th style="padding:8px 16px;text-align:left;color:#888;font-size:11px;font-weight:600;letter-spacing:0.5px;">MARKET</th>
+            <th style="padding:8px 16px;text-align:center;color:#888;font-size:11px;font-weight:600;letter-spacing:0.5px;">SCORE</th>
+            <th style="padding:8px 16px;text-align:center;color:#888;font-size:11px;font-weight:600;letter-spacing:0.5px;">TIER</th>
+            <th style="padding:8px 16px;text-align:right;color:#888;font-size:11px;font-weight:600;letter-spacing:0.5px;">STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#f0f9ff;">
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:14px;font-weight:500;">Los Angeles, CA</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:16px;font-weight:700;text-align:center;">95</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="color:#0891b2;font-size:11px;font-weight:700;letter-spacing:0.5px;">ADVANCED</span></td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#aaa;font-size:12px;text-align:right;">Stable</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:14px;font-weight:500;">Dallas, TX</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:16px;font-weight:700;text-align:center;">95</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="color:#0891b2;font-size:11px;font-weight:700;letter-spacing:0.5px;">ADVANCED</span></td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#aaa;font-size:12px;text-align:right;">Stable</td>
+          </tr>
+          <tr style="background:#f0f9ff;">
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:14px;font-weight:500;">Miami, FL</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:16px;font-weight:700;text-align:center;">80</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="color:#0891b2;font-size:11px;font-weight:700;letter-spacing:0.5px;">ADVANCED</span></td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#5B8DB8;font-size:12px;text-align:right;font-weight:600;">FL H1093 watch</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:14px;font-weight:500;">Orlando, FL</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:16px;font-weight:700;text-align:center;">80</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="color:#0891b2;font-size:11px;font-weight:700;letter-spacing:0.5px;">ADVANCED</span></td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#5B8DB8;font-size:12px;text-align:right;font-weight:600;">FL H1093 watch</td>
+          </tr>
+          <tr style="background:#f0f9ff;">
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:14px;font-weight:500;">San Francisco, CA</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:16px;font-weight:700;text-align:center;">75</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="color:#0891b2;font-size:11px;font-weight:700;letter-spacing:0.5px;">ADVANCED</span></td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#5B8DB8;font-size:12px;text-align:right;font-weight:600;">Joby signal +</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:14px;font-weight:500;">New York, NY</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:16px;font-weight:700;text-align:center;">55</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="color:#16a34a;font-size:11px;font-weight:700;letter-spacing:0.5px;">MODERATE</span></td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#aaa;font-size:12px;text-align:right;">Stable</td>
+          </tr>
+          <tr style="background:#f0f9ff;">
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:14px;font-weight:500;">Phoenix, AZ</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:16px;font-weight:700;text-align:center;">50</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="color:#16a34a;font-size:11px;font-weight:700;letter-spacing:0.5px;">MODERATE</span></td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#dc2626;font-size:12px;text-align:right;font-weight:600;">Legislation collapse</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:14px;font-weight:500;">Houston, TX</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:16px;font-weight:700;text-align:center;">50</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="color:#16a34a;font-size:11px;font-weight:700;letter-spacing:0.5px;">MODERATE</span></td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#aaa;font-size:12px;text-align:right;">Stable</td>
+          </tr>
+          <tr style="background:#f0f9ff;">
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:14px;font-weight:500;">Austin, TX</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:16px;font-weight:700;text-align:center;">50</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="color:#16a34a;font-size:11px;font-weight:700;letter-spacing:0.5px;">MODERATE</span></td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#aaa;font-size:12px;text-align:right;">Stable</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:14px;font-weight:500;">San Diego, CA</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#111;font-size:16px;font-weight:700;text-align:center;">50</td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;text-align:center;"><span style="color:#16a34a;font-size:11px;font-weight:700;letter-spacing:0.5px;">MODERATE</span></td>
+            <td style="padding:10px 16px;border-bottom:1px solid #e5e7eb;color:#aaa;font-size:12px;text-align:right;">Stable</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="color:#666;font-size:12px;margin-top:12px;text-align:center;">
+        Average across all 25 tracked U.S. metro markets: 41 &middot; Full index at airindex.io
+      </p>
+    </div>
+
+    <!-- SIGNALS -->
+    <div style="margin-bottom:36px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <span style="background:#f0f9ff;border:1px solid #e0e7ee;color:#333;font-size:11px;font-weight:700;padding:6px 12px;border-radius:4px;letter-spacing:0.5px;">SIGNALS THIS WEEK</span>
+      </div>
+
+      <p style="color:#333;font-size:15px;line-height:1.8;margin-bottom:20px;">
+        <strong style="color:#111;">Phoenix legislative collapse, automatically classified.</strong> SB1827 (Office of Advanced Air Mobility) failed 6-12 in House Appropriations on March 31. SB1826 (AAM appropriation) was withdrawn March 25. The pipeline classified both events as <em>state_legislation_failed</em> with high confidence and generated scoring overrides for all five Arizona markets. SB1819 (vertiport zoning) remains technically alive on Senate consent calendar but has shown no House action since March 2. Phoenix&rsquo;s legislative score is under methodology review pending SB1819&rsquo;s fate over the next 30 days.
+      </p>
+
+      <p style="color:#333;font-size:15px;line-height:1.8;margin-bottom:20px;">
+        <strong style="color:#111;">Florida deepens its legislative lead.</strong> FL H1093 (Vertiports) entered the LegiScan ingestion stream this week. Florida already has enacted AAM enabling legislation; H1093 would add vertiport-specific zoning language to state law &mdash; the second-layer regulatory infrastructure that turns &ldquo;legal in principle&rdquo; into &ldquo;permittable in practice.&rdquo; Bill movement is early but Florida is the only enacted state actively expanding scope.
+      </p>
+
+      <p style="color:#333;font-size:15px;line-height:1.8;margin-bottom:20px;">
+        <strong style="color:#111;">Operator expansion signals across Bay Area.</strong> The classifier flagged operator market expansion activity for San Francisco with high confidence this week. This continues the pattern from the past month: SF&rsquo;s readiness score is increasingly operator-driven rather than legislation-driven. With California enacted, the question is no longer &ldquo;is the framework in place&rdquo; but &ldquo;which operators will commit to commercial service first.&rdquo;
+      </p>
+
+      <p style="color:#333;font-size:15px;line-height:1.8;margin-bottom:20px;">
+        <strong style="color:#111;">Operator news volume hit 166 items this week.</strong> The operator news classification volume nearly doubled from prior weeks. Most are not signal-quality &mdash; press releases, stock movement, broker commentary &mdash; but the underlying pattern is clear: the eVTOL operators are entering a high-visibility window where every public action gets coverage. The classifier&rsquo;s job is filtering for the items that actually move scores. This week, only one operator item produced a high-confidence override.
+      </p>
+    </div>
+
+    <!-- METHODOLOGY NOTE -->
+    <div style="margin-bottom:36px;padding:20px 24px;background:#f8fafc;border-left:4px solid #5B8DB8;border-radius:0 8px 8px 0;">
+      <div style="font-size:11px;font-weight:700;color:#5B8DB8;letter-spacing:1px;margin-bottom:8px;">METHODOLOGY NOTE</div>
+      <p style="color:#444;font-size:13px;line-height:1.7;margin:0;">
+        <strong>Why Phoenix didn&rsquo;t drop tier this week.</strong> Several readers asked why Phoenix is still scoring 50 (MODERATE) despite SB1827&rsquo;s failure. The answer: SB1819 (vertiport zoning) is still technically active on Senate consent calendar. Until that bill dies, Phoenix retains partial credit on the legislation factor under v1.3 methodology. If SB1819 dies in committee or the session ends without action, Phoenix&rsquo;s legislation score drops from 10 to 0 and the total moves from 50 to 40 &mdash; crossing from MODERATE into EARLY tier. The override is generated and pending final SB1819 disposition.
+      </p>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="border-top:1px solid #e5e7eb;padding-top:24px;margin-top:36px;">
+      <p style="color:#888;font-size:12px;line-height:1.7;margin-bottom:12px;">
+        UAM Market Pulse is a weekly intelligence brief from AirIndex. Each issue covers score movements, regulatory pipeline activity, and market formation signals across the 25 U.S. metro markets we track. Methodology, source data, and per-market breakdowns are published at <a href="https://airindex.io/methodology" style="color:#5B8DB8;text-decoration:none;">airindex.io/methodology</a>.
+      </p>
+      <p style="color:#888;font-size:12px;line-height:1.7;margin-bottom:12px;">
+        For market intelligence briefings, portfolio compliance screening, or custom research engagements, contact <a href="mailto:sales@airindex.io" style="color:#5B8DB8;text-decoration:none;">sales@airindex.io</a>.
+      </p>
+      <p style="color:#aaa;font-size:11px;text-align:center;margin-top:20px;">
+        AirIndex &middot; Vertical Data Group, LLC &middot; <a href="https://airindex.io" style="color:#5B8DB8;text-decoration:none;">airindex.io</a>
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>
