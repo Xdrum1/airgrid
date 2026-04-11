@@ -11,9 +11,66 @@ import {
 import { analyzeGaps } from "@/lib/gap-analysis";
 import type { FactorAnalysis } from "@/lib/gap-analysis";
 import type { ScoreBreakdown } from "@/types";
+import { prisma } from "@/lib/prisma";
+import { getScoreTrajectory } from "@/lib/score-history";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import PrintButton from "../../gap/[cityId]/PrintButton";
+
+// Override field → FKB short code (briefing uses these codes in headers)
+const OVERRIDE_FIELD_TO_CODE: Record<string, string> = {
+  stateLegislationStatus: "LEG",
+  hasStateLegislation: "LEG",
+  hasActivePilotProgram: "PLT",
+  hasVertiport: "VRT",
+  approvedVertiport: "VRT",
+  vertiportZoning: "ZON",
+  regulatoryPosture: "REG",
+  activeOperatorPresence: "OPR",
+  weatherInfrastructure: "WTH",
+};
+
+// Watch status → visual treatment. Mirrors MarketWatch enum in schema.prisma.
+const WATCH_META: Record<
+  string,
+  { bg: string; label: string; description: string }
+> = {
+  NEGATIVE_WATCH: {
+    bg: "#ff4444",
+    label: "NEGATIVE WATCH",
+    description: "Flagged for deteriorating conditions",
+  },
+  POSITIVE_WATCH: {
+    bg: "#00ff88",
+    label: "POSITIVE WATCH",
+    description: "Flagged for improving conditions",
+  },
+  DEVELOPING: {
+    bg: "#f59e0b",
+    label: "DEVELOPING",
+    description: "Active signal activity",
+  },
+  STABLE: {
+    bg: "#6b7280",
+    label: "STABLE",
+    description: "No active signals",
+  },
+};
+
+function formatRelative(date: Date): string {
+  const diffMs = Date.now() - date.getTime();
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (days <= 0) return "today";
+  if (days === 1) return "yesterday";
+  if (days < 7) return `${days} days ago`;
+  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  if (days < 365) return `${Math.floor(days / 30)}mo ago`;
+  return `${Math.floor(days / 365)}y ago`;
+}
+
+function formatShortDate(date: Date): string {
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
 
 // Factor key → FKB short code
 const KEY_TO_CODE: Record<keyof ScoreBreakdown, string> = {
@@ -128,6 +185,41 @@ export default async function BriefingPage({
   const tier = getScoreTier(score);
   const tierColor = getScoreColor(score);
   const gap = await analyzeGaps(city);
+
+  // Recent Intelligence data — watch status, 90-day trajectory, triggering signals
+  const [marketWatch, trajectory, recentOverrides] = await Promise.all([
+    prisma.marketWatch.findUnique({ where: { cityId } }),
+    getScoreTrajectory(cityId, { sinceDaysAgo: 90 }),
+    prisma.scoringOverride.findMany({
+      where: {
+        cityId,
+        appliedAt: { not: null },
+        supersededAt: null,
+      },
+      orderBy: { appliedAt: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        appliedAt: true,
+        field: true,
+        reason: true,
+        sourceUrl: true,
+        confidence: true,
+      },
+    }),
+  ]);
+
+  const watchKey = marketWatch?.watchStatus ?? "STABLE";
+  const watchMeta = WATCH_META[watchKey] ?? WATCH_META.STABLE;
+  const watchOutlook = marketWatch?.outlook ?? "STABLE";
+
+  const trajPoints = trajectory.points;
+  const netChange = trajectory.summary.netScoreChange;
+  const firstPoint = trajPoints[0];
+  const lastPoint = trajPoints[trajPoints.length - 1];
+  const hasTrajectory = trajPoints.length >= 2 && netChange !== null;
+  const hasAnyIntelligence =
+    !!marketWatch || hasTrajectory || recentOverrides.length > 0;
 
   // Site audit integration flag — flip to true when credentialed audit data is live
   const rexIntegrationActive = process.env.SITE_AUDIT_ACTIVE === "true";
@@ -414,6 +506,252 @@ export default async function BriefingPage({
               {city.city} scores {score}/100 ({tier}) on the AirIndex UAM
               Market Readiness Index, ranking #{rank} of {allCities.length}+
               tracked U.S. markets under methodology v1.3. {factorSummaryText}
+            </p>
+          </div>
+
+          {/* ================================================================
+              SECTION 1.5: Recent Intelligence (Watch + Trajectory + Signals)
+              ================================================================ */}
+          <div className="section-card" style={cardStyle}>
+            <h2 style={sectionHeading}>
+              Recent Intelligence
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 400,
+                  color: "#666",
+                  marginLeft: 8,
+                }}
+              >
+                Last 90 days
+              </span>
+            </h2>
+
+            {/* Watch status row */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                marginBottom: 20,
+                flexWrap: "wrap",
+              }}
+            >
+              <span
+                className="tier-badge"
+                style={{
+                  background: watchMeta.bg,
+                  color: "#050508",
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                  padding: "5px 12px",
+                  borderRadius: 4,
+                }}
+              >
+                {watchMeta.label}
+              </span>
+              <span style={{ color: "#888", fontSize: 12 }}>
+                Outlook:{" "}
+                <span style={{ color: "#e0e0e0", fontWeight: 600 }}>
+                  {watchOutlook.replace(/_/g, " ")}
+                </span>
+              </span>
+              {marketWatch?.updatedAt && (
+                <span
+                  style={{
+                    color: "#555",
+                    fontSize: 11,
+                    fontFamily: "'Space Mono', monospace",
+                  }}
+                >
+                  updated {formatRelative(new Date(marketWatch.updatedAt))}
+                </span>
+              )}
+            </div>
+
+            {/* Analyst note from MarketWatch, if any */}
+            {marketWatch?.analystNote && (
+              <p
+                style={{
+                  fontSize: 13,
+                  lineHeight: 1.7,
+                  color: "#ccc",
+                  margin: "0 0 20px",
+                  fontStyle: "italic",
+                }}
+              >
+                {marketWatch.analystNote}
+              </p>
+            )}
+
+            {/* Score trajectory */}
+            <div
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid #1a1a2e",
+                borderRadius: 8,
+                padding: "16px 20px",
+                marginBottom: 20,
+              }}
+            >
+              <p
+                style={{
+                  ...labelStyle,
+                  margin: "0 0 8px",
+                }}
+              >
+                Score Trajectory
+              </p>
+              {hasTrajectory && firstPoint && lastPoint ? (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 12,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 18,
+                      fontWeight: 700,
+                      color: "#e0e0e0",
+                    }}
+                  >
+                    {firstPoint.score} → {lastPoint.score}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color:
+                        netChange! > 0
+                          ? "#00ff88"
+                          : netChange! < 0
+                            ? "#ff4444"
+                            : "#888",
+                    }}
+                  >
+                    {netChange! > 0 ? "+" : ""}
+                    {netChange} pts
+                  </span>
+                  <span style={{ color: "#666", fontSize: 12 }}>
+                    across {trajPoints.length} snapshots
+                  </span>
+                </div>
+              ) : (
+                <p style={{ color: "#888", fontSize: 13, margin: 0 }}>
+                  No score movement in the last 90 days. Market is currently at
+                  baseline.
+                </p>
+              )}
+            </div>
+
+            {/* Triggering signals */}
+            {recentOverrides.length > 0 ? (
+              <div>
+                <p style={{ ...labelStyle, margin: "0 0 12px" }}>
+                  Triggering Signals
+                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                  }}
+                >
+                  {recentOverrides.map((ov) => {
+                    const code =
+                      OVERRIDE_FIELD_TO_CODE[ov.field] ?? ov.field.slice(0, 3).toUpperCase();
+                    const applied = ov.appliedAt
+                      ? new Date(ov.appliedAt)
+                      : null;
+                    return (
+                      <div
+                        key={ov.id}
+                        style={{
+                          display: "flex",
+                          gap: 12,
+                          paddingBottom: 10,
+                          borderBottom: "1px solid #14141f",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: "'Space Mono', monospace",
+                            fontSize: 10,
+                            color: "#666",
+                            minWidth: 48,
+                            paddingTop: 2,
+                          }}
+                        >
+                          {applied ? formatShortDate(applied) : "—"}
+                        </span>
+                        <span
+                          style={{
+                            ...labelStyle,
+                            color: "#5B8DB8",
+                            fontSize: 9,
+                            minWidth: 32,
+                            paddingTop: 3,
+                          }}
+                        >
+                          {code}
+                        </span>
+                        <div style={{ flex: 1 }}>
+                          <p
+                            style={{
+                              fontSize: 12,
+                              lineHeight: 1.6,
+                              color: "#ccc",
+                              margin: 0,
+                            }}
+                          >
+                            {ov.reason}
+                          </p>
+                          {ov.sourceUrl && (
+                            <a
+                              href={ov.sourceUrl}
+                              style={{
+                                fontSize: 10,
+                                color: "#5B8DB8",
+                                textDecoration: "none",
+                                fontFamily: "'Space Mono', monospace",
+                              }}
+                            >
+                              source &rarr;
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              !hasAnyIntelligence && (
+                <p style={{ color: "#888", fontSize: 12, margin: 0 }}>
+                  No recent classification-driven overrides for this market.
+                  Score reflects baseline methodology inputs.
+                </p>
+              )
+            )}
+
+            <p
+              style={{
+                fontSize: 10,
+                color: "#555",
+                margin: "20px 0 0",
+                fontStyle: "italic",
+              }}
+            >
+              Signals sourced from LegiScan, SEC EDGAR, Federal Register, and
+              operator news. Classified automatically by the AirIndex pipeline
+              and applied to scoring after confidence review.
             </p>
           </div>
 
