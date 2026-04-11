@@ -7,6 +7,7 @@
  *   npx tsx scripts/send-pulse.ts --dry-run           # preview who would receive it
  *   npx tsx scripts/send-pulse.ts extra@email.com     # add extra recipients
  *   npx tsx scripts/send-pulse.ts --solo you@x.com    # tracked preview ONLY to listed emails (skips inner circle + subscribers)
+ *   npx tsx scripts/send-pulse.ts --skip-preflight    # bypass the pre-flight check (use only when knowingly sending historical content)
  */
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
@@ -19,6 +20,7 @@ import {
   buildTrackingPixelUrl,
   buildClickTrackUrl,
 } from "../src/lib/newsletter-token";
+import { runPreflight, printChecks } from "./pulse-preflight";
 
 const prisma = new PrismaClient();
 
@@ -81,6 +83,7 @@ async function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run");
   const solo = args.includes("--solo");
+  const skipPreflight = args.includes("--skip-preflight");
   const issueIdx = args.indexOf("--issue");
   const issueNum = issueIdx >= 0 ? parseInt(args[issueIdx + 1]) : undefined;
   const extraEmails = args.filter((a) => a.includes("@") && !a.startsWith("--"));
@@ -94,6 +97,24 @@ async function main() {
   const html = readFileSync(pulse.path, "utf-8");
   console.log(`\nPulse: Issue ${pulse.issue}`);
   console.log(`File:  ${pulse.path}\n`);
+
+  // Pre-flight check — verifies leaderboard claims against DB and catches
+  // hallucinated peer markets. Skip only when sending historical content.
+  if (!skipPreflight) {
+    console.log("Running pre-flight check...");
+    const checks = await runPreflight(html);
+    const { fails } = printChecks(checks);
+    if (fails > 0) {
+      console.error(
+        `\nPre-flight failed with ${fails} error(s). Fix the issues above or re-run with --skip-preflight if intentional.\n`,
+      );
+      await prisma.$disconnect();
+      process.exit(1);
+    }
+    console.log("");
+  } else {
+    console.log("Pre-flight check SKIPPED (--skip-preflight).\n");
+  }
 
   // Fetch subscribers from DB (skipped in solo mode)
   const subscribers = solo
