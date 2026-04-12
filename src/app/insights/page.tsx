@@ -231,6 +231,71 @@ export default function InsightsPage() {
           </div>
         )}
 
+        {/* Markets to Watch — predictive layer */}
+        <div style={{
+          marginBottom: 40,
+          padding: "24px 28px",
+          background: "rgba(91,141,184,0.04)",
+          border: "1px solid rgba(91,141,184,0.15)",
+          borderRadius: 12,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <span style={{
+              fontSize: 9,
+              fontFamily: "'Space Mono', monospace",
+              color: "#5B8DB8",
+              letterSpacing: 2,
+              fontWeight: 700,
+            }}>
+              PLATFORM FORECAST
+            </span>
+            <span style={{
+              fontSize: 9,
+              fontFamily: "'Space Mono', monospace",
+              color: "#16a34a",
+              background: "rgba(22,163,74,0.1)",
+              border: "1px solid rgba(22,163,74,0.2)",
+              borderRadius: 3,
+              padding: "2px 6px",
+              letterSpacing: 1,
+              fontWeight: 700,
+            }}>
+              UPDATED CONTINUOUSLY
+            </span>
+          </div>
+          <Link
+            href="/insights/markets-to-watch"
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: "clamp(18px, 2vw, 22px)",
+              fontWeight: 700,
+              color: "#fff",
+              textDecoration: "none",
+              display: "block",
+              marginBottom: 8,
+              lineHeight: 1.3,
+            }}
+          >
+            Markets to Watch
+          </Link>
+          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 12 }}>
+            All 25 US UAM markets ranked by predictive significance &mdash; forward signals,
+            MarketWatch trajectory, signal velocity, and 30-day score forecasts.
+          </p>
+          <Link
+            href="/insights/markets-to-watch"
+            style={{
+              color: "#5B8DB8",
+              fontSize: 12,
+              fontWeight: 600,
+              textDecoration: "none",
+              letterSpacing: "0.04em",
+            }}
+          >
+            View the digest &rarr;
+          </Link>
+        </div>
+
         {/* Featured report */}
         <div style={{
           marginBottom: 40,

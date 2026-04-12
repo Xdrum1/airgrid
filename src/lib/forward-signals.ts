@@ -141,6 +141,26 @@ export const EVENT_TYPE_PROFILES: Record<string, EventTypeProfile> = {
     windowLabel: "30 days for formalization",
     description: "Pilot program announced — formal launch typically within 30 days",
   },
+  faa_certification_milestone: {
+    windowMinDays: 60,
+    windowMaxDays: 180,
+    isImmediateImpact: false,
+    factor: "activeOperatorPresence",
+    typicalPointImpact: 5,
+    direction: "positive",
+    windowLabel: "60-180 days for operational follow-up",
+    description: "Aircraft certification milestone — typically precedes operator deployment by 2-6 months",
+  },
+  infrastructure_development: {
+    windowMinDays: 90,
+    windowMaxDays: 365,
+    isImmediateImpact: false,
+    factor: "approvedVertiport",
+    typicalPointImpact: 15,
+    direction: "positive",
+    windowLabel: "3-12 months for build/permit cycle",
+    description: "Infrastructure development announcement — typical permit-to-operational cycle 3-12 months",
+  },
 };
 
 // ─────────────────────────────────────────────────────────
@@ -580,6 +600,93 @@ export function renderSignalNarrative(signal: ForwardSignal): string {
     ? ` (${signal.scoreImpact.direction === "positive" ? "+" : "-"}${signal.scoreImpact.pointsIfRealized} points if realized)`
     : "";
   return `${signal.description} — ${signal.windowLabel}${impact}`;
+}
+
+// ─────────────────────────────────────────────────────────
+// Platform-Wide Digest
+// ─────────────────────────────────────────────────────────
+
+export interface MarketForecastSummary {
+  cityId: string;
+  cityName: string;
+  state: string;
+  currentScore: number;
+  marketWatch: { status: string; outlook: string } | null;
+  signalsLast30d: number;
+  rankNational: number | null;
+  accelerating: boolean;
+  expectedScoreChange30d: number | null;
+  nearTermSignalCount: number;
+  highConfidenceSignalCount: number;
+  /** Significance score for ranking (higher = more notable this week) */
+  significance: number;
+  /** Top 1-2 forward signals by impact */
+  topSignals: ForwardSignal[];
+}
+
+/**
+ * Generate platform-wide forecast digest.
+ * Returns markets ranked by predictive significance (events expected,
+ * watch trajectory, signal velocity).
+ *
+ * Used to power Pulse newsletter content, public "Markets to Watch" page,
+ * and internal weekly platform forecast.
+ */
+export async function getPlatformForecastDigest(): Promise<MarketForecastSummary[]> {
+  const cities = await getCitiesWithOverrides();
+  const summaries: MarketForecastSummary[] = [];
+
+  for (const city of cities) {
+    const report = await getForwardSignals(city.id);
+    const { score } = calculateReadinessScore(city);
+
+    // Significance scoring:
+    //   +5 for each near-term high-confidence signal
+    //   +3 for each medium-term high-confidence signal
+    //   +5 if expected score change != 0
+    //   +5 if NEGATIVE_WATCH/DETERIORATING (urgent)
+    //   +3 if POSITIVE_WATCH/IMPROVING
+    //   +2 if accelerating
+    let significance = 0;
+    significance += report.near.filter((s) => s.confidence === "high").length * 5;
+    significance += report.medium.filter((s) => s.confidence === "high").length * 3;
+    if (report.expectedScoreChange30d && report.expectedScoreChange30d.delta !== 0) significance += 5;
+    if (report.marketWatch?.status === "NEGATIVE_WATCH") significance += 5;
+    if (report.marketWatch?.status === "POSITIVE_WATCH") significance += 3;
+    if (report.velocity.accelerating) significance += 2;
+
+    // Rank top 2 signals by score impact (or by confidence if no impact)
+    const topSignals = [...report.signals]
+      .sort((a, b) => {
+        const aImpact = a.scoreImpact.pointsIfRealized;
+        const bImpact = b.scoreImpact.pointsIfRealized;
+        if (aImpact !== bImpact) return bImpact - aImpact;
+        const conf = { high: 3, medium: 2, low: 1 };
+        return conf[b.confidence] - conf[a.confidence];
+      })
+      .slice(0, 2);
+
+    summaries.push({
+      cityId: city.id,
+      cityName: city.city,
+      state: city.state,
+      currentScore: score,
+      marketWatch: report.marketWatch
+        ? { status: report.marketWatch.status, outlook: report.marketWatch.outlook }
+        : null,
+      signalsLast30d: report.velocity.signalsLast30d,
+      rankNational: report.velocity.rankNational,
+      accelerating: report.velocity.accelerating,
+      expectedScoreChange30d: report.expectedScoreChange30d?.delta ?? null,
+      nearTermSignalCount: report.near.length,
+      highConfidenceSignalCount: report.signals.filter((s) => s.confidence === "high").length,
+      significance,
+      topSignals,
+    });
+  }
+
+  // Sort by significance (descending)
+  return summaries.sort((a, b) => b.significance - a.significance);
 }
 
 /**
