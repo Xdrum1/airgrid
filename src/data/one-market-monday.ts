@@ -68,6 +68,47 @@ export const ONE_MARKET_MONDAY_ISSUES: OneMarketMondayIssue[] = [
     footerNote:
       "AirIndex tracks regulatory, operator, and infrastructure signals across 21 US UAM markets. Phoenix's full factor breakdown, score history, and live legislative tracking are available on the platform. One Market Monday is AirIndex's weekly deep-dive on a single market in our coverage universe.",
   },
+  {
+    slug: "miami-april-2026",
+    issueNumber: 2,
+    publishDate: "2026-04-13",
+    cityId: "miami",
+    headline: "Miami at 80: The 20-Point Gap Between ADVANCED and Full Readiness",
+    subhead:
+      "Miami scores 80 on the AirIndex Readiness Score — the highest outside of Los Angeles and Dallas. It has enacted state legislation, two committed operators, an operational vertiport, and friendly regulatory posture. The 20 points it doesn't have tell a more interesting story than the 80 it does.",
+    sections: [
+      {
+        heading: "The Score",
+        paragraphs: [
+          "Miami sits at 80 on the AirIndex Readiness Score — ADVANCED tier, and one of only three markets in the United States to reach it. That score reflects a regulatory and operator stack that most markets are still trying to assemble: Florida's Advanced Air Mobility Act is enacted law, not a pending bill. Joby Aviation is operating air taxi routes out of a Miami helipad acquired in its August 2025 Blade acquisition. Archer Aviation has publicly committed to a MIA–Fort Lauderdale corridor in partnership with United Airlines. Miami-Dade County completed a vertiport network feasibility study in 2024 and has zoning provisions in place.",
+          "Six of seven scoring factors deliver points. State legislation: 20/20. Active operators: 15/15. Approved vertiport: 15/15. Vertiport zoning: 15/15. Regulatory posture: 10/10. Weather infrastructure: 5/10. The chart tells the story of a market where almost everything is in place.",
+          "Almost. One factor scores zero: Active Pilot Program, worth 15 points. And weather infrastructure caps at 5 of a possible 10. Those two gaps account for the entire distance between 80 and 100.",
+        ],
+      },
+      {
+        heading: "The Angle",
+        paragraphs: [
+          "Last week's Issue 01 featured Phoenix — a market where the legislative stack collapsed, dropping the score from 50 to 40. Miami is the inverse case. It demonstrates what happens when the regulatory infrastructure holds: enacted legislation creates the legal foundation, friendly posture removes friction, and operators commit capital. The result is a market where commercial operations are not theoretical.",
+          "But an 80 is not a 100, and the gap is instructive. Miami's missing 15 points on Active Pilot Program reflect a specific structural absence: no formal municipal partnership with an eVTOL operator. Joby operates out of a commercial helipad. Archer has announced a corridor. Neither has a documented MOU with Miami-Dade County or any municipal authority in the metro. The distinction matters because MOUs create institutional accountability — they bind city planning, permitting, and community engagement processes to the operator's timeline. Without one, operations depend entirely on private-sector initiative.",
+          "This is a pattern we see across ADVANCED-tier markets. Operators announce. They even operate. But the municipal layer — the part that turns an operator's business decision into a city's infrastructure commitment — lags behind. Miami-Dade's 2024 feasibility study was a signal of intent, not a binding commitment.",
+          "The weather gap is narrower but worth noting. Miami International and Fort Lauderdale-Hollywood airports provide standard ASOS coverage, which earns partial credit. What's missing is dedicated low-altitude weather sensing — the kind of hyperlocal wind, turbulence, and visibility data that eVTOL operations at 500–1,500 feet require. This is a gap across nearly every US market, but it matters more in South Florida, where convective weather systems can produce microbursts and wind shear events that conventional airport weather stations don't capture at vertiport altitude.",
+          "AirIndex's pipeline has classified 15 Miami-relevant signals in the last 30 days — the densest activity of any market in our coverage. Those signals include Archer's selection for the White House eVTOL pilot program, multiple operator expansion events, and FAA corridor filing activity for the MIA–FLL route. The market's watch status is POSITIVE_WATCH with an IMPROVING outlook. The signals are moving in one direction.",
+        ],
+      },
+      {
+        heading: "What to Watch",
+        paragraphs: [
+          "Three developments will determine whether Miami closes the gap to 100:",
+          "1. A municipal MOU. If Miami-Dade County or any metro municipality formalizes a partnership with Joby or Archer — covering vertiport siting, permitting timelines, and community engagement — the Active Pilot Program factor moves from 0 to 15. This is the single highest-value event on Miami's forward calendar.",
+          "2. The MIA–FLL corridor. Archer's proposed route with United Airlines has been classified as an FAA corridor filing in our pipeline. If the FAA grants operational approval — even a limited test authorization — it validates the physical infrastructure and regulatory alignment that Miami's score already reflects.",
+          "3. Low-altitude weather infrastructure. TruWeather Solutions and similar providers are deploying hyperlocal sensing networks for UAM corridors. If any provider activates coverage in the Miami metro, weather infrastructure moves from 5 to 10. This is the smallest point value of the three, but it's the gap most likely to close first because it doesn't require government action.",
+          "Miami at 80 is not a market waiting for permission. It's a market waiting for the last institutional commitments to catch up with commercial reality.",
+        ],
+      },
+    ],
+    footerNote:
+      "AirIndex tracks regulatory, operator, and infrastructure signals across 25 US UAM markets. Miami's full factor breakdown, score history, and live intelligence feed are available on the platform. One Market Monday is AirIndex's weekly deep-dive on a single market in our coverage universe.",
+  },
 ];
 
 export function getIssueBySlug(slug: string): OneMarketMondayIssue | undefined {
