@@ -15,6 +15,8 @@ import PrintButton from "./PrintButton";
 import type { SubIndicator } from "@/types";
 import { getFdotAirportsForMarket, getFdotPhasesForMarket, getFdotScreeningForMarket, SUNTRAX } from "@/data/fdot-aam-network";
 import { getPreDevFacilitiesForMarket } from "@/data/pre-development-facilities";
+import { getForwardSignals, logPredictions } from "@/lib/forward-signals";
+import ForwardSignalsPanel from "@/components/ForwardSignalsPanel";
 
 export const metadata: Metadata = {
   robots: "noindex, nofollow",
@@ -82,6 +84,17 @@ export default async function GapReportPage({
     corridors = await getCorridorsForCity(cityId);
   } catch {
     // Graceful fallback
+  }
+
+  let forwardSignals: Awaited<ReturnType<typeof getForwardSignals>> | null = null;
+  try {
+    forwardSignals = await getForwardSignals(cityId);
+    if (forwardSignals && forwardSignals.signals.length > 0) {
+      // Fire-and-forget prediction logging for scorecard tracking
+      logPredictions(cityId, forwardSignals, "gap_report").catch(() => {});
+    }
+  } catch {
+    // Graceful fallback — predictive layer is non-blocking
   }
 
   const operatorNames = city.activeOperators
@@ -796,6 +809,11 @@ export default async function GapReportPage({
               &ldquo;{city.city} has been assessed at Readiness Tier {enhanced.tier} ({enhanced.score}/100) by AirIndex, an independent UAM market intelligence platform tracking 20+ US metropolitan areas across seven standardized readiness factors and 20 diagnostic sub-indicators including pilot programs, vertiport infrastructure, operator presence, zoning frameworks, regulatory posture, state legislation, and weather infrastructure. {city.city} currently meets {enhanced.achievedCount} of 7 factors and {enhanced.subIndicatorSummary.achieved} of {enhanced.subIndicatorSummary.total} sub-indicators.{peers.pointsToNextTier ? ` An investment of ${peers.pointsToNextTier} additional readiness points would advance the market to ${peers.nextTier} tier, positioning it among markets such as ${peers.nextTierCities.slice(0, 2).map((c) => c.city).join(" and ") || "leading UAM-ready cities"}.` : ""}&rdquo;
             </div>
           </div>
+
+          {/* Forward Signals — predictive layer */}
+          {forwardSignals && forwardSignals.signals.length > 0 && (
+            <ForwardSignalsPanel report={forwardSignals} dark={true} />
+          )}
 
           {/* FDOT AAM Network Context — Florida markets only */}
           {city.state === "FL" && (() => {
