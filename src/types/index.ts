@@ -121,6 +121,7 @@ export interface Vertiport {
   permitFilingDate?: string;
   expectedOpenDate?: string;
   sourceUrl?: string;
+  notes?: string;
   lastUpdated: string;
 }
 
