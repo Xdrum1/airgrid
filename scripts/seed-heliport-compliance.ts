@@ -55,6 +55,19 @@ function isHospitalSite(name: string, useType: string): boolean {
   return HOSPITAL_KEYWORDS.some(kw => lower.includes(kw)) || useType?.toLowerCase().includes("medical");
 }
 
+/**
+ * Compliance tier logic — 5 tiers:
+ *
+ *   COMPLIANT           — all 5 questions answered, 0 failures
+ *   COMPLIANT_PRESUMED  — 0 failures but ≥1 unknown (data gaps remain)
+ *   CONDITIONAL         — 1-2 failures (remediable gaps identified)
+ *   OBJECTIONABLE       — 3+ failures (significant compliance deficit)
+ *   UNKNOWN             — too many unknowns to make any determination
+ *
+ * Why the distinction matters: "compliant" previously included facilities
+ * with unanswered Q2 (airspace) and Q5 (eVTOL viability). Insurance
+ * buyers need to know whether compliance is verified or assumed.
+ */
 function computeComplianceStatus(scores: { q1: string; q2: string; q3: string; q4: string; q5: string }): {
   status: string;
   score: number;
@@ -78,14 +91,17 @@ function computeComplianceStatus(scores: { q1: string; q2: string; q3: string; q
 
   const passCount = passing.filter(Boolean).length;
   const failCount = failing.filter(Boolean).length;
+  const unknownCount = 5 - passCount - failCount;
 
   let status: string;
   if (failCount >= 3) {
     status = "objectionable";
   } else if (failCount >= 1) {
     status = "conditional";
-  } else if (passCount >= 3) {
-    status = "compliant";
+  } else if (passCount === 5) {
+    status = "compliant"; // All 5 verified — true compliant
+  } else if (passCount >= 3 && unknownCount > 0) {
+    status = "compliant_presumed"; // No failures but data gaps remain
   } else {
     status = "unknown"; // Too many unknowns to determine
   }

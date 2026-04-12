@@ -226,8 +226,14 @@ export default function HeliportAuditPage() {
               {
                 tier: "COMPLIANT",
                 color: "#00ff88",
-                def: "Passes all five compliance questions from available public data and physical verification.",
+                def: "Passes all five compliance questions. All data verified — no unknowns remain.",
                 implication: "Defensible coverage basis. Standard renewal recommended.",
+              },
+              {
+                tier: "PRESUMED COMPLIANT",
+                color: "#5B8DB8",
+                def: "No failures identified, but one or more questions remain unanswered due to data gaps (e.g., airspace determination not yet matched, eVTOL viability not physically assessed).",
+                implication: "Likely compliant but not verified. Recommend Level 2 screening to resolve unknowns before relying on this status for coverage decisions.",
               },
               {
                 tier: "CONDITIONAL",
@@ -322,26 +328,46 @@ export default function HeliportAuditPage() {
               SAMPLE REPORT
             </div>
             <p style={{ color: "#888", fontSize: 12, lineHeight: 1.6, marginBottom: 16 }}>
-              View a live audit report for South Carolina — 49 heliports scored against all five
+              View live audit reports — South Carolina (49 heliports) or Florida (381 heliports,
+              including the Miami metro with 315 facilities). Both scored against all five
               compliance questions with statewide pass rates and flagged facilities.
             </p>
-            <Link
-              href="/reports/audit/SC"
-              style={{
-                display: "inline-block",
-                padding: "10px 20px",
-                background: "rgba(91,141,184,0.1)",
-                border: "1px solid rgba(91,141,184,0.25)",
-                borderRadius: 6,
-                color: "#5B8DB8",
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-              }}
-            >
-              View SC Audit Report
-            </Link>
+            <div style={{ display: "flex", gap: 10 }}>
+              <Link
+                href="/reports/audit/FL"
+                style={{
+                  display: "inline-block",
+                  padding: "10px 20px",
+                  background: "rgba(91,141,184,0.1)",
+                  border: "1px solid rgba(91,141,184,0.25)",
+                  borderRadius: 6,
+                  color: "#5B8DB8",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  textDecoration: "none",
+                }}
+              >
+                View FL Audit Report
+              </Link>
+              <Link
+                href="/reports/audit/SC"
+                style={{
+                  display: "inline-block",
+                  padding: "10px 20px",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 6,
+                  color: "#888",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  textDecoration: "none",
+                }}
+              >
+                View SC Audit Report
+              </Link>
+            </div>
           </div>
           <div style={{
             padding: "24px",

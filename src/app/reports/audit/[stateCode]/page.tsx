@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 // SC is the public sample report linked from /heliport-audit
-const PUBLIC_SAMPLE_STATES = new Set(["SC"]);
+const PUBLIC_SAMPLE_STATES = new Set(["SC", "FL"]);
 
 // ── State name lookup ──
 const STATE_NAMES: Record<string, string> = {
@@ -31,6 +31,7 @@ const STATE_NAMES: Record<string, string> = {
 // ── Compliance status config ──
 const STATUS_CONFIG: Record<string, { label: string; color: string; printColor: string }> = {
   compliant: { label: "COMPLIANT", color: "#00ff88", printColor: "#16a34a" },
+  compliant_presumed: { label: "PRESUMED COMPLIANT", color: "#5B8DB8", printColor: "#2563eb" },
   conditional: { label: "CONDITIONAL", color: "#f59e0b", printColor: "#d97706" },
   objectionable: { label: "OBJECTIONABLE", color: "#ff4444", printColor: "#dc2626" },
   unknown: { label: "UNKNOWN", color: "#555", printColor: "#9ca3af" },
@@ -110,7 +111,7 @@ export default async function AuditReportPage({
   });
 
   // Compliance distribution
-  const compByStatus: Record<string, number> = { compliant: 0, conditional: 0, objectionable: 0, unknown: 0 };
+  const compByStatus: Record<string, number> = { compliant: 0, compliant_presumed: 0, conditional: 0, objectionable: 0, unknown: 0 };
   for (const c of compliance) compByStatus[c.complianceStatus] = (compByStatus[c.complianceStatus] ?? 0) + 1;
 
   // Q-level pass rates
