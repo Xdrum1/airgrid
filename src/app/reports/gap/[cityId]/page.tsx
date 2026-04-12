@@ -13,6 +13,8 @@ import { getCorridorsForCity } from "@/lib/corridors";
 import { SUB_INDICATOR_DEFS } from "@/lib/sub-indicators";
 import PrintButton from "./PrintButton";
 import type { SubIndicator } from "@/types";
+import { getFdotAirportsForMarket, getFdotPhasesForMarket, getFdotScreeningForMarket, SUNTRAX } from "@/data/fdot-aam-network";
+import { getPreDevFacilitiesForMarket } from "@/data/pre-development-facilities";
 
 export const metadata: Metadata = {
   robots: "noindex, nofollow",
@@ -794,6 +796,302 @@ export default async function GapReportPage({
               &ldquo;{city.city} has been assessed at Readiness Tier {enhanced.tier} ({enhanced.score}/100) by AirIndex, an independent UAM market intelligence platform tracking 20+ US metropolitan areas across seven standardized readiness factors and 20 diagnostic sub-indicators including pilot programs, vertiport infrastructure, operator presence, zoning frameworks, regulatory posture, state legislation, and weather infrastructure. {city.city} currently meets {enhanced.achievedCount} of 7 factors and {enhanced.subIndicatorSummary.achieved} of {enhanced.subIndicatorSummary.total} sub-indicators.{peers.pointsToNextTier ? ` An investment of ${peers.pointsToNextTier} additional readiness points would advance the market to ${peers.nextTier} tier, positioning it among markets such as ${peers.nextTierCities.slice(0, 2).map((c) => c.city).join(" and ") || "leading UAM-ready cities"}.` : ""}&rdquo;
             </div>
           </div>
+
+          {/* FDOT AAM Network Context — Florida markets only */}
+          {city.state === "FL" && (() => {
+            const fdotAirports = getFdotAirportsForMarket(city.id);
+            const fdotPhases = getFdotPhasesForMarket(city.id);
+            const fdotScreening = getFdotScreeningForMarket(city.id);
+            if (fdotAirports.length === 0 && fdotPhases.length === 0) return null;
+            return (
+              <div style={{
+                background: "#0a0a12",
+                border: "1px solid #1a1a2e",
+                borderRadius: 12,
+                padding: "28px 24px",
+                marginBottom: 20,
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                  <h2 style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: "#fff",
+                    margin: 0,
+                  }}>
+                    FDOT Aerial Highway Network
+                  </h2>
+                  <span style={{
+                    fontSize: 9,
+                    fontFamily: "'Space Mono', monospace",
+                    color: "#5B8DB8",
+                    background: "rgba(91,141,184,0.1)",
+                    border: "1px solid rgba(91,141,184,0.2)",
+                    borderRadius: 3,
+                    padding: "3px 8px",
+                    letterSpacing: 1,
+                  }}>
+                    STATE INFRASTRUCTURE
+                  </span>
+                </div>
+                <p style={{ fontSize: 12, color: "#888", lineHeight: 1.7, marginBottom: 20 }}>
+                  FDOT published the Advanced Air Mobility Business Plan in November 2025, defining a
+                  phased statewide aerial network. The following state-level infrastructure directly
+                  affects {city.city}&apos;s readiness trajectory.
+                </p>
+
+                {/* Airports in network */}
+                {fdotAirports.length > 0 && (
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 9, letterSpacing: 2, color: "#5B8DB8", fontFamily: "'Space Mono', monospace", marginBottom: 10 }}>
+                      AIRPORTS IN {city.city.toUpperCase()} METRO WITH AAM PLANS ({fdotAirports.length})
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                      {fdotAirports.map(a => (
+                        <div key={a.code} style={{
+                          padding: "10px 14px",
+                          background: "rgba(255,255,255,0.02)",
+                          border: "1px solid rgba(255,255,255,0.06)",
+                          borderRadius: 6,
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}>
+                          <div>
+                            <span style={{ fontSize: 12, color: "#ccc", fontWeight: 500 }}>{a.name}</span>
+                          </div>
+                          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                            <span style={{ fontSize: 11, fontFamily: "'Space Mono', monospace", color: "#5B8DB8", fontWeight: 700 }}>
+                              {a.code}
+                            </span>
+                            <span style={{ fontSize: 9, color: "#555", fontFamily: "'Space Mono', monospace" }}>
+                              PH {a.phases.join("/")}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Network phases */}
+                {fdotPhases.length > 0 && (
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 9, letterSpacing: 2, color: "#5B8DB8", fontFamily: "'Space Mono', monospace", marginBottom: 10 }}>
+                      NETWORK PHASES
+                    </div>
+                    {fdotPhases.map(p => (
+                      <div key={p.id} style={{
+                        padding: "12px 14px",
+                        background: "rgba(255,255,255,0.02)",
+                        border: "1px solid rgba(255,255,255,0.06)",
+                        borderRadius: 6,
+                        marginBottom: 8,
+                      }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                          <span style={{ fontSize: 13, color: "#ccc", fontWeight: 600 }}>Phase {p.id}: {p.name}</span>
+                          <span style={{ fontSize: 10, fontFamily: "'Space Mono', monospace", color: "#555" }}>
+                            {p.airportCodes.length} airports
+                          </span>
+                        </div>
+                        <p style={{ fontSize: 11, color: "#888", lineHeight: 1.5, margin: 0 }}>{p.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Suitability screening results */}
+                {fdotScreening && (
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 9, letterSpacing: 2, color: "#5B8DB8", fontFamily: "'Space Mono', monospace", marginBottom: 10 }}>
+                      VERTIPORT SUITABILITY SCREENING
+                    </div>
+                    <div style={{
+                      padding: "16px",
+                      background: "rgba(91,141,184,0.04)",
+                      border: "1px solid rgba(91,141,184,0.12)",
+                      borderRadius: 8,
+                    }}>
+                      <p style={{ fontSize: 12, color: "#ccc", lineHeight: 1.7, margin: "0 0 12px" }}>
+                        FDOT screened {fdotScreening.totalParcelsScreened.toLocaleString()} parcels in the I-4 Tampa-Orlando corridor
+                        and identified <strong style={{ color: "#5B8DB8" }}>{fdotScreening.potentialSites} potential vertiport sites</strong> in
+                        the {fdotScreening.region} metro using a multi-criteria GIS evaluation framework.
+                      </p>
+                      <div style={{ display: "flex", gap: 16 }}>
+                        {[
+                          { label: "MRO Sites", value: fdotScreening.mroSites, color: "#5B8DB8" },
+                          { label: "Passenger Sites", value: fdotScreening.passengerSites, color: "#00ff88" },
+                          { label: "Dual-Use", value: fdotScreening.dualUseSites, color: "#f59e0b" },
+                        ].map(s => (
+                          <div key={s.label} style={{ textAlign: "center" }}>
+                            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 20, fontWeight: 700, color: s.color }}>
+                              {s.value}
+                            </div>
+                            <div style={{ fontSize: 9, letterSpacing: 1, color: "#666", marginTop: 2 }}>{s.label.toUpperCase()}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* SunTrax reference */}
+                <div style={{
+                  padding: "12px 14px",
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 6,
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <span style={{ fontSize: 12, color: "#ccc", fontWeight: 600 }}>SunTrax Air — Florida AAM Headquarters</span>
+                      <span style={{ fontSize: 11, color: "#666", marginLeft: 8 }}>I-4 corridor between Tampa &amp; Orlando</span>
+                    </div>
+                    <span style={{ fontSize: 9, fontFamily: "'Space Mono', monospace", color: "#00ff88", letterSpacing: 1 }}>
+                      UNDER CONSTRUCTION
+                    </span>
+                  </div>
+                  <p style={{ fontSize: 11, color: "#888", lineHeight: 1.5, margin: "8px 0 0" }}>
+                    {SUNTRAX.totalVertiportsAtBuildout} vertiports at full buildout. Phase 1 complete by {SUNTRAX.constructionTimeline.phase1Complete}.
+                    Anchor facility for eVTOL testing, certification, and workforce development.
+                  </p>
+                </div>
+
+                <div style={{ fontSize: 10, color: "#555", marginTop: 16, lineHeight: 1.5 }}>
+                  Source: FDOT Advanced Air Mobility Business Plan: Florida&apos;s Aerial Highway Network, November 2025.
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Pre-Development Facilities */}
+          {(() => {
+            const preDevFacilities = getPreDevFacilitiesForMarket(city.id);
+            if (preDevFacilities.length === 0) return null;
+            const statusColors: Record<string, string> = {
+              announced: "#555",
+              permitting: "#f59e0b",
+              under_construction: "#ff6b35",
+              occupancy_pending: "#5B8DB8",
+              operational_no_faa: "#00ff88",
+            };
+            const statusLabels: Record<string, string> = {
+              announced: "ANNOUNCED",
+              permitting: "PERMITTING",
+              under_construction: "UNDER CONSTRUCTION",
+              occupancy_pending: "OCCUPANCY PENDING",
+              operational_no_faa: "OPERATIONAL (NO FAA)",
+            };
+            return (
+              <div style={{
+                background: "#0a0a12",
+                border: "1px solid #1a1a2e",
+                borderRadius: 12,
+                padding: "28px 24px",
+                marginBottom: 20,
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                  <h2 style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: "#fff",
+                    margin: 0,
+                  }}>
+                    Pre-Development Facilities
+                  </h2>
+                  <span style={{
+                    fontSize: 9,
+                    fontFamily: "'Space Mono', monospace",
+                    color: "#ff6b35",
+                    background: "rgba(255,107,53,0.1)",
+                    border: "1px solid rgba(255,107,53,0.2)",
+                    borderRadius: 3,
+                    padding: "3px 8px",
+                    letterSpacing: 1,
+                  }}>
+                    NOT IN FAA NASR
+                  </span>
+                </div>
+                <p style={{ fontSize: 12, color: "#888", lineHeight: 1.7, marginBottom: 20 }}>
+                  The following facilities in the {city.city} metro are announced, under development,
+                  or in permitting but do not yet appear in the FAA NASR 5010 database. They are
+                  invisible to standard compliance screening and represent infrastructure that is
+                  committed but not yet registered.
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {preDevFacilities.map(f => (
+                    <div key={f.id} style={{
+                      padding: "16px 18px",
+                      background: "rgba(255,255,255,0.02)",
+                      border: "1px solid rgba(255,255,255,0.06)",
+                      borderLeft: `3px solid ${statusColors[f.status] ?? "#555"}`,
+                      borderRadius: 8,
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                        <div>
+                          <span style={{ fontSize: 13, color: "#ccc", fontWeight: 600 }}>{f.name}</span>
+                          <span style={{ fontSize: 11, color: "#666", marginLeft: 10 }}>{f.city}, {f.state}</span>
+                        </div>
+                        <span style={{
+                          fontSize: 9,
+                          fontWeight: 700,
+                          fontFamily: "'Space Mono', monospace",
+                          color: statusColors[f.status] ?? "#555",
+                          letterSpacing: 1,
+                        }}>
+                          {statusLabels[f.status] ?? f.status.toUpperCase()}
+                        </span>
+                      </div>
+                      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 8 }}>
+                        {f.developer && (
+                          <div style={{ fontSize: 10, color: "#666" }}>
+                            <span style={{ color: "#555" }}>Developer:</span> {f.developer}
+                          </div>
+                        )}
+                        {f.operatorPartner && (
+                          <div style={{ fontSize: 10, color: "#666" }}>
+                            <span style={{ color: "#555" }}>Operator:</span> {f.operatorPartner}
+                          </div>
+                        )}
+                        {f.infrastructurePartner && (
+                          <div style={{ fontSize: 10, color: "#666" }}>
+                            <span style={{ color: "#555" }}>Infra Partner:</span> {f.infrastructurePartner}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", fontSize: 10, color: "#555" }}>
+                        <span>Type: {f.type.replace(/_/g, " ")}</span>
+                        <span>Site: {f.siteType.replace(/_/g, " ")}</span>
+                        {f.parcelSizeAcres && <span>{f.parcelSizeAcres} acres</span>}
+                        <span>eVTOL: {f.evtolCapable ? "Yes" : "No"}</span>
+                        <span>Zoning: {f.zoningApproved ? "Approved" : "Pending"}</span>
+                        {f.auditStatus && (
+                          <span>
+                            Audit:{" "}
+                            {f.auditUrl ? (
+                              <a href={f.auditUrl} style={{ color: "#5B8DB8", textDecoration: "none" }}>
+                                {f.auditStatus.toUpperCase()}
+                              </a>
+                            ) : (
+                              f.auditStatus.toUpperCase()
+                            )}
+                          </span>
+                        )}
+                      </div>
+                      {f.notes && (
+                        <p style={{ fontSize: 11, color: "#777", lineHeight: 1.5, margin: "8px 0 0" }}>{f.notes}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div style={{ fontSize: 10, color: "#555", marginTop: 16, lineHeight: 1.5 }}>
+                  Facilities are tracked until they receive an FAA Location Identifier and appear in the NASR 5010 database,
+                  at which point they are picked up by the standard heliport compliance pipeline.
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Footer */}
           <div
