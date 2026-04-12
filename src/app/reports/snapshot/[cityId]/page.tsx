@@ -13,6 +13,8 @@ import { getPostureConfig, getLegislationConfig, getWeatherConfig } from "@/lib/
 import PrintButton from "../../gap/[cityId]/PrintButton";
 import ScoreTrend from "@/components/ScoreTrend";
 import FactorSparklines from "@/components/FactorSparklines";
+import ForwardSignalsPanel from "@/components/ForwardSignalsPanel";
+import { getForwardSignals, logPredictions } from "@/lib/forward-signals";
 import type { SubIndicator } from "@/types";
 
 export const metadata: Metadata = {
@@ -47,6 +49,14 @@ export default async function SnapshotPage({
 
   let rawHistory: Awaited<ReturnType<typeof getScoreHistoryFull>> = [];
   try { rawHistory = await getScoreHistoryFull(cityId); } catch { /* graceful */ }
+
+  let forwardSignals: Awaited<ReturnType<typeof getForwardSignals>> | null = null;
+  try {
+    forwardSignals = await getForwardSignals(cityId);
+    if (forwardSignals && forwardSignals.signals.length > 0) {
+      logPredictions(cityId, forwardSignals, "snapshot_pdf").catch(() => {});
+    }
+  } catch { /* graceful */ }
   const history = rawHistory.filter((h, i) => {
     if (i === 0) return true;
     if (h.triggeringEvent) return true;
@@ -489,6 +499,13 @@ export default async function SnapshotPage({
               </p>
             )}
           </div>
+
+          {/* ======== FORWARD SIGNALS ======== */}
+          {forwardSignals && forwardSignals.signals.length > 0 && (
+            <div className="section-card" style={{ ...cardStyle, padding: 0 }}>
+              <ForwardSignalsPanel report={forwardSignals} dark={true} compact />
+            </div>
+          )}
 
           {/* ======== ENTERPRISE CTA ======== */}
           <div
