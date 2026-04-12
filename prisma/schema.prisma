@@ -1312,3 +1312,52 @@ model RplAnalystAnnotation {
 
   @@index([documentId])
 }
+
+// ── Prediction Scorecard ─────────────────────────────────
+//
+// Logs every prediction the platform makes (Forward Signals output) so we
+// can track accuracy over time. Without this, we can't claim "POSITIVE_WATCH
+// markets gain X points within 90 days" — we'd be guessing.
+//
+// A prediction is logged when generated. Verification happens later via
+// scripts/verify-predictions.ts (compares predicted outcome to actual state
+// after the predicted window closes).
+
+model PredictionRecord {
+  id                  String   @id @default(cuid())
+  cityId              String
+  signalId            String                       // ID of the ForwardSignal that generated this prediction
+  signalType          String                       // awaiting_decision | watch_trajectory | facility_milestone | etc.
+  category            String                       // regulatory | operator | infrastructure | weather
+  description         String   @db.Text
+
+  // What was predicted
+  predictedFactor     String?                      // ScoreBreakdown key, if score-impacting
+  predictedDelta      Int      @default(0)         // expected score change
+  predictedDirection  String                       // positive | negative | neutral
+  confidence          String                       // high | medium | low
+
+  // Window
+  earliestExpected    DateTime?
+  latestExpected      DateTime?
+  windowLabel         String
+
+  // Outcome (filled in by verification job)
+  status              String   @default("pending") // pending | validated | invalidated | inconclusive | overdue
+  actualOutcome       String?  @db.Text            // human-readable description of what actually happened
+  actualDelta         Int?                         // measured score change
+  verifiedAt          DateTime?
+  verifiedBy          String?                      // PIPELINE | ANALYST
+
+  // Provenance
+  sourceRecordId      String?
+  sourceUrl           String?
+  generatedAt         DateTime @default(now())
+  reportContext       String?                      // where this prediction was surfaced (gap_report | one_market_monday | api | etc.)
+
+  @@index([cityId])
+  @@index([status])
+  @@index([signalType])
+  @@index([generatedAt])
+  @@index([latestExpected])
+}

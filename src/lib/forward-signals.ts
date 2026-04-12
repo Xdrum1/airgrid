@@ -237,6 +237,55 @@ function bucketize(signal: ForwardSignal): "near" | "medium" | "long" {
 // ─────────────────────────────────────────────────────────
 
 /**
+ * Log forward signals as PredictionRecord entries. Idempotent on (cityId, signalId).
+ * Each call upserts predictions so the scorecard reflects current state.
+ *
+ * Called optionally by report generators when they want predictions tracked.
+ */
+export async function logPredictions(
+  cityId: string,
+  report: ForwardSignalReport,
+  reportContext: string,
+): Promise<void> {
+  const prisma = await getPrisma();
+  for (const s of report.signals) {
+    try {
+      await prisma.predictionRecord.upsert({
+        where: { id: `${cityId}_${s.id}` },
+        create: {
+          id: `${cityId}_${s.id}`,
+          cityId,
+          signalId: s.id,
+          signalType: s.type,
+          category: s.category,
+          description: s.description,
+          predictedFactor: s.scoreImpact.factor,
+          predictedDelta: s.scoreImpact.pointsIfRealized,
+          predictedDirection: s.scoreImpact.direction,
+          confidence: s.confidence,
+          earliestExpected: s.earliestDate,
+          latestExpected: s.latestDate,
+          windowLabel: s.windowLabel,
+          sourceRecordId: s.sourceRecordId,
+          sourceUrl: s.sourceUrl,
+          reportContext,
+        },
+        update: {
+          // Refresh prediction details if signal still active (not validated/invalidated)
+          description: s.description,
+          confidence: s.confidence,
+          earliestExpected: s.earliestDate,
+          latestExpected: s.latestDate,
+          windowLabel: s.windowLabel,
+        },
+      });
+    } catch (err) {
+      logger.error("Failed to log prediction", { cityId, signalId: s.id, err });
+    }
+  }
+}
+
+/**
  * Get the forward signal report for a market.
  * Aggregates from classifier, overrides, market watch, and facility tracker.
  */
