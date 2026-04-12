@@ -121,11 +121,11 @@ function renderEmailHtml(issue: OneMarketMondayIssue, recipientEmail?: string): 
   const sectionsHtml = issue.sections
     .map(
       (s) => `
-      <h2 style="font:700 20px/1.3 'Helvetica Neue',Arial,sans-serif;color:#111;margin:36px 0 16px;letter-spacing:-0.01em;">${escapeHtml(s.heading)}</h2>
+      <h2 style="font:700 22px/1.3 'Helvetica Neue',Arial,sans-serif;color:#111;margin:36px 0 16px;letter-spacing:-0.01em;">${escapeHtml(s.heading)}</h2>
       ${s.paragraphs
         .map(
           (p) =>
-            `<p style="font:15px/1.75 'Helvetica Neue',Arial,sans-serif;color:#333;margin:0 0 16px;">${escapeHtml(p)}</p>`,
+            `<p style="font:17px/1.75 'Helvetica Neue',Arial,sans-serif;color:#333;margin:0 0 18px;">${escapeHtml(p)}</p>`,
         )
         .join("")}
     `,
@@ -163,7 +163,7 @@ function renderEmailHtml(issue: OneMarketMondayIssue, recipientEmail?: string): 
 
         <!-- Lede -->
         <tr><td style="padding:12px 48px 32px;">
-          <p style="font:italic 16px/1.7 Georgia,serif;color:#444;margin:0;border-left:3px solid #5B8DB8;padding-left:18px;">
+          <p style="font:italic 17px/1.7 Georgia,serif;color:#444;margin:0;border-left:3px solid #5B8DB8;padding-left:18px;">
             ${escapeHtml(issue.subhead)}
           </p>
         </td></tr>
