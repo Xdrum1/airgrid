@@ -10,6 +10,7 @@
  *   npx tsx scripts/send-market-monday.ts --dry-run        # preview recipients + subject
  *   npx tsx scripts/send-market-monday.ts extra@email.com  # add extra recipients
  *   npx tsx scripts/send-market-monday.ts --solo you@example.com  # preview mode: ONLY to listed emails (skips inner circle + subscribers)
+ *   npx tsx scripts/send-market-monday.ts --exclude a@x.com,b@y.com  # omit specific addresses (e.g. first-time recipients receiving a personal intro)
  */
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
@@ -235,7 +236,19 @@ async function main() {
   const slugIdx = args.indexOf("--slug");
   const issueNum = issueIdx >= 0 ? parseInt(args[issueIdx + 1]) : undefined;
   const slugArg = slugIdx >= 0 ? args[slugIdx + 1] : undefined;
-  const extraEmails = args.filter((a) => a.includes("@") && !a.startsWith("--"));
+
+  // --exclude takes a comma-separated list: --exclude a@x.com,b@y.com
+  // Used when sending personalized intros separately (e.g. first-time recipients).
+  const excludeIdx = args.indexOf("--exclude");
+  const excludeEmails = excludeIdx >= 0
+    ? args[excludeIdx + 1].split(",").map((e) => e.trim().toLowerCase())
+    : [];
+
+  // Extra emails: any @ address that isn't the --exclude argument
+  const excludeArgValue = excludeIdx >= 0 ? args[excludeIdx + 1] : "";
+  const extraEmails = args.filter(
+    (a) => a.includes("@") && !a.startsWith("--") && a !== excludeArgValue,
+  );
 
   if (solo && extraEmails.length === 0) {
     throw new Error("--solo requires at least one explicit email address");
@@ -273,6 +286,11 @@ async function main() {
   if (!solo) INNER_CIRCLE.forEach((e) => allEmails.add(e.toLowerCase()));
   extraEmails.forEach((e) => allEmails.add(e.toLowerCase()));
   subscribers.forEach((s) => allEmails.add(s.email.toLowerCase()));
+
+  // Apply exclusions (e.g. for first-time recipients getting a personalized intro)
+  for (const excluded of excludeEmails) {
+    allEmails.delete(excluded);
+  }
 
   const recipients = [...allEmails].sort();
 
