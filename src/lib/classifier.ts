@@ -424,6 +424,22 @@ function mapToOverrideCandidates(
 // Persist classification results for audit trail
 // -------------------------------------------------------
 
+function normalizeAffectedCities(raw: string[]): string[] {
+  // Apply the same rules used downstream at override-candidate generation:
+  //   1) Map metro suburbs to their parent city (scottsdale → phoenix, etc.)
+  //   2) Drop any ID not in the tracked city set
+  //   3) Preserve the sentinel `__unresolved__` if explicitly present
+  // Writing only validated IDs to ClassificationResult.affectedCities means
+  // every downstream reader (forward-signals, market-watch, admin debug) sees
+  // a clean set — the suburb map + valid-city filter stop being a last-line
+  // defense and become the only defense needed.
+  const normalized = raw.map((id) => METRO_SUBURB_TO_PARENT[id] ?? id);
+  const filtered = normalized.filter(
+    (id) => id === "__unresolved__" || VALID_CITY_IDS.has(id),
+  );
+  return Array.from(new Set(filtered));
+}
+
 async function persistClassifications(
   classifications: ClassificationItem[],
   rawResponse: unknown
@@ -436,7 +452,7 @@ async function persistClassifications(
         recordId: item.recordId,
         eventType: item.eventType,
         factorsJson: JSON.parse(JSON.stringify(item.factorsAffected)),
-        affectedCities: item.affectedCityIds,
+        affectedCities: normalizeAffectedCities(item.affectedCityIds),
         confidence: item.confidence,
         rawResponse: JSON.parse(JSON.stringify(rawResponse)),
         modelUsed: MODEL,

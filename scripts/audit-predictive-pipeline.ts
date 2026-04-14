@@ -81,12 +81,33 @@ async function main() {
     console.log(`    ${pad(s.source, 20)} ${s._count._all}`);
   }
 
-  // Source health floor — flag any source that hasn't updated anything in 7d
-  const ALL_SOURCES = ["legiscan", "federal_register", "sec_edgar", "operator_news", "congress_gov", "regulations_gov"];
-  const presentSources = new Set(updatedBySource.map((s) => s.source));
-  const silentSources = ALL_SOURCES.filter((s) => !presentSources.has(s));
+  // Source health floor. Per-source silence thresholds reflect real filing
+  // cadence: SEC filings are static (8-K/10-K/10-Q fire weekly-to-quarterly),
+  // and Regulations.gov AAM dockets are similarly bursty. Using a single
+  // 7-day threshold flags these as "silent" during legitimate quiet periods.
+  const SILENCE_THRESHOLD_DAYS: Record<string, number> = {
+    legiscan: 7,
+    federal_register: 14,
+    operator_news: 7,
+    congress_gov: 14,
+    sec_edgar: 30,
+    regulations_gov: 30,
+  };
+  const silenceWindowByDays = (days: number) =>
+    new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  const silentSources: string[] = [];
+  for (const [source, days] of Object.entries(SILENCE_THRESHOLD_DAYS)) {
+    const latest = await prisma.ingestedRecord.findFirst({
+      where: { source },
+      orderBy: { updatedAt: "desc" },
+      select: { updatedAt: true },
+    });
+    if (!latest || latest.updatedAt < silenceWindowByDays(days)) {
+      silentSources.push(`${source} (${days}d)`);
+    }
+  }
   if (silentSources.length > 0) {
-    console.log(`  WARNING: ${silentSources.length} source(s) silent for 7+ days: ${silentSources.join(", ")}`);
+    console.log(`  WARNING: ${silentSources.length} source(s) silent past threshold: ${silentSources.join(", ")}`);
   }
 
   // ───────────────────────────────────────────────────────────────────
