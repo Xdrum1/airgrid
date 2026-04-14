@@ -95,9 +95,12 @@ export async function getPrecedentsForCity(
           include: { factorMappings: { select: { factorCode: true } } },
         },
       },
+      orderBy: { createdAt: "desc" },
     });
 
     // --- Tier 2: state-level legislation ---
+    // Relies on the JS SIG_ORDER sort for tier ranking — see note on
+    // Postgres alphabetic vs semantic ordering below.
     const stateLeg = await prisma.rplLegislationDetail.findMany({
       where: { jurisdiction: stateCode },
       include: {
@@ -105,6 +108,7 @@ export async function getPrecedentsForCity(
           include: { factorMappings: { select: { factorCode: true } } },
         },
       },
+      orderBy: { document: { publishedDate: "desc" } },
     });
 
     // --- Tier 3: federal documents (apply nationally) ---

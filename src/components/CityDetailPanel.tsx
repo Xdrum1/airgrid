@@ -10,6 +10,7 @@ import { OPERATORS_MAP } from "@/data/seed";
 import ScoreBar from "./ScoreBar";
 import ScoreTrend from "./ScoreTrend";
 import BreakdownPanel from "./BreakdownPanel";
+import CausalNarrativePanel from "./CausalNarrativePanel";
 import GapAnalysisPanel from "./GapAnalysisPanel";
 import PrecedentsPanel from "./PrecedentsPanel";
 import ScoreTimeline from "./ScoreTimeline";
@@ -331,6 +332,9 @@ export default function CityDetailPanel({
           </div>
         )}
       </div>
+
+      {/* Why this score — Pro only (the component self-gates via API) */}
+      {hasProAccess(userTier) && <CausalNarrativePanel cityId={selected.id} />}
 
       {/* Score Breakdown */}
       <BreakdownPanel
