@@ -199,8 +199,21 @@ export async function writeToRpl(records: RplWriteInput[]): Promise<RplWriteResu
   const markets = await prisma.market.findMany({ select: { id: true } });
   const marketIds = new Set(markets.map(m => m.id));
 
+  // RPL is a regulatory precedent library — scope it to sources that actually
+  // produce regulatory documents. Operator news (stock chatter, trade mags) and
+  // SEC filings (corporate disclosures) are not precedents; routing them through
+  // here pollutes significance tiers and breaks the cite-a-precedent BD story.
+  const RPL_SOURCES = new Set([
+    "federal_register",
+    "legiscan",
+    "congress_gov",
+    "regulations_gov",
+  ]);
+
   for (const record of records) {
     try {
+      if (!RPL_SOURCES.has(record.source)) continue;
+
       const docType = classifyDocType(record.source, record.title, record.eventType ?? null);
       const momentum = assessMomentum(record.title, record.eventType ?? null);
       const significance = assessSignificance(record.source, record.confidence ?? null, docType);
