@@ -1,11 +1,7 @@
 /**
  * FAA & Federal Data Sources
  *
- * These are the public APIs we'll wire up for automated data ingestion.
- * Currently stubbed — each function returns the shape of data we expect.
- *
- * LIVE APIS:
- *   FAA LAANC / UAS Facility Maps:  https://uas-faa.opendata.arcgis.com
+ * Live APIs used for automated data ingestion:
  *   Federal Register:               https://www.federalregister.gov/api/v1
  *   LegiScan (state bills):         https://api.legiscan.com
  *   SEC EDGAR (public operators):   https://data.sec.gov/api
@@ -13,55 +9,8 @@
  *   Regulations.gov (FAA dockets):  https://api.regulations.gov/v4 (see regulations-api.ts)
  */
 
-const FAA_BASE = "https://uas-faa.opendata.arcgis.com";
 const FEDERAL_REGISTER_BASE = "https://www.federalregister.gov/api/v1";
 const LEGISCAN_BASE = "https://api.legiscan.com";
-
-// -------------------------------------------------------
-// FAA: LAANC Coverage Check
-// Check if a lat/lng coordinate has LAANC coverage
-// -------------------------------------------------------
-const LAANC_FEATURE_SERVICE =
-  "https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/arcgis/rest/services/FAA_UAS_FacilityMap_Data/FeatureServer/0/query";
-
-/**
- * Check if a lat/lng coordinate has LAANC coverage by querying the
- * FAA UAS Facility Map ArcGIS Feature Service. Uses a 30 km buffer
- * around the point — LAANC grids are centered on airports, not city centers.
- */
-export async function checkLaancCoverage(
-  lat: number,
-  lng: number,
-  radiusMeters: number = 30_000
-): Promise<boolean> {
-  try {
-    const params = new URLSearchParams({
-      where: "1=1",
-      geometry: `${lng},${lat}`,
-      geometryType: "esriGeometryPoint",
-      inSR: "4326",
-      spatialRel: "esriSpatialRelIntersects",
-      distance: String(radiusMeters),
-      units: "esriSRUnit_Meter",
-      returnCountOnly: "true",
-      f: "json",
-    });
-
-    const res = await fetch(`${LAANC_FEATURE_SERVICE}?${params}`);
-    if (!res.ok) {
-      console.error(`[FAA] LAANC API HTTP ${res.status}`);
-      return false;
-    }
-
-    const json = await res.json();
-    const hasGrid = (json.count ?? 0) > 0;
-    console.log(`[FAA] LAANC coverage for ${lat}, ${lng}: ${hasGrid} (${json.count} grids within ${radiusMeters / 1000}km)`);
-    return hasGrid;
-  } catch (err) {
-    console.error("[FAA] LAANC check failed:", err);
-    return false;
-  }
-}
 
 // -------------------------------------------------------
 // Federal Register: UAM-related filings

@@ -783,8 +783,8 @@ footer .footer-email {
     <ul class="pain-points">
       <li>
         <strong>Fragmented FAA data.</strong>
-        LAANC authorizations, UAS facility maps, and Part 135 certifications are scattered
-        across multiple federal databases with no unified view.
+        Part 135 certifications, heliport records (NASR 5010), federal rulemaking dockets, and
+        airspace authorizations are scattered across multiple databases with no unified view.
       </li>
       <li>
         <strong>Varying state and local laws.</strong>
@@ -852,20 +852,25 @@ footer .footer-email {
       The total possible score is 100. Components are binary or tiered.
     </p>
     <div class="score-components">
-      <div class="score-row" style="--row-color: var(--accent-green);">
+      <div class="score-row" style="--row-color: var(--accent-teal);">
         <span class="weight">20</span>
-        <span class="name">Pilot Programs</span>
-        <span class="desc">Active UAM pilot, test flight, or demonstration program in the metro area</span>
-      </div>
-      <div class="score-row" style="--row-color: var(--accent-cyan);">
-        <span class="weight">20</span>
-        <span class="name">Approved Vertiports</span>
-        <span class="desc">At least one vertiport permitted, under construction, or operational</span>
+        <span class="name">State Legislation</span>
+        <span class="desc">Graduated: signed (20), actively moving (10), introduced (5), none (0)</span>
       </div>
       <div class="score-row" style="--row-color: var(--accent-purple);">
         <span class="weight">15</span>
         <span class="name">Active Operators</span>
         <span class="desc">One or more eVTOL manufacturers or air taxi operators targeting the market</span>
+      </div>
+      <div class="score-row" style="--row-color: var(--accent-cyan);">
+        <span class="weight">15</span>
+        <span class="name">Approved Vertiports</span>
+        <span class="desc">At least one vertiport permitted, under construction, or operational</span>
+      </div>
+      <div class="score-row" style="--row-color: var(--accent-green);">
+        <span class="weight">15</span>
+        <span class="name">Pilot Programs</span>
+        <span class="desc">Active UAM pilot, test flight, or demonstration program in the metro area</span>
       </div>
       <div class="score-row" style="--row-color: var(--accent-amber);">
         <span class="weight">15</span>
@@ -877,15 +882,10 @@ footer .footer-email {
         <span class="name">Regulatory Posture</span>
         <span class="desc">Friendly (10), Neutral (5), or Restrictive (0) — based on local government stance</span>
       </div>
-      <div class="score-row" style="--row-color: var(--accent-teal);">
-        <span class="weight">10</span>
-        <span class="name">State Legislation</span>
-        <span class="desc">State has passed UAM-enabling legislation or active legislative framework</span>
-      </div>
       <div class="score-row" style="--row-color: #6366f1;">
         <span class="weight">10</span>
-        <span class="name">LAANC Coverage</span>
-        <span class="desc">FAA Low Altitude Authorization and Notification Capability available</span>
+        <span class="name">Weather Intelligence</span>
+        <span class="desc">Graduated: full AAM-grade sensor coverage (10), partial (5), none (0)</span>
       </div>
     </div>
     <div class="tier-legend">
@@ -1079,10 +1079,10 @@ footer .footer-email {
     <h2>Data <span class="accent">Sources</span></h2>
     <div class="sources-grid">
       <div class="source-card" style="--card-color: var(--accent-cyan);">
-        <h3>FAA LAANC / UAS Facility Maps</h3>
-        <div class="url-line">uas-faa.opendata.arcgis.com</div>
-        <div class="access-type">Public API &middot; Geospatial</div>
-        <p>LAANC coverage zones, UAS facility maps, and controlled airspace authorizations. Used to verify low-altitude access for every tracked market.</p>
+        <h3>FAA NASR 5010 (Heliports)</h3>
+        <div class="url-line">faa.gov/air_traffic/flight_info/aeronav</div>
+        <div class="access-type">Bulk Download &middot; Infrastructure</div>
+        <p>FAA's master heliport registry — 5,647 registered facilities. Underpins the platform's pre-AAM infrastructure layer.</p>
       </div>
       <div class="source-card" style="--card-color: var(--accent-purple);">
         <h3>Federal Register</h3>

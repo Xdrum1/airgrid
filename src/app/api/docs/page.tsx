@@ -410,13 +410,13 @@ export default async function ApiDocsPage() {
       "tier": "ADVANCED",
       "tier_color": "#00ff88",
       "breakdown": {
-        "active_pilot_program": 20,
-        "approved_vertiport": 20,
+        "state_legislation": 20,
         "active_operator_presence": 15,
+        "approved_vertiport": 15,
+        "active_pilot_program": 15,
         "vertiport_zoning": 15,
         "regulatory_posture": 10,
-        "state_legislation": 20,
-        "weather_infrastructure": 10
+        "weather_infra_level": 10
       },
       "regulatory_posture": "friendly",
       "posture_label": "FRIENDLY",
@@ -503,13 +503,13 @@ export default async function ApiDocsPage() {
       }
     },
     "score_weights": {
-      "active_pilot_program": 20,
-      "approved_vertiport": 20,
+      "state_legislation": 20,
       "active_operator_presence": 15,
+      "approved_vertiport": 15,
+      "active_pilot_program": 15,
       "vertiport_zoning": 15,
       "regulatory_posture": 10,
-      "state_legislation": 10,
-      "laanc_coverage": 10
+      "weather_infra_level": 10
     },
     "notes": "Primary U.S. launch market for Joby and Archer...",
     "key_milestones": [
@@ -536,13 +536,13 @@ export default async function ApiDocsPage() {
       "score": 100,
       "tier": "ADVANCED",
       "breakdown": {
-        "active_pilot_program": 20,
-        "approved_vertiport": 20,
+        "state_legislation": 20,
         "active_operator_presence": 15,
+        "approved_vertiport": 15,
+        "active_pilot_program": 15,
         "vertiport_zoning": 15,
         "regulatory_posture": 10,
-        "state_legislation": 20,
-        "weather_infrastructure": 10
+        "weather_infra_level": 10
       },
       "captured_at": "2026-03-03T06:00:00Z",
       "triggering_event_id": null,

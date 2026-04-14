@@ -197,17 +197,19 @@
 <!-- ═══════════════ 2. SCORING ═══════════════ -->
 <h2><span class="num">2</span> Scoring Framework</h2>
 
-<p>Each city is scored across seven factors. Six factors are binary (present/absent for full points). One factor &mdash; State Legislation &mdash; uses a graduated three-tier model introduced in v1.2.1. The maximum possible score is 100.</p>
+<p>Each city is scored across seven factors. Two factors use graduated multi-tier models (State Legislation, Weather Intelligence). The remaining five are binary (present/absent for full points). The maximum possible score is 100.</p>
+
+<p>Methodology v1.3 (effective March 24, 2026): LAANC Coverage was retired after review found universal coverage across all tracked U.S. markets, eliminating its discriminatory signal. Weather Intelligence Coverage was introduced to replace it, reflecting a more decisive readiness constraint for commercial AAM operations. Legislation weight increased to 20 pts.</p>
 
 <table>
   <tr><th>SCORING FACTOR</th><th>POINTS</th><th>RATIONALE</th></tr>
-  <tr><td><strong>Active Pilot Program</strong></td><td class="highlight">20 pts</td><td>Presence of a sanctioned UAM/eVTOL pilot program &mdash; the strongest single indicator of near-term commercial readiness.</td></tr>
-  <tr><td><strong>Approved Vertiport</strong></td><td class="highlight">20 pts</td><td>At least one vertiport has received regulatory approval, indicating physical infrastructure commitment.</td></tr>
+  <tr><td><strong>State Legislation</strong></td><td class="highlight">20 pts</td><td>Graduated four-tier model: <strong>signed</strong> (20 pts) &mdash; state has enacted UAM/eVTOL legislation; <strong>actively_moving</strong> (10 pts) &mdash; bills in late legislative stages; <strong>introduced</strong> (5 pts) &mdash; bills filed; <strong>none</strong> (0 pts). Source: LegiScan primary legislative data.</td></tr>
   <tr><td><strong>Active Operator Presence</strong></td><td class="highlight">15 pts</td><td>A certified eVTOL operator has announced or commenced operations in the market.</td></tr>
+  <tr><td><strong>Approved Vertiport</strong></td><td class="highlight">15 pts</td><td>At least one vertiport has received regulatory approval, indicating physical infrastructure commitment.</td></tr>
+  <tr><td><strong>Active Pilot Program</strong></td><td class="highlight">15 pts</td><td>Presence of a sanctioned UAM/eVTOL pilot program &mdash; a strong near-term commercial readiness indicator.</td></tr>
   <tr><td><strong>Vertiport Zoning</strong></td><td class="highlight">15 pts</td><td>Municipal or county zoning frameworks explicitly accommodate vertiport infrastructure.</td></tr>
   <tr><td><strong>Regulatory Posture</strong></td><td class="highlight">10 pts</td><td>The local regulatory environment is demonstrably favorable to UAM operations based on FAA and municipal signals.</td></tr>
-  <tr><td><strong>State Legislation</strong></td><td class="highlight">10 pts</td><td>Graduated three-tier model: <strong>enacted</strong> (10 pts) &mdash; state has passed UAM/eVTOL legislation; <strong>actively_moving</strong> (5 pts) &mdash; bills in late legislative stages (committee passage, floor votes, 2nd reading); <strong>none</strong> (0 pts). Source: LegiScan primary legislative data.</td></tr>
-  <tr><td><strong>LAANC Coverage</strong></td><td class="highlight">10 pts</td><td>Low Altitude Authorization and Notification Capability (LAANC) is active in the market area, enabling automated airspace access.</td></tr>
+  <tr><td><strong>Weather Intelligence Coverage</strong></td><td class="highlight">10 pts</td><td>Graduated three-tier model: <strong>full</strong> (10 pts) &mdash; operational AAM-grade weather sensor network deployed; <strong>partial</strong> (5 pts) &mdash; pilot or sub-market deployment; <strong>none</strong> (0 pts). Reflects the FAA's 2026 identification of low-altitude weather as a key eIPP risk factor.</td></tr>
 </table>
 
 <h3>Score Tiers</h3>
@@ -216,7 +218,7 @@
   <tr><td><strong>ADVANCED</strong></td><td>75 &ndash; 100</td><td>Market has most or all infrastructure, regulatory, and operator requirements in place. Commercial UAM operations are imminent or active.</td></tr>
   <tr><td><strong>MODERATE</strong></td><td>50 &ndash; 74</td><td>Significant progress across multiple factors. Key pieces are in place but gaps remain &mdash; typically missing infrastructure or operator commitment.</td></tr>
   <tr><td><strong>EARLY</strong></td><td>30 &ndash; 49</td><td>Some foundational elements present. Regulatory posture may be favorable but physical infrastructure and operator activity are limited.</td></tr>
-  <tr><td><strong>NASCENT</strong></td><td>0 &ndash; 29</td><td>Minimal UAM readiness. Market may have LAANC coverage or early regulatory signals but lacks substantive infrastructure or operator engagement.</td></tr>
+  <tr><td><strong>NASCENT</strong></td><td>0 &ndash; 29</td><td>Minimal UAM readiness. Market may show early regulatory signals but lacks substantive infrastructure or operator engagement.</td></tr>
 </table>
 
 <h3>Current Market Snapshot &mdash; March 2026</h3>

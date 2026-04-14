@@ -371,7 +371,7 @@ function draftRankingPost(topCities: { cityId: string; score: number; tier: stri
     "",
     ...lines,
     "",
-    `AirIndex scores ${Object.keys(CITY_NAMES).length} US markets across 7 readiness factors: pilot programs, vertiport infrastructure, operator presence, zoning, state legislation, regulatory posture, and LAANC airspace coverage.`,
+    `AirIndex scores ${Object.keys(CITY_NAMES).length} US markets across 7 readiness factors: state legislation, operator presence, vertiport infrastructure, pilot programs, zoning, regulatory posture, and weather intelligence coverage.`,
     "",
     `These aren't opinions. They're measurements.`,
     "",

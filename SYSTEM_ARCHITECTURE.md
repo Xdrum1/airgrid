@@ -132,17 +132,19 @@ All cities, operators, vertiports, and corridors are defined as static arrays. K
 src/lib/scoring.ts
 ```
 
-### 7-Factor Binary Model (0-100 scale)
+### 7-Factor Model — v1.3 weights (0-100 scale)
 
-| Factor | Weight | Type | What It Measures |
-|--------|--------|------|-----------------|
-| `hasActivePilotProgram` | 20 | boolean | Operational eVTOL testing in city |
-| `approvedVertiport` | 20 | boolean | `vertiportCount > 0` triggers this |
-| `activeOperatorPresence` | 15 | boolean | `activeOperators.length > 0` |
-| `hasVertiportZoning` | 15 | boolean | Local zoning code allows vertiport construction |
-| `regulatoryPosture` | 10 | enum | `friendly` = 10, `neutral` = 5, `restrictive` = 0 |
-| `hasStateLegislation` | 10 | boolean | State has signed UAM-enabling legislation |
-| `hasLaancCoverage` | 10 | boolean | FAA LAANC airspace authorization active |
+| Factor | Code | Weight | Type | What It Measures |
+|--------|------|--------|------|-----------------|
+| `stateLegislationStatus` | LEG | 20 | enum | Graduated: `signed` = 20, `actively_moving` = 10, `introduced` = 5, `none` = 0 |
+| `activeOperatorPresence` | OPR | 15 | boolean | `activeOperators.length > 0` |
+| `approvedVertiport` | VRT | 15 | boolean | `vertiportCount > 0` triggers this |
+| `hasActivePilotProgram` | PLT | 15 | boolean | Operational eVTOL testing in city |
+| `hasVertiportZoning` | ZON | 15 | boolean | Local zoning code allows vertiport construction |
+| `regulatoryPosture` | REG | 10 | enum | `friendly` = 10, `neutral` = 5, `restrictive` = 0 |
+| `weatherInfraLevel` | WTH | 10 | enum | Graduated: `full` = 10, `partial` = 5, `none` = 0 |
+
+LAANC coverage (LNC) was retired in v1.3 because every tracked US market already has LAANC coverage — the factor didn't discriminate.
 
 ### Score Tiers
 
@@ -839,7 +841,9 @@ Any unhandled exception in a cron job triggers `alertCronFailure(cronName, error
 ### External APIs
 | File | Purpose |
 |------|---------|
-| `src/lib/faa-api.ts` | Federal Register, LegiScan, SEC EDGAR, FAA LAANC integrations |
+| `src/lib/faa-api.ts` | Federal Register, LegiScan, SEC EDGAR integrations |
+| `src/lib/congress-api.ts` | Congress.gov curated federal bill tracking |
+| `src/lib/regulations-api.ts` | Regulations.gov FAA docket search |
 | `src/lib/operator-news.ts` | Google News RSS parsing for operator/industry news |
 
 ### Auth & Admin

@@ -743,7 +743,7 @@ footer .footer-email {
       </div>
       <div class="feature-card" style="--card-color: var(--accent-orange)">
         <h3>Regulatory Ingestion</h3>
-        <p>Automated data pipelines from Federal Register, LegiScan, FAA LAANC, and SEC EDGAR. Filings surfaced by market with source attribution.</p>
+        <p>Automated data pipelines from Federal Register, LegiScan, Congress.gov, Regulations.gov, and SEC EDGAR. Filings surfaced by market with source attribution.</p>
       </div>
       <div class="feature-card" style="--card-color: var(--accent-teal)">
         <h3>Alerts &amp; Subscriptions</h3>
@@ -759,22 +759,27 @@ footer .footer-email {
 <section class="page-break-before">
   <div class="container">
     <h2>How the <span class="accent">Score</span> Works</h2>
-    <p style="margin-bottom: 24px;">Each market is evaluated across seven binary factors, weighted by their signal strength for commercial readiness. The total produces a 0–100 score mapped to four tiers.</p>
+    <p style="margin-bottom: 24px;">Each market is evaluated across seven factors, weighted by their signal strength for commercial readiness. Two factors use graduated multi-tier models (State Legislation, Weather Intelligence); the other five are binary. The total produces a 0–100 score mapped to four tiers.</p>
     <div class="score-components">
       <div class="score-row no-break" style="--row-color: var(--accent-green)">
         <span class="weight">20</span>
-        <span class="name">Active Pilot Program</span>
-        <span class="desc">Live testing or commercial demo operations in the market</span>
-      </div>
-      <div class="score-row no-break" style="--row-color: var(--accent-green)">
-        <span class="weight">20</span>
-        <span class="name">Approved Vertiport</span>
-        <span class="desc">Permitted, under construction, or operational vertiport infrastructure</span>
+        <span class="name">State Legislation</span>
+        <span class="desc">Graduated: signed (20), actively moving (10), introduced (5), none (0)</span>
       </div>
       <div class="score-row no-break" style="--row-color: var(--accent-cyan)">
         <span class="weight">15</span>
         <span class="name">Active Operator Presence</span>
         <span class="desc">eVTOL manufacturer or air taxi operator with declared market activity</span>
+      </div>
+      <div class="score-row no-break" style="--row-color: var(--accent-cyan)">
+        <span class="weight">15</span>
+        <span class="name">Approved Vertiport</span>
+        <span class="desc">Permitted, under construction, or operational vertiport infrastructure</span>
+      </div>
+      <div class="score-row no-break" style="--row-color: var(--accent-cyan)">
+        <span class="weight">15</span>
+        <span class="name">Active Pilot Program</span>
+        <span class="desc">Live testing or commercial demo operations in the market</span>
       </div>
       <div class="score-row no-break" style="--row-color: var(--accent-cyan)">
         <span class="weight">15</span>
@@ -786,15 +791,10 @@ footer .footer-email {
         <span class="name">Regulatory Posture</span>
         <span class="desc">State/local government stance toward UAM — friendly, neutral, or restrictive</span>
       </div>
-      <div class="score-row no-break" style="--row-color: var(--accent-purple)">
-        <span class="weight">10</span>
-        <span class="name">State Legislation</span>
-        <span class="desc">Enacted state-level UAM or advanced air mobility legislation</span>
-      </div>
       <div class="score-row no-break" style="--row-color: var(--accent-amber)">
         <span class="weight">10</span>
-        <span class="name">LAANC Coverage</span>
-        <span class="desc">FAA Low Altitude Authorization and Notification Capability active in airspace</span>
+        <span class="name">Weather Intelligence</span>
+        <span class="desc">Graduated: full AAM-grade sensor coverage (10), partial (5), none (0)</span>
       </div>
     </div>
     <div class="tier-legend">

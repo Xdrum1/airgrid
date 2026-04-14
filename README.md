@@ -43,23 +43,25 @@ src/
 ```
 
 ## The UAM Readiness Score
-Each market is scored 0–100 based on:
+Each market is scored 0–100 based on (methodology v1.3):
 
-| Factor                  | Weight |
-|-------------------------|--------|
-| Active pilot program    | 20     |
-| Approved vertiport      | 20     |
-| Active operators        | 15     |
-| Vertiport zoning exists | 15     |
-| Regulatory posture      | 10     |
-| State-level legislation | 10     |
-| FAA LAANC coverage      | 10     |
+| Factor                        | Code | Weight |
+|-------------------------------|------|--------|
+| State-level legislation       | LEG  | 20     |
+| Active operator presence      | OPR  | 15     |
+| Approved vertiport            | VRT  | 15     |
+| Active pilot program          | PLT  | 15     |
+| Vertiport zoning              | ZON  | 15     |
+| Regulatory posture            | REG  | 10     |
+| Weather intelligence coverage | WTH  | 10     |
 
-## Data Sources (Live APIs to Wire Up)
-- **FAA LAANC/UASFM**: https://uas-faa.opendata.arcgis.com (public, no key)
+## Data Sources (Live APIs)
 - **Federal Register**: https://www.federalregister.gov/api/v1 (public, no key)
 - **LegiScan**: https://legiscan.com/legiscan (free API key)
 - **SEC EDGAR**: https://data.sec.gov/api (public, no key)
+- **Congress.gov**: https://api.congress.gov/v3 (free API key)
+- **Regulations.gov**: https://api.regulations.gov/v4 (free API key)
+- **FAA NASR 5010**: heliport registry (bulk download)
 
 ## Roadmap
 - [ ] v0.1 — MVP dashboard (current)
