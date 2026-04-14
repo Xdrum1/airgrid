@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getCitiesWithOverrides, MARKET_COUNT } from "@/data/seed";
 import { calculateReadinessScoreFromFkb, getScoreTier, getScoreColor } from "@/lib/scoring";
 import { getPublishedFeedItems } from "@/lib/feed";
+import { getPlatformForecastDigest } from "@/lib/forward-signals";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
@@ -40,6 +41,15 @@ export default async function LandingPage() {
 
   // Top 10 for the market snapshot
   const topMarkets = scored.slice(0, 10);
+
+  // Platform forecast digest — top markets by predictive significance
+  let forecastDigest: Awaited<ReturnType<typeof getPlatformForecastDigest>> = [];
+  try {
+    forecastDigest = await getPlatformForecastDigest();
+  } catch {
+    // Predictive layer is non-blocking — page renders without it on failure
+  }
+  const watchMarkets = forecastDigest.slice(0, 4);
 
   // Live signals from the feed pipeline
   let signals: { title: string; category: string; publishedAt: string; cities: { name: string }[] }[] = [];
@@ -315,6 +325,92 @@ export default async function LandingPage() {
           </div>
         </section>
       </ScrollReveal>
+
+      {/* ======== Markets to Watch (predictive layer) ======== */}
+      {watchMarkets.length > 0 && (
+        <ScrollReveal>
+          <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
+              <div>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#fbbf24" }}>MARKETS TO WATCH</span>
+                <span style={{ color: "#333", fontSize: 9, marginLeft: 12 }}>|</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 1, color: "#555", marginLeft: 12 }}>
+                  PLATFORM FORECAST · UPDATED CONTINUOUSLY
+                </span>
+              </div>
+              <Link href="/insights/markets-to-watch" style={{ fontSize: 10, color: "#555", textDecoration: "none", letterSpacing: 1 }}>
+                FULL FORECAST →
+              </Link>
+            </div>
+
+            <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 20, maxWidth: 720 }}>
+              The 4 markets the platform is tracking most closely right now — ranked by forward signals, MarketWatch trajectory, and 30-day score forecasts. Updated as the pipeline ingests new data.
+            </p>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 12 }}>
+              {watchMarkets.map((m, idx) => {
+                const watchColor =
+                  m.marketWatch?.status === "POSITIVE_WATCH" ? "#16a34a"
+                  : m.marketWatch?.status === "NEGATIVE_WATCH" ? "#dc2626"
+                  : "#888";
+                const forecastColor = m.expectedScoreChange30d
+                  ? (m.expectedScoreChange30d > 0 ? "#16a34a" : "#dc2626")
+                  : null;
+                const topSignal = m.topSignals[0];
+                return (
+                  <Link
+                    key={m.cityId}
+                    href={`/city/${m.cityId}`}
+                    style={{
+                      display: "block",
+                      background: "rgba(251,191,36,0.03)",
+                      border: "1px solid rgba(251,191,36,0.15)",
+                      borderRadius: 8,
+                      padding: "16px 18px",
+                      textDecoration: "none",
+                      transition: "border-color 0.15s",
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                      <div>
+                        <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+                          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#fbbf24", fontWeight: 700 }}>#{idx + 1}</span>
+                          <div style={{ color: "#eee", fontSize: 14, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+                            {m.cityName}
+                          </div>
+                        </div>
+                        <div style={{ color: "#555", fontSize: 10, marginTop: 2 }}>{m.state} · Score {m.currentScore}</div>
+                      </div>
+                      <div style={{ textAlign: "right", display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-end" }}>
+                        {m.marketWatch && (
+                          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, fontWeight: 700, letterSpacing: 1, color: watchColor }}>
+                            {m.marketWatch.outlook}
+                          </span>
+                        )}
+                        {m.accelerating && (
+                          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, fontWeight: 700, letterSpacing: 1, color: "#16a34a", background: "rgba(22,163,74,0.1)", padding: "2px 6px", borderRadius: 3 }}>
+                            ACCELERATING
+                          </span>
+                        )}
+                        {forecastColor && (
+                          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, fontWeight: 700, color: forecastColor }}>
+                            30d: {m.expectedScoreChange30d! > 0 ? "+" : ""}{m.expectedScoreChange30d}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {topSignal && (
+                      <div style={{ color: "#888", fontSize: 11, lineHeight: 1.55, marginTop: 8, paddingTop: 8, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+                        {topSignal.description.length > 130 ? topSignal.description.slice(0, 127) + "…" : topSignal.description}
+                      </div>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        </ScrollReveal>
+      )}
 
       {/* Divider */}
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(24px, 4vw, 48px) 20px 0" }}>
