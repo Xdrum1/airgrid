@@ -415,7 +415,11 @@ export async function runIngestion(): Promise<{
         return [] as CongressBill[];
       }),
       // 6. Regulations.gov FAA dockets (skips gracefully if no API key)
-      searchRegulations({ postedAfter: new Date(Date.now() - 90 * 86400000).toISOString().split("T")[0] }).catch((err) => {
+      //    No postedAfter filter: the AAM-tagged FAA docket volume is low
+      //    (latest eVTOL-tagged doc ~Sept 2024) and the upsert key on stable
+      //    document IDs makes re-ingestion idempotent. A 90-day window
+      //    returned zero every run.
+      searchRegulations().catch((err) => {
         console.warn("[ingestion] Regulations.gov fetch failed:", err);
         return [] as RegulationDocument[];
       }),

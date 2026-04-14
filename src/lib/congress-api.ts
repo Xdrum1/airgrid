@@ -160,7 +160,8 @@ export async function searchCongressBills(
 
   for (const tb of tracked) {
     try {
-      const url = `${CONGRESS_BASE}/bill/${tb.congress}/${tb.type}/${tb.number}?api_key=${apiKey}`;
+      // &format=json is required — Accept header alone is ignored and the API returns XML
+      const url = `${CONGRESS_BASE}/bill/${tb.congress}/${tb.type}/${tb.number}?api_key=${apiKey}&format=json`;
       const res = await fetch(url, {
         headers: { Accept: "application/json" },
       });
