@@ -1361,3 +1361,39 @@ model PredictionRecord {
   @@index([generatedAt])
   @@index([latestExpected])
 }
+
+// ── TruWeather Deployment Data ────────────────────────────
+//
+// Stores TruWeather Solutions deployment map data for the partnership.
+// Populated via scripts/ingest-truweather-deployment.ts when TruWeather
+// provides its quarterly coverage map.
+//
+// Each record represents one sensor deployment. Multiple records per
+// market are allowed (e.g., a metro with V360 at two vertiport locations).
+//
+// Consumed by calculateReadinessScoreV14() in src/lib/scoring.ts to
+// compute the Low-Altitude Sensing sub-indicator (5 points max) under
+// v1.4 scoring methodology.
+
+model TruWeatherDeployment {
+  id                 String    @id @default(cuid())
+  marketId           String                          // AirIndex tracked market ID
+  siteName           String?                         // specific facility, if known
+  lat                Float?                          // optional — if known, used for radius checks
+  lng                Float?
+  status             String                          // "deployed" | "planned" | "none"
+  deploymentDate     DateTime? @db.Date              // null if planned-only
+  sensorType         String                          // e.g., "V360"
+  coverageRadiusKm   Float                           // radius of valid sensor coverage
+  altitudeMinFeet    Int                             // AGL minimum (typically 30)
+  altitudeMaxFeet    Int                             // AGL maximum (typically 2000)
+  notes              String?   @db.Text
+  source             String                          // provenance (e.g., "TruWeather Q2 2026 map")
+  sourceDate         DateTime  @db.Date              // when the source was issued
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([marketId])
+  @@index([status])
+  @@index([marketId, status])
+}
