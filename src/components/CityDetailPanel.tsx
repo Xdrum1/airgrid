@@ -11,6 +11,7 @@ import ScoreBar from "./ScoreBar";
 import ScoreTrend from "./ScoreTrend";
 import BreakdownPanel from "./BreakdownPanel";
 import GapAnalysisPanel from "./GapAnalysisPanel";
+import PrecedentsPanel from "./PrecedentsPanel";
 import ScoreTimeline from "./ScoreTimeline";
 import ScenarioPanel from "./ScenarioPanel";
 
@@ -345,6 +346,7 @@ export default function CityDetailPanel({
           <ScoreTimeline cityId={selected.id} scoreColor={scoreColor} />
           <ScenarioPanel breakdown={selected.breakdown} currentScore={selected.score ?? 0} scoreColor={scoreColor} />
           <GapAnalysisPanel city={selected} scoreColor={scoreColor} showSubIndicators={isAdmin} />
+          <PrecedentsPanel cityId={selected.id} cityName={selected.city} />
           <div
             style={{
               padding: "10px 20px 14px",
