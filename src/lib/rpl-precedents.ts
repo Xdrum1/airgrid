@@ -108,14 +108,16 @@ export async function getPrecedentsForCity(
     });
 
     // --- Tier 3: federal documents (apply nationally) ---
+    // Don't sort by significance in SQL: Postgres orders string columns
+    // alphabetically (MEDIUM > LOW > HIGH by character code), which would
+    // invert our semantic tier. JS sort later uses SIG_ORDER.
     const federal = await prisma.rplDocument.findMany({
       where: {
         docType: { startsWith: "FEDERAL_" },
         isActive: true,
       },
       include: { factorMappings: { select: { factorCode: true } } },
-      orderBy: [{ significance: "desc" }, { publishedDate: "desc" }],
-      take: 30, // cap the federal pull before scoring
+      orderBy: [{ publishedDate: "desc" }],
     });
 
     const seen = new Set<string>();

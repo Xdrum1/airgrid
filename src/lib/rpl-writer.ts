@@ -92,10 +92,48 @@ function assessMomentum(title: string, eventType: string | null): string {
 // Significance
 // ─────────────────────────────────────────────────────────
 
-function assessSignificance(source: string, confidence: string | null, docType: string): string {
-  if (docType === "STATE_ENACTED" || docType === "FEDERAL_RULE") return "HIGH";
-  if (docType === "FEDERAL_APPROPRIATION" || docType === "FEDERAL_HEARING") return "HIGH";
-  if (docType === "FEDERAL_NOPR" || docType === "FEDERAL_MARKUP") return "MEDIUM";
+// Federal Register pulls everything FAA publishes — routine airworthiness
+// directives, noise rules, etc. — not only AAM content. A significance tier
+// only earns its meaning when HIGH is actually rare, so HIGH for federal
+// docs requires UAM-specific language in the title or summary.
+const FEDERAL_HIGH_TERMS = [
+  "advanced air mobility", "aam", "urban air mobility", "uam",
+  "evtol", "electric vertical", "powered lift", "vertiport", "vtol",
+  "air taxi", "unmanned aircraft system", "unmanned aerial system",
+  "uas ", " uas", "drone", "bvlos", "laanc", "sfar-88", "part 135",
+];
+function hasFederalHighSignal(title: string, summary: string | null): boolean {
+  const haystack = `${title} ${summary ?? ""}`.toLowerCase();
+  return FEDERAL_HIGH_TERMS.some((t) => haystack.includes(t));
+}
+
+function assessSignificance(
+  source: string,
+  confidence: string | null,
+  docType: string,
+  title: string,
+  summary: string | null,
+): string {
+  // Enacted state law is HIGH on its own merit — a signed UAM-adjacent bill
+  // reshapes the market regardless of noise.
+  if (docType === "STATE_ENACTED") return "HIGH";
+
+  // Federal documents need UAM-specific language to earn HIGH. Without it,
+  // drop to MEDIUM — they remain in the corpus but don't crowd the top.
+  if (docType === "FEDERAL_RULE") {
+    return hasFederalHighSignal(title, summary) ? "HIGH" : "MEDIUM";
+  }
+  if (docType === "FEDERAL_APPROPRIATION" || docType === "FEDERAL_HEARING") {
+    return hasFederalHighSignal(title, summary) ? "HIGH" : "MEDIUM";
+  }
+
+  // Proposed rules, markup, advisory circulars — inherently MEDIUM. They
+  // signal direction but haven't taken effect.
+  if (docType === "FEDERAL_NOPR" || docType === "FEDERAL_MARKUP" || docType === "FEDERAL_AC") {
+    return "MEDIUM";
+  }
+
+  // State bills: high-confidence classifications earn MEDIUM; otherwise LOW.
   if (confidence === "high") return "MEDIUM";
   return "LOW";
 }
@@ -216,7 +254,13 @@ export async function writeToRpl(records: RplWriteInput[]): Promise<RplWriteResu
 
       const docType = classifyDocType(record.source, record.title, record.eventType ?? null);
       const momentum = assessMomentum(record.title, record.eventType ?? null);
-      const significance = assessSignificance(record.source, record.confidence ?? null, docType);
+      const significance = assessSignificance(
+        record.source,
+        record.confidence ?? null,
+        docType,
+        record.title,
+        record.summary ?? null,
+      );
       const authority = getAuthority(record.source, docType);
 
       const publishedDate = new Date(record.date || new Date().toISOString());
