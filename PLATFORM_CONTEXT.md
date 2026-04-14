@@ -124,6 +124,21 @@ Developed with Don Berchoff (TruWeather). Splits Weather Infrastructure into two
 - **Predictive audit:** `scripts/audit-predictive-pipeline.ts`
 - **Pulse pre-flight:** `scripts/pulse-preflight.ts`
 
+## Editing the VDG Site (verticaldatagroup.com)
+
+The VDG site has a **two-repo setup** and a sync script:
+
+- **Source of truth:** `public/vdg/index.html` in this repo (airgrid)
+- **Production deploy target:** `~/projects/vdg/` → `github.com/Xdrum1/vdg` → Amplify app `dcbgrkvvzyjfg` → `verticaldatagroup.com`
+- **Sync script:** `scripts/sync-vdg.sh` — copies the mirror to the production repo, commits, and pushes
+
+**Correct workflow when "updating VDG":**
+1. Edit `public/vdg/index.html` here
+2. Run `./scripts/sync-vdg.sh` (optionally with a commit message)
+3. Amplify auto-redeploys in 2–3 minutes
+
+Do NOT edit `~/projects/vdg/index.html` directly — it will get overwritten on the next sync and create divergence.
+
 ## V2 Architecture Containers
 
 | Container | Status | Notes |
