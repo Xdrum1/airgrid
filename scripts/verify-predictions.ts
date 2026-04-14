@@ -203,8 +203,53 @@ async function verifyOne(p: {
 
   // ── Facility milestone predictions ──
   if (p.signalType === "facility_milestone") {
-    // Without a status-change history table, we can only flag overdue
-    return { status: "overdue", outcome: "facility status not auto-trackable yet" };
+    // signalId shape from forward-signals.ts: `fac_${facility.id}`
+    const facilityId = p.signalId.startsWith("fac_") ? p.signalId.slice(4) : p.signalId;
+
+    // Progression order — higher ordinal = further along
+    const STATUS_ORDER: Record<string, number> = {
+      announced: 1,
+      permitting: 2,
+      under_construction: 3,
+      occupancy_pending: 4,
+      operational_no_faa: 5,
+      faa_registered: 6,
+    };
+
+    // Status at prediction time: latest history row at or before generatedAt
+    const startRow = await prisma.preDevFacilityStatusHistory.findFirst({
+      where: { facilityId, recordedAt: { lte: p.generatedAt } },
+      orderBy: { recordedAt: "desc" },
+    });
+    // Status at window end: latest row at or before latestExpected
+    const endRow = await prisma.preDevFacilityStatusHistory.findFirst({
+      where: { facilityId, recordedAt: { lte: p.latestExpected ?? new Date() } },
+      orderBy: { recordedAt: "desc" },
+    });
+
+    if (!startRow || !endRow) {
+      return { status: "inconclusive", outcome: `no status history for facility ${facilityId}` };
+    }
+
+    const startOrd = STATUS_ORDER[startRow.status] ?? 0;
+    const endOrd = STATUS_ORDER[endRow.status] ?? 0;
+
+    if (endOrd > startOrd) {
+      return {
+        status: "validated",
+        outcome: `advanced ${startRow.status} → ${endRow.status}`,
+      };
+    }
+    if (endOrd < startOrd) {
+      return {
+        status: "invalidated",
+        outcome: `regressed ${startRow.status} → ${endRow.status}`,
+      };
+    }
+    return {
+      status: "inconclusive",
+      outcome: `status unchanged (${endRow.status}) through window`,
+    };
   }
 
   // ── Default: no verification logic for this type ──

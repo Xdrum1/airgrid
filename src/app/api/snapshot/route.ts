@@ -6,6 +6,8 @@ import { authorizeCron } from "@/lib/admin-helpers";
 import { rateLimit } from "@/lib/rate-limit";
 import { alertCronFailure } from "@/lib/cron-alerts";
 import { updateMarketWatchList } from "@/lib/market-watchlist";
+import { logAllPredictions } from "@/lib/forward-signals";
+import { recordFacilityStatusSnapshot } from "@/lib/pre-dev-status-recorder";
 
 // Vercel crons send GET requests
 export async function GET(request: NextRequest) {
@@ -49,11 +51,31 @@ async function captureSnapshots() {
     // Update market watch list after snapshots
     const watchResult = await updateMarketWatchList();
 
+    // Record any pre-dev facility status transitions so facility_milestone
+    // predictions can be verified against an actual status timeline.
+    let facilityStatusResult: Awaited<ReturnType<typeof recordFacilityStatusSnapshot>> | null = null;
+    try {
+      facilityStatusResult = await recordFacilityStatusSnapshot();
+    } catch (err) {
+      console.error("[API /snapshot] recordFacilityStatusSnapshot failed:", err);
+    }
+
+    // Log predictions so the scorecard ledger stays current regardless of
+    // whether anyone viewed a report today.
+    let predictionsResult: { citiesProcessed: number; signalsLogged: number; errors: number } | null = null;
+    try {
+      predictionsResult = await logAllPredictions("snapshot_cron");
+    } catch (err) {
+      console.error("[API /snapshot] logAllPredictions failed:", err);
+    }
+
     return NextResponse.json({
       success: true,
       count: result.count,
       capturedAt: now.toISOString(),
       watchList: watchResult,
+      facilityStatus: facilityStatusResult,
+      predictions: predictionsResult,
     });
   } catch (err) {
     console.error("[API /snapshot] Error:", err);

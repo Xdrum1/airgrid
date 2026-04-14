@@ -1397,3 +1397,21 @@ model TruWeatherDeployment {
   @@index([status])
   @@index([marketId, status])
 }
+
+// ── Pre-Dev Facility Status History ───────────────────
+// Records status transitions for facilities in src/data/pre-development-facilities.ts.
+// Populated by the snapshot cron: writes a new row only when the static catalog's
+// status for a facility differs from the most recent recorded status.
+// Enables verification of `facility_milestone` predictions (did the facility
+// actually advance through a milestone within the predicted window?).
+model PreDevFacilityStatusHistory {
+  id          String   @id @default(cuid())
+  facilityId  String                         // matches PRE_DEVELOPMENT_FACILITIES[].id
+  marketId    String?                        // nearest AirIndex market, for convenience
+  status      String                         // snapshot of FacilityStatus at recordedAt
+  note        String?  @db.Text
+  recordedAt  DateTime @default(now())
+
+  @@index([facilityId, recordedAt])
+  @@index([marketId])
+}

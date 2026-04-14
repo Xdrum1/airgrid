@@ -306,6 +306,30 @@ export async function logPredictions(
 }
 
 /**
+ * Generate + log predictions for every tracked market.
+ * Used by the daily snapshot cron so the prediction ledger stays current
+ * instead of only advancing when a human views a report.
+ */
+export async function logAllPredictions(
+  reportContext: string,
+): Promise<{ citiesProcessed: number; signalsLogged: number; errors: number }> {
+  const cities = await getCitiesWithOverrides();
+  let signalsLogged = 0;
+  let errors = 0;
+  for (const city of cities) {
+    try {
+      const report = await getForwardSignals(city.id);
+      await logPredictions(city.id, report, reportContext);
+      signalsLogged += report.signals.length;
+    } catch (err) {
+      errors++;
+      logger.error("logAllPredictions failed for city", { cityId: city.id, err });
+    }
+  }
+  return { citiesProcessed: cities.length, signalsLogged, errors };
+}
+
+/**
  * Get the forward signal report for a market.
  * Aggregates from classifier, overrides, market watch, and facility tracker.
  */
