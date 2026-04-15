@@ -12,9 +12,9 @@ import PulseSubscribe from "@/components/PulseSubscribe";
 // ─────────────────────────────────────────────────────────
 // Stripe-direction light homepage.
 //
-// Centerpiece: container cards. Each card names the buyer, lists the
-// data delivered, and offers a single CTA. No pricing on the marketing
-// site — institutional buyers negotiate.
+// Centerpiece: container cards. Each card names the audience, lists
+// the data delivered, and offers a single CTA. No pricing on the
+// marketing site — institutional access is negotiated.
 //
 // Split intentionally preserved: dashboard is dark, marketing is light.
 // ─────────────────────────────────────────────────────────
@@ -53,7 +53,7 @@ const CONTAINER_DATA_LINES: Record<string, string[]> = {
   ],
 };
 
-const CONTAINER_BUYER_LABEL: Record<string, string> = {
+const CONTAINER_AUDIENCE_LABEL: Record<string, string> = {
   operator: "For eVTOL Operators",
   infrastructure: "For Infrastructure Developers",
   municipality: "For Cities & State Agencies",
@@ -208,9 +208,9 @@ export default async function LandingPage() {
           }}
         >
           AirIndex powers the decisions of operators, insurers, developers,
-          cities, and investors shaping where eVTOL operates. Each buyer
-          receives the intelligence scoped to their world — sourced from the
-          same primary-data platform.
+          cities, and investors shaping where eVTOL operates. Each container
+          delivers intelligence scoped to the decision it serves — all sourced
+          from the same primary-data platform.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
@@ -372,7 +372,7 @@ export default async function LandingPage() {
               }}
             >
               We don&apos;t sell the platform. We deliver the intelligence
-              each buyer needs in the form they actually use.
+              each team needs in the form they actually use.
             </p>
           </div>
 
@@ -411,7 +411,7 @@ export default async function LandingPage() {
                     textTransform: "uppercase",
                   }}
                 >
-                  {CONTAINER_BUYER_LABEL[c.id] ?? c.buyer}
+                  {CONTAINER_AUDIENCE_LABEL[c.id] ?? c.audience}
                 </div>
                 <h3
                   style={{
@@ -434,7 +434,7 @@ export default async function LandingPage() {
                     margin: "0 0 18px",
                   }}
                 >
-                  {c.buyer}
+                  {c.audience}
                 </p>
 
                 <ul
@@ -563,7 +563,7 @@ export default async function LandingPage() {
               >
                 Continuously ingested from primary government, regulatory,
                 and market sources. Cross-referenced, classified, and delivered
-                in the form each buyer uses.
+                in the form each container is built for.
               </p>
             </div>
 

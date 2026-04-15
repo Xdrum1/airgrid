@@ -29,8 +29,8 @@ export interface Container {
   name: string;
   status: ContainerStatus;
 
-  /** Who buys this container — the persona we pitch to. */
-  buyer: string;
+  /** Who this container is built for — the audience on the card. */
+  audience: string;
 
   /** Routes composing this container's deliverable surface. */
   routes: string[];
@@ -56,7 +56,7 @@ export const CONTAINERS: Record<ContainerId, Container> = {
     id: "operator",
     name: "Operator Intelligence",
     status: "live",
-    buyer: "eVTOL operators and OEMs",
+    audience: "eVTOL operators and OEMs",
     routes: ["/reports/briefing-operator/[cityId]"],
     libs: ["scoring", "mcs", "operator-intelligence", "forward-signals", "rpl-precedents"],
     dataTables: ["City (FKB)", "OperatorIntelligence (OID)", "McsStateContext"],
@@ -72,7 +72,7 @@ export const CONTAINERS: Record<ContainerId, Container> = {
     id: "infrastructure",
     name: "Infrastructure Developer",
     status: "live",
-    buyer: "Developers, REITs, A&E firms, site selection teams",
+    audience: "Developers, REITs, A&E firms, site selection teams",
     routes: ["/reports/briefing/[cityId]", "/reports/gap/[cityId]"],
     libs: ["scoring", "mcs", "gap-analysis", "rpl-precedents", "forward-signals"],
     dataTables: ["City (FKB)", "McsStateContext", "RegulatoryPrecedent", "Heliport"],
@@ -86,7 +86,7 @@ export const CONTAINERS: Record<ContainerId, Container> = {
     id: "municipality",
     name: "Municipality",
     status: "live",
-    buyer: "City planners, state agencies, economic development offices",
+    audience: "City planners, state agencies, economic development offices",
     routes: ["/reports/briefing-municipality/[cityId]"],
     libs: ["scoring", "mcs", "fpis", "forward-signals"],
     dataTables: ["City (FKB)", "McsStateContext", "FederalProgram (FPIS)"],
@@ -100,7 +100,7 @@ export const CONTAINERS: Record<ContainerId, Container> = {
     id: "insurance",
     name: "Insurance — City & Portfolio",
     status: "live",
-    buyer: "Aviation liability carriers, brokers, reinsurers",
+    audience: "Aviation liability carriers, brokers, reinsurers",
     routes: ["/reports/briefing-insurance/[cityId]"],
     libs: ["scoring", "mcs", "rpl-precedents", "forward-signals"],
     dataTables: ["City (FKB)", "McsStateContext", "Heliport", "HeliportCompliance"],
@@ -114,7 +114,7 @@ export const CONTAINERS: Record<ContainerId, Container> = {
     id: "investor",
     name: "Investor",
     status: "live",
-    buyer: "Institutional investors, sector analysts, LPs",
+    audience: "Institutional investors, sector analysts, LPs",
     routes: ["/reports/briefing-investor/[cityId]"],
     libs: ["scoring", "mcs", "operator-intelligence", "forward-signals"],
     dataTables: ["City (FKB)", "McsStateContext", "OperatorIntelligence (OID)"],
@@ -128,7 +128,7 @@ export const CONTAINERS: Record<ContainerId, Container> = {
     id: "risk-site",
     name: "RiskIndex Site Assessment",
     status: "live-admin-gated",
-    buyer: "Brokers, underwriters, infrastructure owners",
+    audience: "Brokers, underwriters, infrastructure owners",
     routes: ["/admin/reports/risk-assessment/[siteId]"],
     libs: ["risk-index", "mcs", "satellite-tile"],
     dataTables: [
@@ -147,7 +147,7 @@ export const CONTAINERS: Record<ContainerId, Container> = {
     id: "federal",
     name: "Federal / Government",
     status: "proposed",
-    buyer: "DOT, AFWERX, FAA eIPP teams, state aviation offices",
+    audience: "DOT, AFWERX, FAA eIPP teams, state aviation offices",
     routes: [],
     libs: ["scoring", "mcs", "fpis", "rpl-precedents", "forward-signals"],
     dataTables: [
