@@ -70,6 +70,16 @@ export interface CausalNarrative {
     outlook: string;
     setAt: string;
   } | null;
+  /** State-level AAM context sourced from MCS. One-liner frames the
+   *  score against the regulatory/DOT environment of the city's state. */
+  stateContext: {
+    stateName: string;
+    enforcementPosture: string;
+    dotAamEngagement: string;
+    aamOfficeEstablished: boolean;
+    keyLegislation: string | null;
+    line: string;
+  } | null;
   summary: string;
 }
 
@@ -140,6 +150,20 @@ export async function getCausalNarrative(city: City): Promise<CausalNarrative | 
     // --- Current market watch ---
     const watch = await prisma.marketWatch.findFirst({ where: { cityId: city.id } });
 
+    // --- MCS state context ---
+    const { getStateContext } = await import("@/lib/mcs");
+    const ctx = await getStateContext(city.state).catch(() => null);
+    const stateContext = ctx
+      ? {
+          stateName: ctx.stateName,
+          enforcementPosture: ctx.enforcementPosture,
+          dotAamEngagement: ctx.dotAamEngagement,
+          aamOfficeEstablished: ctx.aamOfficeEstablished,
+          keyLegislation: ctx.keyLegislation,
+          line: buildStateContextLine(ctx),
+        }
+      : null;
+
     // --- One-line summary ---
     const summary = buildSummary({
       score,
@@ -172,6 +196,7 @@ export async function getCausalNarrative(city: City): Promise<CausalNarrative | 
             setAt: (watch.publishedAt ?? watch.updatedAt).toISOString().slice(0, 10),
           }
         : null,
+      stateContext,
       summary,
     };
   } catch (err) {
@@ -200,6 +225,28 @@ function graduatedFactorRationale(
   if (key === "vertiportZoning") return `Local zoning code permitting vertiports would add ${gap} pts.`;
   if (key === "regulatoryPosture") return `Favorable local government signals toward UAM would add ${gap} pts.`;
   return `${gap} pts available.`;
+}
+
+function buildStateContextLine(ctx: {
+  stateName: string;
+  enforcementPosture: string;
+  dotAamEngagement: string;
+  aamOfficeEstablished: boolean;
+  keyLegislation: string | null;
+}): string {
+  const parts: string[] = [];
+  parts.push(`${ctx.stateName}: ${ctx.enforcementPosture} enforcement posture`);
+  if (ctx.dotAamEngagement !== "none") {
+    parts.push(`${ctx.dotAamEngagement} DOT AAM engagement`);
+  }
+  if (ctx.aamOfficeEstablished) {
+    parts.push("AAM office established");
+  }
+  let line = parts.join(", ") + ".";
+  if (ctx.keyLegislation) {
+    line += ` Key legislation: ${ctx.keyLegislation}.`;
+  }
+  return line;
 }
 
 function buildSummary(input: {

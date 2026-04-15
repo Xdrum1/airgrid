@@ -69,6 +69,9 @@ export default function CausalNarrativePanel({ cityId }: { cityId: string }) {
             value={`${narrative.marketWatch.status.replace(/_/g, " ")} / ${narrative.marketWatch.outlook.toLowerCase()} (set ${narrative.marketWatch.setAt})`}
           />
         )}
+        {narrative.stateContext && (
+          <Row label="State context" value={narrative.stateContext.line} />
+        )}
       </div>
 
       {narrative.nearTermSignals.length > 0 && (
