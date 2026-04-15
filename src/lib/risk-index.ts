@@ -23,6 +23,21 @@ export interface SiteGapFlag {
   severity: "low" | "moderate" | "high" | "critical";
   title: string;
   detail: string;
+  remediation: string | null;   // What action resolves this factor
+  tierImpact: string | null;    // Expected tier movement if resolved
+}
+
+export interface UnderwritingRecommendation {
+  stance: "standard" | "standard-with-conditions" | "conditional" | "decline-pending-remediation";
+  summary: string;
+  conditions: string[];         // Policy conditions / endorsements to attach
+}
+
+export interface PeerBenchmark {
+  peerCount: number;
+  betterThanPct: number;        // % of peers this site is cleaner than (higher = better)
+  quartile: "top" | "upper-mid" | "lower-mid" | "bottom";
+  cohortLabel: string;          // e.g. "FL hospital helipads"
 }
 
 export interface SiteRiskAssessment {
@@ -63,6 +78,8 @@ export interface SiteRiskAssessment {
   // Derived
   gapFlags: SiteGapFlag[];
   exposureNote: string;
+  underwriting: UnderwritingRecommendation;
+  peerBenchmark: PeerBenchmark;
   oeDeterminationCount: number;
   lastAssessedAt: Date | null;
 }
@@ -147,13 +164,17 @@ function buildGapFlags(c: {
       severity: "critical",
       title: "FAA determination: Objectionable",
       detail: "A current FAA airspace determination on record is Objectionable. Operations may be restricted; remediation typically requires a new airspace study.",
+      remediation: "New 7460-1 filing with supporting obstruction evaluation. Typically 90-180 days through FAA.",
+      tierImpact: "Resolving moves facility from CRITICAL toward ELEVATED; standard coverage unlikely until cleared.",
     });
   } else if (c.q2AirspaceDetermination === "unknown" || c.q2AirspaceDetermination === "not_found") {
     flags.push({
       code: "OE_MISSING",
       severity: "high",
       title: "No FAA airspace determination on file",
-      detail: "No current 7460-1 determination found linked to this facility. Insurance exposure is ambiguous — recommend verification before next renewal.",
+      detail: "No current 7460-1 determination found linked to this facility. Insurance exposure is ambiguous — verification recommended before renewal.",
+      remediation: "Facility-of-record files 7460-1 with FAA; airspace study establishes concur / concur-with-exception.",
+      tierImpact: "Typical resolution drops this factor out of the file — site moves one tier toward LOW.",
     });
   }
 
@@ -163,6 +184,8 @@ function buildGapFlags(c: {
       severity: "high",
       title: "FAA registration incomplete or flagged",
       detail: "NASR 5010 record shows registration discrepancy. Verify operator-of-record and facility status before coverage renewal.",
+      remediation: "5010 update filing via regional FAA ADO; 30-60 days typical.",
+      tierImpact: "Administrative — resolves cleanly, removes factor from file.",
     });
   }
 
@@ -172,6 +195,8 @@ function buildGapFlags(c: {
       severity: "moderate",
       title: "eVTOL dimensional viability at risk",
       detail: "Current TLOF/FATO dimensions are unlikely to accommodate certificated eVTOL aircraft without modification. Forward-looking capex risk.",
+      remediation: "Site modification or endorsement acknowledging current-aircraft-only coverage.",
+      tierImpact: "Forward-looking factor; does not typically block current-year coverage terms.",
     });
   }
 
@@ -181,6 +206,8 @@ function buildGapFlags(c: {
       severity: "moderate",
       title: "NFPA 418 not adopted in jurisdiction",
       detail: "Local jurisdiction has not adopted NFPA 418 heliport fire safety code. Elevated fire-suppression and fueling-risk exposure.",
+      remediation: "Facility-level adoption of NFPA 418 practices absent jurisdictional mandate; loss-control engineering endorsement.",
+      tierImpact: "Resolvable via voluntary adoption; moderates fire-exposure loading.",
     });
   } else if (c.q4Nfpa418 === "unknown") {
     flags.push({
@@ -188,6 +215,8 @@ function buildGapFlags(c: {
       severity: "low",
       title: "NFPA 418 adoption status unknown",
       detail: "Jurisdiction's NFPA 418 adoption has not been confirmed. Recommend verification during site audit.",
+      remediation: "AirIndex verification pass against local fire code — typically same-week turnaround.",
+      tierImpact: "Low-weight factor; confirmation usually clarifies rather than moves tier.",
     });
   }
 
@@ -199,6 +228,8 @@ function buildGapFlags(c: {
       severity: "low",
       title: "No state-level aviation enforcement",
       detail: `${c.stateCode} has no dedicated state aviation enforcement. All compliance rests on FAA and local authorities.`,
+      remediation: "Not remediable at facility level — underwriting consideration only.",
+      tierImpact: "Structural. Informs pricing, not tier movement.",
     });
   }
 
@@ -208,6 +239,8 @@ function buildGapFlags(c: {
       severity: "high",
       title: "Severe state regulatory burden",
       detail: c.burdenNote ?? "State permitting regime is documented as severe. Extended remediation timelines impact premium collection and insured-value schedules.",
+      remediation: "Not remediable — plan for extended remediation cycles on any open factors (6-12 mo typical in FL).",
+      tierImpact: "Structural; informs renewal-cycle pricing rather than tier movement.",
     });
   } else if (c.burdenLevel === "high") {
     flags.push({
@@ -215,10 +248,107 @@ function buildGapFlags(c: {
       severity: "moderate",
       title: "High state regulatory burden",
       detail: c.burdenNote ?? "State permitting regime adds significant documentation overhead. Plan for extended remediation timelines.",
+      remediation: "Not remediable — plan for 4-8 mo timelines on open factors.",
+      tierImpact: "Structural; informs pricing.",
     });
   }
 
   return flags;
+}
+
+function buildUnderwritingRecommendation(
+  tier: RiskTier,
+  flags: SiteGapFlag[],
+): UnderwritingRecommendation {
+  const criticalFlags = flags.filter((f) => f.severity === "critical");
+  const highFlags = flags.filter((f) => f.severity === "high");
+  const conditions: string[] = [];
+
+  // Assemble conditions from resolvable factors
+  for (const f of flags) {
+    if (f.code === "OE_MISSING" || f.code === "OE_OBJECTIONABLE") {
+      conditions.push("Airspace determination (7460-1) filed or current within 12 months");
+    }
+    if (f.code === "FAA_REG_GAP") {
+      conditions.push("NASR 5010 registration reconciled and current");
+    }
+    if (f.code === "NFPA_418") {
+      conditions.push("Voluntary NFPA 418 fire-suppression engineering acknowledged on file");
+    }
+    if (f.code === "EVTOL_VIABILITY") {
+      conditions.push("Coverage scoped to current-certificated-aircraft operations");
+    }
+  }
+
+  if (criticalFlags.length > 0 || tier === "CRITICAL") {
+    return {
+      stance: "decline-pending-remediation",
+      summary: "Recommend decline pending remediation. One or more critical factors (objectionable FAA determination or equivalent) require resolution before acceptable coverage terms can be written.",
+      conditions,
+    };
+  }
+  if (tier === "ELEVATED") {
+    return {
+      stance: "conditional",
+      summary: `Recommend conditional coverage. ${highFlags.length} material risk factor${highFlags.length === 1 ? "" : "s"} warrant renewal-contingent endorsements and loss-control review.`,
+      conditions,
+    };
+  }
+  if (tier === "MODERATE") {
+    return {
+      stance: "standard-with-conditions",
+      summary: "Recommend standard terms with documentation conditions. Open factors are procedural and resolvable within a normal renewal cycle.",
+      conditions,
+    };
+  }
+  return {
+    stance: "standard",
+    summary: "Recommend standard coverage terms. No material open risk factors identified.",
+    conditions,
+  };
+}
+
+async function computePeerBenchmark(
+  stateCode: string,
+  siteType: string,
+  myFlagCount: number,
+  myComplianceScore: number,
+): Promise<PeerBenchmark> {
+  // Cohort = same state + same siteType (e.g. "FL hospital helipads")
+  const peerTotal = await prisma.heliportCompliance.count({
+    where: { state: stateCode, siteType },
+  });
+
+  if (peerTotal === 0) {
+    return {
+      peerCount: 0,
+      betterThanPct: 0,
+      quartile: "lower-mid",
+      cohortLabel: `${stateCode} ${siteType} helipads`,
+    };
+  }
+
+  // "Cleaner than" = lower flagCount OR same flagCount + higher complianceScore
+  const cleanerThanCount = await prisma.heliportCompliance.count({
+    where: {
+      state: stateCode,
+      siteType,
+      OR: [
+        { flagCount: { gt: myFlagCount } },
+        { flagCount: myFlagCount, complianceScore: { lt: myComplianceScore } },
+      ],
+    },
+  });
+
+  const betterThanPct = Math.round((cleanerThanCount / peerTotal) * 100);
+  const quartile: PeerBenchmark["quartile"] =
+    betterThanPct >= 75 ? "top"
+    : betterThanPct >= 50 ? "upper-mid"
+    : betterThanPct >= 25 ? "lower-mid"
+    : "bottom";
+
+  const cohortLabel = `${stateCode} ${siteType} helipads`;
+  return { peerCount: peerTotal, betterThanPct, quartile, cohortLabel };
 }
 
 function buildExposureNote(
@@ -303,6 +433,15 @@ export async function getSiteRiskAssessment(siteId: string): Promise<SiteRiskAss
     heliport.state,
   );
 
+  const underwriting = buildUnderwritingRecommendation(riskTier, gapFlags);
+
+  const peerBenchmark = await computePeerBenchmark(
+    heliport.state,
+    compliance?.siteType ?? "other",
+    compliance?.flagCount ?? 0,
+    compliance?.complianceScore ?? 0,
+  );
+
   return {
     facilityId: heliport.id,
     facilityName: heliport.facilityName,
@@ -335,6 +474,8 @@ export async function getSiteRiskAssessment(siteId: string): Promise<SiteRiskAss
 
     gapFlags,
     exposureNote,
+    underwriting,
+    peerBenchmark,
     oeDeterminationCount: oeCount,
     lastAssessedAt: compliance?.lastAssessedAt ?? null,
   };

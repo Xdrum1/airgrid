@@ -191,7 +191,7 @@ export default async function RiskAssessmentPage({
             borderLeft: `4px solid ${r.riskColor}`,
             padding: "18px 20px",
             borderRadius: 8,
-            marginBottom: 20,
+            marginBottom: 16,
           }}
         >
           <div style={{ fontSize: 10, fontWeight: 700, color: r.riskColor, letterSpacing: "0.12em" }}>
@@ -214,6 +214,73 @@ export default async function RiskAssessmentPage({
           </div>
           <div style={{ fontSize: 13, color: "#374151", marginTop: 6 }}>{r.exposureNote}</div>
         </div>
+
+        {/* Underwriting recommendation */}
+        <div
+          style={{
+            background: "#fefce8",
+            border: "1px solid #eab308",
+            borderLeft: "4px solid #ca8a04",
+            padding: "14px 18px",
+            borderRadius: 8,
+            marginBottom: 16,
+          }}
+        >
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#a16207", letterSpacing: "0.12em", textTransform: "uppercase" as const }}>
+            Underwriting Recommendation
+          </div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#78350f", marginTop: 4, marginBottom: 4 }}>
+            {r.underwriting.stance === "standard" && "Standard coverage terms"}
+            {r.underwriting.stance === "standard-with-conditions" && "Standard terms with documentation conditions"}
+            {r.underwriting.stance === "conditional" && "Conditional coverage — renewal-contingent endorsements"}
+            {r.underwriting.stance === "decline-pending-remediation" && "Decline pending remediation"}
+          </div>
+          <div style={{ fontSize: 12, color: "#78350f", marginBottom: r.underwriting.conditions.length ? 8 : 0 }}>
+            {r.underwriting.summary}
+          </div>
+          {r.underwriting.conditions.length > 0 && (
+            <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #fde68a" }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#a16207", marginBottom: 4, letterSpacing: "0.08em", textTransform: "uppercase" as const }}>
+                Suggested Conditions
+              </div>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "#78350f" }}>
+                {r.underwriting.conditions.map((c, i) => (
+                  <li key={i} style={{ marginBottom: 2 }}>{c}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Peer benchmark */}
+        {r.peerBenchmark.peerCount > 0 && (
+          <div
+            style={{
+              background: "#f9fafb",
+              border: "1px solid #e5e7eb",
+              padding: "12px 16px",
+              borderRadius: 8,
+              marginBottom: 20,
+              fontSize: 12,
+              color: "#374151",
+            }}
+          >
+            <strong style={{ color: "#111" }}>Peer benchmark.</strong>{" "}
+            Among {r.peerBenchmark.peerCount} {r.peerBenchmark.cohortLabel}, this facility ranks in the{" "}
+            <strong style={{
+              color: r.peerBenchmark.quartile === "bottom" ? "#991b1b"
+                : r.peerBenchmark.quartile === "lower-mid" ? "#b45309"
+                : r.peerBenchmark.quartile === "upper-mid" ? "#1e40af"
+                : "#047857",
+            }}>
+              {r.peerBenchmark.quartile === "top" && "top quartile"}
+              {r.peerBenchmark.quartile === "upper-mid" && "upper-middle quartile"}
+              {r.peerBenchmark.quartile === "lower-mid" && "lower-middle quartile"}
+              {r.peerBenchmark.quartile === "bottom" && "bottom quartile"}
+            </strong>{" "}
+            — cleaner than {r.peerBenchmark.betterThanPct}% of in-state peers.
+          </div>
+        )}
 
         {/* Satellite visualization */}
         {(() => {
@@ -285,17 +352,35 @@ export default async function RiskAssessmentPage({
           <QRow label="Q5 — eVTOL dimensional viability" value={r.q5EvtolViability} />
         </div>
 
-        {/* Gap flags */}
+        {/* Risk factors */}
         {r.gapFlags.length > 0 && (
           <>
-            <div style={S.sectionTag}>Top Compliance Gaps</div>
+            <div style={S.sectionTag}>Risk Factors</div>
             {r.gapFlags.slice(0, 5).map((flag) => (
               <div key={flag.code} style={S.card}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                   <div style={{ fontWeight: 700, color: "#111", fontSize: 14 }}>{flag.title}</div>
                   <SeverityPill severity={flag.severity} />
                 </div>
-                <div style={{ color: "#374151", fontSize: 12 }}>{flag.detail}</div>
+                <div style={{ color: "#374151", fontSize: 12, marginBottom: flag.remediation ? 10 : 0 }}>
+                  {flag.detail}
+                </div>
+                {(flag.remediation || flag.tierImpact) && (
+                  <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #f3f4f6", fontSize: 11, color: "#4b5563" }}>
+                    {flag.remediation && (
+                      <div style={{ marginBottom: 4 }}>
+                        <span style={{ fontWeight: 700, color: "#111", textTransform: "uppercase" as const, letterSpacing: "0.06em", fontSize: 10 }}>Remediation. </span>
+                        {flag.remediation}
+                      </div>
+                    )}
+                    {flag.tierImpact && (
+                      <div>
+                        <span style={{ fontWeight: 700, color: "#111", textTransform: "uppercase" as const, letterSpacing: "0.06em", fontSize: 10 }}>Tier impact. </span>
+                        {flag.tierImpact}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </>
