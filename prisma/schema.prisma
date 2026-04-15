@@ -1415,3 +1415,20 @@ model PreDevFacilityStatusHistory {
   @@index([facilityId, recordedAt])
   @@index([marketId])
 }
+
+// ── Forward Signal Alert Log ──────────────────────────
+// Tracks forward-signal alert emails sent per (user, city, predictionRecord).
+// Lets the alert cron dedupe so a single prediction only triggers one email
+// per subscriber. Primary key is the composite tuple via @@unique.
+model ForwardSignalAlert {
+  id                  String   @id @default(cuid())
+  userId              String
+  cityId              String
+  predictionRecordId  String
+  sentAt              DateTime @default(now())
+
+  @@unique([userId, predictionRecordId])
+  @@index([userId])
+  @@index([cityId])
+  @@index([sentAt])
+}

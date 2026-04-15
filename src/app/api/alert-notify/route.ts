@@ -14,8 +14,12 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Daily: score change + watch list alerts
-    const { scoreAlertsSent, watchlistAlertsSent } = await sendAlertNotifications();
+    // Daily: score change + watch list + forward-signal alerts
+    const {
+      scoreAlertsSent,
+      watchlistAlertsSent,
+      forwardSignalAlertsSent,
+    } = await sendAlertNotifications();
 
     // Monthly: send summary on the 1st of each month
     let monthlySent = 0;
@@ -28,6 +32,7 @@ export async function GET(request: NextRequest) {
       success: true,
       scoreAlertsSent,
       watchlistAlertsSent,
+      forwardSignalAlertsSent,
       monthlySent,
     });
   } catch (err) {
