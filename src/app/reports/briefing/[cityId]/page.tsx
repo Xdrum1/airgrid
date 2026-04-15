@@ -17,6 +17,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import PrintButton from "../../gap/[cityId]/PrintButton";
 import TrackPageView from "@/components/TrackPageView";
+import FreshnessBar from "@/components/FreshnessBar";
 
 // Override field → FKB short code (briefing uses these codes in headers)
 const OVERRIDE_FIELD_TO_CODE: Record<string, string> = {
@@ -378,6 +379,8 @@ export default async function BriefingPage({
             </Link>
             <PrintButton />
           </div>
+
+          <FreshnessBar today={new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} />
 
           {/* ================================================================
               SECTION 1: Market Score & Readiness Tier

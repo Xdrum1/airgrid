@@ -29,6 +29,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import PrintButton from "../../gap/[cityId]/PrintButton";
 import TrackPageView from "@/components/TrackPageView";
+import FreshnessBar from "@/components/FreshnessBar";
 
 export async function generateStaticParams() {
   return CITIES.map((c) => ({ cityId: c.id }));
@@ -284,6 +285,8 @@ export default async function InvestorBriefingPage({
             analysts and institutional investors.
           </p>
         </div>
+
+        <FreshnessBar today={today} />
 
         {/* ======== SECTION 1: Investment Thesis Summary ======== */}
         <div className="section-card" style={cardStyle}>

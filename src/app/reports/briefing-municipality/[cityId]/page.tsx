@@ -16,6 +16,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import PrintButton from "../../gap/[cityId]/PrintButton";
 import TrackPageView from "@/components/TrackPageView";
+import FreshnessBar from "@/components/FreshnessBar";
 
 // Factor key -> FKB short code
 const KEY_TO_CODE: Record<keyof ScoreBreakdown, string> = {
@@ -461,6 +462,8 @@ export default async function MunicipalityBriefingPage({
             </Link>
             <PrintButton />
           </div>
+
+          <FreshnessBar today={new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} />
 
           {/* ================================================================
               SECTION 1: Where Your City Stands

@@ -48,6 +48,9 @@ export const METRO_BOUNDS: Record<string, { minLat: number; maxLat: number; minL
   san_diego:      { minLat: 32.60, maxLat: 33.05, minLng: -117.30, maxLng: -116.90 },
   charlotte:      { minLat: 35.05, maxLat: 35.45, minLng: -81.00, maxLng: -80.65 },
   minneapolis:    { minLat: 44.80, maxLat: 45.15, minLng: -93.50, maxLng: -93.05 },
+  san_antonio:    { minLat: 29.20, maxLat: 29.70, minLng: -98.80, maxLng: -98.30 },
+  cincinnati:     { minLat: 39.00, maxLat: 39.35, minLng: -84.75, maxLng: -84.30 },
+  salt_lake_city: { minLat: 40.55, maxLat: 40.95, minLng: -112.15, maxLng: -111.70 },
 };
 
 export const ASOS_STATIONS: AsosStation[] = [
@@ -139,5 +142,3 @@ export const ASOS_STATIONS: AsosStation[] = [
   { id: "CMH", name: "John Glenn Columbus Intl", state: "OH", lat: 39.9980, lng: -82.8919 },
   { id: "LCK", name: "Rickenbacker Intl", state: "OH", lat: 39.8138, lng: -82.9278 },
 ];
-
-const EARTH_RADIUS_NM = 3440.065;
