@@ -1013,6 +1013,14 @@ export default async function BriefingPage({
                         Key legislation: <em>{peers.stateContext.keyLegislation}</em>
                       </div>
                     )}
+                    {peers.stateContext.regulatoryBurdenLevel && (
+                      <div style={{ marginTop: 6 }}>
+                        Regulatory burden: <strong style={{ color: peers.stateContext.regulatoryBurdenLevel === "severe" ? "#ff5470" : peers.stateContext.regulatoryBurdenLevel === "high" ? "#f59e0b" : "#d0d0d0" }}>{peers.stateContext.regulatoryBurdenLevel}</strong>
+                        {peers.stateContext.regulatoryBurdenNote && (
+                          <span style={{ color: "#999" }}> — {peers.stateContext.regulatoryBurdenNote.slice(0, 220)}{peers.stateContext.regulatoryBurdenNote.length > 220 ? "…" : ""}</span>
+                        )}
+                      </div>
+                    )}
                     {peers.stateContext.enforcementNote && (
                       <div style={{ marginTop: 6, fontSize: 12, color: "#999" }}>
                         {peers.stateContext.enforcementNote}

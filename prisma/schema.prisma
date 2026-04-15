@@ -683,6 +683,8 @@ model McsStateContext {
   dotAamNote            String?  @db.Text
   aamOfficeEstablished  Boolean  @default(false)
   keyLegislation        String?  @db.Text           // Primary bill(s) — e.g. "TX HB 1735", "CA SB 944"
+  regulatoryBurdenLevel String?  @db.VarChar(20)    // low | moderate | high | severe — process friction for establishing infrastructure (Rex proposal Apr 2026; distinct from posture stance)
+  regulatoryBurdenNote  String?  @db.Text           // Specific statute/rule cited + why it's burdensome
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 }

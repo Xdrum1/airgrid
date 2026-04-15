@@ -28,6 +28,8 @@ export interface StateContext {
   dotAamNote: string | null;
   aamOfficeEstablished: boolean;
   keyLegislation: string | null;
+  regulatoryBurdenLevel: string | null;
+  regulatoryBurdenNote: string | null;
 }
 
 /**
@@ -49,6 +51,8 @@ export async function getStateContext(stateCode: string): Promise<StateContext |
     dotAamNote: ctx.dotAamNote,
     aamOfficeEstablished: ctx.aamOfficeEstablished,
     keyLegislation: ctx.keyLegislation,
+    regulatoryBurdenLevel: ctx.regulatoryBurdenLevel,
+    regulatoryBurdenNote: ctx.regulatoryBurdenNote,
   };
 }
 
@@ -70,6 +74,8 @@ export async function getAllStateContexts(): Promise<StateContext[]> {
     dotAamNote: s.dotAamNote,
     aamOfficeEstablished: s.aamOfficeEstablished,
     keyLegislation: s.keyLegislation,
+    regulatoryBurdenLevel: s.regulatoryBurdenLevel,
+    regulatoryBurdenNote: s.regulatoryBurdenNote,
   }));
 }
 

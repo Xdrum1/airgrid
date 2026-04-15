@@ -358,6 +358,44 @@ export default async function InsuranceBriefingPage({
                 </div>
               </div>
             )}
+            {peers.stateContext.regulatoryBurdenLevel && (
+              <div
+                style={{
+                  marginBottom: 12,
+                  padding: "12px 14px",
+                  background:
+                    peers.stateContext.regulatoryBurdenLevel === "severe"
+                      ? "rgba(220,38,38,0.08)"
+                      : peers.stateContext.regulatoryBurdenLevel === "high"
+                      ? "rgba(180,83,9,0.08)"
+                      : "rgba(91,141,184,0.06)",
+                  borderLeft: `3px solid ${
+                    peers.stateContext.regulatoryBurdenLevel === "severe"
+                      ? "#dc2626"
+                      : peers.stateContext.regulatoryBurdenLevel === "high"
+                      ? "#b45309"
+                      : peers.stateContext.regulatoryBurdenLevel === "moderate"
+                      ? "#5B8DB8"
+                      : "#00ff88"
+                  }`,
+                  borderRadius: 4,
+                }}
+              >
+                <div style={{ ...labelStyle, marginBottom: 6 }}>
+                  Regulatory Burden: <strong style={{ color: "#ddd", letterSpacing: 0 }}>
+                    {peers.stateContext.regulatoryBurdenLevel.toUpperCase()}
+                  </strong>
+                </div>
+                {peers.stateContext.regulatoryBurdenNote && (
+                  <div style={{ fontSize: 12, color: "#ccc", lineHeight: 1.6 }}>
+                    {peers.stateContext.regulatoryBurdenNote}
+                  </div>
+                )}
+                <div style={{ fontSize: 10, color: "#888", marginTop: 8, fontStyle: "italic" }}>
+                  Distinct from posture. Measures process friction for establishing infrastructure — how cumbersome the state's regulations, statutes, and ordinances are for AAM site approval.
+                </div>
+              </div>
+            )}
             {peers.stateContext.enforcementNote && (
               <div>
                 <div style={{ ...labelStyle, marginBottom: 4 }}>Analyst Note</div>

@@ -66,6 +66,8 @@ export interface PeerContext {
     dotAamNote: string | null;
     aamOfficeEstablished: boolean;
     keyLegislation: string | null;
+    regulatoryBurdenLevel: string | null;
+    regulatoryBurdenNote: string | null;
   } | null;
 }
 
@@ -284,6 +286,8 @@ export async function getPeerContextWithMcs(city: City, allCities: City[]): Prom
         dotAamNote: ctx.dotAamNote,
         aamOfficeEstablished: ctx.aamOfficeEstablished,
         keyLegislation: ctx.keyLegislation,
+        regulatoryBurdenLevel: ctx.regulatoryBurdenLevel,
+        regulatoryBurdenNote: ctx.regulatoryBurdenNote,
       };
     }
   } catch {
