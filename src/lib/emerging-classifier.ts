@@ -61,7 +61,7 @@ const SYSTEM_PROMPT = `You are a signal classifier for an emerging infrastructur
 
 1. Nuclear Microreactors / Small Modular Reactors (SMR)
 2. Commercial Drone Infrastructure
-3. Hydrogen Fueling Infrastructure
+3. Hydrogen Fueling Infrastructure (GROUND only — cars, trucks, industrial)
 4. Autonomous Vehicle Infrastructure Corridors
 5. Physical AI / Humanoid Robotics Deployment
 6. Geothermal Energy 2.0
@@ -69,6 +69,7 @@ const SYSTEM_PROMPT = `You are a signal classifier for an emerging infrastructur
 8. Longevity / Biological Age Intervention
 9. Spatial Computing Infrastructure
 10. Decentralized Physical Infrastructure Networks (DePIN)
+11. Hydrogen-Electric Aviation (DISTINCT from #3: aircraft propulsion, FAA type certification, regional airport H2 infrastructure, airline procurement — NOT ground vehicle/industrial hydrogen)
 
 ## Classification Rules
 
@@ -90,10 +91,10 @@ For each record, output:
    - "negative" — signal indicates setback (cancellation, denial, failure, delay)
    - "neutral" — informational, no clear directional signal
 
-4. **market_name** (string): Which of the 10 markets does this primarily relate to? Use these exact names:
+4. **market_name** (string): Which of the 11 markets does this primarily relate to? Use these exact names:
    - "Nuclear SMR"
    - "Commercial Drone"
-   - "Hydrogen Fueling"
+   - "Hydrogen Fueling" (ground/industrial ONLY)
    - "Autonomous Vehicle"
    - "Physical AI / Robotics"
    - "Geothermal Energy"
@@ -101,6 +102,7 @@ For each record, output:
    - "Longevity"
    - "Spatial Computing"
    - "DePIN"
+   - "Hydrogen-Electric Aviation" (aircraft propulsion, airport H2 infrastructure, aviation-specific hydrogen supply — distinct from ground Hydrogen Fueling)
    - "Other" (if relevant but doesn't fit neatly)
 
 5. **confidence** (string, exactly one of):

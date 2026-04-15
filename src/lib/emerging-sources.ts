@@ -500,3 +500,102 @@ export async function fetchAvSignals(daysBack: number = 90): Promise<EmergingRaw
   log.info(`Autonomous Vehicle: ${all.length} total (${frRecords.length} FedReg, ${lsRecords.length} LegiScan, ${secRecords.length} SEC)`);
   return all;
 }
+
+// -------------------------------------------------------
+// Hydrogen-Electric Aviation (Market 11, added Apr 15 2026)
+//
+// Distinct from Hydrogen Fueling — this is aircraft propulsion,
+// FAA type certification, regional airport hydrogen supply, utility
+// partnerships for airport-based H2, regional airline procurement.
+// Buyer set is different (regional carriers, airport authorities,
+// hydrogen suppliers, infrastructure investors) from the AirIndex
+// eVTOL/UAM audience.
+//
+// Sources:
+//   - Federal Register: FAA aircraft certification + DOT aviation-hydrogen
+//   - LegiScan: state-level aviation-hydrogen airport infrastructure
+//   - USAspending: DOE aviation-scoped hydrogen grants (ZeroAvia, Universal
+//     Hydrogen, etc. recipients)
+// -------------------------------------------------------
+
+const H2AV_FR_TERMS = [
+  '"hydrogen aircraft"',
+  '"hydrogen-electric aircraft"',
+  '"hydrogen propulsion"',
+  '"hydrogen powered aviation"',
+  '"hydrogen fuel cell aircraft"',
+  '"ZeroAvia"',
+  '"Universal Hydrogen"',
+  '"airport hydrogen"',
+  '"aviation hydrogen"',
+  '"hydrogen supplemental type certificate"',
+  '"hydrogen regional aircraft"',
+];
+
+const H2AV_LEGISCAN_QUERY =
+  '"hydrogen aviation" OR "hydrogen aircraft" OR "aviation hydrogen" OR "airport hydrogen" OR ("hydrogen" AND "airport")';
+
+// Public / near-public hydrogen-electric aviation operators tracked via
+// SEC EDGAR. Universal Hydrogen is private; ZeroAvia is private. We track
+// any that are public or likely to go public soon. Empty for now; add CIKs
+// when H2 operators have SEC filings.
+const H2AV_SEC_CIKS: Record<string, string> = {};
+
+async function fetchH2AvSecFilings(daysBack: number): Promise<EmergingRawRecord[]> {
+  const records: EmergingRawRecord[] = [];
+  if (Object.keys(H2AV_SEC_CIKS).length === 0) return records;
+  const since = new Date(Date.now() - daysBack * 86400000);
+
+  for (const [name, cik] of Object.entries(H2AV_SEC_CIKS)) {
+    try {
+      const url = `https://data.sec.gov/submissions/CIK${cik.padStart(10, "0")}.json`;
+      const res = await fetch(url, {
+        headers: { "User-Agent": "AirIndex/1.0 (support@airindex.io)" },
+      });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const filings = data.filings?.recent;
+      if (!filings) continue;
+
+      const forms = filings.form ?? [];
+      const dates = filings.filingDate ?? [];
+      const accessions = filings.accessionNumber ?? [];
+      const primaryDescs = filings.primaryDocDescription ?? [];
+      const primaryDocs = filings.primaryDocument ?? [];
+
+      for (let i = 0; i < forms.length; i++) {
+        if (!["8-K", "10-K", "10-Q", "S-1", "S-4"].includes(forms[i])) continue;
+        const filingDate = new Date(dates[i]);
+        if (filingDate < since) break;
+        const accession = (accessions[i] ?? "").replace(/-/g, "");
+        records.push({
+          sourceId: accessions[i],
+          source: "sec_edgar_h2av",
+          title: `${name} ${forms[i]}: ${primaryDescs[i] ?? "Filing"}`,
+          url: `https://www.sec.gov/Archives/edgar/data/${cik}/${accession}/${primaryDocs[i] ?? ""}`,
+          date: dates[i],
+          summary: primaryDescs[i] ?? forms[i],
+          raw: { name, cik, form: forms[i] } as Record<string, unknown>,
+        });
+      }
+      await delay(DELAY_MS);
+    } catch (err) {
+      log.error(`SEC EDGAR (H2Av) fetch failed for ${name}:`, err);
+    }
+  }
+
+  log.info(`SEC EDGAR (H2Av): ${records.length} filings`);
+  return records;
+}
+
+export async function fetchH2AviationSignals(daysBack: number = 90): Promise<EmergingRawRecord[]> {
+  const [frRecords, lsRecords, secRecords] = await Promise.all([
+    fetchFederalRegisterForMarket(H2AV_FR_TERMS, "fed_reg_h2av", daysBack),
+    fetchLegiScanForMarket(H2AV_LEGISCAN_QUERY, "legiscan_h2av"),
+    fetchH2AvSecFilings(daysBack),
+  ]);
+
+  const all = [...frRecords, ...lsRecords, ...secRecords];
+  log.info(`Hydrogen-Electric Aviation: ${all.length} total (${frRecords.length} FedReg, ${lsRecords.length} LegiScan, ${secRecords.length} SEC)`);
+  return all;
+}

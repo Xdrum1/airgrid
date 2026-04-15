@@ -21,18 +21,22 @@ async function runIngestion(): Promise<Response> {
       fetchDroneSignals,
       fetchHydrogenSignals,
       fetchAvSignals,
+      fetchH2AviationSignals,
     } = await import("@/lib/emerging-sources");
     const { prisma } = await import("@/lib/prisma");
 
     // 1. Fetch from all sources in parallel
     //    Phase 1: ARPA-E + ClinicalTrials
     //    Phase 2: Commercial Drone + Hydrogen + Autonomous Vehicle
-    const [arpaRecords, ctRecords, droneRecords, hydrogenRecords, avRecords] = await Promise.all([
+    //    Market 11 (Apr 15 2026): Hydrogen-Electric Aviation (distinct from
+    //    ground Hydrogen Fueling — aircraft propulsion + airport H2 infra)
+    const [arpaRecords, ctRecords, droneRecords, hydrogenRecords, avRecords, h2avRecords] = await Promise.all([
       fetchArpaEAwards(90),
       fetchClinicalTrials(90),
       fetchDroneSignals(90),
       fetchHydrogenSignals(90),
       fetchAvSignals(90),
+      fetchH2AviationSignals(90),
     ]);
 
     const allRecords = [
@@ -41,6 +45,7 @@ async function runIngestion(): Promise<Response> {
       ...droneRecords,
       ...hydrogenRecords,
       ...avRecords,
+      ...h2avRecords,
     ];
 
     // All source identifiers for dedup
@@ -49,6 +54,7 @@ async function runIngestion(): Promise<Response> {
       "fed_reg_drone", "legiscan_drone",
       "fed_reg_hydrogen", "legiscan_hydrogen",
       "fed_reg_av", "legiscan_av", "sec_edgar_av",
+      "fed_reg_h2av", "legiscan_h2av", "sec_edgar_h2av",
     ];
 
     // 2. Deduplicate against existing records
@@ -72,6 +78,7 @@ async function runIngestion(): Promise<Response> {
       commercial_drone: droneRecords.length,
       hydrogen_fueling: hydrogenRecords.length,
       autonomous_vehicle: avRecords.length,
+      h2_aviation: h2avRecords.length,
     };
 
     if (newRecords.length === 0) {
@@ -115,7 +122,8 @@ async function runIngestion(): Promise<Response> {
     console.log(
       `[emerging-ingest] Complete: ${persisted} persisted, ${newRecords.length} new ` +
       `(ARPA-E: ${arpaRecords.length}, CT: ${ctRecords.length}, ` +
-      `Drone: ${droneRecords.length}, H2: ${hydrogenRecords.length}, AV: ${avRecords.length})`
+      `Drone: ${droneRecords.length}, H2: ${hydrogenRecords.length}, AV: ${avRecords.length}, ` +
+      `H2Av: ${h2avRecords.length})`
     );
 
     return NextResponse.json({
