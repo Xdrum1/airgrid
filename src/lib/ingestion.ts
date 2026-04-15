@@ -41,6 +41,12 @@ export interface IngestionMeta {
   lastRunAt: string;
   recordCount: number;
   sources: string[];
+  /** Raw per-source fetch counts (before dedup/merge). Lets us diagnose
+   *  silent prod failures — e.g. Congress.gov returning 0 in Amplify while
+   *  local returns 8 means the fetch is failing quietly in production. */
+  fetchCounts: Record<string, number>;
+  /** Errors caught during fetch. Populated when a source throws. */
+  fetchErrors: Record<string, string>;
 }
 
 export interface DiffResult {
@@ -392,12 +398,21 @@ export async function runIngestion(): Promise<{
 
     // 1-4. Fetch all sources in parallel
     const SEC_FORM_TYPES = ["8-K", "10-K", "10-Q"];
+    const fetchErrors: Record<string, string> = {};
 
     const [federalFilings, legiscanResults, secEdgarResults, operatorNews, congressBills, regulationDocs] = await Promise.all([
       // 1. Federal Register
-      fetchFederalRegisterUAM(90),
+      fetchFederalRegisterUAM(90).catch((err) => {
+        fetchErrors.federal_register = `${err?.message ?? err}`;
+        console.error("[ingestion] Federal Register fetch failed:", err);
+        return [] as FederalFiling[];
+      }),
       // 2. LegiScan for all target states (batched to avoid rate limits)
-      batchFetchStates(),
+      batchFetchStates().catch((err) => {
+        fetchErrors.legiscan = `${err?.message ?? err}`;
+        console.error("[ingestion] LegiScan fetch failed:", err);
+        return [] as StateBill[];
+      }),
       // 3. SEC EDGAR for all operator × form type combos in parallel
       Promise.all(
         Object.keys(OPERATOR_CIKS).flatMap((operatorId) =>
@@ -406,12 +421,21 @@ export async function runIngestion(): Promise<{
             return filings.map((f) => normalizeSecFiling(f, operatorId));
           })
         )
-      ),
+      ).catch((err) => {
+        fetchErrors.sec_edgar = `${err?.message ?? err}`;
+        console.error("[ingestion] SEC EDGAR fetch failed:", err);
+        return [] as IngestedRecord[][];
+      }),
       // 4. Operator news via Google News RSS
-      fetchAllOperatorNews(30),
+      fetchAllOperatorNews(30).catch((err) => {
+        fetchErrors.operator_news = `${err?.message ?? err}`;
+        console.error("[ingestion] Operator news fetch failed:", err);
+        return [] as IngestedRecord[];
+      }),
       // 5. Congress.gov federal bills (skips gracefully if no API key)
       searchCongressBills().catch((err) => {
-        console.warn("[ingestion] Congress.gov fetch failed:", err);
+        fetchErrors.congress_gov = `${err?.message ?? err}`;
+        console.error("[ingestion] Congress.gov fetch failed:", err);
         return [] as CongressBill[];
       }),
       // 6. Regulations.gov FAA dockets (skips gracefully if no API key)
@@ -420,7 +444,8 @@ export async function runIngestion(): Promise<{
       //    document IDs makes re-ingestion idempotent. A 90-day window
       //    returned zero every run.
       searchRegulations().catch((err) => {
-        console.warn("[ingestion] Regulations.gov fetch failed:", err);
+        fetchErrors.regulations_gov = `${err?.message ?? err}`;
+        console.error("[ingestion] Regulations.gov fetch failed:", err);
         return [] as RegulationDocument[];
       }),
     ]);
@@ -465,10 +490,20 @@ export async function runIngestion(): Promise<{
 
     // 7. Build meta
     const sources = Array.from(new Set(incomingRecords.map((r) => r.source)));
+    const fetchCounts: Record<string, number> = {
+      federal_register: federalFilings.length,
+      legiscan: allBills.length,
+      sec_edgar: allSecFilings.length,
+      operator_news: operatorNews.length,
+      congress_gov: congressBills.length,
+      regulations_gov: regulationDocs.length,
+    };
     const meta: IngestionMeta = {
       lastRunAt: new Date().toISOString(),
       recordCount: merged.length,
       sources,
+      fetchCounts,
+      fetchErrors,
     };
 
     // Track override/score stats for the run log

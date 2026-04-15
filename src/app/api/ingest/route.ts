@@ -38,10 +38,12 @@ function streamIngestion(): Response {
           updatedRecords: diff.updatedRecords.length,
           unchangedCount: diff.unchangedCount,
           sources: meta.sources,
+          fetchCounts: meta.fetchCounts,
+          fetchErrors: meta.fetchErrors,
         });
 
         console.log(
-          `[API /ingest] Complete: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged, sources: ${meta.sources.join(", ")}`
+          `[API /ingest] Complete: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged, sources: ${meta.sources.join(", ")}, fetchCounts: ${JSON.stringify(meta.fetchCounts)}, fetchErrors: ${JSON.stringify(meta.fetchErrors)}`
         );
 
         controller.enqueue(encoder.encode(`data: ${result}\n\n`));
