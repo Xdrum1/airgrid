@@ -392,7 +392,7 @@ export default async function InsuranceBriefingPage({
                   </div>
                 )}
                 <div style={{ fontSize: 10, color: "#888", marginTop: 8, fontStyle: "italic" }}>
-                  Distinct from posture. Measures process friction for establishing infrastructure — how cumbersome the state's regulations, statutes, and ordinances are for AAM site approval.
+                  Distinct from posture. Measures process friction for establishing infrastructure — how cumbersome the state&apos;s regulations, statutes, and ordinances are for AAM site approval.
                 </div>
               </div>
             )}
