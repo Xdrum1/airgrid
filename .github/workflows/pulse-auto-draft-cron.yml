@@ -1,0 +1,44 @@
+name: Weekly Pulse auto-draft cron
+
+on:
+  schedule:
+    # Monday 10:00 UTC (6am EDT / 5am EST) — ready in Alan's inbox for start of workday
+    - cron: "0 10 * * 1"
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  pulse-auto-draft:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health check
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/health")
+          echo "Health: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Health check returned $HTTP_CODE — app may be degraded"
+          fi
+
+      - name: Trigger Pulse auto-draft
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 120 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$URL/api/admin/pulse-auto-draft")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "Status: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Pulse auto-draft failed with status $HTTP_CODE"
+            exit 1
+          fi
