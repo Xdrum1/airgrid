@@ -3,69 +3,55 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import RequestAccessForm from "@/components/RequestAccessForm";
 import TrackPageView from "@/components/TrackPageView";
+import { LT, pageShell, eyebrow, h1Display, bodyLead } from "@/lib/landing-theme";
 
 export const metadata: Metadata = {
   title: "Request Access — AirIndex",
   description:
-    "Request early access to the full AirIndex UAM intelligence platform — score breakdowns, corridors, operator tracking, and curated intel.",
+    "Request access to the AirIndex intelligence platform — market readiness scoring, regulatory precedents, operator graph, and forward signals.",
 };
 
 export default function RequestAccessPage() {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#050508",
-        fontFamily: "'Inter', sans-serif",
-        color: "#fff",
-      }}
-    >
+    <div style={pageShell}>
       <TrackPageView page="/request-access" />
-      <SiteNav />
+      <SiteNav theme="light" />
 
-      <div style={{ maxWidth: 520, margin: "0 auto", padding: "60px 24px 80px" }}>
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
+      <div
+        style={{
+          position: "relative",
+          background:
+            "linear-gradient(180deg, rgba(91,141,184,0.08) 0%, rgba(91,141,184,0) 60%)",
+        }}
+      >
+        <div style={{ maxWidth: 620, margin: "0 auto", padding: "clamp(56px, 8vw, 96px) 24px clamp(40px, 6vw, 72px)" }}>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <div style={eyebrow}>Request Access</div>
+            <h1 style={{ ...h1Display, fontSize: "clamp(26px, 3.6vw, 38px)" }}>
+              Get access to AirIndex.
+            </h1>
+            <p style={{ ...bodyLead, maxWidth: 520, margin: "0 auto" }}>
+              Tell us who you are and what decision you&apos;re working on. We&apos;ll send an
+              invite to the container scoped to your use case. Most requests processed within
+              24 hours.
+            </p>
+          </div>
+
           <div
             style={{
-              fontSize: 9,
-              letterSpacing: 3,
-              color: "#7c3aed",
-              marginBottom: 16,
-              fontFamily: "'Inter', sans-serif",
+              background: LT.bg,
+              border: `1px solid ${LT.cardBorder}`,
+              borderRadius: 14,
+              padding: "clamp(24px, 3vw, 36px)",
+              boxShadow: LT.shadowMd,
             }}
           >
-            EARLY ACCESS
+            <RequestAccessForm theme="light" />
           </div>
-          <h1
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 700,
-              fontSize: "clamp(22px, 3vw, 32px)",
-              margin: "0 0 12px",
-              color: "#fff",
-              letterSpacing: -0.5,
-            }}
-          >
-            Get Full Access
-          </h1>
-          <p
-            style={{
-              fontSize: 13,
-              color: "#888",
-              lineHeight: 1.6,
-              margin: 0,
-              fontFamily: "'Inter', sans-serif",
-            }}
-          >
-            Unlock the complete UAM Intel Feed, score breakdowns, corridor intelligence,
-            and operator tracking across 20+ US markets.
-          </p>
         </div>
-
-        <RequestAccessForm />
       </div>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

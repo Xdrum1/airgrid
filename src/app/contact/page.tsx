@@ -52,30 +52,31 @@ function ContactForm() {
   if (state === "success") {
     return (
       <div style={{ textAlign: "center", padding: "80px 20px" }}>
-        <div style={{ fontSize: 48, marginBottom: 16 }}>&#10003;</div>
+        <div style={{ fontSize: 48, marginBottom: 16, color: "#0d9488" }}>&#10003;</div>
         <h2
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 700,
             fontSize: 24,
             marginBottom: 12,
+            color: "#0a2540",
           }}
         >
           Inquiry received
         </h2>
-        <p style={{ color: "#999", fontSize: 13, lineHeight: 1.7, marginBottom: 24 }}>
+        <p style={{ color: "#425466", fontSize: 13, lineHeight: 1.7, marginBottom: 24 }}>
           We&apos;ll review your inquiry and reach out within 48 hours.
         </p>
         <Link
           href="/dashboard"
           style={{
-            color: "#5B8DB8",
-            fontSize: 11,
-            letterSpacing: 1,
+            color: "#0a4068",
+            fontSize: 12,
+            fontWeight: 600,
             textDecoration: "none",
           }}
         >
-          Go to Dashboard
+          Go to Dashboard →
         </Link>
       </div>
     );
@@ -84,10 +85,10 @@ function ContactForm() {
   const inputStyle = {
     width: "100%",
     padding: "12px 14px",
-    background: "rgba(255,255,255,0.03)",
-    border: "1px solid rgba(255,255,255,0.1)",
+    background: "#ffffff",
+    border: "1px solid #e3e8ee",
     borderRadius: 6,
-    color: "#fff",
+    color: "#0a2540",
     fontSize: 13,
     fontFamily: "'Inter', sans-serif",
     outline: "none",
@@ -96,7 +97,7 @@ function ContactForm() {
 
   const labelStyle = {
     display: "block",
-    color: "#999",
+    color: "#425466",
     fontSize: 9,
     letterSpacing: 2,
     marginBottom: 6,
@@ -161,7 +162,7 @@ function ContactForm() {
             appearance: "none",
             cursor: inquiryLocked ? "default" : "pointer",
             opacity: inquiryLocked ? 0.7 : 1,
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "right 14px center",
             paddingRight: 36,
@@ -185,7 +186,7 @@ function ContactForm() {
             ...inputStyle,
             appearance: "none",
             cursor: "pointer",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "right 14px center",
             paddingRight: 36,
@@ -239,28 +240,28 @@ function ContactForm() {
         style={{
           width: "100%",
           padding: "14px 0",
-          background: state === "submitting" ? "#333" : "#5B8DB8",
+          background: state === "submitting" ? "#cbd5e1" : "#0a2540",
           border: "none",
-          borderRadius: 6,
-          color: "#050508",
-          fontSize: 12,
-          fontWeight: 700,
+          borderRadius: 8,
+          color: "#ffffff",
+          fontSize: 13,
+          fontWeight: 600,
           fontFamily: "'Inter', sans-serif",
-          letterSpacing: "0.06em",
+          letterSpacing: "0.02em",
           cursor: state === "submitting" ? "default" : "pointer",
           transition: "opacity 0.15s",
         }}
       >
-        {state === "submitting" ? "SENDING..." : "SEND INQUIRY"}
+        {state === "submitting" ? "Sending..." : "Send Inquiry"}
       </button>
-      <p style={{ color: "#555", fontSize: 9, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>
+      <p style={{ color: "#8792a2", fontSize: 10, marginTop: 12, textAlign: "center", lineHeight: 1.5 }}>
         By submitting, you agree to our{" "}
         <a href="/terms" style={{ color: "#5B8DB8", textDecoration: "none" }}>Terms of Service</a> and{" "}
         <a href="/privacy" style={{ color: "#5B8DB8", textDecoration: "none" }}>Privacy Policy</a>. You may receive
         the monthly UAM Market Pulse and product updates. You can unsubscribe at any time.
       </p>
       {state === "error" && (
-        <div style={{ color: "#ff4444", fontSize: 11, marginTop: 12, textAlign: "center" }}>
+        <div style={{ color: "#dc2626", fontSize: 11, marginTop: 12, textAlign: "center" }}>
           Something went wrong. Try emailing hello@airindex.io directly.
         </div>
       )}
@@ -273,57 +274,111 @@ export default function ContactPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#050508",
+        background: "#ffffff",
         fontFamily: "'Inter', sans-serif",
-        color: "#fff",
+        color: "#0a2540",
       }}
     >
-      <NavClient isAuthed={false} />
-
-      {/* Header */}
-      <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(48px, 6vw, 80px) 20px 40px", textAlign: "center" }}>
-        <div style={{
-          fontSize: 9,
-          letterSpacing: 3,
-          color: "#5B8DB8",
-          fontFamily: "'Space Mono', monospace",
-          marginBottom: 16,
-        }}>
-          DATA LICENSES &middot; REPORTS &middot; API &middot; PARTNERSHIPS
-        </div>
-        <h1
+      {/* Client page can't use async SiteNav, so render NavClient directly.
+          Spacer matches the fixed 64px nav height. */}
+      <nav
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 200,
+          background: "rgba(255,255,255,0.92)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(10,37,64,0.08)",
+        }}
+      >
+        <div
           style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 700,
-            fontSize: "clamp(24px, 3.5vw, 36px)",
-            margin: "0 0 12px",
+            maxWidth: 1120,
+            margin: "0 auto",
+            padding: "0 20px",
+            height: 64,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          Talk to us
-        </h1>
-        <p style={{ fontFamily: "'Inter', sans-serif", color: "#999", fontSize: 14, margin: 0, lineHeight: 1.6 }}>
-          Tell us what you&apos;re working on and we&apos;ll reach out within 48 hours.
-          All data access is negotiated &mdash; no self-serve checkout.
-        </p>
-      </section>
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/logo/airindex-wordmark-light.svg" alt="AirIndex" style={{ height: 28 }} />
+          </Link>
+          <NavClient isAuthed={false} theme="light" />
+        </div>
+      </nav>
+      <div style={{ height: 64 }} />
+
+      {/* Header */}
+      <div
+        style={{
+          background: "linear-gradient(180deg, rgba(91,141,184,0.08) 0%, rgba(91,141,184,0) 60%)",
+        }}
+      >
+        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(48px, 7vw, 88px) 20px 40px", textAlign: "center" }}>
+          <div style={{
+            fontSize: 11,
+            letterSpacing: "0.14em",
+            color: "#5B8DB8",
+            fontFamily: "'Space Mono', monospace",
+            marginBottom: 16,
+            textTransform: "uppercase",
+          }}>
+            Data Licenses · Reports · API · Partnerships
+          </div>
+          <h1
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(28px, 4vw, 44px)",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+              margin: "0 0 16px",
+              color: "#0a2540",
+            }}
+          >
+            Talk to us.
+          </h1>
+          <p style={{ fontFamily: "'Inter', sans-serif", color: "#425466", fontSize: 16, margin: 0, lineHeight: 1.6, maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
+            Tell us what you&apos;re working on and we&apos;ll reach out within 48 hours.
+            All data access is negotiated &mdash; no self-serve checkout.
+          </p>
+        </section>
+      </div>
 
       {/* Form + Direct Contact side by side */}
-      <section style={{ maxWidth: 720, margin: "0 auto", padding: "0 20px 80px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 40, alignItems: "start" }}>
-          <div style={{ paddingTop: 8 }}>
-            <div style={{ fontSize: 9, letterSpacing: 2, color: "#555", marginBottom: 16 }}>
-              DIRECT CONTACT
+      <section style={{ maxWidth: 840, margin: "0 auto", padding: "32px 20px 96px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "220px 1fr",
+            gap: 48,
+            alignItems: "start",
+            background: "#ffffff",
+            border: "1px solid #e3e8ee",
+            borderRadius: 14,
+            padding: "clamp(24px, 3vw, 36px)",
+            boxShadow: "0 4px 12px rgba(10,37,64,0.06)",
+          }}
+        >
+          <div>
+            <div style={{ fontSize: 10, letterSpacing: "0.14em", color: "#5B8DB8", marginBottom: 16, textTransform: "uppercase", fontFamily: "'Space Mono', monospace" }}>
+              Direct Contact
             </div>
             <div style={{ marginBottom: 20 }}>
-              <div style={{ fontSize: 10, color: "#444", letterSpacing: 1, marginBottom: 4 }}>PHONE</div>
-              <div style={{ fontSize: 13, color: "#999" }}>(202) 949-2709</div>
+              <div style={{ fontSize: 9, color: "#697386", letterSpacing: 1, marginBottom: 4, textTransform: "uppercase" }}>Phone</div>
+              <div style={{ fontSize: 14, color: "#0a2540", fontWeight: 600 }}>(202) 949-2709</div>
             </div>
             <div style={{ marginBottom: 20 }}>
-              <div style={{ fontSize: 10, color: "#444", letterSpacing: 1, marginBottom: 4 }}>EMAIL</div>
-              <div style={{ fontSize: 13, color: "#999" }}>sales@airindex.io</div>
+              <div style={{ fontSize: 9, color: "#697386", letterSpacing: 1, marginBottom: 4, textTransform: "uppercase" }}>Email</div>
+              <div style={{ fontSize: 14, color: "#0a2540", fontWeight: 600 }}>sales@airindex.io</div>
             </div>
-            <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 16 }}>
-              <div style={{ fontSize: 9, color: "#333", letterSpacing: 1, lineHeight: 1.8 }}>
+            <div style={{ borderTop: "1px solid #e3e8ee", paddingTop: 16 }}>
+              <div style={{ fontSize: 10, color: "#8792a2", letterSpacing: 1, lineHeight: 1.8 }}>
                 SAM.GOV REGISTERED<br />
                 UEI RB63W8RYCHY3<br />
                 CAGE 1AUW7
@@ -336,7 +391,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

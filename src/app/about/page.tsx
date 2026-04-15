@@ -61,14 +61,14 @@ export default async function AboutPage() {
   return (
     <div
       style={{
-        background: "#050508",
+        background: "#ffffff",
         color: "#e0e0e0",
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
       }}
     >
       <TrackPageView page="about" />
-      <SiteNav />
+      <SiteNav theme="light" />
 
       <main style={{ maxWidth: 760, margin: "0 auto", padding: "48px 24px 80px" }}>
 
@@ -87,14 +87,14 @@ export default async function AboutPage() {
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: "clamp(28px, 4vw, 40px)",
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             margin: "0 0 16px",
             letterSpacing: "-0.02em",
             lineHeight: 1.2,
           }}>
             The eVTOL aircraft are ready. The question is where they&apos;ll fly first.
           </h1>
-          <p style={{ color: "#888", fontSize: 15, lineHeight: 1.7, maxWidth: 600 }}>
+          <p style={{ color: "#697386", fontSize: 15, lineHeight: 1.7, maxWidth: 600 }}>
             AirIndex is the independent market readiness rating system for Urban Air Mobility —
             scoring {MARKET_COUNT} U.S. cities on the ground conditions that determine where commercial
             eVTOL operations actually launch.
@@ -102,17 +102,17 @@ export default async function AboutPage() {
         </div>
 
         {/* ═══ Who We Are ═══ */}
-        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid #e3e8ee" }}>
           <h2 style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 22,
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 20,
           }}>
             Who We Are
           </h2>
-          <div style={{ color: "#999", fontSize: 14, lineHeight: 1.85 }}>
+          <div style={{ color: "#425466", fontSize: 14, lineHeight: 1.85 }}>
             <p style={{ marginBottom: 14 }}>
               AirIndex is built by{" "}
               <a
@@ -147,17 +147,17 @@ export default async function AboutPage() {
         </section>
 
         {/* ═══ Our Mission ═══ */}
-        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid #e3e8ee" }}>
           <h2 style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 22,
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 20,
           }}>
             Our Mission
           </h2>
-          <div style={{ color: "#999", fontSize: 14, lineHeight: 1.85 }}>
+          <div style={{ color: "#425466", fontSize: 14, lineHeight: 1.85 }}>
             <p style={{ marginBottom: 14 }}>
               Urban air mobility is generating enormous quantities of fragmented public data — FAA
               filings, state legislation, city planning documents, operator disclosures, SEC filings.
@@ -179,17 +179,17 @@ export default async function AboutPage() {
         </section>
 
         {/* ═══ What We Track ═══ */}
-        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid #e3e8ee" }}>
           <h2 style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 22,
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 8,
           }}>
             What We Track
           </h2>
-          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 24 }}>
+          <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, marginBottom: 24 }}>
             Every market receives a 0-100 readiness score computed from seven weighted factors.
             Scores update continuously as conditions change. Methodology v1.3 is{" "}
             <Link href="/methodology" style={{ color: "#5B8DB8", textDecoration: "none" }}>
@@ -207,8 +207,8 @@ export default async function AboutPage() {
                   alignItems: "center",
                   gap: 12,
                   padding: "10px 16px",
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "#f9fbfd",
+                  border: "1px solid #e3e8ee",
                   borderRadius: 6,
                 }}>
                   <span style={{
@@ -221,14 +221,14 @@ export default async function AboutPage() {
                     {weight}
                   </span>
                   <div style={{ flex: 1 }}>
-                    <div style={{ color: "#ccc", fontSize: 13, fontWeight: 500 }}>
+                    <div style={{ color: "#0a2540", fontSize: 13, fontWeight: 500 }}>
                       {info?.label || key}
                     </div>
-                    <div style={{ color: "#666", fontSize: 11, marginTop: 2 }}>
+                    <div style={{ color: "#8792a2", fontSize: 11, marginTop: 2 }}>
                       {info?.desc}
                     </div>
                   </div>
-                  <div style={{ width: 80, height: 3, borderRadius: 2, background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
+                  <div style={{ width: 80, height: 3, borderRadius: 2, background: "#e3e8ee", overflow: "hidden" }}>
                     <div style={{
                       height: "100%",
                       width: `${weight * 5}%`,
@@ -246,12 +246,12 @@ export default async function AboutPage() {
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 16,
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 14,
           }}>
             Data Sources
           </h3>
-          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 16 }}>
+          <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, marginBottom: 16 }}>
             Our data comes from primary sources — every score change is sourced, timestamped, and
             traceable. We do not rate cities on press releases or announcements. We rate them on
             verifiable facts.
@@ -260,14 +260,14 @@ export default async function AboutPage() {
             {DATA_SOURCES.map((s) => (
               <div key={s.name} style={{
                 padding: "12px 16px",
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
                 borderRadius: 6,
               }}>
-                <div style={{ color: "#ccc", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
+                <div style={{ color: "#0a2540", fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
                   {s.name}
                 </div>
-                <div style={{ color: "#666", fontSize: 11, lineHeight: 1.5 }}>
+                <div style={{ color: "#8792a2", fontSize: 11, lineHeight: 1.5 }}>
                   {s.desc}
                 </div>
               </div>
@@ -294,7 +294,7 @@ export default async function AboutPage() {
                   }}>
                     {m.value}
                   </div>
-                  <div style={{ fontSize: 9, letterSpacing: 1.5, color: "#666", marginTop: 2 }}>
+                  <div style={{ fontSize: 9, letterSpacing: 1.5, color: "#8792a2", marginTop: 2 }}>
                     {m.label.toUpperCase()}
                   </div>
                 </div>
@@ -304,17 +304,17 @@ export default async function AboutPage() {
         </section>
 
         {/* ═══ Intelligence Architecture ═══ */}
-        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid #e3e8ee" }}>
           <h2 style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 22,
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 8,
           }}>
             Intelligence Architecture
           </h2>
-          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+          <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
             AirIndex scores are backed by a five-container intelligence system — each container stores
             a different class of structured evidence. Scores are traceable through the full chain: from
             the raw regulatory filing to the factor it affects to the market score it changes.
@@ -329,8 +329,8 @@ export default async function AboutPage() {
             ].map((c) => (
               <div key={c.code} style={{
                 padding: "14px 16px",
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
                 borderRadius: 6,
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
@@ -345,15 +345,15 @@ export default async function AboutPage() {
                   }}>
                     {c.code}
                   </span>
-                  <span style={{ color: "#ccc", fontSize: 12, fontWeight: 600 }}>{c.name}</span>
+                  <span style={{ color: "#0a2540", fontSize: 12, fontWeight: 600 }}>{c.name}</span>
                 </div>
-                <div style={{ color: "#666", fontSize: 11, lineHeight: 1.5 }}>
+                <div style={{ color: "#8792a2", fontSize: 11, lineHeight: 1.5 }}>
                   {c.desc}
                 </div>
               </div>
             ))}
           </div>
-          <p style={{ color: "#666", fontSize: 11, lineHeight: 1.7, marginTop: 16 }}>
+          <p style={{ color: "#8792a2", fontSize: 11, lineHeight: 1.7, marginTop: 16 }}>
             This architecture ensures that every score change has a paper trail — from source document
             to factor impact to market score. When a state enacts AAM legislation, the document enters
             RPL, maps to the LEG factor in FKB, and the market score updates with full provenance.
@@ -366,17 +366,17 @@ export default async function AboutPage() {
         </section>
 
         {/* ═══ Who We Serve ═══ */}
-        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: "1px solid #e3e8ee" }}>
           <h2 style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 22,
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 8,
           }}>
             Who We Serve
           </h2>
-          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+          <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
             AirIndex serves professionals making decisions in the UAM ecosystem. The index is designed
             to be the benchmark the industry cites — an open, auditable standard that grows more useful
             as more people use it and challenge it.
@@ -386,8 +386,8 @@ export default async function AboutPage() {
               <div key={a.type} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
                 <span style={{ color: "#5B8DB8", fontSize: 8, marginTop: 5, flexShrink: 0 }}>&#9646;</span>
                 <div>
-                  <div style={{ color: "#ccc", fontSize: 12, fontWeight: 600 }}>{a.type}</div>
-                  <div style={{ color: "#666", fontSize: 11, lineHeight: 1.5 }}>{a.desc}</div>
+                  <div style={{ color: "#0a2540", fontSize: 12, fontWeight: 600 }}>{a.type}</div>
+                  <div style={{ color: "#8792a2", fontSize: 11, lineHeight: 1.5 }}>{a.desc}</div>
                 </div>
               </div>
             ))}
@@ -422,8 +422,8 @@ export default async function AboutPage() {
             style={{
               display: "inline-block",
               padding: "12px 24px",
-              border: "1px solid rgba(255,255,255,0.15)",
-              color: "#ccc",
+              border: "1px solid #e3e8ee",
+              color: "#0a2540",
               fontSize: 12,
               fontWeight: 600,
               letterSpacing: "0.06em",
@@ -438,8 +438,8 @@ export default async function AboutPage() {
             style={{
               display: "inline-block",
               padding: "12px 24px",
-              border: "1px solid rgba(255,255,255,0.15)",
-              color: "#ccc",
+              border: "1px solid #e3e8ee",
+              color: "#0a2540",
               fontSize: 12,
               fontWeight: 600,
               letterSpacing: "0.06em",
@@ -454,9 +454,9 @@ export default async function AboutPage() {
         {/* ═══ Contact ═══ */}
         <section style={{
           padding: "24px 0",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
+          borderTop: "1px solid #e3e8ee",
         }}>
-          <div style={{ color: "#666", fontSize: 12, lineHeight: 1.8 }}>
+          <div style={{ color: "#8792a2", fontSize: 12, lineHeight: 1.8 }}>
             <p>
               Research access, data partnerships, API inquiries:{" "}
               <a href="mailto:info@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>info@airindex.io</a>
@@ -474,15 +474,15 @@ export default async function AboutPage() {
 
         {/* ═══ Footer meta ═══ */}
         <div style={{
-          borderTop: "1px solid rgba(255,255,255,0.06)",
+          borderTop: "1px solid #e3e8ee",
           paddingTop: 24,
           marginTop: 8,
           fontSize: 11,
-          color: "#444",
+          color: "#cbd5e1",
           lineHeight: 1.6,
         }}>
           <p>
-            <a href="https://verticaldatagroup.com" target="_blank" rel="noopener noreferrer" style={{ color: "#444", textDecoration: "none" }}>
+            <a href="https://verticaldatagroup.com" target="_blank" rel="noopener noreferrer" style={{ color: "#cbd5e1", textDecoration: "none" }}>
               Vertical Data Group, LLC
             </a>{" "}
             &middot; PO Box 31172 &middot; Myrtle Beach, SC 29588
@@ -491,16 +491,16 @@ export default async function AboutPage() {
             SAM.gov Registered &middot; UEI RB63W8RYCHY3 &middot; CAGE 1AUW7 &middot; South Carolina LLC
           </p>
           <p style={{ marginTop: 4 }}>
-            <Link href="/" style={{ color: "#444", textDecoration: "none" }}>airindex.io</Link>
+            <Link href="/" style={{ color: "#cbd5e1", textDecoration: "none" }}>airindex.io</Link>
             {" "}&middot;{" "}
-            <Link href="/terms" style={{ color: "#444", textDecoration: "none" }}>Terms</Link>
+            <Link href="/terms" style={{ color: "#cbd5e1", textDecoration: "none" }}>Terms</Link>
             {" "}&middot;{" "}
-            <Link href="/privacy" style={{ color: "#444", textDecoration: "none" }}>Privacy</Link>
+            <Link href="/privacy" style={{ color: "#cbd5e1", textDecoration: "none" }}>Privacy</Link>
           </p>
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

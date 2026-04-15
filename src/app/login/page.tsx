@@ -64,14 +64,15 @@ function LoginForm() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#050508",
+        background:
+          "linear-gradient(180deg, rgba(91,141,184,0.08) 0%, rgba(167,139,250,0.04) 45%, #ffffff 80%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         fontFamily: "'Inter', sans-serif",
       }}
     >
-      <div style={{ width: "100%", maxWidth: 400, padding: 32, textAlign: "center" }}>
+      <div style={{ width: "100%", maxWidth: 420, padding: 32, textAlign: "center" }}>
         {/* Logo */}
         <div
           style={{
@@ -79,15 +80,24 @@ function LoginForm() {
             alignItems: "center",
             justifyContent: "center",
             gap: 14,
-            marginBottom: 48,
+            marginBottom: 40,
           }}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/logo/airindex-wordmark.svg"
+            src="/images/logo/airindex-wordmark-light.svg"
             alt="AirIndex"
             style={{ height: 36 }}
           />
         </div>
+
+        <div style={{
+          background: "#ffffff",
+          border: "1px solid #e3e8ee",
+          borderRadius: 14,
+          padding: "32px 28px",
+          boxShadow: "0 10px 30px rgba(10,37,64,0.08), 0 2px 6px rgba(10,37,64,0.04)",
+        }}>
 
         {step === "email" ? (
           <>
@@ -96,7 +106,7 @@ function LoginForm() {
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: 20,
                 fontWeight: 700,
-                color: "#fff",
+                color: "#0a2540",
                 marginBottom: 12,
               }}
             >
@@ -105,7 +115,7 @@ function LoginForm() {
             <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                color: "#888899",
+                color: "#425466",
                 fontSize: 12,
                 marginBottom: 32,
                 lineHeight: 1.6,
@@ -120,12 +130,12 @@ function LoginForm() {
             {authError && (
               <div
                 style={{
-                  color: "#ff4444",
+                  color: "#dc2626",
                   fontSize: 11,
                   marginBottom: 16,
                   padding: "10px 14px",
-                  background: "rgba(255,68,68,0.06)",
-                  border: "1px solid rgba(255,68,68,0.15)",
+                  background: "#fef2f2",
+                  border: "1px solid #fecaca",
                   borderRadius: 6,
                 }}
               >
@@ -156,10 +166,10 @@ function LoginForm() {
                 style={{
                   width: "100%",
                   padding: "14px 16px",
-                  background: "#0a0a12",
-                  border: "1px solid #1a1a2e",
-                  borderRadius: 6,
-                  color: "#e0e0e8",
+                  background: "#ffffff",
+                  border: "1px solid #e3e8ee",
+                  borderRadius: 8,
+                  color: "#0a2540",
                   fontSize: 14,
                   fontFamily: "'Inter', sans-serif",
                   outline: "none",
@@ -172,29 +182,27 @@ function LoginForm() {
                 style={{
                   width: "100%",
                   padding: "14px 16px",
-                  background: email.trim()
-                    ? "linear-gradient(135deg, #5B8DB8, #7c3aed)"
-                    : "#1a1a2e",
+                  background: email.trim() ? "#0a2540" : "#cbd5e1",
                   border: "none",
-                  borderRadius: 6,
-                  color: email.trim() ? "#000" : "#555",
+                  borderRadius: 8,
+                  color: "#ffffff",
                   fontSize: 13,
-                  fontWeight: 700,
+                  fontWeight: 600,
                   fontFamily: "'Inter', sans-serif",
-                  letterSpacing: "0.06em",
+                  letterSpacing: "0.02em",
                   cursor: email.trim() ? "pointer" : "default",
                   transition: "all 0.2s",
                 }}
               >
-                {loading ? "SENDING..." : isSignup ? "CREATE ACCOUNT" : "SEND SIGN-IN LINK"}
+                {loading ? "Sending..." : isSignup ? "Create Account" : "Send Sign-In Link"}
               </button>
             </form>
 
             {error && (
-              <p style={{ color: "#ff4444", fontSize: 12, marginTop: 16 }}>{error}</p>
+              <p style={{ color: "#dc2626", fontSize: 12, marginTop: 16 }}>{error}</p>
             )}
 
-            <p style={{ color: "#666", fontSize: 11, marginTop: 24 }}>
+            <p style={{ color: "#697386", fontSize: 12, marginTop: 24 }}>
               {isSignup ? (
                 <>
                   Already have an account?{" "}
@@ -217,10 +225,10 @@ function LoginForm() {
                 </>
               )}
             </p>
-            <p style={{ color: "#666", fontSize: 10, marginTop: 16 }}>
+            <p style={{ color: "#697386", fontSize: 11, marginTop: 16 }}>
               No password needed — we&apos;ll email you a sign-in link.
             </p>
-            <p style={{ color: "#555", fontSize: 9, marginTop: 12, lineHeight: 1.5 }}>
+            <p style={{ color: "#8792a2", fontSize: 10, marginTop: 12, lineHeight: 1.5 }}>
               By creating an account, you agree to our{" "}
               <a href="/terms" style={{ color: "#5B8DB8", textDecoration: "none" }}>Terms of Service</a> and{" "}
               <a href="/privacy" style={{ color: "#5B8DB8", textDecoration: "none" }}>Privacy Policy</a>, and to receive
@@ -232,11 +240,12 @@ function LoginForm() {
           <>
             <div
               style={{
-                width: 48,
-                height: 48,
+                width: 52,
+                height: 52,
                 borderRadius: "50%",
                 background: "rgba(91,141,184,0.1)",
                 border: "1px solid rgba(91,141,184,0.3)",
+                color: "#5B8DB8",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -252,7 +261,7 @@ function LoginForm() {
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: 20,
                 fontWeight: 700,
-                color: "#fff",
+                color: "#0a2540",
                 marginBottom: 12,
               }}
             >
@@ -261,7 +270,7 @@ function LoginForm() {
             <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                color: "#888899",
+                color: "#425466",
                 fontSize: 12,
                 marginBottom: 32,
                 lineHeight: 1.6,
@@ -269,7 +278,7 @@ function LoginForm() {
             >
               {isSignup ? "We sent a verification link to" : "We sent a sign-in link to"}
               <br />
-              <span style={{ color: "#7c3aed", fontWeight: 700 }}>{email}</span>
+              <span style={{ color: "#0a2540", fontWeight: 700 }}>{email}</span>
               <br />
               <br />
               {isSignup ? "Click the link in the email to activate your account." : "Click the link in the email to sign in."}
@@ -283,23 +292,24 @@ function LoginForm() {
               style={{
                 background: "transparent",
                 border: "none",
-                color: "#555",
-                fontSize: 11,
+                color: "#697386",
+                fontSize: 12,
                 cursor: "pointer",
                 fontFamily: "'Inter', sans-serif",
                 transition: "color 0.15s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#888")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#555")}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#0a2540")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#697386")}
             >
               ← Use a different email
             </button>
 
-            <p style={{ color: "#666", fontSize: 10, marginTop: 32 }}>
+            <p style={{ color: "#8792a2", fontSize: 11, marginTop: 32 }}>
               Link expires in 10 minutes. Check spam if you don&apos;t see it.
             </p>
           </>
         )}
+        </div>
       </div>
     </div>
   );
@@ -308,8 +318,8 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div style={{ minHeight: "100vh", background: "#050508", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ color: "#555", fontSize: 13, fontFamily: "'Inter', sans-serif", letterSpacing: 2 }}>LOADING...</div>
+      <div style={{ minHeight: "100vh", background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ color: "#697386", fontSize: 13, fontFamily: "'Inter', sans-serif", letterSpacing: "0.08em" }}>Loading...</div>
       </div>
     }>
       <LoginForm />

@@ -134,10 +134,10 @@ function Section({ id, title, children }: { id: string; title: string; children:
           fontFamily: "'Space Grotesk', sans-serif",
           fontWeight: 700,
           fontSize: 20,
-          color: "#fff",
+          color: "#0a2540",
           marginBottom: 20,
           paddingBottom: 12,
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          borderBottom: "1px solid #e3e8ee",
         }}
       >
         {title}
@@ -157,7 +157,7 @@ function MetaLabel({ children }: { children: React.ReactNode }) {
         fontFamily: "'Space Mono', monospace",
         fontSize: 9,
         letterSpacing: 1.5,
-        color: "#555",
+        color: "#8792a2",
         textTransform: "uppercase",
       }}
     >
@@ -176,8 +176,8 @@ export default function MethodologyPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#050508",
-        color: "#ccc",
+        background: "#ffffff",
+        color: "#0a2540",
         fontFamily: "'Inter', sans-serif",
         fontSize: 14,
         lineHeight: 1.7,
@@ -186,7 +186,7 @@ export default function MethodologyPage() {
     >
       <TrackPageView page="/methodology" />
 
-      <SiteNav />
+      <SiteNav theme="light" />
 
       {/* Content */}
       <main style={{ maxWidth: 720, margin: "0 auto", padding: "48px clamp(20px, 5vw, 32px) 80px" }}>
@@ -197,7 +197,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Mono', monospace",
               fontSize: 10,
               letterSpacing: 2,
-              color: "#555",
+              color: "#8792a2",
               textTransform: "uppercase",
               marginBottom: 16,
             }}
@@ -209,7 +209,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: "clamp(28px, 5vw, 36px)",
-              color: "#fff",
+              color: "#0a2540",
               lineHeight: 1.2,
               marginBottom: 16,
             }}
@@ -266,8 +266,8 @@ export default function MethodologyPage() {
               <div
                 key={f.key}
                 style={{
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "#f9fbfd",
+                  border: "1px solid #e3e8ee",
                   borderRadius: 8,
                   padding: "24px 24px 20px",
                 }}
@@ -279,7 +279,7 @@ export default function MethodologyPage() {
                       style={{
                         fontFamily: "'Space Mono', monospace",
                         fontSize: 10,
-                        color: "#555",
+                        color: "#8792a2",
                         letterSpacing: 1,
                       }}
                     >
@@ -290,7 +290,7 @@ export default function MethodologyPage() {
                         fontFamily: "'Space Grotesk', sans-serif",
                         fontWeight: 600,
                         fontSize: 16,
-                        color: "#fff",
+                        color: "#0a2540",
                       }}
                     >
                       {f.label}
@@ -327,7 +327,7 @@ export default function MethodologyPage() {
                 <div
                   style={{
                     height: 3,
-                    background: "rgba(255,255,255,0.04)",
+                    background: "#e3e8ee",
                     borderRadius: 2,
                     marginBottom: 16,
                     overflow: "hidden",
@@ -349,13 +349,13 @@ export default function MethodologyPage() {
                 {/* What qualifies */}
                 <div style={{ marginBottom: 12 }}>
                   <MetaLabel>What Qualifies</MetaLabel>
-                  <p style={{ color: "#999", fontSize: 13, marginTop: 4 }}>{f.qualifies}</p>
+                  <p style={{ color: "#425466", fontSize: 13, marginTop: 4 }}>{f.qualifies}</p>
                 </div>
 
                 {/* What does not qualify */}
                 <div style={{ marginBottom: 12 }}>
                   <MetaLabel>What Does Not Qualify</MetaLabel>
-                  <p style={{ color: "#999", fontSize: 13, marginTop: 4 }}>{f.doesNotQualify}</p>
+                  <p style={{ color: "#425466", fontSize: 13, marginTop: 4 }}>{f.doesNotQualify}</p>
                 </div>
 
                 {/* How to improve */}
@@ -367,7 +367,7 @@ export default function MethodologyPage() {
                 {/* Sources */}
                 <div>
                   <MetaLabel>Data Sources</MetaLabel>
-                  <p style={{ color: "#999", fontSize: 13, marginTop: 4 }}>{f.sources}</p>
+                  <p style={{ color: "#425466", fontSize: 13, marginTop: 4 }}>{f.sources}</p>
                 </div>
               </div>
             ))}
@@ -382,7 +382,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 600,
               fontSize: 15,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 12,
             }}
           >
@@ -410,7 +410,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 600,
               fontSize: 15,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 12,
             }}
           >
@@ -422,8 +422,8 @@ export default function MethodologyPage() {
           </p>
           <div
             style={{
-              background: "rgba(255,255,255,0.02)",
-              border: "1px solid rgba(255,255,255,0.06)",
+              background: "#f9fbfd",
+              border: "1px solid #e3e8ee",
               borderRadius: 8,
               padding: "20px 24px",
               marginBottom: 16,
@@ -431,26 +431,26 @@ export default function MethodologyPage() {
           >
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ color: "#fff", fontSize: 13 }}>Legislative Framework</span>
+                <span style={{ color: "#0a2540", fontSize: 13 }}>Legislative Framework</span>
                 <span style={{ fontFamily: "'Space Mono', monospace", color: "#5B8DB8", fontSize: 13, fontWeight: 700 }}>20 pts</span>
               </div>
-              <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
+              <p style={{ color: "#425466", fontSize: 13, marginTop: -4 }}>
                 State Legislation &mdash; elevated to the highest weight in v1.3 based on field validation. Legislation creates the legal framework infrastructure developers require before committing capital. Community preparedness, reflected in legislative activity, precedes and enables operator engagement.
               </p>
-              <div style={{ height: 1, background: "rgba(255,255,255,0.04)" }} />
+              <div style={{ height: 1, background: "#e3e8ee" }} />
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ color: "#fff", fontSize: 13 }}>Infrastructure &amp; Market Commitment</span>
+                <span style={{ color: "#0a2540", fontSize: 13 }}>Infrastructure &amp; Market Commitment</span>
                 <span style={{ fontFamily: "'Space Mono', monospace", color: "#5B8DB8", fontSize: 13, fontWeight: 700 }}>15 pts each</span>
               </div>
-              <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
+              <p style={{ color: "#425466", fontSize: 13, marginTop: -4 }}>
                 Pilot Program, Approved Vertiport, Active Operator Presence, Vertiport Zoning &mdash; the operational and infrastructure signals. These require real capital, real approvals, and real operator commitment.
               </p>
-              <div style={{ height: 1, background: "rgba(255,255,255,0.04)" }} />
+              <div style={{ height: 1, background: "#e3e8ee" }} />
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ color: "#fff", fontSize: 13 }}>Regulatory &amp; Environmental Readiness</span>
+                <span style={{ color: "#0a2540", fontSize: 13 }}>Regulatory &amp; Environmental Readiness</span>
                 <span style={{ fontFamily: "'Space Mono', monospace", color: "#5B8DB8", fontSize: 13, fontWeight: 700 }}>10 pts each</span>
               </div>
-              <p style={{ color: "#999", fontSize: 13, marginTop: -4 }}>
+              <p style={{ color: "#425466", fontSize: 13, marginTop: -4 }}>
                 Regulatory Posture, Weather Infrastructure &mdash; necessary but not sufficient. A friendly regulatory environment and weather sensing infrastructure support operations but do not alone make a market ready.
               </p>
             </div>
@@ -493,7 +493,7 @@ export default function MethodologyPage() {
             {FACTORS.map((f, i) => {
               const colors = ["#5B8DB8", "#00ff88", "#7c3aed", "#f59e0b", "#ff6b35", "#14b8a6", "#ff4444"];
               return (
-                <div key={f.key} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#888" }}>
+                <div key={f.key} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#697386" }}>
                   <div style={{ width: 8, height: 8, borderRadius: 2, background: colors[i % colors.length], opacity: 0.8 }} />
                   {f.label} ({f.weight}%)
                 </div>
@@ -507,7 +507,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 600,
               fontSize: 15,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 12,
             }}
           >
@@ -526,8 +526,8 @@ export default function MethodologyPage() {
                   gap: 16,
                   alignItems: "flex-start",
                   padding: "16px 20px",
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "#f9fbfd",
+                  border: "1px solid #e3e8ee",
                   borderRadius: 8,
                 }}
               >
@@ -543,11 +543,11 @@ export default function MethodologyPage() {
                   >
                     {t.label}
                   </div>
-                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#555", marginTop: 2 }}>
+                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#8792a2", marginTop: 2 }}>
                     {t.range}
                   </div>
                 </div>
-                <p style={{ color: "#999", fontSize: 13, lineHeight: 1.6 }}>{t.description}</p>
+                <p style={{ color: "#425466", fontSize: 13, lineHeight: 1.6 }}>{t.description}</p>
               </div>
             ))}
           </div>
@@ -558,7 +558,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 600,
               fontSize: 15,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 12,
             }}
           >
@@ -591,15 +591,15 @@ export default function MethodologyPage() {
                 key={s.label}
                 style={{
                   padding: "16px 20px",
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "#f9fbfd",
+                  border: "1px solid #e3e8ee",
                   borderRadius: 8,
                 }}
               >
-                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 14, color: "#fff", marginBottom: 4 }}>
+                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, fontSize: 14, color: "#0a2540", marginBottom: 4 }}>
                   {s.label}
                 </div>
-                <p style={{ color: "#999", fontSize: 13, marginBottom: 0 }}>{s.desc}</p>
+                <p style={{ color: "#425466", fontSize: 13, marginBottom: 0 }}>{s.desc}</p>
               </div>
             ))}
           </div>
@@ -609,7 +609,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 600,
               fontSize: 15,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 12,
             }}
           >
@@ -639,7 +639,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 600,
               fontSize: 15,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 12,
             }}
           >
@@ -664,15 +664,15 @@ export default function MethodologyPage() {
                   display: "flex",
                   gap: 16,
                   padding: "12px 16px",
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "#f9fbfd",
+                  border: "1px solid #e3e8ee",
                   borderRadius: 6,
                   alignItems: "baseline",
                 }}
               >
                 <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 13, color: "#5B8DB8", minWidth: 28 }}>{p.version}</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#555", minWidth: 100, flexShrink: 0 }}>{p.date}</span>
-                <span style={{ color: "#999", fontSize: 13 }}>{p.desc}</span>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#8792a2", minWidth: 100, flexShrink: 0 }}>{p.date}</span>
+                <span style={{ color: "#425466", fontSize: 13 }}>{p.desc}</span>
               </div>
             ))}
           </div>
@@ -685,7 +685,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 600,
               fontSize: 15,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 12,
             }}
           >
@@ -705,7 +705,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 600,
               fontSize: 15,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 12,
             }}
           >
@@ -731,7 +731,7 @@ export default function MethodologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 600,
               fontSize: 15,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 12,
             }}
           >
@@ -768,7 +768,7 @@ export default function MethodologyPage() {
                   alignItems: "flex-start",
                   gap: 12,
                   fontSize: 14,
-                  color: "#ccc",
+                  color: "#0a2540",
                   lineHeight: 1.6,
                 }}
               >
@@ -777,7 +777,7 @@ export default function MethodologyPage() {
               </li>
             ))}
           </ul>
-          <p style={{ color: "#999", fontSize: 14, lineHeight: 1.7 }}>
+          <p style={{ color: "#425466", fontSize: 14, lineHeight: 1.7 }}>
             Vertical Data Group actively supports research partnerships and data collaborations
             with government agencies, universities, and policy institutions. For research access
             or partnership inquiries, contact{" "}
@@ -808,14 +808,14 @@ export default function MethodologyPage() {
           >
             Source: AirIndex UAM Market Readiness Index, v1.3 (airindex.io/methodology)
           </div>
-          <p style={{ color: "#999", fontSize: 13, marginBottom: 16 }}>
+          <p style={{ color: "#425466", fontSize: 13, marginBottom: 16 }}>
             A formal methodology paper with DOI assignment is forthcoming. Researchers requiring
             a citable reference should contact{" "}
             <a href="mailto:info@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               info@airindex.io
             </a>
           </p>
-          <p style={{ color: "#999", fontSize: 13 }}>
+          <p style={{ color: "#425466", fontSize: 13 }}>
             For press inquiries, data partnerships, or API access, contact{" "}
             <a href="mailto:info@airindex.io" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               info@airindex.io
@@ -827,7 +827,7 @@ export default function MethodologyPage() {
         <div
           style={{
             paddingTop: 32,
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderTop: "1px solid #e3e8ee",
             display: "flex",
             gap: 24,
             fontSize: 12,
@@ -836,13 +836,13 @@ export default function MethodologyPage() {
           <Link href="/dashboard" style={{ color: "#5B8DB8", textDecoration: "none" }}>
             View Dashboard
           </Link>
-          <Link href="/terminology" style={{ color: "#555", textDecoration: "none" }}>
+          <Link href="/terminology" style={{ color: "#8792a2", textDecoration: "none" }}>
             Terminology Reference
           </Link>
-          <Link href="/api" style={{ color: "#555", textDecoration: "none" }}>
+          <Link href="/api" style={{ color: "#8792a2", textDecoration: "none" }}>
             API
           </Link>
-          <Link href="/" style={{ color: "#555", textDecoration: "none" }}>
+          <Link href="/" style={{ color: "#8792a2", textDecoration: "none" }}>
             Back to Home
           </Link>
         </div>

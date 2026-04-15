@@ -22,7 +22,12 @@ const MARKET_OPTIONS = [
   "Tampa, FL",
 ] as const;
 
-export default function RequestAccessForm() {
+export default function RequestAccessForm({
+  theme = "dark",
+}: {
+  theme?: "dark" | "light";
+}) {
+  const isLight = theme === "light";
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -31,7 +36,7 @@ export default function RequestAccessForm() {
     useCase: "",
     markets: [] as string[],
     decisionContext: "",
-    website: "", // honeypot
+    website: "",
   });
   const [marketsOpen, setMarketsOpen] = useState(false);
   const [state, setState] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -65,13 +70,28 @@ export default function RequestAccessForm() {
     }
   };
 
+  // Theme tokens
+  const inputBg = isLight ? "#ffffff" : "#0a0a12";
+  const inputBorder = isLight ? "#e3e8ee" : "#1a1a2e";
+  const inputText = isLight ? "#0a2540" : "#ccc";
+  const labelColor = isLight ? "#425466" : "#888";
+  const optionBg = isLight ? "#ffffff" : "#0a0a12";
+  const optionText = isLight ? "#0a2540" : "#ccc";
+  const placeholderText = isLight ? "#8792a2" : "#666";
+  const successColor = isLight ? "#0d9488" : "#00ff88";
+  const mutedText = isLight ? "#697386" : "#888";
+  const fineText = isLight ? "#8792a2" : "#555";
+  const errorColor = isLight ? "#dc2626" : "#ff4444";
+  const buttonFg = "#ffffff";
+  const chevronFill = isLight ? "%239ca3af" : "%23666";
+
   const inputStyle: React.CSSProperties = {
     width: "100%",
     padding: "12px 14px",
-    background: "#0a0a12",
-    border: "1px solid #1a1a2e",
+    background: inputBg,
+    border: `1px solid ${inputBorder}`,
     borderRadius: 6,
-    color: "#ccc",
+    color: inputText,
     fontSize: 13,
     fontFamily: "'Inter', sans-serif",
     outline: "none",
@@ -81,7 +101,7 @@ export default function RequestAccessForm() {
   const labelStyle: React.CSSProperties = {
     fontSize: 9,
     letterSpacing: 2,
-    color: "#888",
+    color: labelColor,
     marginBottom: 6,
     display: "block",
   };
@@ -92,7 +112,7 @@ export default function RequestAccessForm() {
         <div
           style={{
             fontSize: 14,
-            color: "#00ff88",
+            color: successColor,
             marginBottom: 8,
             fontFamily: "'Inter', sans-serif",
             fontWeight: 700,
@@ -100,7 +120,7 @@ export default function RequestAccessForm() {
         >
           Request received
         </div>
-        <p style={{ fontSize: 12, color: "#888", lineHeight: 1.6 }}>
+        <p style={{ fontSize: 12, color: mutedText, lineHeight: 1.6 }}>
           We&apos;ll review your request and send an invite link to your email.
           Most requests are processed within 24 hours.
         </p>
@@ -171,15 +191,15 @@ export default function RequestAccessForm() {
             ...inputStyle,
             cursor: "pointer",
             appearance: "none",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='${chevronFill}' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "right 14px center",
             paddingRight: 36,
           }}
         >
-          <option value="" style={{ background: "#0a0a12", color: "#666" }}>Select your buyer type</option>
+          <option value="" style={{ background: optionBg, color: placeholderText }}>Select your buyer type</option>
           {USE_CASES.map((uc) => (
-            <option key={uc} value={uc} style={{ background: "#0a0a12", color: "#ccc" }}>
+            <option key={uc} value={uc} style={{ background: optionBg, color: optionText }}>
               {uc}
             </option>
           ))}
@@ -195,8 +215,8 @@ export default function RequestAccessForm() {
             ...inputStyle,
             cursor: "pointer",
             textAlign: "left",
-            color: form.markets.length > 0 ? "#ccc" : "#666",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+            color: form.markets.length > 0 ? inputText : placeholderText,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='${chevronFill}' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
             backgroundRepeat: "no-repeat",
             backgroundPosition: "right 14px center",
             paddingRight: 36,
@@ -206,8 +226,8 @@ export default function RequestAccessForm() {
         </button>
         {marketsOpen && (
           <div style={{
-            background: "#0a0a12",
-            border: "1px solid #1a1a2e",
+            background: optionBg,
+            border: `1px solid ${inputBorder}`,
             borderRadius: 6,
             marginTop: 4,
             maxHeight: 200,
@@ -224,7 +244,7 @@ export default function RequestAccessForm() {
                   padding: "6px 14px",
                   cursor: "pointer",
                   fontSize: 12,
-                  color: form.markets.includes(market) ? "#fff" : "#999",
+                  color: form.markets.includes(market) ? (isLight ? "#0a2540" : "#fff") : (isLight ? "#425466" : "#999"),
                   transition: "background 0.1s",
                 }}
               >
@@ -276,13 +296,13 @@ export default function RequestAccessForm() {
         disabled={state === "submitting" || !form.email.trim() || !form.name.trim()}
         style={{
           padding: "14px 28px",
-          background: "#5B8DB8",
-          color: "#050508",
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: 2,
+          background: "#0a2540",
+          color: buttonFg,
+          fontSize: 13,
+          fontWeight: 600,
+          letterSpacing: "0.02em",
           border: "none",
-          borderRadius: 6,
+          borderRadius: 8,
           cursor: state === "submitting" ? "wait" : "pointer",
           fontFamily: "'Inter', sans-serif",
           transition: "opacity 0.15s",
@@ -290,16 +310,16 @@ export default function RequestAccessForm() {
           marginTop: 8,
         }}
       >
-        {state === "submitting" ? "SUBMITTING..." : "REQUEST ACCESS"}
+        {state === "submitting" ? "Submitting..." : "Request Access"}
       </button>
 
       {state === "error" && (
-        <p style={{ fontSize: 11, color: "#ff4444", textAlign: "center", margin: 0 }}>
+        <p style={{ fontSize: 11, color: errorColor, textAlign: "center", margin: 0 }}>
           Something went wrong. Please try again or contact hello@airindex.io.
         </p>
       )}
 
-      <p style={{ fontSize: 10, color: "#555", textAlign: "center", margin: 0, lineHeight: 1.6 }}>
+      <p style={{ fontSize: 10, color: fineText, textAlign: "center", margin: 0, lineHeight: 1.6 }}>
         By requesting access, you agree to receive market updates and the weekly UAM Market Pulse. You can unsubscribe at any time.
       </p>
     </form>
