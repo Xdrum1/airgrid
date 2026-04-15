@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import PrintButton from "../../gap/[cityId]/PrintButton";
+import TrackPageView from "@/components/TrackPageView";
 
 // Factor key -> FKB short code
 const KEY_TO_CODE: Record<keyof ScoreBreakdown, string> = {
@@ -425,6 +426,7 @@ export default async function MunicipalityBriefingPage({
         @page { size: letter; margin: 0.6in; }
       `}</style>
 
+      <TrackPageView page={`briefing-municipality:${cityId}`} entityType="briefing" />
       <div className="screen-only">
         <SiteNav />
       </div>

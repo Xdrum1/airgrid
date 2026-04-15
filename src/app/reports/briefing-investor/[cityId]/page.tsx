@@ -28,6 +28,7 @@ import { prisma } from "@/lib/prisma";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import PrintButton from "../../gap/[cityId]/PrintButton";
+import TrackPageView from "@/components/TrackPageView";
 
 export async function generateStaticParams() {
   return CITIES.map((c) => ({ cityId: c.id }));
@@ -212,6 +213,7 @@ export default async function InvestorBriefingPage({
         .section-card a { color: #0369a1 !important; }
       } @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');`}</style>
 
+      <TrackPageView page={`briefing-investor:${cityId}`} entityType="briefing" />
       <div className="screen-only">
         <SiteNav />
       </div>

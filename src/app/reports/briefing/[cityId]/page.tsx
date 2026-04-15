@@ -16,6 +16,7 @@ import { getScoreTrajectory } from "@/lib/score-history";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import PrintButton from "../../gap/[cityId]/PrintButton";
+import TrackPageView from "@/components/TrackPageView";
 
 // Override field → FKB short code (briefing uses these codes in headers)
 const OVERRIDE_FIELD_TO_CODE: Record<string, string> = {
@@ -342,6 +343,7 @@ export default async function BriefingPage({
         @page { size: letter; margin: 0.6in; }
       `}</style>
 
+      <TrackPageView page={`briefing-infrastructure:${cityId}`} entityType="briefing" />
       <div className="screen-only">
         <SiteNav />
       </div>
