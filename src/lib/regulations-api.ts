@@ -109,7 +109,9 @@ export async function searchRegulations(
 
       logger.info(`Regulations.gov: "${term}" returned ${data.data?.length ?? 0} documents`);
     } catch (err) {
-      logger.error(`Regulations.gov fetch failed for "${term}":`, err);
+      const msg = `exception for term "${term}": ${(err as Error)?.message ?? err}`;
+      logger.error(`Regulations.gov fetch failed: ${msg}`);
+      if (!firstApiError) firstApiError = msg;
     }
   }
 

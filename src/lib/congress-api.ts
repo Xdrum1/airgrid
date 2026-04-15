@@ -199,7 +199,9 @@ export async function searchCongressBills(
 
       logger.info(`${tb.congress}-${tb.type.toUpperCase()}-${tb.number}: ${b.latestAction?.actionDate} — ${b.latestAction?.text?.slice(0, 80)}`);
     } catch (err) {
-      logger.error(`Congress.gov fetch failed for ${tb.congress}-${tb.type}-${tb.number}:`, err);
+      const msg = `exception for ${tb.congress}-${tb.type}-${tb.number}: ${(err as Error)?.message ?? err}`;
+      logger.error(`Congress.gov fetch failed: ${msg}`);
+      if (!firstApiError) firstApiError = msg;
     }
   }
 
