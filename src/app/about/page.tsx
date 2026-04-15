@@ -34,14 +34,13 @@ const AUDIENCES = [
   { type: "Weather & Sensor Companies", desc: "Market coverage mapping and infrastructure gap identification" },
 ];
 
-const DATA_SOURCES = [
-  { name: "Federal Register", desc: "FAA rulemaking, powered lift SFARs, airspace actions" },
-  { name: "LegiScan", desc: "State-level UAM legislation across all 50 states" },
-  { name: "SEC EDGAR", desc: "Operator financial filings, 8-K disclosures, market signals" },
-  { name: "Congress.gov", desc: "Federal AAM bills, hearings, committee actions via API v3" },
-  { name: "Regulations.gov", desc: "FAA docket activity, proposed rules, public comment tracking" },
-  { name: "FAA NASR 5010", desc: "FAA-registered heliports mapped to all tracked metros" },
-  { name: "Operator Activity", desc: "Press releases, partnership announcements, certification milestones" },
+const DATA_CATEGORIES = [
+  { name: "Federal Regulatory", desc: "Rulemaking, airspace actions, powered-lift SFARs, docket activity" },
+  { name: "Legislative", desc: "Federal bills, state-level UAM legislation, committee activity" },
+  { name: "Market & Financial", desc: "Operator filings, disclosures, capital-market signals" },
+  { name: "Infrastructure Registry", desc: "Registered heliports and landing zones mapped to tracked metros" },
+  { name: "Operator Activity", desc: "Announcements, partnerships, certification milestones" },
+  { name: "Geospatial & Imagery", desc: "Satellite imagery and airspace determination data" },
 ];
 
 export default async function AboutPage() {
@@ -241,7 +240,7 @@ export default async function AboutPage() {
             })}
           </div>
 
-          {/* Data Sources */}
+          {/* Data Categories */}
           <h3 style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 16,
@@ -249,15 +248,15 @@ export default async function AboutPage() {
             color: "#0a2540",
             marginBottom: 14,
           }}>
-            Data Sources
+            Data Categories
           </h3>
           <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, marginBottom: 16 }}>
-            Our data comes from primary sources — every score change is sourced, timestamped, and
-            traceable. We do not rate cities on press releases or announcements. We rate them on
-            verifiable facts.
+            Every score change is sourced, timestamped, and traceable. We don&apos;t rate cities on
+            press releases or announcements — we rate them on verifiable primary-source data.
+            Specific providers and ingest pipelines are shared under license.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {DATA_SOURCES.map((s) => (
+            {DATA_CATEGORIES.map((s) => (
               <div key={s.name} style={{
                 padding: "12px 16px",
                 background: "#f9fbfd",
