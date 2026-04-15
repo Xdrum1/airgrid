@@ -401,29 +401,81 @@ export default function CityDetailPanel({
             </Link>
           </div>
 
-          {/* Briefing upsell */}
+          {/* Persona briefings — audience-specific per-market deliverables */}
           <div
             style={{
-              padding: "12px 20px",
+              padding: "12px 20px 16px",
               borderBottom: "1px solid rgba(255,255,255,0.06)",
-              background: "rgba(124,58,237,0.04)",
             }}
           >
-            <p style={{ color: "#999", fontSize: 9, lineHeight: 1.6, margin: "0 0 6px" }}>
-              Want a full analysis of {selected.city} with gap narrative, score trajectory, and recommendations?
-            </p>
-            <Link
-              href={`/briefings`}
+            <div
               style={{
-                color: "#7c3aed",
                 fontSize: 9,
+                letterSpacing: "0.15em",
+                color: "#888",
+                textTransform: "uppercase",
+                marginBottom: 10,
                 fontWeight: 700,
-                letterSpacing: "0.05em",
-                textDecoration: "none",
               }}
             >
-              Request a Market Briefing →
-            </Link>
+              Market Briefings
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 6,
+              }}
+            >
+              {[
+                { href: `/reports/briefing/${selected.id}`, label: "Infrastructure", color: "#00d4ff", bg: "rgba(0,212,255,0.06)", border: "rgba(0,212,255,0.2)" },
+                { href: `/reports/briefing-municipality/${selected.id}`, label: "Municipality", color: "#5B8DB8", bg: "rgba(91,141,184,0.08)", border: "rgba(91,141,184,0.2)" },
+                { href: `/reports/briefing-insurance/${selected.id}`, label: "Insurance", color: "#b45309", bg: "rgba(180,83,9,0.08)", border: "rgba(180,83,9,0.25)" },
+                { href: `/reports/briefing-operator/${selected.id}`, label: "Operator", color: "#7c3aed", bg: "rgba(124,58,237,0.08)", border: "rgba(124,58,237,0.25)" },
+                { href: `/reports/briefing-investor/${selected.id}`, label: "Investor", color: "#0369a1", bg: "rgba(3,105,161,0.08)", border: "rgba(3,105,161,0.3)" },
+              ].map((b) => (
+                <Link
+                  key={b.href}
+                  href={b.href}
+                  style={{
+                    display: "block",
+                    textAlign: "center",
+                    padding: "8px 10px",
+                    background: b.bg,
+                    border: `1px solid ${b.border}`,
+                    borderRadius: 6,
+                    color: b.color,
+                    fontSize: 9,
+                    fontWeight: 700,
+                    letterSpacing: "0.1em",
+                    textDecoration: "none",
+                    textTransform: "uppercase",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  {b.label}
+                </Link>
+              ))}
+              <Link
+                href="/briefings"
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  padding: "8px 10px",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 6,
+                  color: "#888",
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: "0.1em",
+                  textDecoration: "none",
+                  textTransform: "uppercase",
+                }}
+              >
+                Custom Scope →
+              </Link>
+            </div>
           </div>
         </>
       )}
