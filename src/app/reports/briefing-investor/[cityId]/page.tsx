@@ -113,16 +113,18 @@ export default async function InvestorBriefingPage({
     ...peers.sameState.map((p) => p.id),
     ...(peers.regional?.markets.map((p) => p.id) ?? []),
   ];
-  // FPIS has sparse factor mapping — LEG/OPR/ZON have 0 programs today;
-  // REG/VRT/PLT/WTH carry the federal capital picture. Pull across all
-  // populated factors so the investor sees the full non-dilutive landscape.
-  const [regPrograms, vrtPrograms, pltPrograms, wthPrograms] = await Promise.all([
-    getGapRecommendations("REG", peerCityIds).catch(() => []),
-    getGapRecommendations("VRT", peerCityIds).catch(() => []),
-    getGapRecommendations("PLT", peerCityIds).catch(() => []),
-    getGapRecommendations("WTH", peerCityIds).catch(() => []),
-  ]);
-  const allPrograms = [...regPrograms, ...vrtPrograms, ...pltPrograms, ...wthPrograms]
+  // FPIS programs across all 7 factors. Deduplicated — a program may drive
+  // multiple factors and we only list it once. Direct infrastructure +
+  // regulatory programs (VRT/PLT/WTH/REG) carry most of the weight; LEG/OPR/ZON
+  // mappings are indirect links (modest point impact) where federal awards
+  // historically correlate with those non-federal outcomes.
+  const factorQueries = await Promise.all(
+    (["REG", "VRT", "PLT", "WTH", "LEG", "OPR", "ZON"] as const).map((f) =>
+      getGapRecommendations(f, peerCityIds).catch(() => []),
+    ),
+  );
+  const allPrograms = factorQueries
+    .flat()
     .filter((p, idx, arr) => arr.findIndex((x) => x.program.code === p.program.code) === idx)
     .slice(0, 8);
 
@@ -486,11 +488,12 @@ export default async function InvestorBriefingPage({
             <h2 style={sectionHeading}>Federal Program Capital</h2>
             <p style={{ fontSize: 12, color: "#888", marginBottom: 16 }}>
               Non-dilutive federal capital applicable to this market via grants,
-              SBIR, and DOT appropriations. Federal programs concentrate on
-              infrastructure and regulatory enablers (vertiport, pilot program,
-              weather infrastructure, regulatory posture) — state legislation,
-              operator presence, and zoning are driven by non-federal actors
-              and don&apos;t show up here. Peer-city precedents show what similar
+              SBIR, and DOT appropriations. The highest-impact programs target
+              infrastructure and regulatory enablers (vertiports, pilot programs,
+              weather sensing, regulatory posture); programs with indirect impact
+              on state legislation, operator presence, and zoning also appear
+              below with modest point contributions reflecting their correlative
+              rather than causal role. Peer-city precedents show what similar
               markets have won.
             </p>
             <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, lineHeight: 1.9 }}>
