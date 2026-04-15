@@ -1432,3 +1432,27 @@ model ForwardSignalAlert {
   @@index([cityId])
   @@index([sentAt])
 }
+
+// ── Briefing Send Log ─────────────────────────────────
+// Tracks per-recipient briefing sends from scripts/send-briefing.ts so the
+// follow-up drip cron can detect unopened briefings and fire a second-angle
+// email. Open detection cross-references NewsletterEvent where
+// series = briefing_<persona> and email matches.
+model BriefingSend {
+  id              String    @id @default(cuid())
+  recipientEmail  String
+  recipientName   String?
+  persona         String                        // infrastructure | municipality | insurance | operator | investor
+  cityId          String
+  briefingUrl     String    @db.Text            // raw (untracked) briefing URL for follow-up body
+  subject         String    @db.Text
+  customMessage   String?   @db.Text            // custom message passed to send-briefing, if any
+  sentAt          DateTime  @default(now())
+  followUpSentAt  DateTime?                     // set when the drip fires
+  followUpSkipped Boolean   @default(false)    // manual override to prevent follow-up
+
+  @@index([recipientEmail])
+  @@index([sentAt])
+  @@index([followUpSentAt])
+  @@index([persona, cityId])
+}

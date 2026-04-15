@@ -16,9 +16,12 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
+import { PrismaClient } from "@prisma/client";
 import { sendSesEmail } from "../src/lib/ses";
 import { buildClickTrackUrl } from "../src/lib/newsletter-token";
 import { CITIES } from "../src/data/seed";
+
+const prisma = new PrismaClient();
 
 type Persona = "infrastructure" | "municipality" | "insurance" | "operator" | "investor";
 
@@ -247,7 +250,23 @@ async function main() {
     subject,
     html,
   });
-  console.log(`[ok] Sent.`);
+
+  // Persist a BriefingSend row so the follow-up drip cron can detect
+  // unopened briefings and fire a second-angle email.
+  await prisma.briefingSend.create({
+    data: {
+      recipientEmail: to,
+      recipientName: name,
+      persona,
+      cityId,
+      briefingUrl: rawUrl,
+      subject,
+      customMessage,
+    },
+  });
+
+  console.log(`[ok] Sent + logged.`);
+  await prisma.$disconnect();
 }
 
 main().catch((err) => {

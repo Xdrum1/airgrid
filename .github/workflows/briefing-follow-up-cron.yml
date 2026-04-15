@@ -1,0 +1,46 @@
+name: Briefing follow-up drip cron
+
+on:
+  schedule:
+    # Daily 14:00 UTC (10am EDT / 9am EST). Late enough that most prospects
+    # have had a full workday to open the original briefing before the
+    # follow-up fires.
+    - cron: "0 14 * * *"
+  workflow_dispatch:
+
+jobs:
+  briefing-follow-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health check
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/health")
+          echo "Health: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Health check returned $HTTP_CODE — app may be degraded"
+          fi
+
+      - name: Trigger briefing follow-ups
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 120 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$URL/api/admin/briefing-follow-up")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "Status: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Briefing follow-up failed with status $HTTP_CODE"
+            exit 1
+          fi
