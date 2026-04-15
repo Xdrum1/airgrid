@@ -4,10 +4,10 @@ Maintained by dev. Update after every significant deploy or data change. Share w
 
 ## Platform Status
 
-- **Last updated:** 2026-04-14
-- **Scoring model version:** v1.3 live in production. v1.4 scaffolded in `src/lib/scoring-v14.ts` — feature-flagged, not wired into the main scoring engine. Awaiting TruWeather deployment data + Don Berchoff sign-off.
+- **Last updated:** 2026-04-15
+- **Scoring model version:** v1.3 live in production. v1.4 scaffolded + **preview harness complete** (`scripts/preview-v14-scoring.ts` runs v1.3 vs v1.4 diff across all 25 markets). Activation path is one-command once TruWeather deployment map lands; only the flag flip + snapshot regen remain.
 - **Markets tracked:** 25
-- **Candidate sites indexed:** No dedicated `candidate-sites` data file yet. 5,647 FAA-registered heliports (NASR 5010) + 6 pre-development facilities in DB.
+- **Candidate sites indexed:** 5,647 FAA-registered heliports (NASR 5010) + 6 pre-development facilities. Metro bounds now cover all 25 markets (added SA/Cincinnati/SLC on 4/15). ASOS reference stations live in `src/data/asos-stations.ts` (89 stations).
 - **Environment:** Production on AWS Amplify + RDS PostgreSQL. Local dev DB at `localhost:5432/airindex_dev` (requires separate `prisma db push` on schema changes).
 
 ## Scoring Model — Current Weights (v1.3)
@@ -85,6 +85,16 @@ Developed with Don Berchoff (TruWeather). Splits Weather Infrastructure into two
 
 | Date       | Change                                                                       | Type                   |
 |------------|------------------------------------------------------------------------------|------------------------|
+| 2026-04-15 | **Freshness bar** on all 5 briefings; 3 missing metro bounds filled         | Polish / data          |
+| 2026-04-15 | **v1.4 preview harness** (`scripts/preview-v14-scoring.ts`) + shared ASOS/metro-bounds module | Feature prep  |
+| 2026-04-15 | **Admin briefing analytics** at `/admin/briefing-analytics`                 | New feature            |
+| 2026-04-15 | **Send-briefing email flow** (`scripts/send-briefing.ts`) with click tracking | New feature           |
+| 2026-04-15 | **Briefing view tracking** on all 5 briefings (page_view + page_leave)      | Observability          |
+| 2026-04-15 | **5 persona briefings live + discoverable** (infrastructure, municipality, insurance, operator, investor); city detail panel grid + /briefings hub samples | New feature |
+| 2026-04-15 | **MCS integration** across gap report, briefings, causal narrative, Pulse template | New feature           |
+| 2026-04-15 | **RPL precedents grouped by factor** on city detail ("Drives State Legislation" / "Drives Regulatory Posture") | Feature          |
+| 2026-04-15 | **Congress.gov + Regulations.gov ingestion fixed** after silent-since-launch (Amplify env-var whitelist patch) | Bug fix             |
+| 2026-04-15 | Per-source `fetchCounts` + `fetchErrors` in ingest observability             | Observability          |
 | 2026-04-14 | Causal narrative panel (why this score, what to watch) on city detail        | New feature            |
 | 2026-04-14 | RPL significance tightened — HIGH now gated on UAM-specific terms; 5.4% HIGH vs 18% before | Data quality           |
 | 2026-04-14 | LAANC removed across code + prospect-facing docs; dead `checkLaancCoverage` code deleted | Methodology / cleanup  |
@@ -103,12 +113,11 @@ Developed with Don Berchoff (TruWeather). Splits Weather Infrastructure into two
 
 ## Pending / In Progress
 
-- [ ] v1.4 scoring live — pending TruWeather deployment map ingestion + Don's sign-off
-- [ ] TruWeather `TruWeatherDeployment` table populated (currently 0 rows; schema ready)
-- [ ] MCS container (peer market context, Container 2 of V2 architecture) — scaffolded in schema, no read/write code
-- [ ] Tomorrow morning 2026-04-15 verification: snapshot cron populated predictions; Congress.gov + Regulations.gov finally have `IngestedRecord` rows
-- [ ] RPL surface enhancement — factor-scoped grouping (currently just limit-based; subscriber doesn't see "these 3 precedents drive your LEG score" explicitly)
-- [ ] sec_edgar was last ingested 2026-03-20; API is healthy locally, worth monitoring for a couple more cron runs before investigating AWS-side
+- [ ] **v1.4 scoring live** — TruWeather deployment map ingestion is one `npx tsx scripts/ingest-truweather-deployment.ts <file>` command; preview harness will show the delta; flip the flag in `scoring.ts` + regen snapshots
+- [ ] **TruWeather `TruWeatherDeployment` table** populated (currently 0 rows; schema + ingestion script ready; Don sending imminently)
+- [ ] **FPIS factor coverage** — LEG/OPR/ZON have 0 programs mapped (investor briefing Federal Program Capital section pulls from REG/VRT/PLT/WTH only)
+- [ ] **ASOS station coverage gaps** for OH + UT (Cincinnati and SLC return 0 ASOS credit in preview) — seed more stations
+- [ ] `sec_edgar` — confirmed healthy; diff-engine intentionally doesn't bump `updatedAt` on static filings, so 25+ days between new ingests is normal
 
 ## Key File References
 
@@ -143,8 +152,20 @@ Do NOT edit `~/projects/vdg/index.html` directly — it will get overwritten on 
 
 | Container | Status | Notes |
 |-----------|--------|-------|
-| FKB (Factor Knowledge Base)          | Live    | 7 active factors, 1 retired (LNC). Production scoring reads from here. |
-| MCS (Market Context Store)           | Schema only | No read/write code yet; next container to build for Gap Analysis precedents. |
-| OID (Operator Intelligence Database) | Live    | 6-stage deployment model; 11 operators. |
-| RPL (Regulatory Precedent Library)   | Live + surfaced | 496 clean docs (HIGH 27 / MED 131 / LOW 338). Pro-gated precedents panel on city detail (shipped 2026-04-14). |
-| FPIS (Federal Programs Intelligence) | Live    | 10 programs cataloged. Dual-consumer: Gap Analysis + VDG Grant Tracker. |
+| FKB (Factor Knowledge Base)          | Live + surfaced | 7 active factors, 1 retired (LNC). Production scoring reads from here. |
+| MCS (Market Context Store)           | **Live + surfaced (4/15)** | Gap report, briefings, causal narrative, Pulse template all use MCS peer groups + state context. 12 SAME_STATE peer groups covering 12 markets; 8 regional clusters. |
+| OID (Operator Intelligence Database) | Live + surfaced | 6-stage deployment model; 11 operators. Operator + investor briefings use it directly. |
+| RPL (Regulatory Precedent Library)   | Live + surfaced | 496 clean docs (HIGH 27 / MED 131 / LOW 338). Precedents panel grouped by scoring factor on city detail. |
+| FPIS (Federal Programs Intelligence) | Live + surfaced | 10 programs cataloged. Investor briefing uses it for federal-capital framing. LEG/OPR/ZON factor mappings still empty. |
+
+## Persona Briefings (all live 4/15)
+
+| Persona          | Route                                        | Audience                                                |
+|------------------|----------------------------------------------|---------------------------------------------------------|
+| Infrastructure   | `/reports/briefing/[cityId]`                 | Developers, REITs, site-selection teams                 |
+| Municipality     | `/reports/briefing-municipality/[cityId]`    | City planners, state agencies, economic development     |
+| Insurance        | `/reports/briefing-insurance/[cityId]`       | Aviation liability carriers, brokers, risk managers     |
+| Operator         | `/reports/briefing-operator/[cityId]`        | eVTOL operator strategy teams                           |
+| Investor         | `/reports/briefing-investor/[cityId]`        | Institutional investors, corp dev, sector analysts      |
+
+Discoverability: city detail panel 2-column button grid, `/briefings` hub sample links, direct URL, email delivery via `scripts/send-briefing.ts`. View tracking via `entityType="briefing"` events. Admin analytics at `/admin/briefing-analytics`.
