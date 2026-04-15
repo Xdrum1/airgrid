@@ -1458,3 +1458,30 @@ model BriefingSend {
   @@index([followUpSentAt])
   @@index([persona, cityId])
 }
+
+// ── Outreach Contact Tracking ─────────────────────────
+// Lightweight CRM for outbound BD touchpoints (Larry Mattiello intro,
+// future operator/underwriter/investor conversations). Daily cron
+// checks for stale entries and pings Alan when a follow-up is due.
+// Not a full CRM — just enough to stop relying on email-thread memory.
+model OutreachContact {
+  id                 String    @id @default(cuid())
+  name               String
+  email              String
+  org                String?
+  title              String?
+  referrer           String?                       // "Rex Alexander", "warm intro via X"
+  firstEmailSentAt   DateTime
+  firstEmailSubject  String    @db.Text
+  briefingUrl        String?   @db.Text            // canonical demo URL shared (briefing, snapshot, etc.)
+  replyReceivedAt    DateTime?
+  followUpSentAt     DateTime?
+  closedAt           DateTime?                     // set when the thread resolves (reply or explicit close)
+  status             String    @default("awaiting_reply") // awaiting_reply | replied | declined | ghosted | active
+  manualNote         String?   @db.Text
+  lastReminderAt     DateTime?                     // set when cron pings Alan so we don't spam
+
+  @@index([status])
+  @@index([firstEmailSentAt])
+  @@index([email])
+}

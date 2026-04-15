@@ -1,0 +1,44 @@
+name: Outreach reminder cron
+
+on:
+  schedule:
+    # Daily 13:00 UTC (9am EDT / 8am EST) — morning priority review
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+
+jobs:
+  outreach-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health check
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/health")
+          echo "Health: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Health check returned $HTTP_CODE — app may be degraded"
+          fi
+
+      - name: Trigger outreach reminder
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          URL="${APP_URL:-https://www.airindex.io}"
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 60 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$URL/api/admin/outreach-reminder")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "Status: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Outreach reminder failed with status $HTTP_CODE"
+            exit 1
+          fi
