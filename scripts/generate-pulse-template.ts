@@ -21,16 +21,18 @@ import { writeFileSync } from "fs";
 import { join } from "path";
 import { getPlatformForecastDigest, renderSignalNarrative } from "../src/lib/forward-signals";
 import { getStateContext, getRegionalClusters } from "../src/lib/mcs";
+import { draftPulse, type PulseDraft } from "../src/lib/pulse-drafter";
 
 const args = process.argv.slice(2);
 const issueIdx = args.indexOf("--issue");
 if (issueIdx < 0) {
-  console.error("Usage: npx tsx scripts/generate-pulse-template.ts --issue N [--top N]");
+  console.error("Usage: npx tsx scripts/generate-pulse-template.ts --issue N [--top N] [--draft]");
   process.exit(1);
 }
 const issue = parseInt(args[issueIdx + 1]);
 const topIdx = args.indexOf("--top");
 const topN = topIdx >= 0 ? parseInt(args[topIdx + 1]) : 5;
+const doDraft = args.includes("--draft");
 
 function escape(s: string): string {
   return s
@@ -188,12 +190,39 @@ async function main() {
 </body>
 </html>`;
 
+  let finalHtml = html;
+
+  // Optional AI draft — replaces [WRITE HEADLINE/LEDE/NEXT/BODY] placeholders
+  // with a first-pass editorial draft from Opus 4.6 in the Pulse voice.
+  // Alan still reviews + edits before send; this removes the blank-page problem.
+  if (doDraft) {
+    console.log(`\n[drafting] Calling Opus 4.6 for editorial first draft...`);
+    try {
+      const draft: PulseDraft = await draftPulse(top);
+      finalHtml = finalHtml
+        .replace("[WRITE HEADLINE HERE]", escape(draft.headline))
+        .replace(
+          "[WRITE LEDE HERE — the one-paragraph hook for this week's Pulse]",
+          escape(draft.lede),
+        )
+        .replace("[WRITE NEXT SECTION HEADING]", escape(draft.nextSectionHeading))
+        .replace(
+          "[Editorial body — analyze the top 1-2 markets above in depth, surface a non-obvious pattern, etc.]",
+          escape(draft.body).replace(/\n\n/g, '</p><p style="font:15px/1.75 \'Helvetica Neue\',Arial,sans-serif;color:#333;margin:0 0 16px;">'),
+        );
+      console.log(`[drafting] Headline: ${draft.headline}`);
+      console.log(`[drafting] Lede head: ${draft.lede.slice(0, 100)}...`);
+    } catch (err) {
+      console.error(`[drafting] Failed — keeping placeholders. ${(err as Error).message}`);
+    }
+  }
+
   const outPath = join(__dirname, `../public/docs/UAM_Market_Pulse_Issue${issue}_template.html`);
-  writeFileSync(outPath, html);
+  writeFileSync(outPath, finalHtml);
   console.log(`\n[ok] Generated Pulse Issue ${issue} template`);
   console.log(`     → ${outPath}`);
   console.log(`\nNext steps:`);
-  console.log(`  1. Open the file and write headline, lede, and editorial body sections marked [WRITE...]`);
+  console.log(`  1. ${doDraft ? "Review AI-drafted headline, lede, and body — edit if needed" : "Open the file and write headline, lede, and editorial body sections marked [WRITE...]"}`);
   console.log(`  2. When ready, rename to UAM_Market_Pulse_Issue${issue}.html`);
   console.log(`  3. Run pulse-preflight.ts to validate`);
   console.log(`  4. Run send-pulse.ts to send`);
