@@ -18,6 +18,7 @@ import {
   RISK_DEMO_SITE_IDS,
   type SiteGapFlag,
 } from "@/lib/risk-index";
+import { buildSatelliteTileUrl, buildContextTileUrl } from "@/lib/satellite-tile";
 import PrintButton from "@/app/reports/gap/[cityId]/PrintButton";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "alan@airindex.io";
@@ -213,6 +214,45 @@ export default async function RiskAssessmentPage({
           </div>
           <div style={{ fontSize: 13, color: "#374151", marginTop: 6 }}>{r.exposureNote}</div>
         </div>
+
+        {/* Satellite visualization */}
+        {(() => {
+          const closeUrl = buildSatelliteTileUrl({ lat: r.lat, lng: r.lng, zoom: 18, width: 380, height: 260 });
+          const contextUrl = buildContextTileUrl({ lat: r.lat, lng: r.lng, zoom: 14, width: 380, height: 260 });
+          if (!closeUrl || !contextUrl) return null;
+          return (
+            <>
+              <div style={S.sectionTag}>Facility Visualization</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                <div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={closeUrl}
+                    alt={`Satellite view of ${r.facilityName}`}
+                    style={{ width: "100%", height: "auto", borderRadius: 8, border: "1px solid #e5e7eb", display: "block" }}
+                  />
+                  <div style={{ fontSize: 10, color: "#6b7280", marginTop: 6, textAlign: "center", letterSpacing: "0.06em", textTransform: "uppercase" as const }}>
+                    Facility — {r.lat.toFixed(4)}, {r.lng.toFixed(4)}
+                  </div>
+                </div>
+                <div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={contextUrl}
+                    alt={`Area context around ${r.facilityName}`}
+                    style={{ width: "100%", height: "auto", borderRadius: 8, border: "1px solid #e5e7eb", display: "block" }}
+                  />
+                  <div style={{ fontSize: 10, color: "#6b7280", marginTop: 6, textAlign: "center", letterSpacing: "0.06em", textTransform: "uppercase" as const }}>
+                    Surrounding airspace context
+                  </div>
+                </div>
+              </div>
+              <div style={{ fontSize: 10, color: "#9ca3af", marginBottom: 18, fontStyle: "italic" }}>
+                Imagery © Mapbox © Maxar. Marker indicates registered facility coordinates from FAA NASR 5010.
+              </div>
+            </>
+          );
+        })()}
 
         {/* Site metadata */}
         <div style={S.sectionTag}>Site Profile</div>
