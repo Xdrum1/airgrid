@@ -205,7 +205,79 @@ interface ForwardSignalAlertItem {
   factor: string | null;
 }
 
-function buildForwardSignalEmail(items: ForwardSignalAlertItem[], appUrl: string): string {
+// Maps User.buyerType to the persona framing used in forward-signal alerts.
+// Accent color matches each briefing's own accent so the client sees a
+// consistent visual through the whole funnel.
+interface PersonaStyling {
+  accent: string;
+  intro: string;
+  ctaLabel: string;
+  briefingRoute: string; // route segment: /reports/<route>/<cityId>
+  ctaLabelPerMarket: (cityName: string) => string;
+}
+
+const PERSONA_STYLING: Record<string, PersonaStyling> = {
+  "infra-developer": {
+    accent: "#00d4ff",
+    intro: "New forward signals for your watched markets. These project near-term changes to infrastructure readiness and development-approval conditions.",
+    ctaLabel: "View Infrastructure Briefing",
+    briefingRoute: "briefing",
+    ctaLabelPerMarket: (c) => `View ${c} Infrastructure Briefing`,
+  },
+  operator: {
+    accent: "#7c3aed",
+    intro: "New forward signals for your watched markets. Fresh predictions on regulatory friction, operator landscape shifts, and infrastructure availability likely to affect market-entry timing.",
+    ctaLabel: "View Operator Briefing",
+    briefingRoute: "briefing-operator",
+    ctaLabelPerMarket: (c) => `View ${c} Operator Briefing`,
+  },
+  municipality: {
+    accent: "#5B8DB8",
+    intro: "New forward signals for your watched markets. Peer-market activity, state regulatory shifts, and operator moves that affect your comparative positioning.",
+    ctaLabel: "View Municipality Briefing",
+    briefingRoute: "briefing-municipality",
+    ctaLabelPerMarket: (c) => `View ${c} Municipality Briefing`,
+  },
+  "heliport-owner": {
+    accent: "#b45309",
+    intro: "New forward signals for your watched markets. These may affect regulatory compliance posture, airspace determination status, or portfolio exposure on facilities you operate.",
+    ctaLabel: "View Insurance Briefing",
+    briefingRoute: "briefing-insurance",
+    ctaLabelPerMarket: (c) => `View ${c} Insurance Briefing`,
+  },
+  insurance: {
+    accent: "#b45309",
+    intro: "New forward signals for your watched markets. These forecast near-term regulatory and compliance-posture shifts that affect underwriting exposure.",
+    ctaLabel: "View Insurance Briefing",
+    briefingRoute: "briefing-insurance",
+    ctaLabelPerMarket: (c) => `View ${c} Insurance Briefing`,
+  },
+  federal: {
+    accent: "#0369a1",
+    intro: "New forward signals for your watched markets. Fresh predictions on regulatory catalysts, operator capital flow, and federal-program-relevant developments.",
+    ctaLabel: "View Investor Briefing",
+    briefingRoute: "briefing-investor",
+    ctaLabelPerMarket: (c) => `View ${c} Investor Briefing`,
+  },
+  other: {
+    accent: "#0077aa",
+    intro: "New predictive signals for your watched markets. These forecast near-term changes that haven't moved scores yet.",
+    ctaLabel: "View Dashboard",
+    briefingRoute: "briefing",
+    ctaLabelPerMarket: () => "View Dashboard",
+  },
+};
+
+function getPersonaStyling(buyerType: string | null): PersonaStyling {
+  if (!buyerType) return PERSONA_STYLING.other;
+  return PERSONA_STYLING[buyerType] ?? PERSONA_STYLING.other;
+}
+
+function buildForwardSignalEmail(
+  items: ForwardSignalAlertItem[],
+  appUrl: string,
+  persona: PersonaStyling,
+): string {
   const grouped = new Map<string, ForwardSignalAlertItem[]>();
   for (const it of items) {
     const list = grouped.get(it.cityId) ?? [];
@@ -231,24 +303,25 @@ function buildForwardSignalEmail(items: ForwardSignalAlertItem[], appUrl: string
             </li>`;
         })
         .join("");
+      const briefingUrl = `${appUrl}/reports/${persona.briefingRoute}/${cityId}`;
       return `
         <div style="margin-bottom:20px;">
-          <a href="${appUrl}/city/${cityId}" style="color:#1a1a1a;font-size:16px;font-weight:700;text-decoration:none;">${cityName(cityId)}</a>
-          <ul style="margin:6px 0 0;padding-left:16px;list-style:disc;">${rows}</ul>
+          <a href="${briefingUrl}" style="color:#1a1a1a;font-size:16px;font-weight:700;text-decoration:none;border-left:3px solid ${persona.accent};padding-left:10px;">${cityName(cityId)}</a>
+          <ul style="margin:6px 0 0;padding-left:28px;list-style:disc;">${rows}</ul>
         </div>`;
     })
     .join("");
 
   return `
     <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:560px;margin:0 auto;">
-      <div style="margin-bottom:32px;">
-        <span style="font-family:'Courier New',monospace;font-weight:800;font-size:15px;color:#0a0a1a;letter-spacing:0.12em;">AIR</span><span style="font-family:'Courier New',monospace;font-weight:400;font-size:15px;color:#0077aa;letter-spacing:0.12em;">INDEX</span>
+      <div style="margin-bottom:32px;border-top:3px solid ${persona.accent};padding-top:20px;">
+        <span style="font-family:'Courier New',monospace;font-weight:800;font-size:15px;color:#0a0a1a;letter-spacing:0.12em;">AIR</span><span style="font-family:'Courier New',monospace;font-weight:400;font-size:15px;color:${persona.accent};letter-spacing:0.12em;">INDEX</span>
       </div>
       <p style="color:#1a1a1a;font-size:18px;font-weight:700;margin:0 0 8px;">Forward Signal Alert</p>
-      <p style="color:#888;font-size:13px;margin:0 0 24px;">New predictive signals for ${grouped.size} of your monitored market${grouped.size === 1 ? "" : "s"}. These forecast near-term changes that haven't moved scores yet.</p>
+      <p style="color:#888;font-size:13px;margin:0 0 24px;">${persona.intro}</p>
       ${sections}
       <div style="text-align:center;margin:28px 0;">
-        <a href="${appUrl}/dashboard" style="display:inline-block;background:#0077aa;color:#ffffff;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;text-decoration:none;">View Dashboard</a>
+        <a href="${appUrl}/dashboard" style="display:inline-block;background:${persona.accent};color:#ffffff;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;text-decoration:none;">${persona.ctaLabel}</a>
       </div>
       <hr style="border:none;border-top:1px solid #eee;margin:28px 0 16px;" />
       <p style="color:#999;font-size:11px;line-height:1.6;margin:0;">
@@ -282,6 +355,7 @@ export async function sendAlertNotifications(): Promise<{
       id: true,
       email: true,
       tier: true,
+      buyerType: true,
       watchlist: { select: { cityIds: true } },
       billingSubscriptions: {
         where: { status: { in: ["active", "trialing", "past_due"] } },
@@ -422,7 +496,8 @@ export async function sendAlertNotifications(): Promise<{
         }));
 
         try {
-          const html = buildForwardSignalEmail(items, appUrl);
+          const persona = getPersonaStyling(user.buyerType);
+          const html = buildForwardSignalEmail(items, appUrl, persona);
           const citiesList = Array.from(new Set(items.map((i) => cityName(i.cityId)))).join(", ");
           await sendSesEmail({
             to: user.email,
