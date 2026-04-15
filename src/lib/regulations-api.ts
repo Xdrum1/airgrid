@@ -91,7 +91,10 @@ export async function searchRegulations(
       });
 
       if (!res.ok) {
-        logger.error(`Regulations.gov API error: ${res.status} for term "${term}"`);
+        const bodySnippet = await res.text().then((t) => t.slice(0, 300)).catch(() => "(body unreadable)");
+        logger.error(
+          `Regulations.gov API error: status=${res.status} for term "${term}". Body: ${bodySnippet}`,
+        );
         continue;
       }
 

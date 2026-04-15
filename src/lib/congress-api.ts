@@ -167,7 +167,10 @@ export async function searchCongressBills(
       });
 
       if (!res.ok) {
-        logger.error(`Congress.gov API error: ${res.status} for ${tb.congress}-${tb.type}-${tb.number}`);
+        const bodySnippet = await res.text().then((t) => t.slice(0, 300)).catch(() => "(body unreadable)");
+        logger.error(
+          `Congress.gov API error: status=${res.status} for ${tb.congress}-${tb.type}-${tb.number}. Body: ${bodySnippet}`,
+        );
         continue;
       }
 
