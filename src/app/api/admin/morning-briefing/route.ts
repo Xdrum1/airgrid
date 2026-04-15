@@ -78,6 +78,42 @@ export async function GET(req: NextRequest) {
       where: { createdAt: { gte: since } },
     });
 
+    // 7. New high-confidence forward signals (last 24h) — predictive wins that
+    //    fired but haven't yet moved scores. The client-facing alert goes to
+    //    Alert+ subscribers; this section tells Alan which predictions drove
+    //    those alerts.
+    const newPredictions = await prisma.predictionRecord.findMany({
+      where: {
+        generatedAt: { gte: since },
+        confidence: "high",
+        predictedDirection: { not: "neutral" },
+      },
+      orderBy: { generatedAt: "desc" },
+      take: 10,
+    });
+
+    // 8. Briefing views (last 24h) — which licensed clients opened which
+    //    persona briefings. Tracks engagement without dashboard-checking.
+    const briefingViews = await prisma.userEvent.findMany({
+      where: {
+        entityType: "briefing",
+        event: "page_view",
+        createdAt: { gte: since },
+      },
+      include: { user: { select: { email: true, firstName: true, lastName: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    });
+
+    // 9. Forward-signal alerts sent to Alert+ subscribers (last 24h) — did
+    //    any clients get auto-alerted about watched-market predictions?
+    const alertsSent = await prisma.forwardSignalAlert.findMany({
+      where: { sentAt: { gte: since } },
+      take: 10,
+    });
+    const alertsSentCount = alertsSent.length;
+    const alertedUserCount = new Set(alertsSent.map((a) => a.userId)).size;
+
     // Build email
     const today = new Date().toLocaleDateString("en-US", {
       weekday: "long",
@@ -90,7 +126,10 @@ export async function GET(req: NextRequest) {
       classifications.length > 0 ||
       overrides.length > 0 ||
       newUsers > 0 ||
-      newAccessRequests > 0;
+      newAccessRequests > 0 ||
+      newPredictions.length > 0 ||
+      briefingViews.length > 0 ||
+      alertsSentCount > 0;
 
     // Score changes section
     const scoreSection = scoreChanges.length > 0
@@ -164,6 +203,47 @@ export async function GET(req: NextRequest) {
          </table>`
       : `<p style="color:#dc2626;font-size:13px;margin:16px 0;">No ingestion run detected in the last 24 hours.</p>`;
 
+    // Forward signals section — high-confidence predictions fired in 24h
+    const forwardSignalsSection = newPredictions.length > 0
+      ? `<h3 style="color:#111;font-size:15px;margin:24px 0 12px;">Forward Signals Fired (${newPredictions.length})</h3>
+         <table style="width:100%;border-collapse:collapse;font-size:12px;">
+           ${newPredictions.map((p) => {
+             const color = p.predictedDirection === "positive" ? "#16a34a" : p.predictedDirection === "negative" ? "#dc2626" : "#888";
+             const sign = p.predictedDirection === "positive" ? "+" : p.predictedDirection === "negative" ? "-" : "";
+             const impact = p.predictedDelta > 0 ? `${sign}${p.predictedDelta} pts` : "—";
+             return `<tr style="border-bottom:1px solid #f0f0f0;">
+               <td style="padding:4px 8px;font-weight:600;white-space:nowrap;">${p.cityId}</td>
+               <td style="padding:4px 8px;color:${color};font-weight:700;">${impact}</td>
+               <td style="padding:4px 8px;color:#555;">${p.windowLabel}</td>
+               <td style="padding:4px 8px;color:#888;font-size:11px;">${p.description.slice(0, 90)}</td>
+             </tr>`;
+           }).join("")}
+         </table>`
+      : "";
+
+    // Briefing views section — who opened which persona briefings
+    const briefingViewsSection = briefingViews.length > 0
+      ? `<h3 style="color:#111;font-size:15px;margin:24px 0 12px;">Briefing Views (${briefingViews.length})</h3>
+         <table style="width:100%;border-collapse:collapse;font-size:12px;">
+           ${briefingViews.map((v) => {
+             const viewer = v.user
+               ? [v.user.firstName, v.user.lastName].filter(Boolean).join(" ") || v.user.email || "—"
+               : "—";
+             return `<tr style="border-bottom:1px solid #f0f0f0;">
+               <td style="padding:4px 8px;font-weight:600;color:#5B8DB8;">${v.entityId ?? "—"}</td>
+               <td style="padding:4px 8px;color:#555;">${viewer}</td>
+               <td style="padding:4px 8px;color:#888;font-size:11px;text-align:right;">${v.createdAt.toISOString().slice(11, 16)} UTC</td>
+             </tr>`;
+           }).join("")}
+         </table>`
+      : "";
+
+    // Alert sends section — forward-signal alerts to Alert+ clients
+    const alertSendsSection = alertsSentCount > 0
+      ? `<h3 style="color:#111;font-size:15px;margin:24px 0 12px;">Forward-Signal Alerts Sent</h3>
+         <p style="color:#555;font-size:13px;margin:0;">${alertsSentCount} alert${alertsSentCount === 1 ? "" : "s"} auto-delivered to ${alertedUserCount} Alert+ ${alertedUserCount === 1 ? "client" : "clients"} for watched-market predictions fired in last 24h.</p>`
+      : "";
+
     // Platform activity section
     const activitySection = (newUsers > 0 || newAccessRequests > 0 || logins > 0)
       ? `<h3 style="color:#111;font-size:15px;margin:24px 0 12px;">Platform Activity</h3>
@@ -190,8 +270,11 @@ export async function GET(req: NextRequest) {
           ? `<p style="color:#888;font-size:14px;margin:16px 0;">Quiet day. No score changes, no new classifications, no platform signups.</p>`
           : ""}
         ${scoreSection}
+        ${forwardSignalsSection}
+        ${alertSendsSection}
         ${classSection}
         ${overrideSection}
+        ${briefingViewsSection}
         ${pipelineSection}
         ${activitySection}
       </div>
