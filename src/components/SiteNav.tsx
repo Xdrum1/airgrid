@@ -11,6 +11,7 @@ export default async function SiteNav({ theme = "dark" }: { theme?: "dark" | "li
   return (
     <>
       <nav
+        className={isLight ? "nav-light" : "nav-dark"}
         style={{
           position: "fixed",
           top: 0,

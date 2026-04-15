@@ -282,6 +282,7 @@ export default function ContactPage() {
       {/* Client page can't use async SiteNav, so render NavClient directly.
           Spacer matches the fixed 64px nav height. */}
       <nav
+        className="nav-light"
         style={{
           position: "fixed",
           top: 0,

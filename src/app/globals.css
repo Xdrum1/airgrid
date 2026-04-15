@@ -181,10 +181,15 @@ body {
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
 
-/* Nav link hover */
-.nav-link:hover {
+/* Nav link hover — scoped to dark nav only.
+   Light nav drives hover colors via inline styles in NavClient. */
+.nav-dark .nav-link:hover {
   color: #fff !important;
   background: rgba(255, 255, 255, 0.04);
+}
+.nav-light .nav-link:hover {
+  color: #0a2540 !important;
+  background: rgba(91, 141, 184, 0.08);
 }
 .nav-cta:hover {
   opacity: 0.85;
