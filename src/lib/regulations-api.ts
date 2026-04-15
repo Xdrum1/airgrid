@@ -70,6 +70,7 @@ export async function searchRegulations(
   const { limit = 25, postedAfter } = options;
   const seen = new Set<string>();
   const results: RegulationDocument[] = [];
+  let firstApiError: string | null = null;
 
   for (const term of SEARCH_TERMS) {
     try {
@@ -92,9 +93,9 @@ export async function searchRegulations(
 
       if (!res.ok) {
         const bodySnippet = await res.text().then((t) => t.slice(0, 300)).catch(() => "(body unreadable)");
-        logger.error(
-          `Regulations.gov API error: status=${res.status} for term "${term}". Body: ${bodySnippet}`,
-        );
+        const msg = `status=${res.status} for term "${term}". Body: ${bodySnippet}`;
+        logger.error(`Regulations.gov API error: ${msg}`);
+        if (!firstApiError) firstApiError = msg;
         continue;
       }
 
@@ -113,6 +114,11 @@ export async function searchRegulations(
   }
 
   logger.info(`Regulations.gov total: ${results.length} unique documents across ${SEARCH_TERMS.length} terms`);
+  // Surface aggregated diagnostic when every search term failed, so the
+  // ingestion orchestrator captures the reason in `fetchErrors`.
+  if (results.length === 0 && firstApiError) {
+    throw new Error(`All ${SEARCH_TERMS.length} search terms returned non-OK. First error: ${firstApiError}`);
+  }
   return results;
 }
 

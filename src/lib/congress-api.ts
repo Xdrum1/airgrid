@@ -151,6 +151,7 @@ export async function searchCongressBills(
 
   const { congress, updatedAfter } = options;
   const bills: CongressBill[] = [];
+  let firstApiError: string | null = null;
 
   const tracked = congress
     ? TRACKED_BILLS.filter((b) => b.congress === congress)
@@ -168,9 +169,9 @@ export async function searchCongressBills(
 
       if (!res.ok) {
         const bodySnippet = await res.text().then((t) => t.slice(0, 300)).catch(() => "(body unreadable)");
-        logger.error(
-          `Congress.gov API error: status=${res.status} for ${tb.congress}-${tb.type}-${tb.number}. Body: ${bodySnippet}`,
-        );
+        const msg = `status=${res.status} for ${tb.congress}-${tb.type}-${tb.number}. Body: ${bodySnippet}`;
+        logger.error(`Congress.gov API error: ${msg}`);
+        if (!firstApiError) firstApiError = msg;
         continue;
       }
 
@@ -203,6 +204,12 @@ export async function searchCongressBills(
   }
 
   logger.info(`Congress.gov: ${bills.length} bills fetched (${tracked.length} tracked)`);
+  // If we tried to fetch but got zero bills back, surface the aggregated
+  // diagnostic via a thrown error so the ingestion orchestrator captures it
+  // in `fetchErrors` and we can read it from the API response.
+  if (bills.length === 0 && tracked.length > 0 && firstApiError) {
+    throw new Error(`All ${tracked.length} tracked bill fetches returned non-OK. First error: ${firstApiError}`);
+  }
   return bills;
 }
 
