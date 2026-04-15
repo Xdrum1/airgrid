@@ -56,7 +56,7 @@ export const CONTAINERS: Record<ContainerId, Container> = {
     id: "operator",
     name: "Operator Intelligence",
     status: "live",
-    buyer: "eVTOL operators (Joby, Archer, Wisk, Eve)",
+    buyer: "eVTOL operators and OEMs",
     routes: ["/reports/briefing-operator/[cityId]"],
     libs: ["scoring", "mcs", "operator-intelligence", "forward-signals", "rpl-precedents"],
     dataTables: ["City (FKB)", "OperatorIntelligence (OID)", "McsStateContext"],
