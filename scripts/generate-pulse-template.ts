@@ -20,6 +20,7 @@ dotenv.config({ path: ".env.local" });
 import { writeFileSync } from "fs";
 import { join } from "path";
 import { getPlatformForecastDigest, renderSignalNarrative } from "../src/lib/forward-signals";
+import { getStateContext, getRegionalClusters } from "../src/lib/mcs";
 
 const args = process.argv.slice(2);
 const issueIdx = args.indexOf("--issue");
@@ -53,6 +54,22 @@ async function main() {
   const dateStr = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
   const isoDate = today.toISOString().slice(0, 10);
 
+  // Pre-fetch MCS context for each top market
+  const contextByCity = new Map<string, { statePosture: string | null; cluster: string | null }>();
+  await Promise.all(
+    top.map(async (m) => {
+      const [ctx, clusters] = await Promise.all([
+        getStateContext(m.state).catch(() => null),
+        getRegionalClusters(m.cityId).catch(() => []),
+      ]);
+      const statePosture = ctx
+        ? `${ctx.stateName}: ${ctx.enforcementPosture} enforcement, ${ctx.dotAamEngagement} DOT`
+        : null;
+      const cluster = clusters[0]?.name ?? null;
+      contextByCity.set(m.cityId, { statePosture, cluster });
+    }),
+  );
+
   const marketRows = top.map((m, i) => {
     const watch = watchBadge(m.marketWatch?.status ?? null, m.marketWatch?.outlook ?? null);
     const accel = m.accelerating
@@ -64,6 +81,10 @@ async function main() {
     const signals = m.topSignals.map((s) =>
       `<li style="font-size:12px;color:#555;line-height:1.6;margin-bottom:4px;">${escape(renderSignalNarrative(s))}</li>`
     ).join("");
+    const ctx = contextByCity.get(m.cityId);
+    const contextLine = (ctx?.statePosture || ctx?.cluster)
+      ? `<div style="font-size:11px;color:#888;font-style:italic;margin:4px 0 6px;">${ctx?.statePosture ?? ""}${ctx?.statePosture && ctx?.cluster ? " · " : ""}${ctx?.cluster ? `Cluster: ${escape(ctx.cluster)}` : ""}</div>`
+      : "";
 
     return `
       <tr>
@@ -78,6 +99,7 @@ async function main() {
             ${watch}
             <span>Signals 30d: <strong style="color:#333;">${m.signalsLast30d}</strong> (#${m.rankNational ?? "—"})</span>
           </div>
+          ${contextLine}
           ${forecast}
           ${signals ? `<ul style="margin:10px 0 0;padding-left:18px;">${signals}</ul>` : ""}
         </td>

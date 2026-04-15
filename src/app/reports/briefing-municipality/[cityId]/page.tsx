@@ -8,7 +8,7 @@ import {
   getScoreColor,
   SCORE_WEIGHTS,
 } from "@/lib/scoring";
-import { analyzeGaps } from "@/lib/gap-analysis";
+import { analyzeGaps, getPeerContextWithMcs } from "@/lib/gap-analysis";
 import type { FactorAnalysis } from "@/lib/gap-analysis";
 import type { ScoreBreakdown } from "@/types";
 import { prisma } from "@/lib/prisma";
@@ -263,6 +263,7 @@ export default async function MunicipalityBriefingPage({
   const tier = getScoreTier(score);
   const tierColor = getScoreColor(score);
   const gap = await analyzeGaps(city);
+  const peers = await getPeerContextWithMcs(city, allCities);
 
   // Compute national rank
   const sortedCities = [...allCities].sort(
@@ -906,6 +907,88 @@ export default async function MunicipalityBriefingPage({
               </p>
             </div>
           </div>
+
+          {/* ================================================================
+              SECTION 2.5: Peer Cities & State Context
+              ================================================================ */}
+          {(peers.sameState.length > 0 ||
+            (peers.regional && peers.regional.markets.length > 0) ||
+            peers.stateContext) && (
+            <div className="section-card" style={cardStyle}>
+              <h2 style={sectionHeading}>Peer Cities & State Context</h2>
+
+              {peers.stateContext && (
+                <div
+                  style={{
+                    marginBottom: 20,
+                    padding: "14px 16px",
+                    background: "rgba(91,141,184,0.06)",
+                    borderLeft: "3px solid #5B8DB8",
+                    borderRadius: 4,
+                  }}
+                >
+                  <div style={{ ...labelStyle, color: "#5B8DB8", marginBottom: 8 }}>
+                    {peers.stateContext.stateName.toUpperCase()} STATE POSTURE
+                  </div>
+                  <div style={{ fontSize: 13, lineHeight: 1.7, color: "#d0d0d0" }}>
+                    <div>
+                      Enforcement posture: <strong>{peers.stateContext.enforcementPosture}</strong>
+                      {" · "}DOT AAM engagement: <strong>{peers.stateContext.dotAamEngagement}</strong>
+                      {peers.stateContext.aamOfficeEstablished && " · AAM office established"}
+                    </div>
+                    {peers.stateContext.keyLegislation && (
+                      <div style={{ marginTop: 6 }}>
+                        Key legislation: <em>{peers.stateContext.keyLegislation}</em>
+                      </div>
+                    )}
+                    {peers.stateContext.enforcementNote && (
+                      <div style={{ marginTop: 6, fontSize: 12, color: "#999" }}>
+                        {peers.stateContext.enforcementNote}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: peers.sameState.length > 0 && peers.regional ? "1fr 1fr" : "1fr",
+                  gap: 16,
+                }}
+              >
+                {peers.sameState.length > 0 && (
+                  <div>
+                    <div style={{ ...labelStyle, marginBottom: 8 }}>
+                      PEER CITIES IN {city.state}
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, lineHeight: 1.9 }}>
+                      {peers.sameState.map((p) => (
+                        <li key={p.id}>
+                          {p.city}, {p.state} — {p.score}/100
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {peers.regional && peers.regional.markets.length > 0 && (
+                  <div>
+                    <div style={{ ...labelStyle, marginBottom: 8 }}>
+                      REGIONAL CLUSTER: {peers.regional.cluster?.toUpperCase()}
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, lineHeight: 1.9 }}>
+                      {peers.regional.markets.map((p) => (
+                        <li key={p.id}>
+                          {p.city}, {p.state} — {p.score}/100
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* ================================================================
               SECTION 3: Factor Breakdown with Municipal Emphasis
