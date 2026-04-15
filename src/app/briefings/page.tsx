@@ -336,6 +336,156 @@ export default function BriefingsPage() {
           ))}
         </div>
 
+        {/* ── Persona Briefings — per-market deliverables ───── */}
+        <section style={{ marginBottom: 64 }}>
+          <h2
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: 20,
+              color: "#fff",
+              marginBottom: 8,
+              paddingBottom: 12,
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+            }}
+          >
+            Persona Briefings
+          </h2>
+          <p
+            style={{
+              color: "#888",
+              fontSize: 13,
+              lineHeight: 1.7,
+              margin: "0 0 24px",
+              maxWidth: 720,
+            }}
+          >
+            Five audience-specific per-market deliverables, each pulling from
+            the same five-container intelligence architecture but framed for
+            the questions a specific buyer actually asks. Preview a sample
+            market below; all 25 tracked markets available.
+          </p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: 14,
+            }}
+          >
+            {[
+              {
+                name: "Infrastructure",
+                accent: "#00d4ff",
+                audience: "Developers, REITs, site-selection teams",
+                question: "Can I build here and what will it take?",
+                sections: "Site viability, factor breakdown, regulatory trajectory, capital exposure, development roadmap",
+                sample: "miami",
+                route: "briefing",
+              },
+              {
+                name: "Municipality",
+                accent: "#5B8DB8",
+                audience: "City planners, state agencies, economic development",
+                question: "Where do we stand vs peers and how do we close the gap?",
+                sections: "Ordinance audit, peer cities, gap roadmap, operator attraction, trajectory",
+                sample: "dallas",
+                route: "briefing-municipality",
+              },
+              {
+                name: "Insurance",
+                accent: "#b45309",
+                audience: "Aviation underwriters, brokers, risk managers",
+                question: "What's my exposure on this portfolio?",
+                sections: "5-question compliance audit, state posture, regulatory precedents, peer exposure markets",
+                sample: "miami",
+                route: "briefing-insurance",
+              },
+              {
+                name: "Operator",
+                accent: "#7c3aed",
+                audience: "eVTOL operators — Joby, Archer, Wisk, Eve",
+                question: "Should I deploy my fleet here, and when?",
+                sections: "Operator landscape, infrastructure available for ops, regulatory friction, entry timing",
+                sample: "los_angeles",
+                route: "briefing-operator",
+              },
+              {
+                name: "Investor",
+                accent: "#0369a1",
+                audience: "Institutional investors, corp dev, sector analysts",
+                question: "Which markets prove or invalidate the UAM thesis?",
+                sections: "Score trajectory, operator capital flow, federal programs, regulatory catalysts",
+                sample: "miami",
+                route: "briefing-investor",
+              },
+            ].map((p) => (
+              <div
+                key={p.name}
+                style={{
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  borderLeft: `3px solid ${p.accent}`,
+                  borderRadius: 8,
+                  padding: "20px 22px 18px",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 9,
+                    letterSpacing: 2,
+                    color: p.accent,
+                    textTransform: "uppercase",
+                    marginBottom: 8,
+                  }}
+                >
+                  {p.name} Briefing
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: 15,
+                    fontWeight: 600,
+                    color: "#fff",
+                    lineHeight: 1.4,
+                    margin: "0 0 10px",
+                  }}
+                >
+                  &ldquo;{p.question}&rdquo;
+                </div>
+                <div style={{ fontSize: 11, color: "#888", marginBottom: 8 }}>
+                  <strong style={{ color: "#aaa" }}>For:</strong> {p.audience}
+                </div>
+                <div style={{ fontSize: 11, color: "#888", lineHeight: 1.6, marginBottom: 16 }}>
+                  {p.sections}
+                </div>
+                <div style={{ marginTop: "auto" }}>
+                  <Link
+                    href={`/reports/${p.route}/${p.sample}`}
+                    style={{
+                      display: "inline-block",
+                      padding: "8px 14px",
+                      border: `1px solid ${p.accent}`,
+                      borderRadius: 5,
+                      color: p.accent,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      textDecoration: "none",
+                    }}
+                  >
+                    View Sample →
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* ── What's Inside ──────────────────────────── */}
         <section style={{ marginBottom: 64 }}>
           <h2
