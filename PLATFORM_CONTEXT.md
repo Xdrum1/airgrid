@@ -85,6 +85,12 @@ Developed with Don Berchoff (TruWeather). Splits Weather Infrastructure into two
 
 | Date       | Change                                                                       | Type                   |
 |------------|------------------------------------------------------------------------------|------------------------|
+| 2026-04-15 | **Morning briefing** gets Forward Signals Fired + Alerts Sent + Briefing Views sections | Observability          |
+| 2026-04-15 | **Persona-styled forward-signal alerts** — 7 buyer types with accent/intro/CTA matching their briefing | New feature    |
+| 2026-04-15 | **AI-drafted Pulse** (`--draft` flag, Opus 4.6, pulse voice memory); Issue 7 demo output ready-to-send quality | New feature |
+| 2026-04-15 | **Forward-signal auto-alerts** to Alert+ clients; `ForwardSignalAlert` dedup table | New feature           |
+| 2026-04-15 | **FPIS expansion** — LEG/OPR/ZON now covered (8 new factor impacts with prose rationale) | Data / feature |
+| 2026-04-15 | **Advisor callouts closed** — Cincinnati/SLC ASOS stations seeded, Miami marked as canonical Rex demo | Polish / data |
 | 2026-04-15 | **Freshness bar** on all 5 briefings; 3 missing metro bounds filled         | Polish / data          |
 | 2026-04-15 | **v1.4 preview harness** (`scripts/preview-v14-scoring.ts`) + shared ASOS/metro-bounds module | Feature prep  |
 | 2026-04-15 | **Admin briefing analytics** at `/admin/briefing-analytics`                 | New feature            |
@@ -113,11 +119,29 @@ Developed with Don Berchoff (TruWeather). Splits Weather Infrastructure into two
 
 ## Pending / In Progress
 
-- [ ] **v1.4 scoring live** — TruWeather deployment map ingestion is one `npx tsx scripts/ingest-truweather-deployment.ts <file>` command; preview harness will show the delta; flip the flag in `scoring.ts` + regen snapshots
-- [ ] **TruWeather `TruWeatherDeployment` table** populated (currently 0 rows; schema + ingestion script ready; Don sending imminently)
-- [ ] **FPIS factor coverage** — LEG/OPR/ZON have 0 programs mapped (investor briefing Federal Program Capital section pulls from REG/VRT/PLT/WTH only)
-- [ ] **ASOS station coverage gaps** for OH + UT (Cincinnati and SLC return 0 ASOS credit in preview) — seed more stations
-- [ ] `sec_edgar` — confirmed healthy; diff-engine intentionally doesn't bump `updatedAt` on static filings, so 25+ days between new ingests is normal
+**Blocked (external):**
+- [ ] **v1.4 scoring live** — TruWeather deployment map from Don; one-command ingest + flag flip once it lands
+- [ ] **Prediction accuracy scorecard** — first predictions mature 2026-06-16; no numbers until then
+
+**Automation candidates (next picks):**
+- [ ] **Scheduled Monday Pulse auto-draft cron** (~30 min) — runs `generate-pulse-template --draft` every Monday 6am; Alan edits, sends
+- [ ] **One Market Monday AI drafter** (~45 min) — parallel to Pulse drafter for OMM cadence
+- [ ] **Unopened-briefing follow-up drip** (~1-1.5 hr) — if briefing not viewed within 5d, auto-send second-angle email
+- [ ] **Send-briefing batch mode** (~1 hr) — CSV → N personalized sends per persona
+
+**Small polish:**
+- [ ] OID event-log hyperlinks (operator briefing recent-events list)
+- [ ] `/methodology` page freshness sync to v1.3 live state
+
+**Deferred (definition needed):**
+- [ ] MCS `SIMILAR_PROFILE` peer groupings — 0 rows, no working definition
+- [ ] Prediction review UI for analyst overrides — needed post-June once scorecard publishes
+
+**Resolved:**
+- ~~sec_edgar silence~~ — confirmed healthy; diff-engine intentionally doesn't bump `updatedAt` on static filings
+- ~~FPIS coverage gap~~ — 8 factor impacts added for LEG/OPR/ZON with prose rationale
+- ~~ASOS gaps for OH/UT~~ — CVG, LUK, SLC, PVU, OGD seeded
+- ~~Canonical demo briefings~~ — Miami insurance briefing targeted for Rex/Larry intros; saved to memory
 
 ## Key File References
 
