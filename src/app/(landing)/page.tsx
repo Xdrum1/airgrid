@@ -561,9 +561,9 @@ export default async function LandingPage() {
                   margin: "0 auto",
                 }}
               >
-                Continuously ingested from FAA, Federal Register, Congress,
-                LegiScan, SEC, and operator primary sources.
-                Cross-referenced, classified, and delivered.
+                Continuously ingested from primary government, regulatory,
+                and market sources. Cross-referenced, classified, and delivered
+                in the form each buyer uses.
               </p>
             </div>
 
