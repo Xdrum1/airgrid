@@ -48,6 +48,25 @@ export interface PeerContext {
   nextTier: string | null;
   nextTierCities: { id: string; city: string; state: string; score: number }[];
   pointsToNextTier: number | null;
+  /** MCS-sourced peer groupings beyond tier. Populated only when
+   *  MCS has peer-group data for the city; empty otherwise. */
+  sameState: { id: string; city: string; state: string; score: number }[];
+  similarProfile: { id: string; city: string; state: string; score: number }[];
+  regional: {
+    cluster: string | null;
+    markets: { id: string; city: string; state: string; score: number }[];
+  } | null;
+  /** State-level AAM context (MCS). */
+  stateContext: {
+    stateCode: string;
+    stateName: string;
+    enforcementPosture: string;
+    enforcementNote: string | null;
+    dotAamEngagement: string;
+    dotAamNote: string | null;
+    aamOfficeEstablished: boolean;
+    keyLegislation: string | null;
+  } | null;
 }
 
 // -------------------------------------------------------
@@ -197,7 +216,81 @@ export function getPeerContext(city: City, allCities: City[]): PeerContext {
 
   const pointsToNextTier = nextTier ? nextTierThreshold - cityScore : null;
 
-  return { sameTier, nextTier, nextTierCities, pointsToNextTier };
+  return {
+    sameTier,
+    nextTier,
+    nextTierCities,
+    pointsToNextTier,
+    sameState: [],
+    similarProfile: [],
+    regional: null,
+    stateContext: null,
+  };
+}
+
+/**
+ * Async peer context enriched with MCS data — state peers, similar-profile
+ * peers, regional cluster membership, and state-level AAM posture.
+ * Falls back to the tier-based sync version when MCS has no record for
+ * the city or its state.
+ */
+export async function getPeerContextWithMcs(city: City, allCities: City[]): Promise<PeerContext> {
+  const base = getPeerContext(city, allCities);
+  const { getPeerGroups, getRegionalClusters, getStateContext } = await import("@/lib/mcs");
+  const cityMap = new Map(allCities.map((c) => [c.id, c]));
+  const toPeerList = (ids: string[]) =>
+    ids
+      .map((id) => cityMap.get(id))
+      .filter((c): c is City => !!c)
+      .map((c) => ({ id: c.id, city: c.city, state: c.state, score: c.score ?? 0 }))
+      .sort((a, b) => b.score - a.score);
+
+  let sameState: PeerContext["sameState"] = [];
+  let similarProfile: PeerContext["similarProfile"] = [];
+  try {
+    const groups = await getPeerGroups(city.id);
+    const stateGroup = groups.find((g) => g.groupingBasis === "SAME_STATE");
+    const profileGroup = groups.find((g) => g.groupingBasis === "SIMILAR_PROFILE");
+    if (stateGroup) sameState = toPeerList(stateGroup.peerMarketIds);
+    if (profileGroup) similarProfile = toPeerList(profileGroup.peerMarketIds);
+  } catch {
+    // MCS unreachable — fall back to tier-only context already in base
+  }
+
+  let regional: PeerContext["regional"] = null;
+  try {
+    const clusters = await getRegionalClusters(city.id);
+    if (clusters.length > 0) {
+      const c = clusters[0];
+      regional = {
+        cluster: c.name,
+        markets: toPeerList(c.marketIds.filter((id) => id !== city.id)),
+      };
+    }
+  } catch {
+    // ignore
+  }
+
+  let stateContext: PeerContext["stateContext"] = null;
+  try {
+    const ctx = await getStateContext(city.state);
+    if (ctx) {
+      stateContext = {
+        stateCode: ctx.stateCode,
+        stateName: ctx.stateName,
+        enforcementPosture: ctx.enforcementPosture,
+        enforcementNote: ctx.enforcementNote,
+        dotAamEngagement: ctx.dotAamEngagement,
+        dotAamNote: ctx.dotAamNote,
+        aamOfficeEstablished: ctx.aamOfficeEstablished,
+        keyLegislation: ctx.keyLegislation,
+      };
+    }
+  } catch {
+    // ignore
+  }
+
+  return { ...base, sameState, similarProfile, regional, stateContext };
 }
 
 /**
@@ -206,7 +299,7 @@ export function getPeerContext(city: City, allCities: City[]): PeerContext {
  */
 export async function getEnhancedGapAnalysis(city: City, allCities: City[]): Promise<EnhancedGapAnalysis> {
   const gap = await analyzeGaps(city);
-  const peers = getPeerContext(city, allCities);
+  const peers = await getPeerContextWithMcs(city, allCities);
 
   // Enrich sub-indicators with peer notes
   const enrichedSubIndicators = getSubIndicatorsWithPeers(city, allCities);

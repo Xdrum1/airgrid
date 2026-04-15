@@ -635,6 +635,69 @@ export default async function GapReportPage({
                 {city.city} is in the highest tier (ADVANCED). No further tier progression available.
               </p>
             )}
+
+            {peers.sameState.length > 0 && (
+              <div style={{ marginTop: 16 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 600, color: "#888", margin: "0 0 8px" }}>
+                  State Peers ({city.state})
+                </h3>
+                <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, lineHeight: 1.8 }}>
+                  {peers.sameState.map((p) => (
+                    <li key={p.id}>
+                      {p.city}, {p.state} &mdash; {p.score}/100
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {peers.regional && peers.regional.markets.length > 0 && (
+              <div style={{ marginTop: 16 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 600, color: "#888", margin: "0 0 8px" }}>
+                  Regional Cluster: {peers.regional.cluster}
+                </h3>
+                <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, lineHeight: 1.8 }}>
+                  {peers.regional.markets.map((p) => (
+                    <li key={p.id}>
+                      {p.city}, {p.state} &mdash; {p.score}/100
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {peers.stateContext && (
+              <div
+                style={{
+                  marginTop: 20,
+                  padding: "12px 14px",
+                  background: "rgba(91,141,184,0.06)",
+                  borderLeft: "2px solid #5B8DB8",
+                  borderRadius: 4,
+                }}
+              >
+                <h3 style={{ fontSize: 14, fontWeight: 600, color: "#5B8DB8", margin: "0 0 6px" }}>
+                  {peers.stateContext.stateName} State Context
+                </h3>
+                <div style={{ fontSize: 12, color: "#d0d0d0", lineHeight: 1.6 }}>
+                  <div>
+                    Enforcement posture: <strong>{peers.stateContext.enforcementPosture}</strong>
+                    {" · "}DOT AAM engagement: <strong>{peers.stateContext.dotAamEngagement}</strong>
+                    {peers.stateContext.aamOfficeEstablished && " · AAM office established"}
+                  </div>
+                  {peers.stateContext.keyLegislation && (
+                    <div style={{ marginTop: 4 }}>
+                      Key legislation: <em>{peers.stateContext.keyLegislation}</em>
+                    </div>
+                  )}
+                  {peers.stateContext.enforcementNote && (
+                    <div style={{ marginTop: 4, fontSize: 11, color: "#999" }}>
+                      {peers.stateContext.enforcementNote}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ======== SECTION 7: SCORE TRAJECTORY ======== */}
