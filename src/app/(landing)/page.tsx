@@ -6,6 +6,7 @@ import { liveContainers } from "@/lib/containers";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollReveal from "@/components/landing/ScrollReveal";
+import StatNumber from "@/components/landing/StatNumber";
 import PulseSubscribe from "@/components/PulseSubscribe";
 
 // ─────────────────────────────────────────────────────────
@@ -272,10 +273,10 @@ export default async function LandingPage() {
           }}
         >
           {[
-            { value: `${MARKET_COUNT}`, label: "U.S. markets tracked", accent: "#5B8DB8" },
-            { value: "5,647", label: "Heliports mapped", accent: "#2dd4bf" },
-            { value: "7", label: "Scoring factors", accent: "#a78bfa" },
-            { value: "496+", label: "Regulatory precedents", accent: "#f59e0b" },
+            { value: MARKET_COUNT, suffix: "", display: undefined as string | undefined, label: "U.S. markets tracked", accent: "#5B8DB8", delay: 0 },
+            { value: 5647, suffix: "", display: "5,647" as string | undefined, label: "Heliports mapped", accent: "#2dd4bf", delay: 150 },
+            { value: 7, suffix: "", display: undefined as string | undefined, label: "Scoring factors", accent: "#a78bfa", delay: 300 },
+            { value: 496, suffix: "+", display: undefined as string | undefined, label: "Regulatory precedents", accent: "#f59e0b", delay: 450 },
           ].map((s) => (
             <div
               key={s.label}
@@ -296,7 +297,7 @@ export default async function LandingPage() {
                   lineHeight: 1,
                 }}
               >
-                {s.value}
+                <StatNumber value={s.value} suffix={s.suffix} display={s.display} delay={s.delay} />
               </div>
               <div
                 aria-hidden="true"
