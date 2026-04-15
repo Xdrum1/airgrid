@@ -2,9 +2,11 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import NavClient from "./NavClient";
 
-export default async function SiteNav() {
+export default async function SiteNav({ theme = "dark" }: { theme?: "dark" | "light" } = {}) {
   const session = await auth();
   const isAuthed = !!session?.user;
+
+  const isLight = theme === "light";
 
   return (
     <>
@@ -15,9 +17,11 @@ export default async function SiteNav() {
           left: 0,
           right: 0,
           zIndex: 200,
-          background: "rgba(5,5,8,0.85)",
+          background: isLight ? "rgba(255,255,255,0.92)" : "rgba(5,5,8,0.85)",
           backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          borderBottom: isLight
+            ? "1px solid rgba(10,37,64,0.08)"
+            : "1px solid rgba(255,255,255,0.06)",
         }}
       >
         <div
@@ -32,13 +36,14 @@ export default async function SiteNav() {
           }}
         >
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/logo/airindex-wordmark.svg"
+              src={isLight ? "/images/logo/airindex-wordmark-light.svg" : "/images/logo/airindex-wordmark.svg"}
               alt="AirIndex"
               style={{ height: 28 }}
             />
           </Link>
-          <NavClient isAuthed={isAuthed} />
+          <NavClient isAuthed={isAuthed} theme={theme} />
         </div>
       </nav>
       {/* Spacer to offset fixed nav height */}

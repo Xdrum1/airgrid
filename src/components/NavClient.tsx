@@ -60,7 +60,31 @@ const topLinkStyle: React.CSSProperties = {
   whiteSpace: "nowrap",
 };
 
-export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
+export default function NavClient({
+  isAuthed,
+  theme = "dark",
+}: {
+  isAuthed: boolean;
+  theme?: "dark" | "light";
+}) {
+  const isLight = theme === "light";
+  const linkColor = isLight ? "#525866" : "#888";
+  const linkActiveColor = isLight ? "#0a2540" : "#fff";
+  const linkHoverColor = isLight ? "#0a2540" : "#ccc";
+  const ctaBg = "#5B8DB8";
+  const ctaFg = isLight ? "#ffffff" : "#050508";
+  const dropdownBg = isLight ? "rgba(255,255,255,0.98)" : "rgba(10,10,18,0.98)";
+  const dropdownBorder = isLight ? "1px solid rgba(10,37,64,0.08)" : "1px solid rgba(255,255,255,0.08)";
+  const dropdownShadow = isLight ? "0 10px 40px rgba(10,37,64,0.08)" : "0 12px 40px rgba(0,0,0,0.5)";
+  const dropdownHoverBg = isLight ? "rgba(91,141,184,0.06)" : "rgba(255,255,255,0.04)";
+  const childLabel = isLight ? "#0a2540" : "#ccc";
+  const childDesc = isLight ? "#6b7280" : "#555";
+  const mobileMenuBg = isLight ? "rgba(255,255,255,0.98)" : "rgba(5,5,8,0.98)";
+  const mobileMenuDivider = isLight ? "1px solid rgba(10,37,64,0.06)" : "1px solid rgba(255,255,255,0.04)";
+  const mobileItemColor = isLight ? "#334155" : "#aaa";
+  const mobileLabelColor = isLight ? "#8792a2" : "#555";
+  const signinColor = isLight ? "#6b7280" : "#666";
+
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -135,7 +159,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                 className="nav-link"
                 style={{
                   ...topLinkStyle,
-                  color: isGroupActive(item) ? "#fff" : "#888",
+                  color: isGroupActive(item) ? linkActiveColor : linkColor,
                 }}
               >
                 {item.label}
@@ -145,7 +169,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                 className="nav-link"
                 style={{
                   ...topLinkStyle,
-                  color: isGroupActive(item) ? "#fff" : openDropdown === item.label ? "#ccc" : "#888",
+                  color: isGroupActive(item) ? linkActiveColor : openDropdown === item.label ? linkHoverColor : linkColor,
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 4,
@@ -171,13 +195,13 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
               >
                 <div
                   style={{
-                    background: "rgba(10,10,18,0.98)",
+                    background: dropdownBg,
                     backdropFilter: "blur(16px)",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                    border: dropdownBorder,
                     borderRadius: 10,
                     padding: "8px 0",
                     minWidth: 280,
-                    boxShadow: "0 12px 40px rgba(0,0,0,0.5)",
+                    boxShadow: dropdownShadow,
                   }}
                 >
                   {item.children.map((child) => (
@@ -190,18 +214,18 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                         textDecoration: "none",
                         transition: "background 0.1s",
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.04)")}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = dropdownHoverBg)}
                       onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                     >
                       <div style={{
                         fontSize: 12,
-                        color: isActive(child.href) ? "#fff" : "#ccc",
+                        color: isActive(child.href) ? linkActiveColor : childLabel,
                         fontWeight: isActive(child.href) ? 600 : 400,
                         marginBottom: 2,
                       }}>
                         {child.label}
                       </div>
-                      <div style={{ fontSize: 10, color: "#555", lineHeight: 1.4 }}>
+                      <div style={{ fontSize: 10, color: childDesc, lineHeight: 1.4 }}>
                         {child.desc}
                       </div>
                     </Link>
@@ -223,8 +247,8 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
               letterSpacing: "0.06em",
               textDecoration: "none",
               padding: "8px 20px",
-              background: "#5B8DB8",
-              color: "#050508",
+              background: ctaBg,
+              color: ctaFg,
               borderRadius: 6,
               transition: "opacity 0.15s",
               marginLeft: 8,
@@ -239,7 +263,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
               href="/login"
               className="nav-link"
               style={{
-                color: "#555",
+                color: signinColor,
                 fontSize: 10,
                 letterSpacing: "0.04em",
                 textDecoration: "none",
@@ -260,8 +284,8 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                 letterSpacing: "0.06em",
                 textDecoration: "none",
                 padding: "8px 20px",
-                background: "#5B8DB8",
-                color: "#050508",
+                background: ctaBg,
+                color: ctaFg,
                 borderRadius: 6,
                 transition: "opacity 0.15s",
                 whiteSpace: "nowrap",
@@ -284,7 +308,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
           border: "none",
           cursor: "pointer",
           padding: 8,
-          color: "#888",
+          color: linkColor,
           fontSize: 20,
         }}
       >
@@ -301,7 +325,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(5,5,8,0.98)",
+            background: mobileMenuBg,
             backdropFilter: "blur(16px)",
             zIndex: 10000,
             padding: "24px 20px",
@@ -317,11 +341,11 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                   style={{
                     display: "block",
                     padding: "10px 0",
-                    color: isGroupActive(item) ? "#fff" : "#aaa",
+                    color: isGroupActive(item) ? linkActiveColor : mobileItemColor,
                     fontSize: 14,
                     fontWeight: 600,
                     textDecoration: "none",
-                    borderBottom: "1px solid rgba(255,255,255,0.04)",
+                    borderBottom: mobileMenuDivider,
                   }}
                 >
                   {item.label}
@@ -331,7 +355,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                   <div style={{
                     fontSize: 9,
                     letterSpacing: 2,
-                    color: "#555",
+                    color: mobileLabelColor,
                     padding: "4px 0 8px",
                     fontWeight: 600,
                   }}>
@@ -345,10 +369,10 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                       style={{
                         display: "block",
                         padding: "10px 0 10px 12px",
-                        color: isActive(child.href) ? "#fff" : "#aaa",
+                        color: isActive(child.href) ? linkActiveColor : mobileItemColor,
                         fontSize: 13,
                         textDecoration: "none",
-                        borderBottom: "1px solid rgba(255,255,255,0.03)",
+                        borderBottom: mobileMenuDivider,
                       }}
                     >
                       {child.label}
@@ -388,7 +412,7 @@ export default function NavClient({ isAuthed }: { isAuthed: boolean }) {
                     display: "block",
                     textAlign: "center",
                     padding: "10px 0",
-                    color: "#666",
+                    color: signinColor,
                     fontSize: 12,
                     textDecoration: "none",
                   }}

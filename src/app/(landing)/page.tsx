@@ -1,34 +1,86 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getCitiesWithOverrides, MARKET_COUNT } from "@/data/seed";
-import { calculateReadinessScoreFromFkb, getScoreTier, getScoreColor } from "@/lib/scoring";
-import { getPublishedFeedItems } from "@/lib/feed";
-import { getPlatformForecastDigest } from "@/lib/forward-signals";
-import ScrollReveal from "@/components/landing/ScrollReveal";
+import { calculateReadinessScoreFromFkb } from "@/lib/scoring";
+import { liveContainers } from "@/lib/containers";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import ScrollReveal from "@/components/landing/ScrollReveal";
 import PulseSubscribe from "@/components/PulseSubscribe";
-import CountUpStats from "@/components/landing/CountUpStats";
 
-// -------------------------------------------------------
-// Market intelligence notes (manually curated)
-// -------------------------------------------------------
-const MARKET_NOTES: Record<string, string> = {
-  los_angeles: "Joby + Archer targeting 2026 launch. CA SB 944 enacted. 146 heliports.",
-  dallas: "Wisk autonomous testing active. TX HB 1735 enacted. 69 heliports.",
-  miami: "Archer White House Pilot Program. FL AAM Act signed. Joby operating via Blade acquisition.",
-  orlando: "Lake Nona smart city pilot. FDOT-funded vertiport feasibility. FL AAM Act applies statewide.",
-  san_francisco: "Joby Golden Gate demo flight completed. CA SB 944 applies. Neutral regulatory posture.",
-  new_york: "Joby operating NYC air taxi routes. No state UAM legislation. Complex Class B airspace.",
-  phoenix: "SB1826 + SB1827 advancing — AAM office + funding. Potential tier shift if enacted.",
-  austin: "TX HB 1735 applies. No active pilot program. Strong legislative framework.",
-  houston: "137 heliports — highest infrastructure density. TX HB 1735 applies.",
-  san_diego: "Crossed into Moderate. SoCal corridor build continuing quietly.",
+// ─────────────────────────────────────────────────────────
+// Stripe-direction light homepage.
+//
+// Centerpiece: container cards. Each card names the buyer, lists the
+// data delivered, and offers a single CTA. No pricing on the marketing
+// site — institutional buyers negotiate.
+//
+// Split intentionally preserved: dashboard is dark, marketing is light.
+// ─────────────────────────────────────────────────────────
+
+// Short "what you get" bullets per container — 3 lines each.
+const CONTAINER_DATA_LINES: Record<string, string[]> = {
+  operator: [
+    "Market-by-market readiness scoring across 25 U.S. metros",
+    "Regulatory posture, vertiport pipeline, operator-graph intelligence",
+    "Forward signals for route planning and deployment sequencing",
+  ],
+  infrastructure: [
+    "Gap-to-readiness analysis per market with cost + timeline framing",
+    "Jurisdictional permitting landscape and regulatory precedents",
+    "Peer-market benchmarking on zoning, legislation, and enforcement",
+  ],
+  municipality: [
+    "Peer-city benchmarking against same-tier and same-state markets",
+    "Federal program alignment and legislative-activity tracking",
+    "Economic-development positioning and infrastructure readiness",
+  ],
+  insurance: [
+    "City-level aviation liability exposure audit",
+    "Heliport compliance framework + state regulatory burden layer",
+    "Precedent-driven exposure framing and peer-market comparisons",
+  ],
+  investor: [
+    "Market and operator deployment intelligence for thesis timing",
+    "Forward signals across regulatory, operator, and federal channels",
+    "Pulse-quality synthesis with source-traced primary data",
+  ],
+  "risk-site": [
+    "Single-facility risk assessment with 4-tier classification",
+    "FAA registry + 5-question compliance + airspace determinations",
+    "Underwriting recommendation, peer benchmark, satellite visualization",
+  ],
 };
 
-// -------------------------------------------------------
-// Page (Server Component — fetches live data)
-// -------------------------------------------------------
+const CONTAINER_BUYER_LABEL: Record<string, string> = {
+  operator: "For eVTOL Operators",
+  infrastructure: "For Infrastructure Developers",
+  municipality: "For Cities & State Agencies",
+  insurance: "For Aviation Insurance",
+  investor: "For Institutional Investors",
+  "risk-site": "For Underwriters & Facility Owners",
+};
+
+// Order containers to put the warmest / most-relevant first
+const CONTAINER_ORDER: Record<string, number> = {
+  insurance: 1,
+  "risk-site": 2,
+  infrastructure: 3,
+  operator: 4,
+  municipality: 5,
+  investor: 6,
+};
+
+// Per-persona accent color (card top-border stripe)
+const CONTAINER_ACCENT: Record<string, string> = {
+  insurance: "#f59e0b",       // warm amber — compliance / risk
+  "risk-site": "#f97316",     // coral — facility-level risk
+  infrastructure: "#5B8DB8",  // brand blue — building / planning
+  operator: "#2dd4bf",        // mint — motion / deployment
+  municipality: "#0a2540",    // deep navy — civic authority
+  investor: "#a78bfa",        // soft lavender — capital markets
+};
+
 export default async function LandingPage() {
   const cities = await getCitiesWithOverrides();
   const scoredUnsorted = await Promise.all(
@@ -39,669 +91,801 @@ export default async function LandingPage() {
   );
   const scored = scoredUnsorted.sort((a, b) => b.score - a.score);
 
-  // Top 10 for the market snapshot
-  const topMarkets = scored.slice(0, 10);
+  const containers = liveContainers().sort(
+    (a, b) => (CONTAINER_ORDER[a.id] ?? 99) - (CONTAINER_ORDER[b.id] ?? 99),
+  );
 
-  // Platform forecast digest — top markets by predictive significance
-  let forecastDigest: Awaited<ReturnType<typeof getPlatformForecastDigest>> = [];
-  try {
-    forecastDigest = await getPlatformForecastDigest();
-  } catch {
-    // Predictive layer is non-blocking — page renders without it on failure
-  }
-  const watchMarkets = forecastDigest.slice(0, 4);
-
-  // Live signals from the feed pipeline
-  let signals: { title: string; category: string; publishedAt: string; cities: { name: string }[] }[] = [];
-  try {
-    const { items } = await getPublishedFeedItems({ limit: 8 });
-    signals = items;
-  } catch {
-    // Fallback: empty signals on error
-  }
+  // ── Design tokens ──
+  const T = {
+    bg: "#ffffff",
+    subtleBg: "#f6f9fc",
+    textPrimary: "#0a2540",
+    textSecondary: "#425466",
+    textTertiary: "#697386",
+    accent: "#5B8DB8",
+    accentDeep: "#0a4068",
+    cardBorder: "#e3e8ee",
+    divider: "rgba(10,37,64,0.08)",
+  };
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "#050508",
+        background: T.bg,
         fontFamily: "'Inter', sans-serif",
-        color: "#fff",
+        color: T.textPrimary,
       }}
     >
-      <SiteNav />
+      <SiteNav theme="light" />
 
-      {/* ======== Hero (short) ======== */}
+      {/* ════════════════════════════════════════════════════ */}
+      {/* Hero — with diagonal gradient wash                    */}
+      {/* ════════════════════════════════════════════════════ */}
+      <div
+        style={{
+          position: "relative",
+          background:
+            "linear-gradient(150deg, rgba(91,141,184,0.14) 0%, rgba(167,139,250,0.08) 28%, rgba(45,212,191,0.06) 54%, rgba(255,255,255,0) 82%)",
+          overflow: "hidden",
+        }}
+      >
+        {/* Decorative glow — slow drift for subtle life */}
+        <div
+          aria-hidden="true"
+          className="hero-glow"
+          style={{
+            position: "absolute",
+            top: -160,
+            right: -80,
+            width: 520,
+            height: 520,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(91,141,184,0.18) 0%, rgba(91,141,184,0) 68%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="hero-glow hero-glow--slow"
+          style={{
+            position: "absolute",
+            top: 120,
+            left: -120,
+            width: 380,
+            height: 380,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(167,139,250,0.14) 0%, rgba(167,139,250,0) 68%)",
+            pointerEvents: "none",
+          }}
+        />
       <section
         style={{
-          maxWidth: 1120,
+          position: "relative",
+          maxWidth: 980,
           margin: "0 auto",
-          padding: "clamp(48px, 6vw, 80px) 20px 0",
+          padding: "clamp(64px, 9vw, 120px) 24px clamp(40px, 6vw, 72px)",
           textAlign: "center",
         }}
       >
+        <div
+          style={{
+            fontFamily: "'Space Mono', monospace",
+            fontSize: 11,
+            letterSpacing: "0.14em",
+            color: T.accent,
+            marginBottom: 20,
+            textTransform: "uppercase",
+          }}
+        >
+          Intelligence Infrastructure for Urban Air Mobility
+        </div>
         <h1
-          className="hero-headline"
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 700,
-            fontSize: "clamp(24px, 3.5vw, 40px)",
-            lineHeight: 1.2,
-            margin: "0 auto 14px",
-            maxWidth: 700,
-            color: "#fff",
+            fontSize: "clamp(34px, 5vw, 56px)",
+            lineHeight: 1.1,
+            letterSpacing: "-0.02em",
+            margin: "0 auto 22px",
+            maxWidth: 820,
+            color: T.textPrimary,
           }}
         >
-          The intelligence infrastructure for urban air mobility.
+          One data architecture. Six purpose-built intelligence products.
         </h1>
         <p
-          className="hero-subtext"
           style={{
-            color: "#888",
-            fontSize: "clamp(13px, 1.4vw, 16px)",
-            lineHeight: 1.7,
-            maxWidth: 580,
-            margin: "0 auto 28px",
+            color: T.textSecondary,
+            fontSize: "clamp(16px, 1.6vw, 19px)",
+            lineHeight: 1.6,
+            maxWidth: 680,
+            margin: "0 auto 40px",
+            fontWeight: 400,
           }}
         >
-          Where the next AAM market opens &mdash; and what moves it there.
-          Signal-to-action intelligence across {MARKET_COUNT}+ U.S. markets.
+          AirIndex powers the decisions of operators, insurers, developers,
+          cities, and investors shaping where eVTOL operates. Each buyer
+          receives the intelligence scoped to their world — sourced from the
+          same primary-data platform.
         </p>
-        <div className="hero-cta" style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap", marginBottom: 20 }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
             href="/request-access"
+            className="cta-primary"
             style={{
               display: "inline-block",
-              padding: "12px 32px",
-              background: "#5B8DB8",
-              color: "#050508",
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.06em",
+              padding: "14px 28px",
+              background: T.textPrimary,
+              color: "#ffffff",
+              fontSize: 14,
+              fontWeight: 600,
+              letterSpacing: "0.01em",
               textDecoration: "none",
-              borderRadius: 6,
+              borderRadius: 8,
             }}
           >
-            Request Access
+            Request Access <span className="arrow" aria-hidden="true">→</span>
           </Link>
           <Link
             href="/methodology"
+            className="cta-secondary"
             style={{
               display: "inline-block",
-              padding: "12px 32px",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "#888",
-              fontSize: 11,
-              letterSpacing: "0.06em",
+              padding: "14px 28px",
+              border: `1px solid ${T.cardBorder}`,
+              color: T.textPrimary,
+              fontSize: 14,
+              fontWeight: 600,
               textDecoration: "none",
-              borderRadius: 6,
+              borderRadius: 8,
+              background: "#ffffff",
             }}
           >
-            Methodology
+            Methodology <span className="arrow" aria-hidden="true">→</span>
           </Link>
         </div>
       </section>
+      </div>
 
-      {/* ======== Dashboard Preview ======== */}
+      {/* ════════════════════════════════════════════════════ */}
+      {/* Stats strip                                           */}
+      {/* ════════════════════════════════════════════════════ */}
+      <section
+        style={{
+          maxWidth: 1040,
+          margin: "0 auto",
+          padding: "clamp(24px, 4vw, 48px) 24px",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            gap: 1,
+            background: T.divider,
+            border: `1px solid ${T.divider}`,
+            borderRadius: 12,
+            overflow: "hidden",
+          }}
+        >
+          {[
+            { value: `${MARKET_COUNT}`, label: "U.S. markets tracked", accent: "#5B8DB8" },
+            { value: "5,647", label: "Heliports mapped", accent: "#2dd4bf" },
+            { value: "7", label: "Scoring factors", accent: "#a78bfa" },
+            { value: "496+", label: "Regulatory precedents", accent: "#f59e0b" },
+          ].map((s) => (
+            <div
+              key={s.label}
+              style={{
+                background: "#ffffff",
+                padding: "28px 20px",
+                textAlign: "center",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 32,
+                  color: T.textPrimary,
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1,
+                }}
+              >
+                {s.value}
+              </div>
+              <div
+                aria-hidden="true"
+                style={{
+                  width: 28,
+                  height: 2,
+                  background: s.accent,
+                  borderRadius: 2,
+                  margin: "10px auto 0",
+                }}
+              />
+              <div
+                style={{
+                  fontSize: 12,
+                  color: T.textTertiary,
+                  marginTop: 10,
+                  letterSpacing: "0.02em",
+                }}
+              >
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* Container cards — the centerpiece                    */}
+      {/* ════════════════════════════════════════════════════ */}
       <ScrollReveal>
-        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 48px) 20px 0" }}>
+        <section
+          style={{
+            maxWidth: 1120,
+            margin: "0 auto",
+            padding: "clamp(64px, 8vw, 120px) 24px clamp(32px, 5vw, 56px)",
+          }}
+        >
+          <div style={{ textAlign: "center", marginBottom: 56, maxWidth: 720, marginLeft: "auto", marginRight: "auto" }}>
+            <div
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                color: T.accent,
+                marginBottom: 16,
+                textTransform: "uppercase",
+              }}
+            >
+              Who We Serve · What We Deliver
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700,
+                fontSize: "clamp(28px, 3.6vw, 40px)",
+                letterSpacing: "-0.02em",
+                lineHeight: 1.15,
+                margin: "0 0 16px",
+                color: T.textPrimary,
+              }}
+            >
+              Products shaped to the decision in front of you.
+            </h2>
+            <p
+              style={{
+                color: T.textSecondary,
+                fontSize: 17,
+                lineHeight: 1.6,
+                margin: 0,
+              }}
+            >
+              We don&apos;t sell the platform. We deliver the intelligence
+              each buyer needs in the form they actually use.
+            </p>
+          </div>
+
           <div
             style={{
-              position: "relative",
-              borderRadius: 12,
-              overflow: "hidden",
-              border: "1px solid rgba(255,255,255,0.08)",
-              boxShadow: "0 0 80px rgba(91,141,184,0.06), 0 0 160px rgba(124,58,237,0.04)",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))",
+              gap: 20,
             }}
           >
-            <Link href="/request-access" className="dashboard-preview-link" style={{ display: "block", position: "relative" }}>
-              <Image
-                src="/images/dashboard-preview.png"
-                alt="AirIndex intelligence platform — market readiness scoring across 20+ U.S. markets"
-                width={1920}
-                height={1080}
-                style={{ width: "100%", height: "auto", display: "block" }}
-                priority
-              />
-              <div className="dashboard-preview-overlay">
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, letterSpacing: "0.06em", color: "#fff" }}>
-                    Request access to the full platform &rarr;
-                  </span>
-                </div>
-              </div>
-            </Link>
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* ======== What is AirIndex ======== */}
-      <ScrollReveal>
-        <section style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0", textAlign: "center" }}>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#5B8DB8", display: "block", marginBottom: 16 }}>SIGNAL-TO-ACTION INTELLIGENCE</span>
-          <p style={{ color: "#999", fontSize: 14, lineHeight: 1.8, margin: "0 0 10px" }}>
-            Every UAM market decision has the same problem: fragmented data, no baseline,
-            and no way to compare. AirIndex solves that with structured intelligence that
-            connects regulatory signals to capital allocation decisions.
-          </p>
-          <p style={{ color: "#666", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
-            We don&apos;t just score markets &mdash; we show you the specific actions that move
-            scores, the federal programs that fund those actions, and the operator signals
-            that tell you where commercial infrastructure is concentrating next.
-          </p>
-        </section>
-      </ScrollReveal>
-
-      {/* ======== Animated Stats ======== */}
-      <div style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(24px, 4vw, 40px) 20px 0" }}>
-        <CountUpStats stats={[
-          { value: scored.length, suffix: "+", label: "Markets Tracked" },
-          { value: 2026, suffix: "+", label: "Regulatory Records" },
-          { value: 5647, label: "Heliports Mapped" },
-          { value: 7, label: "Scoring Factors" },
-        ]} />
-      </div>
-
-      {/* ======== Briefings CTA ======== */}
-      <ScrollReveal>
-        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 48px) 20px 0" }}>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
-            gap: 24,
-            background: "rgba(255,255,255,0.02)",
-            border: "1px solid rgba(124,58,237,0.12)",
-            borderRadius: 12,
-            padding: "clamp(24px, 4vw, 36px)",
-          }}>
-            <div>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#7c3aed" }}>MARKET INTELLIGENCE BRIEFINGS</span>
-              <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 18, color: "#fff", margin: "12px 0 10px" }}>
-                You are here. Here&apos;s how you get there.
-              </h3>
-              <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
-                Every briefing shows your market&apos;s current score, the specific gaps suppressing it,
-                the actions that close each gap, and the federal programs that fund those actions.
-                Not a forecast &mdash; a roadmap with cost, timeline, and score impact per step.
-              </p>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {[
-                { tier: "Market Snapshot", desc: "1 city · 5 days", href: "/briefings" },
-                { tier: "Market Briefing", desc: "2–3 cities · 10 days", href: "/briefings" },
-                { tier: "Strategic Assessment", desc: "4+ cities · 3–4 weeks", href: "/briefings" },
-              ].map((t) => (
-                <Link
-                  key={t.tier}
-                  href={t.href}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "10px 14px",
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid rgba(255,255,255,0.06)",
-                    borderRadius: 6,
-                    textDecoration: "none",
-                    transition: "border-color 0.15s",
-                  }}
-                >
-                  <div>
-                    <div style={{ color: "#eee", fontSize: 12, fontWeight: 600 }}>{t.tier}</div>
-                    <div style={{ color: "#666", fontSize: 10, marginTop: 2 }}>{t.desc}</div>
-                  </div>
-                  <span style={{ color: "#7c3aed", fontSize: 10, letterSpacing: 0.5 }}>
-                    Learn more →
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* Divider */}
-      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(24px, 4vw, 48px) 20px 0" }}>
-        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
-      </div>
-
-      {/* ======== Market Snapshot (live scores) ======== */}
-      <ScrollReveal>
-        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-            <div>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#5B8DB8" }}>MARKET SNAPSHOT</span>
-              <span style={{ color: "#333", fontSize: 9, marginLeft: 12 }}>|</span>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 1, color: "#555", marginLeft: 12 }}>
-                {MARKET_COUNT} MARKETS · AVG {Math.round(scored.reduce((s, c) => s + c.score, 0) / scored.length)}
-              </span>
-            </div>
-            <Link href="/request-access" style={{ fontSize: 10, color: "#555", textDecoration: "none", letterSpacing: 1 }}>
-              FULL INDEX →
-            </Link>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 12 }}>
-            {topMarkets.map((city) => {
-              const tier = getScoreTier(city.score);
-              const color = getScoreColor(city.score);
-              const note = MARKET_NOTES[city.id];
+            {containers.map((c) => {
+              const accent = CONTAINER_ACCENT[c.id] ?? T.accent;
               return (
-                <Link
-                  key={city.id}
-                  href={`/city/${city.id}`}
+              <div
+                key={c.id}
+                className="container-card"
+                style={{
+                  background: "#ffffff",
+                  border: `1px solid ${T.cardBorder}`,
+                  borderTop: `4px solid ${accent}`,
+                  borderRadius: 14,
+                  padding: "24px 26px 28px",
+                  display: "flex",
+                  flexDirection: "column",
+                  minHeight: 320,
+                  boxShadow: `0 1px 2px rgba(10,37,64,0.04)`,
+                }}
+              >
+                <div
                   style={{
-                    display: "block",
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid rgba(255,255,255,0.05)",
-                    borderRadius: 8,
-                    padding: "16px 18px",
-                    textDecoration: "none",
-                    transition: "border-color 0.15s",
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 10,
+                    letterSpacing: "0.12em",
+                    color: accent,
+                    marginBottom: 12,
+                    textTransform: "uppercase",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-                    <div>
-                      <div style={{ color: "#eee", fontSize: 14, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
-                        {city.city}
-                      </div>
-                      <div style={{ color: "#555", fontSize: 10, marginTop: 2 }}>{city.state}</div>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ color, fontSize: 20, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>
-                        {city.score}
-                      </div>
-                      <div style={{ color, fontSize: 8, letterSpacing: 1, fontWeight: 600 }}>{tier}</div>
-                    </div>
-                  </div>
-                  {note && (
-                    <div style={{ color: "#666", fontSize: 11, lineHeight: 1.55 }}>
-                      {note}
-                    </div>
-                  )}
+                  {CONTAINER_BUYER_LABEL[c.id] ?? c.buyer}
+                </div>
+                <h3
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 22,
+                    color: T.textPrimary,
+                    margin: "0 0 12px",
+                    letterSpacing: "-0.01em",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {c.name}
+                </h3>
+                <p
+                  style={{
+                    color: T.textSecondary,
+                    fontSize: 14,
+                    lineHeight: 1.6,
+                    margin: "0 0 18px",
+                  }}
+                >
+                  {c.buyer}
+                </p>
+
+                <ul
+                  style={{
+                    listStyle: "none",
+                    padding: 0,
+                    margin: "0 0 28px",
+                    flex: 1,
+                  }}
+                >
+                  {(CONTAINER_DATA_LINES[c.id] ?? []).map((line, i) => (
+                    <li
+                      key={i}
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 10,
+                        color: T.textSecondary,
+                        fontSize: 13.5,
+                        lineHeight: 1.55,
+                        padding: "8px 0",
+                        borderTop: i === 0 ? `1px solid ${T.divider}` : "none",
+                        borderBottom: `1px solid ${T.divider}`,
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: 4,
+                          height: 4,
+                          borderRadius: 4,
+                          background: T.accent,
+                          marginTop: 8,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href="/request-access"
+                  className="link-arrow"
+                  style={{
+                    color: T.accentDeep,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    marginTop: "auto",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  Request access
+                  <span className="arrow" aria-hidden="true" style={{ fontSize: 16, lineHeight: 1 }}>→</span>
                 </Link>
+              </div>
               );
             })}
           </div>
         </section>
       </ScrollReveal>
 
-      {/* ======== Markets to Watch (predictive layer) ======== */}
-      {watchMarkets.length > 0 && (
-        <ScrollReveal>
-          <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
-              <div>
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#fbbf24" }}>MARKETS TO WATCH</span>
-                <span style={{ color: "#333", fontSize: 9, marginLeft: 12 }}>|</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 1, color: "#555", marginLeft: 12 }}>
-                  PLATFORM FORECAST · UPDATED CONTINUOUSLY
-                </span>
-              </div>
-              <Link href="/insights/markets-to-watch" style={{ fontSize: 10, color: "#555", textDecoration: "none", letterSpacing: 1 }}>
-                FULL FORECAST →
-              </Link>
-            </div>
-
-            <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 20, maxWidth: 720 }}>
-              The 4 markets the platform is tracking most closely right now — ranked by forward signals, MarketWatch trajectory, and 30-day score forecasts. Updated as the pipeline ingests new data.
-            </p>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: 12 }}>
-              {watchMarkets.map((m, idx) => {
-                const watchColor =
-                  m.marketWatch?.status === "POSITIVE_WATCH" ? "#16a34a"
-                  : m.marketWatch?.status === "NEGATIVE_WATCH" ? "#dc2626"
-                  : "#888";
-                const forecastColor = m.expectedScoreChange30d
-                  ? (m.expectedScoreChange30d > 0 ? "#16a34a" : "#dc2626")
-                  : null;
-                const topSignal = m.topSignals[0];
-                return (
-                  <Link
-                    key={m.cityId}
-                    href={`/city/${m.cityId}`}
-                    style={{
-                      display: "block",
-                      background: "rgba(251,191,36,0.03)",
-                      border: "1px solid rgba(251,191,36,0.15)",
-                      borderRadius: 8,
-                      padding: "16px 18px",
-                      textDecoration: "none",
-                      transition: "border-color 0.15s",
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-                      <div>
-                        <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-                          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#fbbf24", fontWeight: 700 }}>#{idx + 1}</span>
-                          <div style={{ color: "#eee", fontSize: 14, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
-                            {m.cityName}
-                          </div>
-                        </div>
-                        <div style={{ color: "#555", fontSize: 10, marginTop: 2 }}>{m.state} · Score {m.currentScore}</div>
-                      </div>
-                      <div style={{ textAlign: "right", display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-end" }}>
-                        {m.marketWatch && (
-                          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, fontWeight: 700, letterSpacing: 1, color: watchColor }}>
-                            {m.marketWatch.outlook}
-                          </span>
-                        )}
-                        {m.accelerating && (
-                          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, fontWeight: 700, letterSpacing: 1, color: "#16a34a", background: "rgba(22,163,74,0.1)", padding: "2px 6px", borderRadius: 3 }}>
-                            ACCELERATING
-                          </span>
-                        )}
-                        {forecastColor && (
-                          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, fontWeight: 700, color: forecastColor }}>
-                            30d: {m.expectedScoreChange30d! > 0 ? "+" : ""}{m.expectedScoreChange30d}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    {topSignal && (
-                      <div style={{ color: "#888", fontSize: 11, lineHeight: 1.55, marginTop: 8, paddingTop: 8, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-                        {topSignal.description.length > 130 ? topSignal.description.slice(0, 127) + "…" : topSignal.description}
-                      </div>
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        </ScrollReveal>
-      )}
-
-      {/* Divider */}
-      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(24px, 4vw, 48px) 20px 0" }}>
-        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
-      </div>
-
-      {/* ======== Two-column: Pulse + Signals ======== */}
+      {/* ════════════════════════════════════════════════════ */}
+      {/* Platform proof — dashboard preview                    */}
+      {/* ════════════════════════════════════════════════════ */}
       <ScrollReveal>
-        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(440px, 100%), 1fr))", gap: 24 }}>
-
-            {/* Market Pulse (inline) */}
-            <div style={{
-              background: "rgba(255,255,255,0.02)",
-              border: "1px solid rgba(91,141,184,0.12)",
-              borderRadius: 10,
-              overflow: "hidden",
-            }}>
-              <div style={{
-                background: "rgba(91,141,184,0.05)",
-                borderBottom: "1px solid rgba(91,141,184,0.08)",
-                padding: "12px 20px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}>
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#5B8DB8" }}>UAM MARKET PULSE</span>
-                <span style={{ fontSize: 9, color: "#555", letterSpacing: 1 }}>ISSUE 3 · MAR 27, 2026</span>
-              </div>
-              <div style={{ padding: "20px 20px 24px" }}>
-                <p style={{ color: "#ccc", fontSize: 13, lineHeight: 1.75, margin: "0 0 14px" }}>
-                  AirIndex updated its scoring model this week — v1.3 — and the most important thing it revealed: <strong style={{ color: "#fff" }}>no tracked U.S. market currently achieves full weather infrastructure coverage for low-altitude UAM operations.</strong>
-                </p>
-                <p style={{ color: "#888", fontSize: 12, lineHeight: 1.7, margin: "0 0 14px" }}>
-                  That one change affected 15 of 21 markets. New York saw the largest single adjustment — 70 to 55. San Diego is the only market that moved up, crossing into Moderate at 50.
-                </p>
-                <p style={{ color: "#888", fontSize: 12, lineHeight: 1.7, margin: "0 0 18px" }}>
-                  Arizona is the most consequential state-level story right now. SB1826 and SB1827 both advanced in committee. Joby&apos;s first production-conforming aircraft flew this week.
-                </p>
-                <Link href="/insights" style={{
-                  display: "inline-block",
-                  padding: "10px 24px",
-                  background: "rgba(91,141,184,0.08)",
-                  border: "1px solid rgba(91,141,184,0.2)",
-                  borderRadius: 6,
+        <section
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(45,212,191,0.08) 0%, rgba(91,141,184,0.04) 30%, " + T.subtleBg + " 60%)",
+            padding: "clamp(64px, 9vw, 120px) 24px",
+            marginTop: 40,
+            position: "relative",
+          }}
+        >
+          <div
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 3,
+              background:
+                "linear-gradient(90deg, transparent 0%, #2dd4bf 20%, #5B8DB8 50%, #a78bfa 80%, transparent 100%)",
+              opacity: 0.6,
+            }}
+          />
+          <div style={{ maxWidth: 1040, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <div
+                style={{
+                  fontFamily: "'Space Mono', monospace",
                   fontSize: 11,
-                  color: "#5B8DB8",
-                  textDecoration: "none",
-                  letterSpacing: 0.5,
+                  letterSpacing: "0.14em",
+                  color: "#0d9488",
+                  marginBottom: 16,
+                  textTransform: "uppercase",
+                }}
+              >
+                The Platform · Live
+              </div>
+              <h2
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 700,
-                }}>
-                  Read the full Pulse →
-                </Link>
-              </div>
-            </div>
-
-            {/* Recent Signals (live from pipeline) */}
-            <div style={{
-              background: "rgba(255,255,255,0.02)",
-              border: "1px solid rgba(255,255,255,0.05)",
-              borderRadius: 10,
-              overflow: "hidden",
-            }}>
-              <div style={{
-                background: "rgba(255,255,255,0.02)",
-                borderBottom: "1px solid rgba(255,255,255,0.05)",
-                padding: "12px 20px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}>
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#ff6b35" }}>RECENT SIGNALS</span>
-                <span style={{ fontSize: 9, color: "#555", letterSpacing: 1 }}>LIVE PIPELINE</span>
-              </div>
-              <div style={{ padding: "8px 0" }}>
-                {signals.length > 0 ? signals.map((signal, i) => {
-                  const catColor = signal.category === "Regulatory" ? "#ff6b35" : signal.category === "Legislative" ? "#00ff88" : signal.category === "Operator" ? "#5B8DB8" : "#f59e0b";
-                  const date = new Date(signal.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-                  return (
-                    <div key={i} style={{
-                      padding: "12px 20px",
-                      borderBottom: i < signals.length - 1 ? "1px solid rgba(255,255,255,0.03)" : "none",
-                    }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                        <span style={{ fontSize: 7, letterSpacing: 1.5, color: catColor, fontWeight: 700 }}>{signal.category?.toUpperCase()}</span>
-                        {signal.cities?.[0] && <span style={{ fontSize: 8, color: "#555" }}>· {signal.cities[0].name}</span>}
-                        <span style={{ fontSize: 8, color: "#444", marginLeft: "auto" }}>{date}</span>
-                      </div>
-                      <div style={{ color: "#999", fontSize: 11, lineHeight: 1.5 }}>
-                        {signal.title}
-                      </div>
-                    </div>
-                  );
-                }) : (
-                  <div style={{ padding: "40px 20px", textAlign: "center" }}>
-                    <p style={{ color: "#555", fontSize: 11 }}>Signal pipeline loading...</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* Divider */}
-      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(24px, 4vw, 48px) 20px 0" }}>
-        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
-      </div>
-
-      {/* ======== Latest from AirIndex (research) ======== */}
-      <ScrollReveal>
-        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px 0" }}>
-          <div style={{ marginBottom: 24 }}>
-            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#7c3aed" }}>LATEST FROM AIRINDEX</span>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: 16 }}>
-            {[
-              {
-                label: "MONTHLY REPORT",
-                title: "UAM Market Readiness Report — March 2026",
-                description: "Full market analysis. Scoring methodology v1.3, operator consolidation, federal activity tracking, and heliport infrastructure data.",
-                href: "/reports/march-2026",
-                accent: "#5B8DB8",
-              },
-              {
-                label: "METHODOLOGY",
-                title: "7-Factor Readiness Scoring",
-                description: "Published methodology covering data sources, factor weights, classification logic, and confidence tiering. Designed for independent validation.",
-                href: "/methodology",
-                accent: "#00ff88",
-              },
-              {
-                label: "SAMPLE REPORT",
-                title: "Charlotte Market Intelligence Snapshot",
-                description: "See what an AirIndex market briefing looks like. Readiness scoring, gap analysis, peer benchmarking, and actionable infrastructure recommendations.",
-                href: "/docs/Charlotte_Market_Intelligence_Snapshot_AirIndex.pdf",
-                accent: "#f59e0b",
-              },
-            ].map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                style={{
-                  display: "block",
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.05)",
-                  borderRadius: 10,
-                  padding: "24px 22px",
-                  textDecoration: "none",
-                  borderTop: `2px solid ${item.accent}`,
-                  transition: "border-color 0.15s",
+                  fontSize: "clamp(26px, 3.4vw, 36px)",
+                  letterSpacing: "-0.02em",
+                  margin: "0 0 14px",
+                  color: T.textPrimary,
                 }}
               >
-                <div style={{ fontSize: 8, letterSpacing: 2, color: item.accent, marginBottom: 10, fontWeight: 600 }}>{item.label}</div>
-                <div style={{ color: "#eee", fontSize: 14, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif", marginBottom: 8, lineHeight: 1.3 }}>
-                  {item.title}
-                </div>
-                <div style={{ color: "#777", fontSize: 11.5, lineHeight: 1.6 }}>
-                  {item.description}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* Divider */}
-      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(24px, 4vw, 48px) 20px 0" }}>
-        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)" }} />
-      </div>
-
-      {/* Market Pulse Subscribe */}
-      <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 20px clamp(24px, 4vw, 40px)" }}>
-        <PulseSubscribe source="homepage" />
-      </div>
-
-      {/* ======== Who Uses + Closing CTA ======== */}
-      <ScrollReveal>
-        <section style={{ maxWidth: 1120, margin: "0 auto", padding: "clamp(32px, 5vw, 56px) 20px clamp(60px, 8vw, 100px)" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginBottom: 40 }}>
-            {[
-              "Operators & OEMs",
-              "Infrastructure Developers",
-              "Government & Municipal",
-              "Aerospace & Defense",
-              "Insurance & Risk",
-              "Investors & Analysts",
-            ].map((audience) => (
-              <span
-                key={audience}
+                One source of truth underneath every container.
+              </h2>
+              <p
                 style={{
-                  fontSize: 10,
-                  letterSpacing: 1,
-                  color: "#555",
-                  padding: "6px 14px",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  borderRadius: 4,
+                  color: T.textSecondary,
+                  fontSize: 16,
+                  lineHeight: 1.6,
+                  maxWidth: 620,
+                  margin: "0 auto",
                 }}
               >
-                {audience}
-              </span>
-            ))}
-          </div>
-          {/* How We Work */}
-          <div style={{ marginBottom: 56 }}>
-            <div style={{ textAlign: "center", marginBottom: 32 }}>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 2, color: "#5B8DB8" }}>HOW WE WORK</span>
+                Continuously ingested from FAA, Federal Register, Congress,
+                LegiScan, SEC, and operator primary sources.
+                Cross-referenced, classified, and delivered.
+              </p>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, maxWidth: 720, margin: "0 auto" }}>
-              {[
-                {
-                  step: "01",
-                  title: "Discovery Call",
-                  desc: "30-minute conversation about your market, your decision, and the data gap you need closed.",
-                },
-                {
-                  step: "02",
-                  title: "Scoped Briefing",
-                  desc: "We prepare a tailored deliverable — market report, infrastructure audit, or data license — scoped to your use case.",
-                },
-                {
-                  step: "03",
-                  title: "Platform Access",
-                  desc: "Ongoing dashboard access, API integration, and priority pipeline alerts as your needs evolve.",
-                },
-              ].map((s) => (
-                <div key={s.step} style={{ textAlign: "center" }}>
-                  <div style={{
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: 22,
-                    fontWeight: 700,
-                    color: "#5B8DB8",
-                    marginBottom: 10,
-                    opacity: 0.6,
-                  }}>
-                    {s.step}
-                  </div>
-                  <div style={{
-                    color: "#eee",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    marginBottom: 6,
-                  }}>
-                    {s.title}
-                  </div>
-                  <div style={{ color: "#666", fontSize: 11, lineHeight: 1.6 }}>
-                    {s.desc}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* CTA */}
-          <div style={{ textAlign: "center" }}>
-            <h2
+            <div
               style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                fontSize: "clamp(18px, 2.5vw, 26px)",
-                margin: "0 0 12px",
-                color: "#fff",
+                position: "relative",
+                borderRadius: 14,
+                overflow: "hidden",
+                border: `1px solid ${T.cardBorder}`,
+                boxShadow: "0 30px 60px -20px rgba(10,37,64,0.15), 0 8px 24px -8px rgba(10,37,64,0.08)",
+                background: "#050508",
               }}
             >
-              Know where the market is going before it gets there.
-            </h2>
-            <p style={{ color: "#555", fontSize: 12, margin: "0 0 28px", lineHeight: 1.7, maxWidth: 440, marginLeft: "auto", marginRight: "auto" }}>
-              Readiness scores, gap-to-action roadmaps, federal funding alignment, and operator signal tracking &mdash; scoped to the decision you need to make.
-            </p>
-            <Link
-              href="/contact"
+              <Image
+                src="/images/dashboard-preview.png"
+                alt="AirIndex intelligence platform — market readiness scoring across U.S. markets"
+                width={1920}
+                height={1080}
+                style={{ width: "100%", height: "auto", display: "block" }}
+                priority
+              />
+            </div>
+            <div
               style={{
-                display: "inline-block",
-                padding: "14px 36px",
-                background: "#5B8DB8",
-                color: "#050508",
                 fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: "0.06em",
-                textDecoration: "none",
-                borderRadius: 6,
+                color: T.textTertiary,
+                textAlign: "center",
+                marginTop: 14,
+                fontStyle: "italic",
               }}
             >
-              Talk to Us
+              Live terminal view — accessible to licensed clients and design partners.
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* Top-market ticker                                     */}
+      {/* ════════════════════════════════════════════════════ */}
+      <ScrollReveal>
+        <section
+          style={{
+            maxWidth: 1120,
+            margin: "0 auto",
+            padding: "clamp(64px, 8vw, 96px) 24px clamp(32px, 4vw, 56px)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              marginBottom: 32,
+              flexWrap: "wrap",
+              gap: 12,
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 11,
+                  letterSpacing: "0.14em",
+                  color: T.accent,
+                  marginBottom: 10,
+                  textTransform: "uppercase",
+                }}
+              >
+                Market Snapshot · Public
+              </div>
+              <h2
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "clamp(22px, 2.6vw, 28px)",
+                  color: T.textPrimary,
+                  margin: 0,
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                Top 6 U.S. markets by readiness
+              </h2>
+            </div>
+            <Link
+              href="/request-access"
+              className="link-arrow"
+              style={{
+                fontSize: 13,
+                color: T.accentDeep,
+                textDecoration: "none",
+                fontWeight: 600,
+              }}
+            >
+              Full index (licensed) <span className="arrow" aria-hidden="true">→</span>
             </Link>
           </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(240px, 100%), 1fr))",
+              gap: 12,
+            }}
+          >
+            {scored.slice(0, 6).map((city) => (
+              <div
+                key={city.id}
+                style={{
+                  background: "#ffffff",
+                  border: `1px solid ${T.cardBorder}`,
+                  borderRadius: 10,
+                  padding: "18px 20px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-end",
+                    gap: 10,
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontWeight: 700,
+                        fontSize: 17,
+                        color: T.textPrimary,
+                        letterSpacing: "-0.01em",
+                      }}
+                    >
+                      {city.city}
+                    </div>
+                    <div style={{ fontSize: 11, color: T.textTertiary, marginTop: 2 }}>{city.state}</div>
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontWeight: 700,
+                      fontSize: 28,
+                      color: T.textPrimary,
+                      lineHeight: 1,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {city.score}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
       </ScrollReveal>
 
-      <SiteFooter />
+      {/* ════════════════════════════════════════════════════ */}
+      {/* Pulse subscribe                                       */}
+      {/* ════════════════════════════════════════════════════ */}
+      <section
+        style={{
+          background:
+            "linear-gradient(180deg, " + T.subtleBg + " 0%, rgba(245,158,11,0.06) 100%)",
+          padding: "clamp(48px, 7vw, 96px) 24px",
+          position: "relative",
+        }}
+      >
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 1,
+            background:
+              "linear-gradient(90deg, transparent 0%, rgba(245,158,11,0.4) 50%, transparent 100%)",
+          }}
+        />
+        <div style={{ maxWidth: 680, margin: "0 auto", textAlign: "center" }}>
+          <div
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 11,
+              letterSpacing: "0.14em",
+              color: "#b45309",
+              marginBottom: 14,
+              textTransform: "uppercase",
+            }}
+          >
+            UAM Market Pulse · Research
+          </div>
+          <h2
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(22px, 2.8vw, 30px)",
+              letterSpacing: "-0.01em",
+              margin: "0 0 12px",
+              color: T.textPrimary,
+            }}
+          >
+            Weekly intelligence, no noise.
+          </h2>
+          <p
+            style={{
+              color: T.textSecondary,
+              fontSize: 15,
+              lineHeight: 1.6,
+              margin: "0 0 24px",
+            }}
+          >
+            Scoring changes, regulatory milestones, operator moves. Free and
+            public — the credibility layer of the platform.
+          </p>
+          <PulseSubscribe source="homepage" theme="light" />
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* Closing CTA — deep navy panel to break the white     */}
+      {/* ════════════════════════════════════════════════════ */}
+      <section
+        style={{
+          background:
+            "linear-gradient(135deg, #0a2540 0%, #0d3a5e 50%, #0a2540 100%)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: -120,
+            right: -120,
+            width: 480,
+            height: 480,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(91,141,184,0.35) 0%, rgba(91,141,184,0) 65%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            bottom: -140,
+            left: -80,
+            width: 420,
+            height: 420,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(167,139,250,0.22) 0%, rgba(167,139,250,0) 65%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            maxWidth: 720,
+            margin: "0 auto",
+            padding: "clamp(64px, 8vw, 120px) 24px",
+            textAlign: "center",
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          <div
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 11,
+              letterSpacing: "0.14em",
+              color: "#7fb8e0",
+              marginBottom: 18,
+              textTransform: "uppercase",
+            }}
+          >
+            Request Access
+          </div>
+          <h2
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(26px, 3.4vw, 38px)",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.15,
+              margin: "0 0 18px",
+              color: "#ffffff",
+            }}
+          >
+            The intelligence layer for the decisions that shape the sky.
+          </h2>
+          <p
+            style={{
+              color: "#b8c5d6",
+              fontSize: 16,
+              lineHeight: 1.6,
+              margin: "0 0 32px",
+            }}
+          >
+            Licensed access begins with a conversation about your specific
+            decision and the data gap you need closed.
+          </p>
+          <Link
+            href="/contact"
+            className="cta-primary"
+            style={{
+              display: "inline-block",
+              padding: "16px 36px",
+              background: "#ffffff",
+              color: T.textPrimary,
+              fontSize: 14,
+              fontWeight: 600,
+              textDecoration: "none",
+              borderRadius: 8,
+              boxShadow: "0 10px 30px rgba(91,141,184,0.3)",
+            }}
+          >
+            Talk to Us <span className="arrow" aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </section>
+
+      <SiteFooter theme="light" />
     </div>
   );
 }

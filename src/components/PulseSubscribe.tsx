@@ -5,10 +5,13 @@ import { useState } from "react";
 export default function PulseSubscribe({
   source = "homepage",
   compact = false,
+  theme = "dark",
 }: {
   source?: string;
   compact?: boolean;
+  theme?: "dark" | "light";
 }) {
+  const isLight = theme === "light";
   const [form, setForm] = useState({ name: "", organization: "", email: "", website: "" });
   const [state, setState] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
@@ -52,10 +55,10 @@ export default function PulseSubscribe({
   const inputStyle: React.CSSProperties = {
     width: "100%",
     padding: "10px 12px",
-    background: "rgba(255,255,255,0.03)",
-    border: "1px solid rgba(255,255,255,0.1)",
+    background: isLight ? "#ffffff" : "rgba(255,255,255,0.03)",
+    border: isLight ? "1px solid #e3e8ee" : "1px solid rgba(255,255,255,0.1)",
     borderRadius: 6,
-    color: "#fff",
+    color: isLight ? "#0a2540" : "#fff",
     fontSize: 12,
     fontFamily: "'Inter', sans-serif",
     outline: "none",
@@ -65,8 +68,8 @@ export default function PulseSubscribe({
   return (
     <div style={{
       padding: compact ? "20px" : "28px 24px",
-      background: "rgba(255,255,255,0.02)",
-      border: "1px solid rgba(255,255,255,0.06)",
+      background: isLight ? "#ffffff" : "rgba(255,255,255,0.02)",
+      border: isLight ? "1px solid #e3e8ee" : "1px solid rgba(255,255,255,0.06)",
       borderRadius: 10,
     }}>
       {!compact && (
@@ -81,7 +84,7 @@ export default function PulseSubscribe({
             UAM MARKET PULSE
           </div>
           <div style={{
-            color: "#ccc",
+            color: isLight ? "#0a2540" : "#ccc",
             fontSize: 15,
             fontWeight: 600,
             fontFamily: "'Space Grotesk', sans-serif",
@@ -89,7 +92,7 @@ export default function PulseSubscribe({
           }}>
             Free monthly intelligence on what&apos;s moving and why.
           </div>
-          <div style={{ color: "#666", fontSize: 12, lineHeight: 1.6, marginBottom: 20 }}>
+          <div style={{ color: isLight ? "#425466" : "#666", fontSize: 12, lineHeight: 1.6, marginBottom: 20 }}>
             Score movements, regulatory signals, operator activity, and federal program tracking.
             No paywall. No sales pitch.
           </div>
@@ -97,7 +100,7 @@ export default function PulseSubscribe({
       )}
 
       {compact && (
-        <div style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>
+        <div style={{ color: isLight ? "#425466" : "#888", fontSize: 12, marginBottom: 12 }}>
           Get the next Market Pulse in your inbox.
         </div>
       )}
@@ -171,10 +174,10 @@ export default function PulseSubscribe({
             disabled={state === "submitting"}
             style={{
               padding: "11px 28px",
-              background: state === "submitting" ? "#333" : "#5B8DB8",
+              background: state === "submitting" ? (isLight ? "#cbd5e1" : "#333") : "#5B8DB8",
               border: "none",
               borderRadius: 6,
-              color: "#050508",
+              color: "#ffffff",
               fontSize: 11,
               fontWeight: 700,
               letterSpacing: "0.06em",

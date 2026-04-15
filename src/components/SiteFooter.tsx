@@ -1,27 +1,34 @@
 import Link from "next/link";
 
-const legalLinkStyle: React.CSSProperties = {
-  color: "#555",
-  fontSize: 10,
-  letterSpacing: 1,
-  textDecoration: "none",
-  whiteSpace: "nowrap",
-};
+export default function SiteFooter({ theme = "dark" }: { theme?: "dark" | "light" } = {}) {
+  const isLight = theme === "light";
 
-const socialLinkStyle: React.CSSProperties = {
-  color: "#555",
-  fontSize: 10,
-  letterSpacing: 1,
-  textDecoration: "none",
-  whiteSpace: "nowrap",
-  transition: "color 0.15s",
-};
+  const borderColor = isLight ? "rgba(10,37,64,0.08)" : "rgba(255,255,255,0.06)";
+  const muted = isLight ? "#6b7280" : "#555";
+  const divider = isLight ? "#cbd5e1" : "#333";
+  const dim = isLight ? "#8792a2" : "#444";
 
-export default function SiteFooter() {
+  const legalLinkStyle: React.CSSProperties = {
+    color: muted,
+    fontSize: 10,
+    letterSpacing: 1,
+    textDecoration: "none",
+    whiteSpace: "nowrap",
+  };
+
+  const socialLinkStyle: React.CSSProperties = {
+    color: muted,
+    fontSize: 10,
+    letterSpacing: 1,
+    textDecoration: "none",
+    whiteSpace: "nowrap",
+    transition: "color 0.15s",
+  };
+
   return (
     <footer
       style={{
-        borderTop: "1px solid rgba(255,255,255,0.06)",
+        borderTop: `1px solid ${borderColor}`,
         padding: "32px 20px",
         maxWidth: 1120,
         margin: "0 auto",
@@ -38,14 +45,15 @@ export default function SiteFooter() {
       >
         {/* Left — Logo + legal */}
         <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/logo/airindex-wordmark.svg"
+            src={isLight ? "/images/logo/airindex-wordmark-light.svg" : "/images/logo/airindex-wordmark.svg"}
             alt="AirIndex"
-            style={{ height: 16, opacity: 0.5 }}
+            style={{ height: 16, opacity: isLight ? 0.8 : 0.5 }}
           />
-          <span style={{ color: "#333", fontSize: 10 }}>|</span>
+          <span style={{ color: divider, fontSize: 10 }}>|</span>
           <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-            <span style={{ color: "#444", fontSize: 9, letterSpacing: 1, whiteSpace: "nowrap" }}>
+            <span style={{ color: dim, fontSize: 9, letterSpacing: 1, whiteSpace: "nowrap" }}>
               &copy; {new Date().getFullYear()} Vertical Data Group, LLC
             </span>
             <Link href="/terms" style={legalLinkStyle}>Terms</Link>
