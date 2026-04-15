@@ -16,6 +16,7 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
+import { readFileSync } from "fs";
 import { PrismaClient } from "@prisma/client";
 import { sendSesEmail } from "../src/lib/ses";
 import { buildClickTrackUrl } from "../src/lib/newsletter-token";
@@ -186,19 +187,166 @@ function buildEmailHtml(params: {
 </html>`;
 }
 
+interface SendRow {
+  to: string;
+  name: string | null;
+  persona: Persona;
+  cityId: string;
+  customMessage: string | null;
+}
+
+async function sendOne(row: SendRow, dryRun: boolean): Promise<{ ok: boolean; error?: string }> {
+  const city = CITIES.find((c) => c.id === row.cityId);
+  if (!city) return { ok: false, error: `unknown city ${row.cityId}` };
+
+  const cfg = PERSONA_CONFIG[row.persona];
+  const rawUrl = `https://www.airindex.io/reports/${cfg.routeSegment}/${row.cityId}`;
+  // Wrap in click tracker so we see when the recipient clicks through. Issue 0
+  // indicates a briefing send (not a Pulse issue).
+  const trackedUrl = buildClickTrackUrl(row.to, 0, rawUrl, `briefing_${row.persona}`);
+  const subject = `${cfg.label} — ${city.city}, ${city.state}`;
+  const html = buildEmailHtml({
+    persona: row.persona,
+    cityName: city.city,
+    cityState: city.state,
+    briefingUrl: trackedUrl,
+    recipientName: row.name,
+    customMessage: row.customMessage,
+  });
+
+  if (dryRun) return { ok: true };
+
+  try {
+    await sendSesEmail({
+      to: row.to,
+      from: "AirIndex <hello@airindex.io>",
+      subject,
+      html,
+    });
+    await prisma.briefingSend.create({
+      data: {
+        recipientEmail: row.to,
+        recipientName: row.name,
+        persona: row.persona,
+        cityId: row.cityId,
+        briefingUrl: rawUrl,
+        subject,
+        customMessage: row.customMessage,
+      },
+    });
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: (err as Error).message ?? String(err) };
+  }
+}
+
+/**
+ * Parse a CSV with headers: email,name,persona,city,message
+ * persona and city may be omitted from individual rows if passed via CLI flags
+ * as the default. Simple parser — doesn't support quoted commas in fields.
+ */
+function parseCsv(path: string): SendRow[] {
+  const text = readFileSync(path, "utf8").trim();
+  const lines = text.split(/\r?\n/);
+  if (lines.length < 2) throw new Error("CSV has no data rows");
+  const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
+  const idx = {
+    email: headers.indexOf("email"),
+    name: headers.indexOf("name"),
+    persona: headers.indexOf("persona"),
+    city: headers.indexOf("city"),
+    message: headers.indexOf("message"),
+  };
+  if (idx.email < 0) throw new Error("CSV must have an 'email' column");
+
+  const rows: SendRow[] = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(",").map((c) => c.trim());
+    if (cols.every((c) => !c)) continue;
+    const email = cols[idx.email];
+    if (!email) continue;
+    rows.push({
+      to: email,
+      name: idx.name >= 0 ? cols[idx.name] || null : null,
+      persona: (idx.persona >= 0 ? cols[idx.persona] : "") as Persona,
+      cityId: idx.city >= 0 ? cols[idx.city] || "" : "",
+      customMessage: idx.message >= 0 ? cols[idx.message] || null : null,
+    });
+  }
+  return rows;
+}
+
 async function main() {
   const personaArg = arg("persona");
   const cityId = arg("city");
   const to = arg("to");
   const name = arg("name") ?? null;
   const customMessage = arg("message") ?? null;
+  const csvPath = arg("csv");
   const dryRun = process.argv.includes("--dry-run");
 
+  // ── Batch mode (--csv) ──────────────────────────────────────
+  if (csvPath) {
+    let rows: SendRow[];
+    try {
+      rows = parseCsv(csvPath);
+    } catch (err) {
+      console.error(`CSV parse error: ${(err as Error).message ?? err}`);
+      process.exit(1);
+    }
+
+    // Backfill persona + cityId from CLI flags when CSV row is empty
+    for (const r of rows) {
+      if (!r.persona && personaArg) r.persona = personaArg as Persona;
+      if (!r.cityId && cityId) r.cityId = cityId;
+    }
+
+    // Validate all rows up front before sending any
+    const errors: string[] = [];
+    rows.forEach((r, i) => {
+      if (!r.to.includes("@")) errors.push(`row ${i + 1}: invalid email "${r.to}"`);
+      if (!(r.persona in PERSONA_CONFIG)) errors.push(`row ${i + 1}: invalid persona "${r.persona}" — pass --persona default or add to CSV`);
+      if (!CITIES.find((c) => c.id === r.cityId)) errors.push(`row ${i + 1}: invalid city "${r.cityId}" — pass --city default or add to CSV`);
+    });
+    if (errors.length > 0) {
+      console.error("Validation failed:");
+      errors.forEach((e) => console.error(`  ✗ ${e}`));
+      process.exit(1);
+    }
+
+    console.log(`\nBatch: ${rows.length} recipient${rows.length === 1 ? "" : "s"} · ${dryRun ? "DRY RUN" : "LIVE"}\n`);
+
+    let ok = 0;
+    let failed = 0;
+    for (const row of rows) {
+      const cfg = PERSONA_CONFIG[row.persona];
+      const cityName = CITIES.find((c) => c.id === row.cityId)?.city ?? row.cityId;
+      const result = await sendOne(row, dryRun);
+      if (result.ok) {
+        console.log(`  [ok]   ${row.to.padEnd(36)} · ${cfg.label} · ${cityName}`);
+        ok++;
+      } else {
+        console.log(`  [fail] ${row.to.padEnd(36)} · ${result.error}`);
+        failed++;
+      }
+      // Rate-limit: 1 send per 300ms = under 4/sec, well under SES default 14/sec
+      if (!dryRun) await new Promise((r) => setTimeout(r, 300));
+    }
+
+    console.log(`\nDone: ${ok} sent, ${failed} failed.`);
+    await prisma.$disconnect();
+    return;
+  }
+
+  // ── Single-send mode ────────────────────────────────────────
   if (!personaArg || !cityId || !to) {
     console.error(
-      "Usage: npx tsx scripts/send-briefing.ts --persona <persona> --city <cityId> --to <email> [--name <name>] [--message <custom>] [--dry-run]",
+      "Usage:\n" +
+        "  Single:  npx tsx scripts/send-briefing.ts --persona <p> --city <cityId> --to <email> [--name <n>] [--message <m>] [--dry-run]\n" +
+        "  Batch:   npx tsx scripts/send-briefing.ts --csv <path> [--persona <default>] [--city <default>] [--dry-run]\n\n" +
+        "CSV columns: email,name,persona,city,message (persona + city may be omitted from rows if --persona/--city are passed as defaults)",
     );
-    console.error("Personas: infrastructure | municipality | insurance | operator | investor");
+    console.error("\nPersonas: infrastructure | municipality | insurance | operator | investor");
     process.exit(1);
   }
 
@@ -218,19 +366,6 @@ async function main() {
 
   const cfg = PERSONA_CONFIG[persona];
   const rawUrl = `https://www.airindex.io/reports/${cfg.routeSegment}/${cityId}`;
-  // Wrap in click tracker so we see when the recipient clicks through. Issue 0
-  // indicates a briefing send (not a Pulse issue).
-  const trackedUrl = buildClickTrackUrl(to, 0, rawUrl, `briefing_${persona}`);
-
-  const subject = `${cfg.label} — ${city.city}, ${city.state}`;
-  const html = buildEmailHtml({
-    persona,
-    cityName: city.city,
-    cityState: city.state,
-    briefingUrl: trackedUrl,
-    recipientName: name,
-    customMessage,
-  });
 
   console.log(`\nBriefing: ${cfg.label}`);
   console.log(`Market:   ${city.city}, ${city.state}`);
@@ -241,31 +376,20 @@ async function main() {
 
   if (dryRun) {
     console.log("DRY RUN — no email sent.");
+    await prisma.$disconnect();
     return;
   }
 
-  await sendSesEmail({
-    to,
-    from: "AirIndex <hello@airindex.io>",
-    subject,
-    html,
-  });
-
-  // Persist a BriefingSend row so the follow-up drip cron can detect
-  // unopened briefings and fire a second-angle email.
-  await prisma.briefingSend.create({
-    data: {
-      recipientEmail: to,
-      recipientName: name,
-      persona,
-      cityId,
-      briefingUrl: rawUrl,
-      subject,
-      customMessage,
-    },
-  });
-
-  console.log(`[ok] Sent + logged.`);
+  const result = await sendOne(
+    { to, name, persona, cityId, customMessage },
+    dryRun,
+  );
+  if (result.ok) {
+    console.log(`[ok] Sent + logged.`);
+  } else {
+    console.error(`[fail] ${result.error}`);
+    process.exit(1);
+  }
   await prisma.$disconnect();
 }
 

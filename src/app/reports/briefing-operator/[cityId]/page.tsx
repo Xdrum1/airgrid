@@ -428,13 +428,32 @@ export default async function OperatorBriefingPage({
                   <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, lineHeight: 1.75 }}>
                     {recentOperatorEvents.map((e) => {
                       const opName = operatorPresence.find((p) => p.operatorId === e.operatorId)?.operatorName ?? "Operator";
+                      const headlineNode = e.sourceUrl ? (
+                        <a
+                          href={e.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: "#7c3aed", textDecoration: "none", borderBottom: "1px dotted rgba(124,58,237,0.4)" }}
+                        >
+                          {e.headline}
+                        </a>
+                      ) : (
+                        <span style={{ color: "#888" }}>{e.headline}</span>
+                      );
                       return (
                         <li key={e.id} style={{ color: "#ddd", marginBottom: 4 }}>
                           <strong>{opName}</strong> — {e.eventType.replace(/_/g, " ")}:{" "}
-                          <span style={{ color: "#888" }}>
-                            {e.headline}
-                            {e.eventDate && ` (${new Date(e.eventDate).toISOString().slice(0, 10)})`}
-                          </span>
+                          {headlineNode}
+                          {e.eventDate && (
+                            <span style={{ color: "#888" }}>
+                              {" "}({new Date(e.eventDate).toISOString().slice(0, 10)})
+                            </span>
+                          )}
+                          {e.sourceName && (
+                            <span style={{ color: "#666", fontSize: 10, marginLeft: 6 }}>
+                              · {e.sourceName}
+                            </span>
+                          )}
                         </li>
                       );
                     })}
