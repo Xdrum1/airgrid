@@ -486,7 +486,11 @@ export default async function InvestorBriefingPage({
             <h2 style={sectionHeading}>Federal Program Capital</h2>
             <p style={{ fontSize: 12, color: "#888", marginBottom: 16 }}>
               Non-dilutive federal capital applicable to this market via grants,
-              SBIR, and DOT appropriations. Peer-city precedents show what similar
+              SBIR, and DOT appropriations. Federal programs concentrate on
+              infrastructure and regulatory enablers (vertiport, pilot program,
+              weather infrastructure, regulatory posture) — state legislation,
+              operator presence, and zoning are driven by non-federal actors
+              and don&apos;t show up here. Peer-city precedents show what similar
               markets have won.
             </p>
             <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, lineHeight: 1.9 }}>

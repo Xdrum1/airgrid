@@ -141,4 +141,9 @@ export const ASOS_STATIONS: AsosStation[] = [
   { id: "FCM", name: "Flying Cloud (Eden Prairie)", state: "MN", lat: 44.8272, lng: -93.4570 },
   { id: "CMH", name: "John Glenn Columbus Intl", state: "OH", lat: 39.9980, lng: -82.8919 },
   { id: "LCK", name: "Rickenbacker Intl", state: "OH", lat: 39.8138, lng: -82.9278 },
+  { id: "CVG", name: "Cincinnati/Northern Kentucky Intl", state: "KY", lat: 39.0489, lng: -84.6678 },
+  { id: "LUK", name: "Cincinnati Municipal Lunken", state: "OH", lat: 39.1032, lng: -84.4186 },
+  { id: "SLC", name: "Salt Lake City Intl", state: "UT", lat: 40.7899, lng: -111.9791 },
+  { id: "PVU", name: "Provo Municipal", state: "UT", lat: 40.2192, lng: -111.7234 },
+  { id: "OGD", name: "Ogden-Hinckley", state: "UT", lat: 41.1959, lng: -112.0121 },
 ];
