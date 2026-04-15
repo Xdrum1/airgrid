@@ -42,6 +42,18 @@ export interface RplPrecedent {
 
 const SIG_ORDER: Record<string, number> = { HIGH: 3, MEDIUM: 2, LOW: 1 };
 
+/** Human-readable label for each scoring factor code. Used by the
+ *  precedents panel when rendering per-factor sections. */
+export const FACTOR_CODE_LABEL: Record<string, string> = {
+  LEG: "State Legislation",
+  REG: "Regulatory Posture",
+  OPR: "Operator Presence",
+  VRT: "Approved Vertiport",
+  PLT: "Active Pilot Program",
+  ZON: "Vertiport Zoning",
+  WTH: "Weather Infrastructure",
+};
+
 // Relevance gate: RPL classification sometimes tags bills as LEG/REG based
 // on UAS terminology anywhere in the title (e.g., "interfering with wildfire
 // drones", "honoring fire chief"). Block obviously-off-topic rows before
@@ -92,7 +104,7 @@ export async function getPrecedentsForCity(
       where: { cityId },
       include: {
         document: {
-          include: { factorMappings: { select: { factorCode: true } } },
+          include: { factorMappings: { select: { factorCode: true, mappingType: true } } },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -105,7 +117,7 @@ export async function getPrecedentsForCity(
       where: { jurisdiction: stateCode },
       include: {
         document: {
-          include: { factorMappings: { select: { factorCode: true } } },
+          include: { factorMappings: { select: { factorCode: true, mappingType: true } } },
         },
       },
       orderBy: { document: { publishedDate: "desc" } },
@@ -120,7 +132,7 @@ export async function getPrecedentsForCity(
         docType: { startsWith: "FEDERAL_" },
         isActive: true,
       },
-      include: { factorMappings: { select: { factorCode: true } } },
+      include: { factorMappings: { select: { factorCode: true, mappingType: true } } },
       orderBy: [{ publishedDate: "desc" }],
     });
 
@@ -143,7 +155,15 @@ export async function getPrecedentsForCity(
         significance: doc.significance as RplPrecedent["significance"],
         summary: doc.summary,
         sourceUrl: doc.sourceUrl,
-        factorCodes: Array.from(new Set(doc.factorMappings.map((m) => m.factorCode))),
+        // Order PRIMARY mappings before SECONDARY so the first entry is the
+        // factor this doc is most associated with — used for per-factor grouping.
+        factorCodes: Array.from(
+          new Set(
+            [...doc.factorMappings]
+              .sort((a, b) => (a.mappingType === "PRIMARY" ? -1 : b.mappingType === "PRIMARY" ? 1 : 0))
+              .map((m) => m.factorCode),
+          ),
+        ),
         tier,
         tierLabel,
       };
@@ -195,4 +215,41 @@ export async function getPrecedentsForCity(
     logger.error("getPrecedentsForCity failed", { cityId, err });
     return [];
   }
+}
+
+export interface PrecedentsByFactor {
+  factorCode: string;
+  factorLabel: string;
+  precedents: RplPrecedent[];
+}
+
+/**
+ * Return precedents grouped by their primary scoring factor. Each
+ * precedent appears in exactly one bucket (its first factor code, which
+ * `getPrecedentsForCity` orders PRIMARY-first). Factors with no
+ * precedents are omitted. Used by the city detail panel to show
+ * "these docs drive your LEG score" and "these drive your REG score"
+ * as distinct sections.
+ */
+export async function getPrecedentsForCityByFactor(
+  cityId: string,
+  limit = 8,
+): Promise<PrecedentsByFactor[]> {
+  const flat = await getPrecedentsForCity(cityId, limit);
+  const buckets = new Map<string, RplPrecedent[]>();
+  for (const p of flat) {
+    const primary = p.factorCodes[0] ?? "OTHER";
+    const list = buckets.get(primary) ?? [];
+    list.push(p);
+    buckets.set(primary, list);
+  }
+  // Preserve canonical factor display order
+  const order = ["LEG", "REG", "OPR", "VRT", "PLT", "ZON", "WTH", "OTHER"];
+  return order
+    .filter((code) => buckets.has(code))
+    .map((code) => ({
+      factorCode: code,
+      factorLabel: FACTOR_CODE_LABEL[code] ?? code,
+      precedents: buckets.get(code) ?? [],
+    }));
 }

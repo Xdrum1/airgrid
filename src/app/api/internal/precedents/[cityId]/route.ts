@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { getPrecedentsForCity } from "@/lib/rpl-precedents";
+import { getPrecedentsForCity, getPrecedentsForCityByFactor } from "@/lib/rpl-precedents";
 import { CITIES_MAP } from "@/data/seed";
 import { rateLimit } from "@/lib/rate-limit";
 import { getUserTier } from "@/lib/billing";
@@ -28,6 +28,9 @@ export async function GET(
     return NextResponse.json({ precedents: [], gated: true });
   }
 
-  const precedents = await getPrecedentsForCity(cityId);
-  return NextResponse.json({ precedents });
+  const [precedents, byFactor] = await Promise.all([
+    getPrecedentsForCity(cityId),
+    getPrecedentsForCityByFactor(cityId),
+  ]);
+  return NextResponse.json({ precedents, byFactor });
 }
