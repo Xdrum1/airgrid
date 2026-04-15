@@ -171,18 +171,6 @@ export default async function LandingPage() {
           textAlign: "center",
         }}
       >
-        <div
-          style={{
-            fontFamily: "'Space Mono', monospace",
-            fontSize: 11,
-            letterSpacing: "0.14em",
-            color: T.accent,
-            marginBottom: 20,
-            textTransform: "uppercase",
-          }}
-        >
-          Intelligence Infrastructure for Urban Air Mobility
-        </div>
         <h1
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
@@ -195,22 +183,20 @@ export default async function LandingPage() {
             color: T.textPrimary,
           }}
         >
-          One data architecture. Six purpose-built intelligence products.
+          AirIndex. Intelligence for urban air mobility.
         </h1>
         <p
           style={{
             color: T.textSecondary,
             fontSize: "clamp(16px, 1.6vw, 19px)",
             lineHeight: 1.6,
-            maxWidth: 680,
+            maxWidth: 620,
             margin: "0 auto 40px",
             fontWeight: 400,
           }}
         >
-          AirIndex powers the decisions of operators, insurers, developers,
-          cities, and investors shaping where eVTOL operates. Each container
-          delivers intelligence scoped to the decision it serves — all sourced
-          from the same primary-data platform.
+          Market intelligence for the operators, insurers, developers, cities,
+          and investors shaping where eVTOL launches.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
@@ -338,18 +324,6 @@ export default async function LandingPage() {
           }}
         >
           <div style={{ textAlign: "center", marginBottom: 56, maxWidth: 720, marginLeft: "auto", marginRight: "auto" }}>
-            <div
-              style={{
-                fontFamily: "'Space Mono', monospace",
-                fontSize: 11,
-                letterSpacing: "0.14em",
-                color: T.accent,
-                marginBottom: 16,
-                textTransform: "uppercase",
-              }}
-            >
-              Who We Serve · What We Deliver
-            </div>
             <h2
               style={{
                 fontFamily: "'Space Grotesk', sans-serif",
@@ -361,7 +335,7 @@ export default async function LandingPage() {
                 color: T.textPrimary,
               }}
             >
-              Products shaped to the decision in front of you.
+              Six products. One data platform.
             </h2>
             <p
               style={{
@@ -371,8 +345,7 @@ export default async function LandingPage() {
                 margin: 0,
               }}
             >
-              We don&apos;t sell the platform. We deliver the intelligence
-              each team needs in the form they actually use.
+              Each container is shaped to a specific decision. Pick yours.
             </p>
           </div>
 
