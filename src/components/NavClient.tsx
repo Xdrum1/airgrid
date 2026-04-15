@@ -14,34 +14,23 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    label: "Solutions",
-    children: [
-      { label: "Dashboard", href: "/dashboard", desc: "Live market readiness scores across US metro markets" },
-      { label: "API", href: "/api", desc: "Programmatic access to market scores and regulatory data" },
-      { label: "Market Reports", href: "/reports/march-2026", desc: "Monthly intelligence reports with full analysis" },
-      { label: "Briefings", href: "/briefings", desc: "Custom market intelligence packages for your use case" },
-      { label: "Heliport Audit", href: "/heliport-audit", desc: "State-level heliport compliance screening" },
-    ],
+    label: "Products",
+    href: "/#products",
   },
   {
     label: "Intelligence",
     children: [
       { label: "Methodology", href: "/methodology", desc: "Published 7-factor scoring model with full transparency" },
-      { label: "Terminology", href: "/terminology", desc: "Source-traced definitions for vertical flight infrastructure" },
       { label: "Insights", href: "/insights", desc: "Analysis and commentary on UAM market developments" },
       { label: "Updates", href: "/updates", desc: "Platform releases, scoring changes, and data additions" },
+      { label: "Terminology", href: "/terminology", desc: "Source-traced definitions for vertical flight infrastructure" },
     ],
   },
   {
-    label: "Use Cases",
-    href: "/use-cases",
-  },
-  {
-    label: "About",
+    label: "Company",
     children: [
-      { label: "About AirIndex", href: "/about", desc: "Who we are and how we rate the sky" },
+      { label: "About", href: "/about", desc: "The team, the mission, and how we rate the sky" },
       { label: "Contact", href: "/contact", desc: "Data licenses, reports, partnerships, and inquiries" },
-      { label: "Pricing", href: "/pricing", desc: "Enterprise intelligence, scoped per engagement" },
     ],
   },
 ];

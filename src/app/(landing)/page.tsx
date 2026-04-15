@@ -329,10 +329,12 @@ export default async function LandingPage() {
       {/* ════════════════════════════════════════════════════ */}
       <ScrollReveal>
         <section
+          id="products"
           style={{
             maxWidth: 1120,
             margin: "0 auto",
             padding: "clamp(64px, 8vw, 120px) 24px clamp(32px, 5vw, 56px)",
+            scrollMarginTop: 80,
           }}
         >
           <div style={{ textAlign: "center", marginBottom: 56, maxWidth: 720, marginLeft: "auto", marginRight: "auto" }}>
