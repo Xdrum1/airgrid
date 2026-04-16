@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getCitiesWithOverrides, MARKET_COUNT } from "@/data/seed";
 import { calculateReadinessScoreFromFkb } from "@/lib/scoring";
 import { liveContainers } from "@/lib/containers";
+import { getFactorMovements, type FactorMovement } from "@/lib/editorial/factor-movements";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollReveal from "@/components/landing/ScrollReveal";
@@ -91,6 +92,34 @@ export default async function LandingPage() {
     })
   );
   const scored = scoredUnsorted.sort((a, b) => b.score - a.score);
+
+  // Factor movements for "Biggest Movers This Week" — from tonight's ledger infra
+  let movements: FactorMovement[] = [];
+  try {
+    movements = await getFactorMovements({ windowDays: 7 });
+  } catch {
+    // Non-blocking — page renders without movements on failure
+  }
+
+  // Punchline generator — computes one tension line per city from scoring breakdown
+  function getPunchline(city: { id: string; city: string; state: string; score: number; weatherInfraLevel?: string; stateLegislationStatus?: string; hasActivePilotProgram?: boolean; activeOperators?: string[]; hasVertiportZoning?: boolean; regulatoryPosture?: string }): string {
+    const s = city.score;
+    // Check for recent movements first
+    const m = movements.find((mv) => mv.cityId === city.id);
+    if (m) {
+      const dir = m.pointsDelta > 0 ? "↑" : "↓";
+      return `${m.factorLabel} ${dir}${Math.abs(m.pointsDelta)} → ${m.reason.split("—")[0].trim().slice(0, 80)}`;
+    }
+    // Static punchlines from factor gaps
+    if (s === 0) return `The regulatory capital of the U.S. has zero readiness signals.`;
+    if (s >= 90 && city.weatherInfraLevel !== "full") return `Only weather infrastructure prevents a perfect score.`;
+    if (!city.hasActivePilotProgram && s >= 50) return `No active pilot program despite strong fundamentals.`;
+    if ((city.activeOperators?.length ?? 0) === 0 && s >= 30) return `Zero operator presence — capital hasn't committed yet.`;
+    if (city.stateLegislationStatus === "none" && s >= 30) return `No enacted AAM legislation — the gating factor.`;
+    if (!city.hasVertiportZoning && s >= 50) return `Vertiport zoning not adopted — next project is a variance fight.`;
+    if (city.weatherInfraLevel === "none") return `No low-altitude weather infrastructure coverage.`;
+    return `Score ${s}/100 — ${city.state} market.`;
+  }
 
   const containers = liveContainers().sort(
     (a, b) => (CONTAINER_ORDER[a.id] ?? 99) - (CONTAINER_ORDER[b.id] ?? 99),
@@ -287,7 +316,7 @@ export default async function LandingPage() {
             color: T.textPrimary,
           }}
         >
-          The market-readiness rating for vertical flight.
+          Which cities are ready for vertical flight — and what&apos;s holding them back.
         </h1>
         <p
           style={{
@@ -542,8 +571,179 @@ export default async function LandingPage() {
                     {city.score}
                   </div>
                 </div>
+                <div
+                  style={{
+                    marginTop: 10,
+                    paddingTop: 10,
+                    borderTop: `1px solid ${T.divider}`,
+                    fontSize: 12,
+                    color: T.textSecondary,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {getPunchline(city)}
+                </div>
               </div>
             ))}
+          </div>
+        </section>
+      </ScrollReveal>
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* Biggest Movers This Week — live competitive pressure */}
+      {/* ════════════════════════════════════════════════════ */}
+      {movements.length > 0 && (
+        <ScrollReveal>
+          <section
+            style={{
+              maxWidth: 1120,
+              margin: "0 auto",
+              padding: "clamp(24px, 3vw, 40px) 24px 0",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                color: T.accent,
+                marginBottom: 14,
+                textTransform: "uppercase",
+              }}
+            >
+              Biggest Movers This Week
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {movements.slice(0, 4).map((m) => {
+                const up = m.pointsDelta > 0;
+                const color = up ? "#16a34a" : "#dc2626";
+                const arrow = up ? "↑" : "↓";
+                const daysAgo = Math.floor((Date.now() - m.appliedAt.getTime()) / (24 * 60 * 60 * 1000));
+                const timeLabel = daysAgo === 0 ? "today" : daysAgo === 1 ? "yesterday" : `${daysAgo}d ago`;
+                return (
+                  <div
+                    key={m.cityId + m.field}
+                    style={{
+                      display: "flex",
+                      alignItems: "baseline",
+                      gap: 12,
+                      padding: "12px 16px",
+                      background: T.bg,
+                      border: `1px solid ${T.cardBorder}`,
+                      borderLeft: `3px solid ${color}`,
+                      borderRadius: 8,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 15, color: T.textPrimary }}>
+                      {m.cityName}, {m.state}
+                    </span>
+                    <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 14, color }}>
+                      {arrow}{Math.abs(m.pointsDelta)}
+                    </span>
+                    <span style={{ fontSize: 13, color: T.textSecondary }}>
+                      — {m.reason.split("—")[0].trim().slice(0, 60)}
+                    </span>
+                    <span style={{ fontSize: 11, color: T.textTertiary, marginLeft: "auto" }}>
+                      {timeLabel}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </ScrollReveal>
+      )}
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* How to improve — the policy-pressure unlock          */}
+      {/* ════════════════════════════════════════════════════ */}
+      <ScrollReveal>
+        <section
+          style={{
+            maxWidth: 1120,
+            margin: "0 auto",
+            padding: "clamp(40px, 5vw, 64px) 24px clamp(24px, 3vw, 40px)",
+          }}
+        >
+          <div
+            style={{
+              background: T.subtleBg,
+              border: `1px solid ${T.cardBorder}`,
+              borderRadius: 14,
+              padding: "clamp(24px, 3vw, 36px)",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))",
+              gap: 28,
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 11,
+                  letterSpacing: "0.14em",
+                  color: T.accent,
+                  textTransform: "uppercase",
+                  marginBottom: 12,
+                }}
+              >
+                How Markets Improve
+              </div>
+              <h2
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "clamp(20px, 2.4vw, 26px)",
+                  color: T.textPrimary,
+                  margin: "0 0 12px",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                Markets improve their AirIndex score by unlocking three signals.
+              </h2>
+              <p style={{ color: T.textSecondary, fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+                Every score change is traceable to a specific action.
+                Full gap analysis available to licensed clients.
+              </p>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {[
+                { signal: "Vertiport zoning approval", detail: "Codified municipal pathway — not a one-off variance" },
+                { signal: "Active pilot programs", detail: "FAA-recognized operational demonstration in the market" },
+                { signal: "Federal regulatory alignment", detail: "State legislation enacted + proactive regulatory posture" },
+              ].map((s) => (
+                <div
+                  key={s.signal}
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 12,
+                    padding: "12px 16px",
+                    background: T.bg,
+                    border: `1px solid ${T.cardBorder}`,
+                    borderRadius: 8,
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 999,
+                      background: T.accent,
+                      marginTop: 6,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <div>
+                    <div style={{ fontWeight: 600, color: T.textPrimary, fontSize: 14 }}>{s.signal}</div>
+                    <div style={{ color: T.textTertiary, fontSize: 12, marginTop: 2 }}>{s.detail}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       </ScrollReveal>
