@@ -335,6 +335,39 @@ body {
   transform: translateX(4px);
 }
 
+/* ──────────────────────────────────────────────────────
+   Hero radar — slow sweep + expanding ping on the
+   concentric airspace circles. Adds "active airspace
+   scanning" cue without demanding attention.
+────────────────────────────────────────────────────── */
+
+@keyframes heroRadarSweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes heroRadarPing {
+  0%   { transform: scale(0.25); opacity: 0; }
+  10%  { opacity: 0.55; }
+  70%  { opacity: 0.08; }
+  100% { transform: scale(1.0); opacity: 0; }
+}
+
+.hero-radar-sweep {
+  transform-origin: 300px 300px;
+  transform-box: fill-box;
+  animation: heroRadarSweep 14s linear infinite;
+  will-change: transform;
+}
+
+.hero-radar-ping {
+  transform-origin: 300px 300px;
+  transform-box: fill-box;
+  animation: heroRadarPing 9s ease-out infinite;
+  will-change: transform, opacity;
+}
+.hero-radar-ping--delay { animation-delay: 4.5s; }
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .hero-glow,
@@ -342,7 +375,10 @@ body {
   .container-card,
   .cta-primary,
   .cta-secondary,
-  .link-arrow .arrow {
+  .link-arrow .arrow,
+  .hero-radar-sweep,
+  .hero-radar-ping,
+  .hero-radar-ping--delay {
     animation: none !important;
     transition: none !important;
   }

@@ -204,6 +204,42 @@ export default async function LandingPage() {
           <line x1="300" y1="500" x2="300" y2="580" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
           <line x1="20" y1="300" x2="100" y2="300" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
           <line x1="500" y1="300" x2="580" y2="300" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
+
+          {/* Radar sweep — rotating beam */}
+          <g className="hero-radar-sweep">
+            <defs>
+              <linearGradient id="radarBeam" x1="50%" y1="50%" x2="50%" y2="0%">
+                <stop offset="0%" stopColor="#5B8DB8" stopOpacity="0" />
+                <stop offset="85%" stopColor="#5B8DB8" stopOpacity="0.55" />
+                <stop offset="100%" stopColor="#5B8DB8" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <line
+              x1="300"
+              y1="300"
+              x2="300"
+              y2="20"
+              stroke="url(#radarBeam)"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+          </g>
+
+          {/* Expanding ping — two, staggered */}
+          <circle
+            className="hero-radar-ping"
+            cx="300" cy="300" r="280"
+            fill="none"
+            stroke="#5B8DB8"
+            strokeWidth="1"
+          />
+          <circle
+            className="hero-radar-ping hero-radar-ping--delay"
+            cx="300" cy="300" r="280"
+            fill="none"
+            stroke="#2dd4bf"
+            strokeWidth="0.8"
+          />
         </svg>
 
         {/* Domain chip — explicit aviation signal */}
