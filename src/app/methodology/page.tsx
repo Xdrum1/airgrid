@@ -255,7 +255,7 @@ export default function MethodologyPage() {
             UAM Market Readiness Index
           </h1>
           <p style={{ color: "#777", fontSize: 15, lineHeight: 1.7, maxWidth: 600 }}>
-            The AirIndex UAM Readiness Score measures a market&apos;s structural readiness for
+            The AirIndex Score (AIS) measures a market&apos;s structural readiness for
             commercial urban air mobility operations across seven independently verified factors.
             It is not a forecast &mdash; it reflects current, documented conditions.
           </p>

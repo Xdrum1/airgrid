@@ -500,9 +500,9 @@ export default async function LandingPage() {
                   maxWidth: 640,
                 }}
               >
-                Scores update as legislation, infrastructure, and operator
-                presence change. Full index of 25 markets available to
-                licensed clients.
+                Scores update continuously as AirIndex detects changes in
+                regulatory, infrastructure, and operator signals. Full
+                index of 25 markets available to licensed clients.
               </p>
             </div>
             <Link
@@ -568,7 +568,7 @@ export default async function LandingPage() {
                       letterSpacing: "-0.02em",
                     }}
                   >
-                    {city.score}
+                    {city.score} <span style={{ fontSize: 11, fontWeight: 500, color: T.textTertiary, letterSpacing: "0.06em" }}>AIS</span>
                   </div>
                 </div>
                 <div
