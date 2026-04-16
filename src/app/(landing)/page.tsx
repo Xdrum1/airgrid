@@ -301,8 +301,8 @@ export default async function LandingPage() {
             fontWeight: 400,
           }}
         >
-          Market intelligence for the operators, insurers, developers, cities,
-          and investors shaping where eVTOL launches.
+          AirIndex scores 25 U.S. markets on eVTOL operational readiness —
+          city level today, vertiport and corridor level on the grid.
         </p>
         <div style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
@@ -415,6 +415,138 @@ export default async function LandingPage() {
           ))}
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* Top-market ticker — scoring made visible above the fold */}
+      {/* ════════════════════════════════════════════════════ */}
+      <ScrollReveal>
+        <section
+          style={{
+            maxWidth: 1120,
+            margin: "0 auto",
+            padding: "clamp(48px, 6vw, 72px) 24px clamp(16px, 2vw, 24px)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              marginBottom: 32,
+              flexWrap: "wrap",
+              gap: 12,
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 11,
+                  letterSpacing: "0.14em",
+                  color: T.accent,
+                  marginBottom: 10,
+                  textTransform: "uppercase",
+                }}
+              >
+                Market Snapshot · Public
+              </div>
+              <h2
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "clamp(22px, 2.6vw, 28px)",
+                  color: T.textPrimary,
+                  margin: "0 0 6px",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                Top 6 U.S. markets by readiness
+              </h2>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 13,
+                  color: T.textSecondary,
+                  lineHeight: 1.55,
+                  maxWidth: 640,
+                }}
+              >
+                Scores update as legislation, infrastructure, and operator
+                presence change. Full index of 25 markets available to
+                licensed clients.
+              </p>
+            </div>
+            <Link
+              href="/request-access"
+              className="link-arrow"
+              style={{
+                fontSize: 13,
+                color: T.accentDeep,
+                textDecoration: "none",
+                fontWeight: 600,
+              }}
+            >
+              Full index (licensed) <span className="arrow" aria-hidden="true">→</span>
+            </Link>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(240px, 100%), 1fr))",
+              gap: 12,
+            }}
+          >
+            {scored.slice(0, 6).map((city) => (
+              <div
+                key={city.id}
+                style={{
+                  background: "#ffffff",
+                  border: `1px solid ${T.cardBorder}`,
+                  borderRadius: 10,
+                  padding: "18px 20px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-end",
+                    gap: 10,
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontWeight: 700,
+                        fontSize: 17,
+                        color: T.textPrimary,
+                        letterSpacing: "-0.01em",
+                      }}
+                    >
+                      {city.city}
+                    </div>
+                    <div style={{ fontSize: 11, color: T.textTertiary, marginTop: 2 }}>{city.state}</div>
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontWeight: 700,
+                      fontSize: 28,
+                      color: T.textPrimary,
+                      lineHeight: 1,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {city.score}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* ════════════════════════════════════════════════════ */}
       {/* Container cards — the centerpiece                    */}
@@ -680,124 +812,6 @@ export default async function LandingPage() {
         </section>
       </ScrollReveal>
 
-      {/* ════════════════════════════════════════════════════ */}
-      {/* Top-market ticker                                     */}
-      {/* ════════════════════════════════════════════════════ */}
-      <ScrollReveal>
-        <section
-          style={{
-            maxWidth: 1120,
-            margin: "0 auto",
-            padding: "clamp(64px, 8vw, 96px) 24px clamp(32px, 4vw, 56px)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-              marginBottom: 32,
-              flexWrap: "wrap",
-              gap: 12,
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: 11,
-                  letterSpacing: "0.14em",
-                  color: T.accent,
-                  marginBottom: 10,
-                  textTransform: "uppercase",
-                }}
-              >
-                Market Snapshot · Public
-              </div>
-              <h2
-                style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  fontWeight: 700,
-                  fontSize: "clamp(22px, 2.6vw, 28px)",
-                  color: T.textPrimary,
-                  margin: 0,
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                Top 6 U.S. markets by readiness
-              </h2>
-            </div>
-            <Link
-              href="/request-access"
-              className="link-arrow"
-              style={{
-                fontSize: 13,
-                color: T.accentDeep,
-                textDecoration: "none",
-                fontWeight: 600,
-              }}
-            >
-              Full index (licensed) <span className="arrow" aria-hidden="true">→</span>
-            </Link>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(min(240px, 100%), 1fr))",
-              gap: 12,
-            }}
-          >
-            {scored.slice(0, 6).map((city) => (
-              <div
-                key={city.id}
-                style={{
-                  background: "#ffffff",
-                  border: `1px solid ${T.cardBorder}`,
-                  borderRadius: 10,
-                  padding: "18px 20px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-end",
-                    gap: 10,
-                  }}
-                >
-                  <div>
-                    <div
-                      style={{
-                        fontFamily: "'Space Grotesk', sans-serif",
-                        fontWeight: 700,
-                        fontSize: 17,
-                        color: T.textPrimary,
-                        letterSpacing: "-0.01em",
-                      }}
-                    >
-                      {city.city}
-                    </div>
-                    <div style={{ fontSize: 11, color: T.textTertiary, marginTop: 2 }}>{city.state}</div>
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "'Space Grotesk', sans-serif",
-                      fontWeight: 700,
-                      fontSize: 28,
-                      color: T.textPrimary,
-                      lineHeight: 1,
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    {city.score}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </ScrollReveal>
 
       {/* ════════════════════════════════════════════════════ */}
       {/* Pulse subscribe                                       */}
