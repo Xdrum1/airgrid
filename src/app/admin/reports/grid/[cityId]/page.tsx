@@ -20,6 +20,7 @@ import { prisma } from "@/lib/prisma";
 import { METRO_BOUNDS } from "@/data/asos-stations";
 import { getCitiesWithOverrides } from "@/data/seed";
 import { getPreDevFacilitiesForMarket } from "@/data/pre-development-facilities";
+import { calculateReadinessScoreFromFkb, SCORE_WEIGHTS } from "@/lib/scoring";
 import PrintButton from "@/app/reports/gap/[cityId]/PrintButton";
 import GridMap, {
   type GridCellFeature,
@@ -139,8 +140,29 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
   const avgCredit =
     cells.reduce((s, c) => s + c.centroidCredit, 0) / Math.max(1, cells.length);
 
-  // Derived weather score (v1.4 preview): mean credit, capped at 5, scaled to 10 pts
-  const v14WeatherCredit = Math.round(avgCredit * 10) / 10; // 0-5 scale, one decimal
+  // v1.4 ASOS sub-indicator (0-5 scale, one decimal)
+  const v14AsosSubIndicator = Math.round(avgCredit * 10) / 10;
+
+  // v1.4 weather factor = ASOS sub-indicator × 2 (scales the 0-5 sub-indicator to
+  // the 0-10 weather factor). Low-Altitude Sensing sub-indicator (the other 5 pts
+  // of v1.4) requires TruWeather deployment data — pending Don's feed.
+  // For this preview we show ASOS sub-indicator doubled as a v1.4 approximation.
+  const v14WeatherFactor = Math.round(v14AsosSubIndicator * 2 * 10) / 10;
+
+  // v1.3 weather factor — from city.weatherInfraLevel (flat 0/5/10)
+  const v13WeatherFactor =
+    city.weatherInfraLevel === "full" ? 10
+    : city.weatherInfraLevel === "partial" ? 5
+    : 0;
+
+  // v1.3 city score (live, from FKB)
+  const v13Score = await calculateReadinessScoreFromFkb(city);
+
+  // v1.4 city score = v1.3 score with the weather factor swapped
+  const weatherDelta = v14WeatherFactor - v13WeatherFactor;
+  const v14CityScore = Math.max(0, Math.min(100, Math.round(v13Score.score + weatherDelta)));
+  const scoreDelta = v14CityScore - v13Score.score;
+
   const gridVersion = cells[0]?.gridVersion ?? "—";
 
   const today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
@@ -214,9 +236,92 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
             </div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
               <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 28, fontWeight: 700, color: T.textPrimary, letterSpacing: "-0.02em" }}>
-                {v14WeatherCredit.toFixed(1)}
+                {v14AsosSubIndicator.toFixed(1)}
               </span>
               <span style={{ fontSize: 12, color: T.textTertiary }}>/ 5.0 (v1.4 preview)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* v1.3 vs v1.4 score comparison */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 12,
+            marginBottom: 28,
+          }}
+        >
+          {/* v1.3 flat */}
+          <div
+            style={{
+              padding: "18px 22px",
+              background: T.bg,
+              border: `1px solid ${T.cardBorder}`,
+              borderRadius: 12,
+            }}
+          >
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, letterSpacing: "0.12em", color: T.textTertiary, textTransform: "uppercase" as const, marginBottom: 10 }}>
+              v1.3 · current methodology
+            </div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 6 }}>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 44, fontWeight: 700, color: T.textPrimary, letterSpacing: "-0.02em", lineHeight: 1 }}>
+                {v13Score.score}
+              </span>
+              <span style={{ fontSize: 13, color: T.textTertiary }}>/ 100 city readiness</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10, borderTop: `1px solid ${T.cardBorder}`, fontSize: 12, color: T.textSecondary }}>
+              <span>Weather factor</span>
+              <span style={{ fontWeight: 600, color: T.textPrimary }}>
+                {v13WeatherFactor} / {SCORE_WEIGHTS.weatherInfrastructure}
+              </span>
+            </div>
+            <div style={{ fontSize: 10, color: T.textTertiary, marginTop: 6, fontStyle: "italic" }}>
+              Flat per-market level ({city.weatherInfraLevel ?? "—"}). No spatial detail.
+            </div>
+          </div>
+
+          {/* v1.4 grid-derived */}
+          <div
+            style={{
+              padding: "18px 22px",
+              background: `linear-gradient(135deg, ${T.subtleBg} 0%, rgba(91,141,184,0.06) 100%)`,
+              border: `1px solid ${T.accent}40`,
+              borderRadius: 12,
+              position: "relative",
+            }}
+          >
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, letterSpacing: "0.12em", color: T.accent, textTransform: "uppercase" as const, marginBottom: 10 }}>
+              v1.4 preview · grid-derived
+            </div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 6 }}>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 44, fontWeight: 700, color: T.textPrimary, letterSpacing: "-0.02em", lineHeight: 1 }}>
+                {v14CityScore}
+              </span>
+              <span style={{ fontSize: 13, color: T.textTertiary }}>/ 100</span>
+              <span
+                style={{
+                  marginLeft: "auto",
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: scoreDelta > 0 ? T.green : scoreDelta < 0 ? T.red : T.textTertiary,
+                }}
+              >
+                {scoreDelta > 0 ? "+" : ""}{scoreDelta}
+              </span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10, borderTop: `1px solid ${T.cardBorder}`, fontSize: 12, color: T.textSecondary }}>
+              <span>Weather factor</span>
+              <span style={{ fontWeight: 600, color: T.textPrimary }}>
+                {v14WeatherFactor.toFixed(1)} / 10
+                <span style={{ color: weatherDelta > 0 ? T.green : weatherDelta < 0 ? T.red : T.textTertiary, marginLeft: 6, fontWeight: 700 }}>
+                  ({weatherDelta > 0 ? "+" : ""}{weatherDelta.toFixed(1)})
+                </span>
+              </span>
+            </div>
+            <div style={{ fontSize: 10, color: T.textTertiary, marginTop: 6, fontStyle: "italic" }}>
+              Mean of cell ASOS credits. Low-altitude sensing sub-indicator pending TruWeather feed.
             </div>
           </div>
         </div>
