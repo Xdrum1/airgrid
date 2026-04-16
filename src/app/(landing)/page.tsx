@@ -171,8 +171,76 @@ export default async function LandingPage() {
           textAlign: "center",
         }}
       >
+        {/* Concentric airspace circles — radar-like cue behind the hero */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 600 600"
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -52%)",
+            width: "min(720px, 92vw)",
+            height: "auto",
+            pointerEvents: "none",
+            zIndex: 0,
+            opacity: 0.55,
+          }}
+        >
+          <defs>
+            <radialGradient id="airspaceFade" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#5B8DB8" stopOpacity="0.22" />
+              <stop offset="60%" stopColor="#5B8DB8" stopOpacity="0.08" />
+              <stop offset="100%" stopColor="#5B8DB8" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <circle cx="300" cy="300" r="280" fill="none" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.18" />
+          <circle cx="300" cy="300" r="220" fill="none" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.22" />
+          <circle cx="300" cy="300" r="160" fill="none" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.28" />
+          <circle cx="300" cy="300" r="100" fill="none" stroke="#5B8DB8" strokeWidth="0.9" opacity="0.36" />
+          <circle cx="300" cy="300" r="48" fill="url(#airspaceFade)" />
+          {/* Cardinal sweep lines */}
+          <line x1="300" y1="20" x2="300" y2="100" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
+          <line x1="300" y1="500" x2="300" y2="580" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
+          <line x1="20" y1="300" x2="100" y2="300" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
+          <line x1="500" y1="300" x2="580" y2="300" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
+        </svg>
+
+        {/* Domain chip — explicit aviation signal */}
+        <div style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", marginBottom: 22 }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "7px 16px",
+              borderRadius: 999,
+              background: "#ffffff",
+              border: `1px solid ${T.cardBorder}`,
+              boxShadow: "0 1px 2px rgba(10,37,64,0.04)",
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 10.5,
+              letterSpacing: "0.12em",
+              color: T.textSecondary,
+              textTransform: "uppercase",
+            }}
+          >
+            <span aria-hidden="true" style={{
+              display: "inline-block",
+              width: 7,
+              height: 7,
+              borderRadius: 999,
+              background: "#2dd4bf",
+              boxShadow: "0 0 0 3px rgba(45,212,191,0.2)",
+            }} />
+            Urban Air Mobility · Heliports · Vertiports
+          </span>
+        </div>
+
         <h1
           style={{
+            position: "relative",
+            zIndex: 1,
             fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 700,
             fontSize: "clamp(34px, 5vw, 56px)",
@@ -183,10 +251,12 @@ export default async function LandingPage() {
             color: T.textPrimary,
           }}
         >
-          AirIndex. Intelligence for urban air mobility.
+          The market-readiness rating for vertical flight.
         </h1>
         <p
           style={{
+            position: "relative",
+            zIndex: 1,
             color: T.textSecondary,
             fontSize: "clamp(16px, 1.6vw, 19px)",
             lineHeight: 1.6,
@@ -198,7 +268,7 @@ export default async function LandingPage() {
           Market intelligence for the operators, insurers, developers, cities,
           and investors shaping where eVTOL launches.
         </p>
-        <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
             href="/request-access"
             className="cta-primary"
