@@ -265,22 +265,6 @@ export default function NavClient({
         ) : (
           <>
             <Link
-              href="/login"
-              className="nav-link"
-              style={{
-                color: signinColor,
-                fontSize: 10,
-                letterSpacing: "0.04em",
-                textDecoration: "none",
-                padding: "8px 10px",
-                transition: "color 0.15s",
-                marginLeft: 4,
-                whiteSpace: "nowrap",
-              }}
-            >
-              Client Portal
-            </Link>
-            <Link
               href="/contact"
               className="nav-cta"
               style={{
@@ -410,20 +394,6 @@ export default function NavClient({
               </Link>
             ) : (
               <>
-                <Link
-                  href="/login"
-                  onClick={() => setMobileOpen(false)}
-                  style={{
-                    display: "block",
-                    textAlign: "center",
-                    padding: "10px 0",
-                    color: signinColor,
-                    fontSize: 12,
-                    textDecoration: "none",
-                  }}
-                >
-                  Client Portal
-                </Link>
                 <Link
                   href="/contact"
                   onClick={() => setMobileOpen(false)}

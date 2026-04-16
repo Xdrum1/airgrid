@@ -61,8 +61,10 @@ export default function SiteFooter({ theme = "dark" }: { theme?: "dark" | "light
           </div>
         </div>
 
-        {/* Right — Social */}
+        {/* Right — Social + Client Portal */}
         <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+          <Link href="/login" style={legalLinkStyle}>Client Portal</Link>
+          <span style={{ color: divider, fontSize: 10 }}>|</span>
           <a
             href="https://x.com/AirIndexHQ"
             target="_blank"
