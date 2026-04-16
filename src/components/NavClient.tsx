@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 
@@ -77,7 +77,10 @@ export default function NavClient({
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  // Ref — not state — so closures always see the latest handle. Avoids
+  // the rapid-hover race where setHoverTimeout(state) + stale closure
+  // could leak a pending close timer past a new open.
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Close everything on route change
   useEffect(() => {
@@ -122,14 +125,27 @@ export default function NavClient({
   );
 
   const handleMouseEnter = (label: string) => {
-    if (hoverTimeout) clearTimeout(hoverTimeout);
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
     setOpenDropdown(label);
   };
 
   const handleMouseLeave = () => {
-    const t = setTimeout(() => setOpenDropdown(null), 150);
-    setHoverTimeout(t);
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+      closeTimerRef.current = null;
+    }, 180);
   };
+
+  // Clear pending timer on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
 
   return (
     <>
