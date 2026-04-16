@@ -63,8 +63,8 @@ export default function ApiLandingPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#050508",
-        color: "#ccc",
+        background: "#ffffff",
+        color: "#0a2540",
         fontFamily: "'Inter', sans-serif",
         fontSize: 14,
         lineHeight: 1.7,
@@ -73,7 +73,7 @@ export default function ApiLandingPage() {
     >
       <TrackPageView page="/api" />
 
-      <SiteNav />
+      <SiteNav theme="light" />
 
       <main style={{ maxWidth: 720, margin: "0 auto", padding: "48px clamp(20px, 5vw, 32px) 80px" }}>
         {/* Header */}
@@ -83,7 +83,7 @@ export default function ApiLandingPage() {
               fontFamily: "'Inter', sans-serif",
               fontSize: 10,
               letterSpacing: 2,
-              color: "#555",
+              color: "#8792a2",
               textTransform: "uppercase",
               marginBottom: 16,
             }}
@@ -95,14 +95,14 @@ export default function ApiLandingPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: "clamp(28px, 5vw, 36px)",
-              color: "#fff",
+              color: "#0a2540",
               lineHeight: 1.2,
               marginBottom: 16,
             }}
           >
             AirIndex API
           </h1>
-          <p style={{ fontSize: 16, color: "#999", lineHeight: 1.7, maxWidth: 560 }}>
+          <p style={{ fontSize: 16, color: "#425466", lineHeight: 1.7, maxWidth: 560 }}>
             Programmatic access to UAM market readiness ratings across 20+ U.S. cities.
             Every rating is independently scored using the AirIndex seven-factor methodology,
             built on primary data from the FAA, SEC EDGAR, Federal Register, and state
@@ -138,7 +138,7 @@ export default function ApiLandingPage() {
           >
             Institutional &amp; Enterprise
           </span>
-          <span style={{ color: "#888", fontSize: 13 }}>
+          <span style={{ color: "#697386", fontSize: 13 }}>
             API access is available to authorized organizations.
           </span>
           <Link
@@ -162,10 +162,10 @@ export default function ApiLandingPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: 20,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 20,
               paddingBottom: 12,
-              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              borderBottom: "1px solid #e3e8ee",
             }}
           >
             Endpoints
@@ -175,8 +175,8 @@ export default function ApiLandingPage() {
               <div
                 key={ep.path}
                 style={{
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "#f9fbfd",
+                  border: "1px solid #e3e8ee",
                   borderRadius: 8,
                   padding: "16px 20px",
                 }}
@@ -199,13 +199,13 @@ export default function ApiLandingPage() {
                     style={{
                       fontFamily: "'Inter', sans-serif",
                       fontSize: 13,
-                      color: "#fff",
+                      color: "#0a2540",
                     }}
                   >
                     {ep.path}
                   </code>
                 </div>
-                <p style={{ color: "#888", fontSize: 13, margin: 0 }}>{ep.description}</p>
+                <p style={{ color: "#697386", fontSize: 13, margin: 0 }}>{ep.description}</p>
               </div>
             ))}
           </div>
@@ -218,10 +218,10 @@ export default function ApiLandingPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: 20,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 20,
               paddingBottom: 12,
-              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              borderBottom: "1px solid #e3e8ee",
             }}
           >
             What You Get
@@ -231,8 +231,8 @@ export default function ApiLandingPage() {
               <div
                 key={f.label}
                 style={{
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "#f9fbfd",
+                  border: "1px solid #e3e8ee",
                   borderRadius: 8,
                   padding: "16px 20px",
                 }}
@@ -242,13 +242,13 @@ export default function ApiLandingPage() {
                     fontFamily: "'Space Grotesk', sans-serif",
                     fontWeight: 600,
                     fontSize: 14,
-                    color: "#fff",
+                    color: "#0a2540",
                     marginBottom: 6,
                   }}
                 >
                   {f.label}
                 </div>
-                <p style={{ color: "#888", fontSize: 13, margin: 0, lineHeight: 1.6 }}>{f.detail}</p>
+                <p style={{ color: "#697386", fontSize: 13, margin: 0, lineHeight: 1.6 }}>{f.detail}</p>
               </div>
             ))}
           </div>
@@ -261,10 +261,10 @@ export default function ApiLandingPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: 20,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 20,
               paddingBottom: 12,
-              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              borderBottom: "1px solid #e3e8ee",
             }}
           >
             Example Request
@@ -278,11 +278,11 @@ export default function ApiLandingPage() {
               fontFamily: "'Inter', sans-serif",
               fontSize: 12,
               lineHeight: 1.8,
-              color: "#ccc",
+              color: "#0a2540",
               overflowX: "auto",
             }}
           >
-            <div style={{ color: "#555" }}>
+            <div style={{ color: "#8792a2" }}>
               # Get all ADVANCED-tier markets
             </div>
             <div>
@@ -310,13 +310,13 @@ export default function ApiLandingPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: 18,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 8,
             }}
           >
             Ready to integrate?
           </h3>
-          <p style={{ color: "#888", fontSize: 13, marginBottom: 20, maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
+          <p style={{ color: "#697386", fontSize: 13, marginBottom: 20, maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
             API access is available through Institutional and Enterprise agreements.
             Full reference documentation is available after onboarding.
           </p>
@@ -325,7 +325,7 @@ export default function ApiLandingPage() {
             style={{
               display: "inline-block",
               background: "#7c3aed",
-              color: "#fff",
+              color: "#0a2540",
               padding: "10px 28px",
               borderRadius: 6,
               fontFamily: "'Space Grotesk', sans-serif",
@@ -342,7 +342,7 @@ export default function ApiLandingPage() {
         <div
           style={{
             paddingTop: 32,
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderTop: "1px solid #e3e8ee",
             display: "flex",
             gap: 24,
             fontSize: 12,
@@ -351,19 +351,19 @@ export default function ApiLandingPage() {
           <Link href="/dashboard" style={{ color: "#5B8DB8", textDecoration: "none" }}>
             Dashboard
           </Link>
-          <Link href="/methodology" style={{ color: "#555", textDecoration: "none" }}>
+          <Link href="/methodology" style={{ color: "#8792a2", textDecoration: "none" }}>
             Methodology
           </Link>
-          <Link href="/pricing" style={{ color: "#555", textDecoration: "none" }}>
+          <Link href="/pricing" style={{ color: "#8792a2", textDecoration: "none" }}>
             Pricing
           </Link>
-          <Link href="/" style={{ color: "#555", textDecoration: "none" }}>
+          <Link href="/" style={{ color: "#8792a2", textDecoration: "none" }}>
             Home
           </Link>
-          <Link href="/terms" style={{ color: "#555", textDecoration: "none" }}>
+          <Link href="/terms" style={{ color: "#8792a2", textDecoration: "none" }}>
             Terms
           </Link>
-          <Link href="/privacy" style={{ color: "#555", textDecoration: "none" }}>
+          <Link href="/privacy" style={{ color: "#8792a2", textDecoration: "none" }}>
             Privacy
           </Link>
         </div>

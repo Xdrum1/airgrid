@@ -70,14 +70,14 @@ export default function HeliportAuditPage() {
   return (
     <div
       style={{
-        background: "#050508",
-        color: "#e0e0e0",
+        background: "#ffffff",
+        color: "#0a2540",
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
       }}
     >
       <TrackPageView page="heliport-audit" />
-      <SiteNav />
+      <SiteNav theme="light" />
 
       <main style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px 80px" }}>
 
@@ -96,13 +96,13 @@ export default function HeliportAuditPage() {
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: "clamp(28px, 4vw, 38px)",
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             margin: "0 0 16px",
             letterSpacing: "-0.02em",
           }}>
             The FAA doesn&apos;t know what&apos;s on its own heliport registry.
           </h1>
-          <p style={{ color: "#888", fontSize: 14, lineHeight: 1.8, maxWidth: 640 }}>
+          <p style={{ color: "#697386", fontSize: 14, lineHeight: 1.8, maxWidth: 640 }}>
             Of the 5,647 FAA-registered heliports in the US, hundreds no longer exist, thousands have
             inaccurate data, and none have been verified against current standards. AirIndex screens
             every facility against five compliance questions — then tells you exactly which sites
@@ -117,8 +117,8 @@ export default function HeliportAuditPage() {
           gap: 16,
           marginBottom: 48,
           padding: "28px 24px",
-          background: "rgba(255,255,255,0.02)",
-          border: "1px solid rgba(255,255,255,0.06)",
+          background: "#f9fbfd",
+          border: "1px solid #e3e8ee",
           borderRadius: 10,
         }}>
           {[
@@ -136,7 +136,7 @@ export default function HeliportAuditPage() {
               }}>
                 {s.value}
               </div>
-              <div style={{ fontSize: 9, letterSpacing: 1.5, color: "#666", marginTop: 4 }}>
+              <div style={{ fontSize: 9, letterSpacing: 1.5, color: "#8792a2", marginTop: 4 }}>
                 {s.label.toUpperCase()}
               </div>
             </div>
@@ -154,7 +154,7 @@ export default function HeliportAuditPage() {
           <div style={{ fontSize: 9, letterSpacing: 2, color: "#5B8DB8", fontFamily: "'Space Mono', monospace", marginBottom: 12 }}>
             WHY THIS MATTERS
           </div>
-          <p style={{ color: "#ccc", fontSize: 13, lineHeight: 1.8, margin: 0 }}>
+          <p style={{ color: "#0a2540", fontSize: 13, lineHeight: 1.8, margin: 0 }}>
             FAA Advisory Circulars are used as the &ldquo;standard of care&rdquo; in civil aviation lawsuits.
             Deviation from the standard equals negligence exposure. Insurance carriers are covering heliport
             assets they have never verified. State DOTs are planning AAM corridors anchored to heliports
@@ -170,12 +170,12 @@ export default function HeliportAuditPage() {
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 22,
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 8,
           }}>
             Five-Question Compliance Checklist
           </h2>
-          <p style={{ color: "#666", fontSize: 12, lineHeight: 1.6, marginBottom: 24 }}>
+          <p style={{ color: "#8792a2", fontSize: 12, lineHeight: 1.6, marginBottom: 24 }}>
             Every heliport is assessed against five questions. The output is a three-tier classification:
             COMPLIANT, CONDITIONAL, or OBJECTIONABLE.
           </p>
@@ -183,12 +183,12 @@ export default function HeliportAuditPage() {
             {CHECKLIST.map((q) => (
               <div key={q.q} style={{
                 padding: "16px 20px",
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
                 borderRadius: 8,
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                  <span style={{ color: "#ccc", fontSize: 13, fontWeight: 600 }}>{q.q}</span>
+                  <span style={{ color: "#0a2540", fontSize: 13, fontWeight: 600 }}>{q.q}</span>
                   <span style={{
                     fontSize: 9,
                     fontFamily: "'Space Mono', monospace",
@@ -199,10 +199,10 @@ export default function HeliportAuditPage() {
                     {q.status.toUpperCase()}
                   </span>
                 </div>
-                <p style={{ color: "#888", fontSize: 12, lineHeight: 1.6, margin: "0 0 4px" }}>
+                <p style={{ color: "#697386", fontSize: 12, lineHeight: 1.6, margin: "0 0 4px" }}>
                   {q.desc}
                 </p>
-                <div style={{ color: "#555", fontSize: 10 }}>
+                <div style={{ color: "#8792a2", fontSize: 10 }}>
                   Source: {q.source}
                 </div>
               </div>
@@ -216,7 +216,7 @@ export default function HeliportAuditPage() {
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 22,
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 20,
           }}>
             Compliance Tiers
@@ -252,8 +252,8 @@ export default function HeliportAuditPage() {
                 display: "flex",
                 gap: 16,
                 padding: "16px 20px",
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
                 borderLeft: `3px solid ${t.color}`,
                 borderRadius: 8,
               }}>
@@ -269,8 +269,8 @@ export default function HeliportAuditPage() {
                   {t.tier}
                 </div>
                 <div>
-                  <div style={{ color: "#ccc", fontSize: 12, lineHeight: 1.6, marginBottom: 4 }}>{t.def}</div>
-                  <div style={{ color: "#666", fontSize: 11, lineHeight: 1.5, fontStyle: "italic" }}>{t.implication}</div>
+                  <div style={{ color: "#0a2540", fontSize: 12, lineHeight: 1.6, marginBottom: 4 }}>{t.def}</div>
+                  <div style={{ color: "#8792a2", fontSize: 11, lineHeight: 1.5, fontStyle: "italic" }}>{t.implication}</div>
                 </div>
               </div>
             ))}
@@ -283,7 +283,7 @@ export default function HeliportAuditPage() {
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 22,
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 20,
           }}>
             Who This Is For
@@ -292,12 +292,12 @@ export default function HeliportAuditPage() {
             {BUYERS.map((b) => (
               <div key={b.title} style={{
                 padding: "20px",
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
                 borderRadius: 8,
               }}>
-                <div style={{ color: "#ccc", fontSize: 13, fontWeight: 600, marginBottom: 6 }}>{b.title}</div>
-                <div style={{ color: "#888", fontSize: 11, lineHeight: 1.6, marginBottom: 10 }}>{b.desc}</div>
+                <div style={{ color: "#0a2540", fontSize: 13, fontWeight: 600, marginBottom: 6 }}>{b.title}</div>
+                <div style={{ color: "#697386", fontSize: 11, lineHeight: 1.6, marginBottom: 10 }}>{b.desc}</div>
                 <div style={{
                   fontFamily: "'Space Mono', monospace",
                   fontSize: 10,
@@ -320,14 +320,14 @@ export default function HeliportAuditPage() {
         }}>
           <div style={{
             padding: "24px",
-            background: "rgba(255,255,255,0.02)",
-            border: "1px solid rgba(255,255,255,0.06)",
+            background: "#f9fbfd",
+            border: "1px solid #e3e8ee",
             borderRadius: 10,
           }}>
             <div style={{ fontSize: 9, letterSpacing: 2, color: "#5B8DB8", fontFamily: "'Space Mono', monospace", marginBottom: 12 }}>
               SAMPLE REPORT
             </div>
-            <p style={{ color: "#888", fontSize: 12, lineHeight: 1.6, marginBottom: 16 }}>
+            <p style={{ color: "#697386", fontSize: 12, lineHeight: 1.6, marginBottom: 16 }}>
               View live audit reports — South Carolina (49 heliports) or Florida (381 heliports,
               including the Miami metro with 315 facilities). Both scored against all five
               compliance questions with statewide pass rates and flagged facilities.
@@ -355,10 +355,10 @@ export default function HeliportAuditPage() {
                 style={{
                   display: "inline-block",
                   padding: "10px 20px",
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "#f6f9fc",
+                  border: "1px solid #e3e8ee",
                   borderRadius: 6,
-                  color: "#888",
+                  color: "#697386",
                   fontSize: 11,
                   fontWeight: 700,
                   letterSpacing: "0.06em",
@@ -371,20 +371,20 @@ export default function HeliportAuditPage() {
           </div>
           <div style={{
             padding: "24px",
-            background: "rgba(255,255,255,0.02)",
-            border: "1px solid rgba(255,255,255,0.06)",
+            background: "#f9fbfd",
+            border: "1px solid #e3e8ee",
             borderRadius: 10,
           }}>
             <div style={{ fontSize: 9, letterSpacing: 2, color: "#ff6b35", fontFamily: "'Space Mono', monospace", marginBottom: 12 }}>
               PHYSICAL VERIFICATION
             </div>
-            <p style={{ color: "#888", fontSize: 12, lineHeight: 1.6, marginBottom: 16 }}>
+            <p style={{ color: "#697386", fontSize: 12, lineHeight: 1.6, marginBottom: 16 }}>
               For sites flagged in pre-screening, physical verification is recommended by a qualified
               heliport inspector. AirIndex provides the automated screening layer &mdash; on-site SMS
               risk analysis, obstruction surveys, and TLOF/FATO measurement are performed by
               credentialed infrastructure consultants.
             </p>
-            <div style={{ color: "#666", fontSize: 10, lineHeight: 1.6 }}>
+            <div style={{ color: "#8792a2", fontSize: 10, lineHeight: 1.6 }}>
               Standards applied: Title 14 CFR Part 5, ICAO Annex 14, ISO 31000, AC 150/5390-2D
             </div>
           </div>
@@ -394,18 +394,18 @@ export default function HeliportAuditPage() {
         <div style={{
           textAlign: "center",
           padding: "32px 0",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
+          borderTop: "1px solid #e3e8ee",
         }}>
           <h2 style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: 22,
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 12,
           }}>
             Request an audit for your state or portfolio
           </h2>
-          <p style={{ color: "#666", fontSize: 13, marginBottom: 20 }}>
+          <p style={{ color: "#8792a2", fontSize: 13, marginBottom: 20 }}>
             All engagements begin with a discovery call. Pricing confirmed after scope validation.
           </p>
           <Link
@@ -414,7 +414,7 @@ export default function HeliportAuditPage() {
               display: "inline-block",
               padding: "14px 32px",
               background: "#5B8DB8",
-              color: "#050508",
+              color: "#ffffff",
               fontSize: 12,
               fontWeight: 700,
               letterSpacing: "0.06em",
@@ -427,7 +427,7 @@ export default function HeliportAuditPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

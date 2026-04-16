@@ -98,13 +98,13 @@ export default function BriefingsPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#050508",
-        color: "#e0e0e0",
+        background: "#ffffff",
+        color: "#0a2540",
         fontFamily: "'Inter', sans-serif",
       }}
     >
       <TrackPageView page="briefings" />
-      <SiteNav />
+      <SiteNav theme="light" />
 
       <main
         style={{
@@ -132,7 +132,7 @@ export default function BriefingsPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: "clamp(28px, 4vw, 36px)",
-              color: "#fff",
+              color: "#0a2540",
               margin: "0 0 14px",
               lineHeight: 1.2,
             }}
@@ -141,7 +141,7 @@ export default function BriefingsPage() {
           </h1>
           <p
             style={{
-              color: "#777",
+              color: "#697386",
               fontSize: 15,
               margin: "0 0 16px",
               lineHeight: 1.6,
@@ -151,7 +151,7 @@ export default function BriefingsPage() {
           </p>
           <p
             style={{
-              color: "#999",
+              color: "#425466",
               fontSize: 14,
               margin: 0,
               lineHeight: 1.7,
@@ -169,7 +169,7 @@ export default function BriefingsPage() {
           marginBottom: 56,
           borderRadius: 10,
           overflow: "hidden",
-          border: "1px solid rgba(255,255,255,0.08)",
+          border: "1px solid #e3e8ee",
           boxShadow: "0 0 60px rgba(91,141,184,0.04)",
           maxWidth: 400,
           margin: "0 auto 56px",
@@ -183,11 +183,11 @@ export default function BriefingsPage() {
           />
           <div style={{
             padding: "10px 16px",
-            background: "rgba(255,255,255,0.02)",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            background: "#f9fbfd",
+            borderTop: "1px solid #e3e8ee",
             textAlign: "center",
           }}>
-            <span style={{ color: "#666", fontSize: 10 }}>
+            <span style={{ color: "#8792a2", fontSize: 10 }}>
               Factor breakdown, source citations, score timeline, and gap analysis — Phoenix, AZ
             </span>
           </div>
@@ -209,8 +209,8 @@ export default function BriefingsPage() {
             <div
               key={tier.name}
               style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
                 borderTop: `3px solid ${tier.accent}`,
                 borderRadius: 8,
                 padding: "28px 24px 24px",
@@ -245,7 +245,7 @@ export default function BriefingsPage() {
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 700,
                   fontSize: 18,
-                  color: "#fff",
+                  color: "#0a2540",
                   margin: "0 0 6px",
                 }}
               >
@@ -257,23 +257,23 @@ export default function BriefingsPage() {
                   fontFamily: "'Space Mono', monospace",
                   fontSize: 11,
                   letterSpacing: 0.5,
-                  color: "#888",
+                  color: "#697386",
                   marginBottom: 16,
                 }}
               >
                 Contact for pricing
               </div>
 
-              <div style={{ fontSize: 13, color: "#aaa", marginBottom: 4 }}>
+              <div style={{ fontSize: 13, color: "#425466", marginBottom: 4 }}>
                 {tier.scope}
               </div>
-              <div style={{ fontSize: 13, color: "#aaa", marginBottom: 4 }}>
+              <div style={{ fontSize: 13, color: "#425466", marginBottom: 4 }}>
                 {tier.turnaround} turnaround
               </div>
               <div
                 style={{
                   fontSize: 13,
-                  color: "#aaa",
+                  color: "#425466",
                   marginBottom: 18,
                 }}
               >
@@ -285,7 +285,7 @@ export default function BriefingsPage() {
                   fontFamily: "'Space Mono', monospace",
                   fontSize: 9,
                   letterSpacing: 1.5,
-                  color: "#555",
+                  color: "#8792a2",
                   textTransform: "uppercase",
                   marginBottom: 8,
                 }}
@@ -304,7 +304,7 @@ export default function BriefingsPage() {
                     key={item}
                     style={{
                       fontSize: 13,
-                      color: "#ccc",
+                      color: "#0a2540",
                       marginBottom: 6,
                       lineHeight: 1.5,
                     }}
@@ -343,17 +343,17 @@ export default function BriefingsPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: 20,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 8,
               paddingBottom: 12,
-              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              borderBottom: "1px solid #e3e8ee",
             }}
           >
             Persona Briefings
           </h2>
           <p
             style={{
-              color: "#888",
+              color: "#697386",
               fontSize: 13,
               lineHeight: 1.7,
               margin: "0 0 24px",
@@ -423,8 +423,8 @@ export default function BriefingsPage() {
               <div
                 key={p.name}
                 style={{
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "#f9fbfd",
+                  border: "1px solid #e3e8ee",
                   borderLeft: `3px solid ${p.accent}`,
                   borderRadius: 8,
                   padding: "20px 22px 18px",
@@ -449,17 +449,17 @@ export default function BriefingsPage() {
                     fontFamily: "'Space Grotesk', sans-serif",
                     fontSize: 15,
                     fontWeight: 600,
-                    color: "#fff",
+                    color: "#0a2540",
                     lineHeight: 1.4,
                     margin: "0 0 10px",
                   }}
                 >
                   &ldquo;{p.question}&rdquo;
                 </div>
-                <div style={{ fontSize: 11, color: "#888", marginBottom: 8 }}>
-                  <strong style={{ color: "#aaa" }}>For:</strong> {p.audience}
+                <div style={{ fontSize: 11, color: "#697386", marginBottom: 8 }}>
+                  <strong style={{ color: "#425466" }}>For:</strong> {p.audience}
                 </div>
-                <div style={{ fontSize: 11, color: "#888", lineHeight: 1.6, marginBottom: 16 }}>
+                <div style={{ fontSize: 11, color: "#697386", lineHeight: 1.6, marginBottom: 16 }}>
                   {p.sections}
                 </div>
                 <div style={{ marginTop: "auto" }}>
@@ -493,10 +493,10 @@ export default function BriefingsPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: 20,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 20,
               paddingBottom: 12,
-              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              borderBottom: "1px solid #e3e8ee",
             }}
           >
             What&rsquo;s Inside
@@ -513,8 +513,8 @@ export default function BriefingsPage() {
               <div
                 key={section.title}
                 style={{
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "#f9fbfd",
+                  border: "1px solid #e3e8ee",
                   borderRadius: 8,
                   padding: "20px 20px 18px",
                 }}
@@ -524,7 +524,7 @@ export default function BriefingsPage() {
                     fontFamily: "'Space Grotesk', sans-serif",
                     fontWeight: 700,
                     fontSize: 14,
-                    color: "#fff",
+                    color: "#0a2540",
                     margin: "0 0 8px",
                   }}
                 >
@@ -533,7 +533,7 @@ export default function BriefingsPage() {
                 <p
                   style={{
                     fontSize: 13,
-                    color: "#999",
+                    color: "#425466",
                     margin: 0,
                     lineHeight: 1.6,
                   }}
@@ -550,7 +550,7 @@ export default function BriefingsPage() {
           style={{
             textAlign: "center",
             padding: "40px 0 0",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderTop: "1px solid #e3e8ee",
           }}
         >
           <p
@@ -558,7 +558,7 @@ export default function BriefingsPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: 18,
-              color: "#fff",
+              color: "#0a2540",
               marginBottom: 16,
             }}
           >
@@ -570,7 +570,7 @@ export default function BriefingsPage() {
               display: "inline-block",
               padding: "12px 32px",
               background: "#5B8DB8",
-              color: "#050508",
+              color: "#ffffff",
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: 14,
@@ -584,7 +584,7 @@ export default function BriefingsPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 // Card style helpers
 // -------------------------------------------------------
 const cardStyle: React.CSSProperties = {
-  background: "rgba(255,255,255,0.02)",
-  border: "1px solid rgba(255,255,255,0.06)",
+  background: "#f9fbfd",
+  border: "1px solid #e3e8ee",
   borderRadius: 12,
   padding: "28px 28px 32px",
 };
@@ -23,12 +23,12 @@ const cardTitleStyle: React.CSSProperties = {
   fontFamily: "'Space Grotesk', sans-serif",
   fontWeight: 700,
   fontSize: 15,
-  color: "#e0e0e0",
+  color: "#0a2540",
   margin: "0 0 12px",
 };
 
 const cardBodyStyle: React.CSSProperties = {
-  color: "#888",
+  color: "#697386",
   fontSize: 13,
   lineHeight: 1.7,
   margin: 0,
@@ -97,12 +97,12 @@ export default async function InstitutionalPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#050508",
+        background: "#ffffff",
         fontFamily: "'Inter', sans-serif",
-        color: "#e0e0e0",
+        color: "#0a2540",
       }}
     >
-      <SiteNav />
+      <SiteNav theme="light" />
 
       {/* ---- Hero ---- */}
       <section
@@ -132,14 +132,14 @@ export default async function InstitutionalPage() {
             fontSize: "clamp(28px, 4vw, 40px)",
             margin: "0 0 20px",
             lineHeight: 1.3,
-            color: "#e0e0e0",
+            color: "#0a2540",
           }}
         >
           UAM intelligence infrastructure for teams and organizations
         </h1>
         <p
           style={{
-            color: "#888",
+            color: "#697386",
             fontSize: 15,
             margin: "0 auto",
             lineHeight: 1.7,
@@ -167,7 +167,7 @@ export default async function InstitutionalPage() {
             fontSize: "clamp(20px, 3vw, 26px)",
             textAlign: "center",
             marginBottom: 40,
-            color: "#e0e0e0",
+            color: "#0a2540",
           }}
         >
           What&apos;s included
@@ -203,7 +203,7 @@ export default async function InstitutionalPage() {
             fontSize: "clamp(20px, 3vw, 26px)",
             textAlign: "center",
             marginBottom: 40,
-            color: "#e0e0e0",
+            color: "#0a2540",
           }}
         >
           Built for
@@ -239,7 +239,7 @@ export default async function InstitutionalPage() {
             fontSize: "clamp(20px, 3vw, 26px)",
             textAlign: "center",
             marginBottom: 40,
-            color: "#e0e0e0",
+            color: "#0a2540",
           }}
         >
           How it works
@@ -291,7 +291,7 @@ export default async function InstitutionalPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: "clamp(24px, 3.5vw, 32px)",
-              color: "#e0e0e0",
+              color: "#0a2540",
               marginBottom: 8,
             }}
           >
@@ -299,7 +299,7 @@ export default async function InstitutionalPage() {
           </div>
           <div
             style={{
-              color: "#888",
+              color: "#697386",
               fontSize: 13,
               marginBottom: 24,
             }}
@@ -327,7 +327,7 @@ export default async function InstitutionalPage() {
                   display: "flex",
                   gap: 10,
                   alignItems: "center",
-                  color: "#888",
+                  color: "#697386",
                   fontSize: 13,
                   lineHeight: 1.6,
                 }}
@@ -363,7 +363,7 @@ export default async function InstitutionalPage() {
             fontWeight: 700,
             fontSize: "clamp(22px, 3vw, 30px)",
             marginBottom: 28,
-            color: "#e0e0e0",
+            color: "#0a2540",
           }}
         >
           Ready to integrate UAM readiness data?
@@ -373,7 +373,7 @@ export default async function InstitutionalPage() {
           style={{
             display: "inline-block",
             background: "#5B8DB8",
-            color: "#050508",
+            color: "#ffffff",
             fontWeight: 700,
             fontSize: 14,
             padding: "14px 36px",
@@ -384,7 +384,7 @@ export default async function InstitutionalPage() {
         >
           Schedule a Walkthrough
         </Link>
-        <div style={{ marginTop: 16, color: "#888", fontSize: 13 }}>
+        <div style={{ marginTop: 16, color: "#697386", fontSize: 13 }}>
           or email{" "}
           <a
             href="mailto:sales@airindex.io"
@@ -410,7 +410,7 @@ export default async function InstitutionalPage() {
       >
         <p
           style={{
-            color: "#555",
+            color: "#8792a2",
             fontSize: 12,
             letterSpacing: 0.3,
             margin: 0,
@@ -421,7 +421,7 @@ export default async function InstitutionalPage() {
         </p>
       </section>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

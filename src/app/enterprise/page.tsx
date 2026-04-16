@@ -65,12 +65,12 @@ export default async function EnterprisePage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#050508",
+        background: "#ffffff",
         fontFamily: "'Inter', sans-serif",
-        color: "#e0e0e0",
+        color: "#0a2540",
       }}
     >
-      <SiteNav />
+      <SiteNav theme="light" />
 
       {/* Hero */}
       <section
@@ -100,14 +100,14 @@ export default async function EnterprisePage() {
             fontSize: "clamp(28px, 4vw, 40px)",
             margin: "0 0 16px",
             lineHeight: 1.3,
-            color: "#fff",
+            color: "#0a2540",
           }}
         >
           Custom data infrastructure for advanced air mobility
         </h1>
         <p
           style={{
-            color: "#888",
+            color: "#697386",
             fontSize: 15,
             margin: "0 auto",
             lineHeight: 1.7,
@@ -138,8 +138,8 @@ export default async function EnterprisePage() {
             <div
               key={cap.title}
               style={{
-                background: "#0a0a12",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
                 borderRadius: 12,
                 padding: "28px 24px",
               }}
@@ -149,7 +149,7 @@ export default async function EnterprisePage() {
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 700,
                   fontSize: 15,
-                  color: "#fff",
+                  color: "#0a2540",
                   margin: "0 0 10px",
                 }}
               >
@@ -157,7 +157,7 @@ export default async function EnterprisePage() {
               </h3>
               <p
                 style={{
-                  color: "#888",
+                  color: "#697386",
                   fontSize: 13,
                   lineHeight: 1.7,
                   margin: 0,
@@ -184,7 +184,7 @@ export default async function EnterprisePage() {
             fontWeight: 700,
             fontSize: "clamp(20px, 3vw, 28px)",
             textAlign: "center",
-            color: "#fff",
+            color: "#0a2540",
             margin: "0 0 32px",
           }}
         >
@@ -201,8 +201,8 @@ export default async function EnterprisePage() {
             <div
               key={uc.title}
               style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
                 borderRadius: 12,
                 padding: "28px 24px",
               }}
@@ -212,7 +212,7 @@ export default async function EnterprisePage() {
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 700,
                   fontSize: 15,
-                  color: "#fff",
+                  color: "#0a2540",
                   margin: "0 0 10px",
                 }}
               >
@@ -220,7 +220,7 @@ export default async function EnterprisePage() {
               </h3>
               <p
                 style={{
-                  color: "#888",
+                  color: "#697386",
                   fontSize: 13,
                   lineHeight: 1.7,
                   margin: 0,
@@ -247,7 +247,7 @@ export default async function EnterprisePage() {
             fontWeight: 700,
             fontSize: "clamp(20px, 3vw, 28px)",
             textAlign: "center",
-            color: "#fff",
+            color: "#0a2540",
             margin: "0 0 24px",
           }}
         >
@@ -255,7 +255,7 @@ export default async function EnterprisePage() {
         </h2>
         <p
           style={{
-            color: "#888",
+            color: "#697386",
             fontSize: 14,
             lineHeight: 1.8,
             margin: "0 0 16px",
@@ -269,7 +269,7 @@ export default async function EnterprisePage() {
         </p>
         <p
           style={{
-            color: "#888",
+            color: "#697386",
             fontSize: 14,
             lineHeight: 1.8,
             margin: 0,
@@ -295,7 +295,7 @@ export default async function EnterprisePage() {
             fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 700,
             fontSize: "clamp(22px, 3vw, 32px)",
-            color: "#fff",
+            color: "#0a2540",
             margin: "0 0 24px",
             lineHeight: 1.3,
           }}
@@ -307,7 +307,7 @@ export default async function EnterprisePage() {
           style={{
             display: "inline-block",
             background: "#7c3aed",
-            color: "#fff",
+            color: "#ffffff",
             fontSize: 14,
             fontWeight: 600,
             padding: "14px 32px",
@@ -318,7 +318,7 @@ export default async function EnterprisePage() {
         >
           Schedule a Discovery Call
         </Link>
-        <p style={{ color: "#666", fontSize: 13, marginTop: 16 }}>
+        <p style={{ color: "#8792a2", fontSize: 13, marginTop: 16 }}>
           or email{" "}
           <a
             href="mailto:sales@airindex.io"
@@ -344,7 +344,7 @@ export default async function EnterprisePage() {
       >
         <p
           style={{
-            color: "#555",
+            color: "#8792a2",
             fontSize: 12,
             letterSpacing: 0.3,
             margin: 0,
@@ -355,7 +355,7 @@ export default async function EnterprisePage() {
         </p>
       </section>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

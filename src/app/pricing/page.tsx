@@ -64,12 +64,12 @@ export default function PricingPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#050508",
+        background: "#ffffff",
         fontFamily: "'Inter', sans-serif",
-        color: "#fff",
+        color: "#0a2540",
       }}
     >
-      <SiteNav />
+      <SiteNav theme="light" />
 
       {/* Header */}
       <section style={{ maxWidth: 800, margin: "0 auto", padding: "clamp(48px, 6vw, 80px) 20px 0", textAlign: "center" }}>
@@ -84,7 +84,7 @@ export default function PricingPage() {
         >
           Intelligence access for your organization
         </h1>
-        <p style={{ color: "#888", fontSize: 15, margin: "0 auto 40px", lineHeight: 1.7, maxWidth: 580 }}>
+        <p style={{ color: "#697386", fontSize: 15, margin: "0 auto 40px", lineHeight: 1.7, maxWidth: 580 }}>
           Market readiness data, gap analysis, regulatory monitoring, and infrastructure intelligence — scoped to what your organization needs.
         </p>
         <Link
@@ -93,7 +93,7 @@ export default function PricingPage() {
             display: "inline-block",
             padding: "14px 36px",
             background: "#5B8DB8",
-            color: "#050508",
+            color: "#ffffff",
             fontSize: 12,
             fontWeight: 700,
             fontFamily: "'Inter', sans-serif",
@@ -113,8 +113,8 @@ export default function PricingPage() {
             <div
               key={cap.title}
               style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
                 borderRadius: 12,
                 padding: "28px 32px",
               }}
@@ -124,13 +124,13 @@ export default function PricingPage() {
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 700,
                   fontSize: 16,
-                  color: "#eee",
+                  color: "#0a2540",
                   margin: "0 0 8px",
                 }}
               >
                 {cap.title}
               </h3>
-              <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 600 }}>
+              <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 600 }}>
                 {cap.description}
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px" }}>
@@ -139,7 +139,7 @@ export default function PricingPage() {
                     key={item}
                     style={{
                       fontSize: 11,
-                      color: "#666",
+                      color: "#8792a2",
                       display: "flex",
                       alignItems: "center",
                       gap: 6,
@@ -157,7 +157,7 @@ export default function PricingPage() {
 
       {/* Who uses */}
       <section style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 64px" }}>
-        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)", marginBottom: 64 }} />
+        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, #e3e8ee 20%, #e3e8ee 80%, transparent)", marginBottom: 64 }} />
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 12px" }}>
             Who uses AirIndex
@@ -176,7 +176,7 @@ export default function PricingPage() {
           ].map((role) => (
             <div key={role} style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ color: "#5B8DB8", fontSize: 8, flexShrink: 0 }}>&#9646;</span>
-              <span style={{ color: "#999", fontSize: 12 }}>{role}</span>
+              <span style={{ color: "#425466", fontSize: 12 }}>{role}</span>
             </div>
           ))}
         </div>
@@ -202,7 +202,7 @@ export default function PricingPage() {
 
       {/* FAQ */}
       <section style={{ maxWidth: 640, margin: "0 auto", padding: "0 20px 80px" }}>
-        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent)", marginBottom: 48 }} />
+        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, #e3e8ee 20%, #e3e8ee 80%, transparent)", marginBottom: 48 }} />
         <h3
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
@@ -218,21 +218,21 @@ export default function PricingPage() {
           <div
             key={faq.q}
             style={{
-              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              borderBottom: "1px solid #e3e8ee",
               padding: "20px 0",
             }}
           >
-            <div style={{ color: "#ccc", fontSize: 13, fontWeight: 700, marginBottom: 8 }}>
+            <div style={{ color: "#0a2540", fontSize: 13, fontWeight: 700, marginBottom: 8 }}>
               {faq.q}
             </div>
-            <div style={{ color: "#888", fontSize: 12, lineHeight: 1.7 }}>
+            <div style={{ color: "#697386", fontSize: 12, lineHeight: 1.7 }}>
               {faq.a}
             </div>
           </div>
         ))}
       </section>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

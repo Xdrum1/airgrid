@@ -57,14 +57,14 @@ export default function UseCasesPage() {
   return (
     <div
       style={{
-        background: "#050508",
-        color: "#e0e0e0",
+        background: "#ffffff",
+        color: "#0a2540",
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
       }}
     >
       <TrackPageView page="use-cases" />
-      <SiteNav />
+      <SiteNav theme="light" />
 
       <main style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px 80px" }}>
 
@@ -83,13 +83,13 @@ export default function UseCasesPage() {
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: "clamp(28px, 4vw, 38px)",
             fontWeight: 700,
-            color: "#fff",
+            color: "#0a2540",
             margin: "0 0 16px",
             letterSpacing: "-0.02em",
           }}>
             You are here. Here&apos;s how you get there.
           </h1>
-          <p style={{ color: "#888", fontSize: 14, lineHeight: 1.7, maxWidth: 600, margin: "0 auto" }}>
+          <p style={{ color: "#697386", fontSize: 14, lineHeight: 1.7, maxWidth: 600, margin: "0 auto" }}>
             AirIndex doesn&apos;t just tell you where a market stands &mdash; it tells you what
             moves it, what funds those moves, and where capital is concentrating next.
           </p>
@@ -118,17 +118,17 @@ export default function UseCasesPage() {
               { label: "PROJECTED OUTCOME", value: "55 / MODERATE", color: "#00ff88", desc: "Operator-visible, federal program eligible, capital-ready" },
             ].map((item, i) =>
               item === null ? (
-                <div key={i} style={{ textAlign: "center", color: "#333", fontSize: 18 }}>&rarr;</div>
+                <div key={i} style={{ textAlign: "center", color: "#cbd5e1", fontSize: 18 }}>&rarr;</div>
               ) : (
                 <div key={i} style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 8, letterSpacing: 2, color: "#555", marginBottom: 6 }}>{item.label}</div>
+                  <div style={{ fontSize: 8, letterSpacing: 2, color: "#8792a2", marginBottom: 6 }}>{item.label}</div>
                   <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 18, fontWeight: 700, color: item.color, marginBottom: 4 }}>{item.value}</div>
-                  <div style={{ fontSize: 10, color: "#666", lineHeight: 1.5 }}>{item.desc}</div>
+                  <div style={{ fontSize: 10, color: "#8792a2", lineHeight: 1.5 }}>{item.desc}</div>
                 </div>
               )
             )}
           </div>
-          <p style={{ color: "#888", fontSize: 12, lineHeight: 1.7, margin: 0, textAlign: "center" }}>
+          <p style={{ color: "#697386", fontSize: 12, lineHeight: 1.7, margin: 0, textAlign: "center" }}>
             Every AirIndex briefing connects your current score to specific actions, timelines, and
             federal funding pathways. When a city enacts a zoning amendment, the score moves. When a
             federal program selects your market, the score moves. We show you which levers to pull and
@@ -142,8 +142,8 @@ export default function UseCasesPage() {
             <div
               key={uc.number}
               style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
                 borderLeft: `3px solid ${uc.color}`,
                 borderRadius: 10,
                 padding: "28px 28px 24px",
@@ -164,12 +164,12 @@ export default function UseCasesPage() {
                     fontFamily: "'Space Grotesk', sans-serif",
                     fontSize: 22,
                     fontWeight: 700,
-                    color: "#fff",
+                    color: "#0a2540",
                     margin: "0 0 4px",
                   }}>
                     {uc.title}
                   </h2>
-                  <div style={{ color: "#666", fontSize: 12 }}>
+                  <div style={{ color: "#8792a2", fontSize: 12 }}>
                     {uc.subtitle}
                   </div>
                 </div>
@@ -195,7 +195,7 @@ export default function UseCasesPage() {
                   VIEW DETAILS
                 </a>
               </div>
-              <p style={{ color: "#999", fontSize: 13, lineHeight: 1.7, margin: "0 0 16px" }}>
+              <p style={{ color: "#425466", fontSize: 13, lineHeight: 1.7, margin: "0 0 16px" }}>
                 {uc.description}
               </p>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -205,10 +205,10 @@ export default function UseCasesPage() {
                     style={{
                       fontSize: 9,
                       letterSpacing: 1,
-                      color: "#666",
+                      color: "#8792a2",
                       padding: "3px 10px",
-                      background: "rgba(255,255,255,0.03)",
-                      border: "1px solid rgba(255,255,255,0.06)",
+                      background: "#f6f9fc",
+                      border: "1px solid #e3e8ee",
                       borderRadius: 4,
                     }}
                   >
@@ -221,8 +221,8 @@ export default function UseCasesPage() {
         </div>
 
         {/* CTA */}
-        <div style={{ textAlign: "center", marginTop: 48, padding: "32px 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <p style={{ color: "#666", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
+        <div style={{ textAlign: "center", marginTop: 48, padding: "32px 0", borderTop: "1px solid #e3e8ee" }}>
+          <p style={{ color: "#8792a2", fontSize: 13, lineHeight: 1.7, marginBottom: 20 }}>
             Every engagement starts with your decision. Tell us what you&apos;re trying to allocate, approve, or underwrite &mdash; we&apos;ll show you the data that moves it forward.
           </p>
           <Link
@@ -231,7 +231,7 @@ export default function UseCasesPage() {
               display: "inline-block",
               padding: "12px 28px",
               background: "#5B8DB8",
-              color: "#050508",
+              color: "#ffffff",
               fontSize: 12,
               fontWeight: 700,
               letterSpacing: "0.06em",
@@ -244,7 +244,7 @@ export default function UseCasesPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }
