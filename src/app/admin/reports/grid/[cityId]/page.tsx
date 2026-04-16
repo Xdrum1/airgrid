@@ -184,11 +184,19 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
 
   return (
     <div style={{ background: T.bg, color: T.textPrimary, minHeight: "100vh", fontFamily: "'Inter', sans-serif" }}>
-      <style>{`@media print {
-        @page { margin: 0.55in; size: letter; }
-        .screen-only { display: none !important; }
-        body, div { background: #fff !important; }
-      }`}</style>
+      <style>{`
+        @media print {
+          @page { margin: 0.55in; size: letter; }
+          .screen-only { display: none !important; }
+          body, div { background: #fff !important; }
+          .grid-map-wrap { page-break-inside: avoid; }
+          .mapboxgl-ctrl, .mapboxgl-popup { display: none !important; }
+        }
+        @media (max-width: 760px) {
+          .grid-compare { grid-template-columns: 1fr !important; }
+          .grid-tier-row { gap: 10px !important; }
+        }
+      `}</style>
 
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 32px 72px" }}>
         <div className="screen-only" style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
@@ -198,7 +206,7 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", borderBottom: `1px solid ${T.cardBorder}`, paddingBottom: 10, marginBottom: 16, fontSize: 10, color: T.textTertiary, letterSpacing: "0.08em", textTransform: "uppercase" as const }}>
           <span><strong style={{ color: T.accent }}>AIRINDEX</strong> · Grid · Weather Coverage</span>
-          <span>{today}</span>
+          <span>Confidential · {today}</span>
         </div>
 
         <div style={{ marginBottom: 6, fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: "0.12em", color: T.accent, textTransform: "uppercase" as const }}>
@@ -215,7 +223,7 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
         </p>
 
         {/* Tier rollup */}
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 28 }}>
+        <div className="grid-tier-row" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 28 }}>
           <TierPill tier="full" count={fullCount} total={cells.length} />
           <TierPill tier="partial" count={partialCount} total={cells.length} />
           <TierPill tier="none" count={noneCount} total={cells.length} />
@@ -245,6 +253,7 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
 
         {/* v1.3 vs v1.4 score comparison */}
         <div
+          className="grid-compare"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -327,6 +336,7 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
         </div>
 
         {/* Map */}
+        <div className="grid-map-wrap">
         {MAPBOX_TOKEN ? (
           <GridMap
             cells={mapCells}
@@ -340,6 +350,8 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
             Mapbox token missing. Set <code style={{ background: "#eef2f7", padding: "1px 6px", borderRadius: 4 }}>NEXT_PUBLIC_MAPBOX_TOKEN</code> in env to render the grid.
           </div>
         )}
+
+        </div>
 
         {/* Legend */}
         <div
