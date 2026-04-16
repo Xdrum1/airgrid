@@ -278,7 +278,7 @@ export default function NavClient({
                 whiteSpace: "nowrap",
               }}
             >
-              Sign in
+              Client Portal
             </Link>
             <Link
               href="/contact"
@@ -422,7 +422,7 @@ export default function NavClient({
                     textDecoration: "none",
                   }}
                 >
-                  Existing member? Sign in
+                  Client Portal
                 </Link>
                 <Link
                   href="/contact"
