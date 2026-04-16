@@ -13,7 +13,7 @@ const S = {
     fontFamily: "'Inter', sans-serif",
     fontWeight: 700 as const,
     fontSize: 20,
-    color: "#fff",
+    color: "#0a2540",
     marginTop: 48,
     marginBottom: 16,
   },
@@ -26,13 +26,13 @@ const S = {
     marginBottom: 10,
   },
   p: {
-    color: "rgba(255,255,255,0.75)",
+    color: "#0a2540",
     fontSize: 13,
     lineHeight: 1.8,
     marginBottom: 14,
   },
   ul: {
-    color: "rgba(255,255,255,0.7)",
+    color: "#425466",
     fontSize: 13,
     lineHeight: 1.8,
     paddingLeft: 20,
@@ -43,7 +43,7 @@ const S = {
     textDecoration: "none" as const,
   },
   strong: {
-    color: "#ccc",
+    color: "#0a2540",
   },
   code: {
     color: "#5B8DB8",
@@ -55,7 +55,7 @@ const S = {
     borderRadius: 8,
     padding: "16px 20px",
     marginBottom: 24,
-    color: "rgba(255,255,255,0.8)",
+    color: "#0a2540",
     fontSize: 13,
     lineHeight: 1.8,
   },
@@ -72,7 +72,7 @@ const S = {
   th: {
     textAlign: "left" as const,
     padding: "10px 12px",
-    borderBottom: "1px solid rgba(255,255,255,0.12)",
+    borderBottom: "1px solid #e3e8ee",
     color: "#aaa",
     fontWeight: 600 as const,
     fontSize: 11,
@@ -80,8 +80,8 @@ const S = {
   },
   td: {
     padding: "10px 12px",
-    borderBottom: "1px solid rgba(255,255,255,0.06)",
-    color: "rgba(255,255,255,0.7)",
+    borderBottom: "1px solid #e3e8ee",
+    color: "#425466",
     verticalAlign: "top" as const,
   },
 };
@@ -91,8 +91,8 @@ export default function PrivacyPage() {
     <main
       style={{
         minHeight: "100vh",
-        background: "#050508",
-        color: "#fff",
+        background: "#ffffff",
+        color: "#0a2540",
         fontFamily: "'Inter', sans-serif",
       }}
     >
@@ -105,7 +105,7 @@ export default function PrivacyPage() {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "16px 24px",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          borderBottom: "1px solid #e3e8ee",
         }}
       >
         <Link
@@ -114,14 +114,14 @@ export default function PrivacyPage() {
             fontSize: 18,
             fontWeight: 700,
             letterSpacing: "0.05em",
-            color: "#fff",
+            color: "#0a2540",
             textDecoration: "none",
             fontFamily: "var(--font-syne), sans-serif",
           }}
         >
           AIRINDEX
         </Link>
-        <div style={{ display: "flex", alignItems: "center", gap: 24, fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 24, fontSize: 14, color: "#697386" }}>
           <Link href="/about" style={{ color: "inherit", textDecoration: "none" }}>About</Link>
           <Link href="/methodology" style={{ color: "inherit", textDecoration: "none" }}>Methodology</Link>
           <Link href="/dashboard" style={{ color: "inherit", textDecoration: "none" }}>Dashboard</Link>
@@ -139,18 +139,18 @@ export default function PrivacyPage() {
             fontFamily: "'Inter', sans-serif",
             fontWeight: 700,
             fontSize: 28,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 8,
           }}
         >
           Privacy Policy
         </h1>
 
-        <p style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>
+        <p style={{ color: "#697386", fontSize: 12, marginBottom: 12 }}>
           Effective Date: March 6, 2026 &middot; Last Updated: March 16, 2026
         </p>
-        <p style={{ color: "#666", fontSize: 11, marginBottom: 40 }}>
-          <a href="https://verticaldatagroup.com" target="_blank" rel="noopener" style={{ color: "#666", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>Vertical Data Group, LLC</a> &middot; airindex.io
+        <p style={{ color: "#8792a2", fontSize: 11, marginBottom: 40 }}>
+          <a href="https://verticaldatagroup.com" target="_blank" rel="noopener" style={{ color: "#8792a2", textDecoration: "none", borderBottom: "1px solid #e3e8ee" }}>Vertical Data Group, LLC</a> &middot; airindex.io
         </p>
 
         {/* Privacy First callout */}
@@ -555,11 +555,11 @@ export default function PrivacyPage() {
         {/* Footer */}
         <div
           style={{
-            borderTop: "1px solid rgba(255,255,255,0.1)",
+            borderTop: "1px solid #e3e8ee",
             marginTop: 64,
             paddingTop: 24,
             fontSize: 9,
-            color: "rgba(255,255,255,0.4)",
+            color: "#8792a2",
             letterSpacing: 1,
           }}
         >

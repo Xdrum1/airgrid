@@ -13,12 +13,12 @@ const S = {
     fontFamily: "'Inter', sans-serif",
     fontWeight: 700 as const,
     fontSize: 20,
-    color: "#fff",
+    color: "#0a2540",
     marginTop: 48,
     marginBottom: 16,
   },
   p: {
-    color: "rgba(255,255,255,0.75)",
+    color: "#0a2540",
     fontSize: 13,
     lineHeight: 1.8,
     marginBottom: 14,
@@ -28,10 +28,10 @@ const S = {
     textDecoration: "none" as const,
   },
   strong: {
-    color: "#ccc",
+    color: "#0a2540",
   },
   caps: {
-    color: "rgba(255,255,255,0.75)",
+    color: "#0a2540",
     fontSize: 12,
     lineHeight: 1.8,
     marginBottom: 14,
@@ -44,8 +44,8 @@ export default function TermsPage() {
     <main
       style={{
         minHeight: "100vh",
-        background: "#050508",
-        color: "#fff",
+        background: "#ffffff",
+        color: "#0a2540",
         fontFamily: "'Inter', sans-serif",
       }}
     >
@@ -58,7 +58,7 @@ export default function TermsPage() {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "16px 24px",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          borderBottom: "1px solid #e3e8ee",
         }}
       >
         <Link
@@ -67,14 +67,14 @@ export default function TermsPage() {
             fontSize: 18,
             fontWeight: 700,
             letterSpacing: "0.05em",
-            color: "#fff",
+            color: "#0a2540",
             textDecoration: "none",
             fontFamily: "var(--font-syne), sans-serif",
           }}
         >
           AIRINDEX
         </Link>
-        <div style={{ display: "flex", alignItems: "center", gap: 24, fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 24, fontSize: 14, color: "#697386" }}>
           <Link href="/about" style={{ color: "inherit", textDecoration: "none" }}>About</Link>
           <Link href="/methodology" style={{ color: "inherit", textDecoration: "none" }}>Methodology</Link>
           <Link href="/dashboard" style={{ color: "inherit", textDecoration: "none" }}>Dashboard</Link>
@@ -92,18 +92,18 @@ export default function TermsPage() {
             fontFamily: "'Inter', sans-serif",
             fontWeight: 700,
             fontSize: 28,
-            color: "#fff",
+            color: "#0a2540",
             marginBottom: 8,
           }}
         >
           Subscription Terms of Service
         </h1>
 
-        <p style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>
+        <p style={{ color: "#697386", fontSize: 12, marginBottom: 12 }}>
           Effective Date: March 6, 2026 &middot; Last Updated: March 15, 2026
         </p>
-        <p style={{ color: "#666", fontSize: 11, marginBottom: 40 }}>
-          <a href="https://verticaldatagroup.com" target="_blank" rel="noopener" style={{ color: "#666", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>Vertical Data Group, LLC</a> &middot; airindex.io
+        <p style={{ color: "#8792a2", fontSize: 11, marginBottom: 40 }}>
+          <a href="https://verticaldatagroup.com" target="_blank" rel="noopener" style={{ color: "#8792a2", textDecoration: "none", borderBottom: "1px solid #e3e8ee" }}>Vertical Data Group, LLC</a> &middot; airindex.io
         </p>
 
         <p style={S.p}>
@@ -147,7 +147,7 @@ export default function TermsPage() {
           The following paid subscription tiers are offered subject to applicable pricing posted at{" "}
           <Link href="/pricing" style={S.link}>airindex.io/pricing</Link>:
         </p>
-        <ul style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, lineHeight: 1.8, paddingLeft: 20, marginBottom: 14 }}>
+        <ul style={{ color: "#425466", fontSize: 13, lineHeight: 1.8, paddingLeft: 20, marginBottom: 14 }}>
           <li style={{ marginBottom: 8 }}>
             <strong style={S.strong}>Alert</strong> ($25/month or $249/year): monitor up to three markets
             and receive a monthly market summary.
@@ -215,7 +215,7 @@ export default function TermsPage() {
         {/* Section 9 */}
         <h2 style={S.h2}>9. Prohibited Uses</h2>
         <p style={S.p}>You shall not:</p>
-        <ul style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, lineHeight: 1.8, paddingLeft: 20, marginBottom: 14 }}>
+        <ul style={{ color: "#425466", fontSize: 13, lineHeight: 1.8, paddingLeft: 20, marginBottom: 14 }}>
           <li>Use the Service for any unlawful purpose</li>
           <li>Attempt to gain unauthorized access to the Service or its underlying systems</li>
           <li>Interfere with or disrupt the Service</li>
@@ -331,11 +331,11 @@ export default function TermsPage() {
         {/* Footer */}
         <div
           style={{
-            borderTop: "1px solid rgba(255,255,255,0.1)",
+            borderTop: "1px solid #e3e8ee",
             marginTop: 64,
             paddingTop: 24,
             fontSize: 9,
-            color: "rgba(255,255,255,0.4)",
+            color: "#8792a2",
             letterSpacing: 1,
           }}
         >
