@@ -125,13 +125,13 @@ export default function InsightsPage() {
   return (
     <div
       style={{
-        background: "#050508",
+        background: "#ffffff",
         color: "#e0e0e0",
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
       }}
     >
-      <SiteNav />
+      <SiteNav theme="light" />
 
       <main
         style={{
@@ -156,7 +156,7 @@ export default function InsightsPage() {
           </h1>
           <p
             style={{
-              color: "#888",
+              color: "#697386",
               fontSize: 15,
               lineHeight: 1.7,
               margin: 0,
@@ -191,7 +191,7 @@ export default function InsightsPage() {
                 ONE MARKET MONDAY · ISSUE {String(latestMonday.issueNumber).padStart(2, "0")}
               </span>
               <span style={{
-                color: "#555",
+                color: "#8792a2",
                 fontSize: 12,
                 fontFamily: "'Space Mono', monospace",
               }}>
@@ -204,7 +204,7 @@ export default function InsightsPage() {
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: "clamp(18px, 2vw, 22px)",
                 fontWeight: 700,
-                color: "#fff",
+                color: "#0a2540",
                 textDecoration: "none",
                 display: "block",
                 marginBottom: 8,
@@ -213,7 +213,7 @@ export default function InsightsPage() {
             >
               {latestMonday.headline}
             </Link>
-            <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 12 }}>
+            <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, marginBottom: 12 }}>
               Weekly single-market deep-dive. Primary sources only.
             </p>
             <Link
@@ -269,7 +269,7 @@ export default function InsightsPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontSize: "clamp(18px, 2vw, 22px)",
               fontWeight: 700,
-              color: "#fff",
+              color: "#0a2540",
               textDecoration: "none",
               display: "block",
               marginBottom: 8,
@@ -278,7 +278,7 @@ export default function InsightsPage() {
           >
             Markets to Watch
           </Link>
-          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 12 }}>
+          <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, marginBottom: 12 }}>
             All 25 US UAM markets ranked by predictive significance &mdash; forward signals,
             MarketWatch trajectory, signal velocity, and 30-day score forecasts.
           </p>
@@ -318,7 +318,7 @@ export default function InsightsPage() {
               MONTHLY REPORT
             </span>
             <span style={{
-              color: "#555",
+              color: "#8792a2",
               fontSize: 12,
               fontFamily: "'Space Mono', monospace",
             }}>
@@ -331,7 +331,7 @@ export default function InsightsPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontSize: "clamp(18px, 2vw, 22px)",
               fontWeight: 700,
-              color: "#fff",
+              color: "#0a2540",
               textDecoration: "none",
               display: "block",
               marginBottom: 8,
@@ -339,7 +339,7 @@ export default function InsightsPage() {
           >
             UAM Market Readiness Report — March 2026
           </Link>
-          <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, marginBottom: 12 }}>
+          <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, marginBottom: 12 }}>
             Score movements, methodology v1.3, corridor intelligence, and operator analysis across US metro markets.
           </p>
           <Link
@@ -365,7 +365,7 @@ export default function InsightsPage() {
                 padding: "40px 0",
                 borderBottom:
                   i < INSIGHTS.length - 1
-                    ? "1px solid rgba(255,255,255,0.06)"
+                    ? "1px solid #e3e8ee"
                     : "none",
               }}
             >
@@ -394,7 +394,7 @@ export default function InsightsPage() {
                 </span>
                 <span
                   style={{
-                    color: "#555",
+                    color: "#8792a2",
                     fontSize: 12,
                     fontFamily: "'Space Mono', monospace",
                   }}
@@ -435,7 +435,7 @@ export default function InsightsPage() {
                 <p
                   key={j}
                   style={{
-                    color: "#999",
+                    color: "#425466",
                     fontSize: 14,
                     lineHeight: 1.85,
                     margin: "0 0 16px",
@@ -469,11 +469,11 @@ export default function InsightsPage() {
 
         {/* Subscribe CTA */}
         <div style={{ marginTop: 48, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
-          <PulseSubscribe source="insights" compact />
+          <PulseSubscribe source="insights" compact theme="light" />
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

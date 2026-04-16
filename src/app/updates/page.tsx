@@ -212,13 +212,13 @@ export default function UpdatesPage() {
   return (
     <div
       style={{
-        background: "#050508",
+        background: "#ffffff",
         color: "#e0e0e0",
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
       }}
     >
-      <SiteNav />
+      <SiteNav theme="light" />
 
       <main
         style={{
@@ -243,7 +243,7 @@ export default function UpdatesPage() {
           </h1>
           <p
             style={{
-              color: "#888",
+              color: "#697386",
               fontSize: 15,
               lineHeight: 1.7,
               margin: 0,
@@ -304,7 +304,7 @@ export default function UpdatesPage() {
               >
                 <span
                   style={{
-                    color: "#666",
+                    color: "#8792a2",
                     fontSize: 12,
                     fontFamily: "'Space Mono', monospace",
                   }}
@@ -358,7 +358,7 @@ export default function UpdatesPage() {
                   marginTop: 14,
                   borderRadius: 8,
                   overflow: "hidden",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  border: "1px solid #e3e8ee",
                   maxWidth: update.image.width > update.image.height * 2 ? 560 : 420,
                 }}>
                   <Image
@@ -393,7 +393,7 @@ export default function UpdatesPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

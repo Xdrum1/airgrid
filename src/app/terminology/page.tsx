@@ -55,8 +55,8 @@ export default async function TerminologyPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#050508",
-        color: "#ccc",
+        background: "#ffffff",
+        color: "#0a2540",
         fontFamily: "'Inter', sans-serif",
         fontSize: 14,
         lineHeight: 1.7,
@@ -65,7 +65,7 @@ export default async function TerminologyPage() {
     >
       <TrackPageView page="/terminology" />
 
-      <SiteNav />
+      <SiteNav theme="light" />
 
       <main style={{ maxWidth: 800, margin: "0 auto", padding: "48px clamp(20px, 5vw, 32px) 80px" }}>
         {/* Header */}
@@ -87,7 +87,7 @@ export default async function TerminologyPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontWeight: 700,
               fontSize: "clamp(28px, 5vw, 36px)",
-              color: "#fff",
+              color: "#0a2540",
               lineHeight: 1.2,
               marginBottom: 16,
             }}
@@ -113,7 +113,7 @@ export default async function TerminologyPage() {
             gap: 8,
             marginBottom: 48,
             paddingBottom: 24,
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
+            borderBottom: "1px solid #e3e8ee",
           }}
         >
           {activeCategories.map((cat) => (
@@ -162,8 +162,8 @@ export default async function TerminologyPage() {
                   key={t.id}
                   id={t.id}
                   style={{
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid rgba(255,255,255,0.06)",
+                    background: "#f9fbfd",
+                    border: "1px solid #e3e8ee",
                     borderLeft: `3px solid ${CATEGORY_COLORS[cat] || "#555"}`,
                     borderRadius: 8,
                     padding: 24,
@@ -176,7 +176,7 @@ export default async function TerminologyPage() {
                         fontFamily: "'Space Grotesk', sans-serif",
                         fontSize: 18,
                         fontWeight: 700,
-                        color: "#fff",
+                        color: "#0a2540",
                         marginBottom: 8,
                       }}
                     >
@@ -232,13 +232,13 @@ export default async function TerminologyPage() {
                         fontFamily: "'Space Mono', monospace",
                         fontSize: 9,
                         letterSpacing: 1.5,
-                        color: "#555",
+                        color: "#8792a2",
                         textTransform: "uppercase",
                       }}
                     >
                       Source
                     </span>
-                    <p style={{ color: "#999", fontSize: 13, marginTop: 4 }}>
+                    <p style={{ color: "#425466", fontSize: 13, marginTop: 4 }}>
                       {t.sourceUrl ? (
                         <a
                           href={t.sourceUrl}
@@ -262,7 +262,7 @@ export default async function TerminologyPage() {
                           fontFamily: "'Space Mono', monospace",
                           fontSize: 9,
                           letterSpacing: 1.5,
-                          color: "#555",
+                          color: "#8792a2",
                           textTransform: "uppercase",
                         }}
                       >
@@ -297,13 +297,13 @@ export default async function TerminologyPage() {
                         fontFamily: "'Space Mono', monospace",
                         fontSize: 9,
                         letterSpacing: 1.5,
-                        color: "#555",
+                        color: "#8792a2",
                         textTransform: "uppercase",
                       }}
                     >
                       Context of Use
                     </span>
-                    <p style={{ color: "#999", fontSize: 13, marginTop: 4 }}>{t.contextOfUse}</p>
+                    <p style={{ color: "#425466", fontSize: 13, marginTop: 4 }}>{t.contextOfUse}</p>
                   </div>
 
                   {/* Scoring implication */}
@@ -313,7 +313,7 @@ export default async function TerminologyPage() {
                         fontFamily: "'Space Mono', monospace",
                         fontSize: 9,
                         letterSpacing: 1.5,
-                        color: "#555",
+                        color: "#8792a2",
                         textTransform: "uppercase",
                       }}
                     >
@@ -325,15 +325,15 @@ export default async function TerminologyPage() {
                   </div>
 
                   {/* Version badge */}
-                  <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+                  <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px solid #e3e8ee" }}>
                     <span
                       style={{
                         fontFamily: "'Space Mono', monospace",
                         fontSize: 9,
                         letterSpacing: 1,
-                        color: "#555",
-                        background: "rgba(255,255,255,0.03)",
-                        border: "1px solid rgba(255,255,255,0.06)",
+                        color: "#8792a2",
+                        background: "#f6f9fc",
+                        border: "1px solid #e3e8ee",
                         borderRadius: 12,
                         padding: "3px 10px",
                       }}
@@ -353,7 +353,7 @@ export default async function TerminologyPage() {
             style={{
               textAlign: "center",
               padding: "80px 20px",
-              color: "#555",
+              color: "#8792a2",
               fontSize: 15,
             }}
           >
@@ -366,7 +366,7 @@ export default async function TerminologyPage() {
           style={{
             marginTop: 48,
             paddingTop: 32,
-            borderTop: "1px solid rgba(255,255,255,0.06)",
+            borderTop: "1px solid #e3e8ee",
           }}
         >
           <p style={{ color: "#777", fontSize: 13, lineHeight: 1.7, marginBottom: 16 }}>
@@ -381,8 +381,8 @@ export default async function TerminologyPage() {
           {/* Citation block */}
           <div
             style={{
-              background: "rgba(255,255,255,0.02)",
-              border: "1px solid rgba(255,255,255,0.06)",
+              background: "#f9fbfd",
+              border: "1px solid #e3e8ee",
               borderRadius: 8,
               padding: 20,
               marginBottom: 32,
@@ -393,7 +393,7 @@ export default async function TerminologyPage() {
                 fontFamily: "'Space Mono', monospace",
                 fontSize: 9,
                 letterSpacing: 1.5,
-                color: "#555",
+                color: "#8792a2",
                 textTransform: "uppercase",
                 display: "block",
                 marginBottom: 8,
@@ -405,7 +405,7 @@ export default async function TerminologyPage() {
               style={{
                 fontFamily: "'Space Mono', monospace",
                 fontSize: 12,
-                color: "#999",
+                color: "#425466",
                 lineHeight: 1.6,
               }}
             >
@@ -424,17 +424,17 @@ export default async function TerminologyPage() {
             <Link href="/methodology" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               Methodology
             </Link>
-            <Link href="/dashboard" style={{ color: "#555", textDecoration: "none" }}>
+            <Link href="/dashboard" style={{ color: "#8792a2", textDecoration: "none" }}>
               Dashboard
             </Link>
-            <Link href="/" style={{ color: "#555", textDecoration: "none" }}>
+            <Link href="/" style={{ color: "#8792a2", textDecoration: "none" }}>
               Back to Home
             </Link>
           </div>
         </section>
       </main>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }
