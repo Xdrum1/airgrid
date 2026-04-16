@@ -463,7 +463,7 @@ export default async function MunicipalityBriefingPage({
             <PrintButton />
           </div>
 
-          <FreshnessBar today={new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} />
+          <FreshnessBar today={new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} cityId={cityId} />
 
           {/* ================================================================
               SECTION 1: Where Your City Stands

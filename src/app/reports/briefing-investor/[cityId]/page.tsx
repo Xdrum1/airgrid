@@ -288,7 +288,7 @@ export default async function InvestorBriefingPage({
           </p>
         </div>
 
-        <FreshnessBar today={today} />
+        <FreshnessBar today={today} cityId={cityId} />
 
         {/* ======== SECTION 1: Investment Thesis Summary ======== */}
         <div className="section-card" style={cardStyle}>

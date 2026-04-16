@@ -242,7 +242,7 @@ export default async function InsuranceBriefingPage({
           </p>
         </div>
 
-        <FreshnessBar today={today} />
+        <FreshnessBar today={today} cityId={cityId} />
 
         {/* ======== SECTION 1: Market Summary ======== */}
         <div className="section-card" style={cardStyle}>

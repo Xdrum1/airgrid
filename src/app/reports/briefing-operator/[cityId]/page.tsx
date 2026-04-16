@@ -235,7 +235,7 @@ export default async function OperatorBriefingPage({
           </p>
         </div>
 
-        <FreshnessBar today={today} />
+        <FreshnessBar today={today} cityId={cityId} />
 
         {/* ======== SECTION 1: Market Readiness Summary ======== */}
         <div className="section-card" style={cardStyle}>
