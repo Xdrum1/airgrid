@@ -17,6 +17,8 @@ const FACTORS = [
     key: "activePilotProgram",
     label: "Active Pilot Program",
     weight: 15,
+    rationale:
+      "An active pilot program is scored as a binary factor because it represents demonstrated, verified operator commitment to a specific market — not intent, not a memorandum of understanding, not a press release. Pilot programs require FAA coordination, physical infrastructure, and operational investment. Their presence confirms that at least one operator and one regulatory body have made the market actionable. The 15-point weight reflects the significance of this signal relative to the full scoring range. A pilot program in isolation does not indicate a market is ready for full commercial operations, but its absence is a meaningful gap in any market that otherwise scores well on legislative and regulatory factors.",
     description:
       "Has the market launched or hosted an active UAM pilot program? Pilot programs demonstrate real-world operational commitment — not just regulatory intent, but aircraft flying in the airspace under FAA-approved conditions. This is the strongest signal of market readiness because it requires simultaneous coordination of regulatory approval, operator participation, infrastructure access, and community engagement.",
     qualifies:
@@ -31,6 +33,8 @@ const FACTORS = [
     key: "approvedVertiport",
     label: "Approved Vertiport",
     weight: 15,
+    rationale:
+      "Approved vertiport status is binary because the distinction between a planned vertiport and an approved one is legally and operationally categorical. FAA airspace determination, local permitting, and structural approval represent a completed regulatory process — not a proposal. The 15-point weight reflects that physical infrastructure is a hard prerequisite for commercial operations. A market with approved vertiport infrastructure has cleared the most document-intensive, multi-stakeholder approval process in the readiness stack. The absence of approved vertiports in a market that otherwise scores well on legislation and regulatory posture is a specific, addressable gap — and the AirIndex gap analysis engine surfaces that gap explicitly.",
     description:
       "Does the market have at least one permitted, under-construction, or operational vertiport site? Vertiports are the physical infrastructure that makes commercial UAM possible. A market with approved vertiport sites has cleared the hardest regulatory and zoning hurdles — environmental review, community input, building permits, and FAA airspace coordination.",
     qualifies:
@@ -45,6 +49,8 @@ const FACTORS = [
     key: "activeOperatorPresence",
     label: "Active Operator Presence",
     weight: 15,
+    rationale:
+      "Active operator presence is scored as binary because the distinction between stated interest and operational commitment is meaningful to every buyer in the platform's audience. Operators are scored as present when they have made a public, verifiable commitment to a specific market — through route announcements, facility agreements, regulatory filings, or demonstrated flight operations. The 15-point weight reflects that operator presence is both a market readiness signal and a market readiness driver. Operators accelerate the regulatory and infrastructure development of the markets they commit to. Markets without any operator presence, regardless of legislative posture, remain theoretical deployment candidates rather than active ones.",
     description:
       "Is at least one eVTOL manufacturer or air taxi operator actively engaged in the market? Operator presence is a market signal — operators choose launch markets based on regulatory readiness, infrastructure availability, demand projections, and competitive positioning. An operator committing resources to a market validates the other readiness factors.",
     qualifies:
@@ -59,6 +65,8 @@ const FACTORS = [
     key: "vertiportZoning",
     label: "Vertiport Zoning",
     weight: 15,
+    rationale:
+      "Vertiport zoning addresses a gap that is distinct from both legislation and approved vertiport status. A state can enact AAM legislation without municipalities updating their zoning codes to accommodate vertical flight infrastructure. An approved vertiport can exist as a one-off variance without any systematic zoning framework. This factor scores whether a market has established a repeatable, codified zoning pathway for vertiport development — not just whether one vertiport has been approved. The 15-point binary weight reflects that zoning frameworks are the infrastructure layer for infrastructure: they determine whether the next vertiport in a market is straightforward or extraordinary.",
     description:
       "Has the city or county adopted zoning provisions that accommodate vertiport development? Zoning is the earliest and most controllable municipal signal of UAM readiness. Markets that have proactively updated land-use codes to permit vertiports are removing barriers before operators arrive — signaling institutional readiness and reducing timeline risk for commercial deployments.",
     qualifies:
@@ -74,6 +82,8 @@ const FACTORS = [
     label: "Regulatory Posture",
     weight: 10,
     graduated: true,
+    rationale:
+      "Regulatory posture captures the orientation of a market's regulatory environment toward advanced air mobility — whether state and municipal agencies and officials are actively engaging with AAM development, passively permitting it, or creating friction. Unlike the binary factors above, regulatory posture is graduated because it exists on a spectrum. A market with a formally designated AAM coordinator, published guidance documents, and active participation in FAA programs scores differently than a market where AAM has not registered with regulators at all. The 10-point weight reflects that posture is an enabling condition rather than a prerequisite — a favorable posture accelerates everything else in the stack, but it cannot substitute for legislation, infrastructure, or operator commitment.",
     description:
       "What is the overall regulatory stance toward UAM at the municipal level? This is the only graduated factor in the model. Rather than binary yes/no, regulatory posture is assessed on a three-level scale: Friendly (10 points), Neutral (5 points), or Restrictive (0 points). This reflects the reality that regulatory environments exist on a spectrum — a city can be passively permissive without being actively supportive. Note: Regulatory posture scoring reflects the observable framework of state and local regulations governing vertical flight infrastructure. The FAA does not hold enforcement authority over private-use heliports. Conditional and objectionable airspace determinations issued by the FAA carry no mandatory compliance mechanism for private-use facilities. REG scores reflect regulatory framework strength, not verified compliance rates.",
     qualifies:
@@ -89,6 +99,8 @@ const FACTORS = [
     label: "State Legislation",
     weight: 20,
     graduated: true,
+    rationale:
+      "State legislation is the highest-weighted factor in the AirIndex scoring model because it is the foundational legal prerequisite for everything else. Without enacted AAM legislation, operators lack the legal certainty required to commit capital, vertiport developers lack the regulatory framework required to permit infrastructure, and municipalities lack the guidance required to update zoning codes. Legislation is not sufficient for market readiness — but it is the gating condition. The factor is graduated rather than binary because legislative quality varies: a comprehensive framework covering operator permitting, vertiport siting, and airspace coordination scores higher than a single enabling resolution. The weight of 20 points reflects the asymmetric importance of this factor — a market with enacted legislation and nothing else has a credible path to readiness; a market with strong infrastructure and no legislation does not.",
     description:
       "What is the state of UAM-enabling legislation? This factor uses a graduated three-tier model: Enacted (20 pts) — UAM-specific legislation signed into law; Actively Moving (10 pts) — UAM-specific bills in late legislative stages with real momentum; None (0 pts) — no meaningful UAM legislative activity. State-level legislation creates the legal framework that allows (or blocks) commercial UAM at scale. States with enacted legislation signal long-term institutional commitment. States with actively moving bills show community preparedness — a leading indicator of future enactment. This factor was doubled from 10 to 20 points in v1.3 based on field validation showing that legislation functions as a prerequisite — infrastructure developers require a legislative framework before committing capital.",
     qualifies:
@@ -104,6 +116,8 @@ const FACTORS = [
     label: "Weather Infrastructure",
     weight: 10,
     graduated: true,
+    rationale:
+      "Weather infrastructure scores the availability of low-altitude meteorological data adequate for automated eVTOL flight operations. Conventional aviation weather infrastructure was built for airports and flight levels above 10,000 feet. eVTOL aircraft operate in the 30\u20132,000 foot AGL range — the low-altitude boundary layer where commercial weather data is sparse, delayed, and often inaccurate for the precision that autonomous flight requires. The USDOT National AAM Strategy (December 2025) explicitly identifies weather as one of four infrastructure pillars for advanced air mobility, alongside physical infrastructure, energy, and spectrum. The factor is graduated based on proximity of ASOS/AWOS stations to tracked facilities and deployment of low-altitude sensing infrastructure. The 10-point weight reflects the current state of the market — weather infrastructure is a universal gap across all tracked markets, but its absence is a deployment constraint rather than a legal or regulatory blocker. This factor is developed in partnership with TruWeather Solutions, whose methodology for ranking weather infrastructure readiness is grounded in FAA NPRM Part 108 standards.",
     description:
       "Weather infrastructure readiness tracks low-altitude weather sensing at the city level. The USDOT AAM National Strategy identifies weather as one of four infrastructure pillars alongside physical, energy, and spectrum — making it a federally recognized prerequisite for commercial AAM operations, not an AirIndex-specific judgment. Weather remains the most uncertain and uncontrollable factor that will impact schedule reliability and operator dispatch rates, especially in built-up urban areas where confused winds will impact vertiport vehicle spacing and throughput. Better weather infrastructure will increase weather and wind certainty, contributing to a safer and more efficient airspace and vertiport ecosystem. States are a key enabler in closing the weather infrastructure gap. Weather data at or below 500 feet AGL is critical for eVTOL operations — standard airport weather stations (ASOS/AWOS) report conditions at runway level but do not capture the wind shear, turbulence, and microclimate data required for vertiport approach corridors. This factor uses a graduated three-tier model: Full (10 pts) — dedicated low-altitude sensing deployed in the market; Partial (5 pts) — standard airport weather infrastructure exists but lacks UAM-specific coverage; None (0 pts) — no meaningful weather infrastructure for low-altitude operations. As dedicated sensor networks expand across US markets, this factor will increasingly differentiate markets that have invested in operational weather infrastructure from those relying on general aviation coverage.",
     qualifies:
@@ -117,10 +131,34 @@ const FACTORS = [
 ];
 
 const TIERS = [
-  { label: "ADVANCED", range: "75\u2013100", color: "#00ff88", description: "Market has most or all infrastructure, regulatory, and operator requirements in place. Commercial UAM operations are imminent or active." },
-  { label: "MODERATE", range: "50\u201374", color: "#5B8DB8", description: "Significant progress across multiple factors. Key pieces are in place but gaps remain \u2014 typically missing infrastructure or operator commitment." },
-  { label: "EARLY", range: "30\u201349", color: "#f59e0b", description: "Some foundational elements present. Regulatory posture may be favorable but physical infrastructure and operator activity are limited." },
-  { label: "NASCENT", range: "0\u201329", color: "#ff4444", description: "Minimal UAM readiness. Market may have partial weather infrastructure or early regulatory signals but lacks substantive infrastructure or operator engagement." },
+  {
+    label: "ADVANCED",
+    range: "75\u2013100",
+    color: "#00ff88",
+    description:
+      "An ADVANCED market has the foundational legal, regulatory, and physical infrastructure in place to support commercial eVTOL operations. The state has enacted AAM legislation. At least one operator has made a public commitment to the market. Vertiport infrastructure has received formal approval or is in active development. Zoning frameworks address vertical flight infrastructure. Regulatory posture is proactive rather than reactive. Weather infrastructure provides meaningful low-altitude coverage. A market in the ADVANCED tier is not necessarily ready for immediate commercial launch \u2014 but the structural prerequisites exist for an operator to execute with manageable risk. These markets are where capital goes first.",
+  },
+  {
+    label: "MODERATE",
+    range: "50\u201374",
+    color: "#5B8DB8",
+    description:
+      "A MODERATE market has meaningful progress on multiple readiness dimensions but has not yet assembled the full prerequisite stack. State legislation may be enacted but operator presence is limited, or operator presence exists without supporting zoning frameworks. Multiple scoring factors are substantially satisfied, though the full prerequisite stack is incomplete. A MODERATE market represents an active transition \u2014 infrastructure or regulatory gaps exist but are trackable and closeable within a defined timeline. These markets are where developers and city planners are making preparatory investments and where operators are monitoring for trigger events before committing resources.",
+  },
+  {
+    label: "EARLY",
+    range: "30\u201349",
+    color: "#f59e0b",
+    description:
+      "An EARLY market has one or two meaningful readiness signals \u2014 typically enacted state legislation or a favorable regulatory posture \u2014 but lacks the operational infrastructure required for near-term eVTOL deployment. No approved vertiports, no active operator presence, and limited or no zoning framework. The market has signaled intent but has not yet translated that intent into infrastructure. EARLY markets are where the gap between legislative ambition and operational reality is most visible. For developers and city planners, these markets represent medium-term pipeline opportunities. For operators, they are watch-list markets, not deployment markets.",
+  },
+  {
+    label: "NASCENT",
+    range: "0\u201329",
+    color: "#ff4444",
+    description:
+      "A NASCENT market has minimal or no readiness signals across the scoring framework. No enacted AAM legislation, no operator presence, no approved vertiports, no vertiport zoning, and limited regulatory engagement with advanced air mobility. This does not mean the market lacks potential \u2014 geography, population density, or infrastructure assets may make it an eventual candidate. But the foundational prerequisites for commercial eVTOL operations have not been established. NASCENT markets require the most investment of time, capital, and regulatory development before they can support operations. Washington D.C. \u2014 the nation's regulatory capital \u2014 currently scores in this tier, which illustrates that policy familiarity at the federal level does not translate to local market readiness.",
+  },
 ];
 
 // -------------------------------------------------------
@@ -342,6 +380,24 @@ export default function MethodologyPage() {
                     }}
                   />
                 </div>
+
+                {/* Institutional rationale — why this factor, why this weight */}
+                {f.rationale && (
+                  <div
+                    style={{
+                      background: "#f6f9fc",
+                      borderLeft: "3px solid #5B8DB8",
+                      padding: "14px 18px",
+                      marginBottom: 16,
+                      borderRadius: "0 6px 6px 0",
+                    }}
+                  >
+                    <MetaLabel>Rationale</MetaLabel>
+                    <p style={{ color: "#0a2540", fontSize: 13, lineHeight: 1.7, marginTop: 6 }}>
+                      {f.rationale}
+                    </p>
+                  </div>
+                )}
 
                 {/* Description */}
                 <p style={{ marginBottom: 16 }}>{f.description}</p>
@@ -676,6 +732,190 @@ export default function MethodologyPage() {
               </div>
             ))}
           </div>
+        </Section>
+
+        {/* Missing Data Treatment Protocol */}
+        <Section id="missing-data" title="Missing Data Treatment Protocol">
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#0a2540",
+              marginBottom: 12,
+            }}
+          >
+            Purpose
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            This protocol defines how AirIndex handles situations where a scoring factor cannot be
+            verified, where data is unavailable from primary sources, or where the status of a factor
+            is genuinely uncertain. Consistent, documented treatment of missing data is essential to
+            the integrity of the scoring model. Silent omissions, undisclosed interpolations, or
+            inconsistent handling of data gaps undermine institutional trust in the output.
+          </p>
+
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#0a2540",
+              marginTop: 28,
+              marginBottom: 12,
+            }}
+          >
+            General Principle
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            AirIndex applies a conservative default: when a factor&apos;s status cannot be verified
+            against primary sources, that factor is scored at its lowest applicable value. This
+            approach deliberately avoids overstating market readiness.{" "}
+            <strong style={{ color: "#0a2540" }}>
+              An ADVANCED score earned with unverified inputs is a greater credibility risk than a
+              MODERATE score earned with fully verified ones.
+            </strong>
+          </p>
+
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#0a2540",
+              marginTop: 28,
+              marginBottom: 12,
+            }}
+          >
+            Factor-Level Treatment
+          </h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
+            {[
+              {
+                label: "State Legislation (20 pts, Graduated)",
+                sources: "LegiScan, state legislature official records, enacted bill text",
+                body: "If no enacted legislation can be confirmed from primary sources, the factor scores zero. Proposed bills, executive orders, and informal policy statements do not satisfy this factor. If a bill's status is uncertain (e.g., passed one chamber but not yet signed), it is held at the lower confirmed score until enactment is verified. Uncertainty flag: applied when bill status has not been verified within the prior 30-day ingestion window.",
+              },
+              {
+                label: "Active Pilot Program (15 pts, Binary)",
+                sources: "FAA program records, operator press releases, regulatory filings",
+                body: "If no active pilot program can be confirmed from a primary source, the factor scores zero. Announced intentions and letters of intent do not satisfy this factor. A pilot program is confirmed only when operational evidence exists — FAA coordination records, facility agreements, or verified flight operations.",
+              },
+              {
+                label: "Approved Vertiport (15 pts, Binary)",
+                sources: "FAA airspace determination records, local permitting databases, operator announcements",
+                body: "If no approved vertiport can be confirmed, the factor scores zero. Planned vertiports, vertiports under construction, and vertiports with pending applications do not satisfy this factor. Approval is defined as completed FAA airspace determination plus local permitting clearance.",
+              },
+              {
+                label: "Active Operator Presence (15 pts, Binary)",
+                sources: "Operator public announcements, route filings, FAA records, OID (Operator Intelligence Database)",
+                body: "If no operator presence can be confirmed in the OID against primary source verification, the factor scores zero. Speculative route maps, investor presentations without operational commitment, and unverified third-party reports do not satisfy this factor.",
+              },
+              {
+                label: "Vertiport Zoning (15 pts, Binary)",
+                sources: "Municipal zoning codes, city ordinances, planning department records",
+                body: "If no vertiport-specific zoning framework can be confirmed from municipal primary sources, the factor scores zero. General commercial or aviation zoning that has not been specifically extended to vertical flight infrastructure does not satisfy this factor.",
+              },
+              {
+                label: "Regulatory Posture (10 pts, Graduated)",
+                sources: "FAA program participation records, state agency publications, RPL (Regulatory Precedent Library)",
+                body: "Regulatory posture is the factor most susceptible to data gaps because it is partially qualitative. Where primary source evidence is insufficient to assess posture with confidence, the factor defaults to the lowest graduated score (minimal engagement). The RPL is the primary evidence base. Markets with fewer than three verifiable regulatory precedents in the RPL default to the lowest tier.",
+              },
+              {
+                label: "Weather Infrastructure (10 pts, Graduated)",
+                sources: "FAA NASR ASOS/AWOS station data, TruWeather deployment records, FAA 5010 heliport coordinates",
+                body: "Weather infrastructure scoring is calculated from measured station proximity to tracked facilities. Where ASOS/AWOS station data is unavailable for a specific metro area, the factor scores zero. Partial credit is calculated only from verified station locations within defined proximity thresholds (full credit ≤5nm, partial credit 5–10nm, no credit >10nm per FAA NPRM Part 108). TruWeather low-altitude sensing deployment data, when available, is applied as an additional scored input under v1.4 methodology.",
+              },
+            ].map((f) => (
+              <div
+                key={f.label}
+                style={{
+                  background: "#f9fbfd",
+                  border: "1px solid #e3e8ee",
+                  borderRadius: 8,
+                  padding: "16px 20px",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    color: "#0a2540",
+                    marginBottom: 8,
+                  }}
+                >
+                  {f.label}
+                </div>
+                <div style={{ marginBottom: 8 }}>
+                  <MetaLabel>Primary Sources</MetaLabel>
+                  <p style={{ color: "#425466", fontSize: 12, marginTop: 4 }}>{f.sources}</p>
+                </div>
+                <p style={{ color: "#425466", fontSize: 13, lineHeight: 1.65, margin: 0 }}>{f.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#0a2540",
+              marginTop: 28,
+              marginBottom: 12,
+            }}
+          >
+            Data Confidence Flag
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            AirIndex applies a Data Confidence flag to any market where one or more factors have not
+            been verified against a primary source within the prior 60-day ingestion window. The flag
+            is visible to licensed clients in market detail views and is noted in briefing reports.
+            A Data Confidence flag does not change the score — it signals to the reader that the
+            flagged factor(s) should be independently verified before making high-stakes decisions
+            against that specific data point.
+          </p>
+
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#0a2540",
+              marginTop: 28,
+              marginBottom: 12,
+            }}
+          >
+            Stale Data Policy
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            Factor scores are considered current when the underlying primary source has been ingested
+            within the prior 60 days. Where a primary source has not been ingested within 60 days,
+            the factor retains its last verified score but the market receives a Data Confidence flag.
+            Scores are never reset to zero solely due to stale data — the conservative default
+            applies only to factors that have never been verified, not to factors that were verified
+            and have not been superseded by contrary evidence.
+          </p>
+
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 15,
+              color: "#0a2540",
+              marginTop: 28,
+              marginBottom: 12,
+            }}
+          >
+            Disclosure
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            This protocol is published as part of the AirIndex methodology documentation. Any change
+            to the missing data treatment for a specific factor constitutes a methodology update and
+            is subject to VDG&apos;s Score Change Governance Policy, to be published with Methodology
+            v1.4. Changes are versioned, dated, and reflected in the Methodology Changelog.
+          </p>
         </Section>
 
         {/* Section 5: Limitations */}
