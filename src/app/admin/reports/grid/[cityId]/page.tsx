@@ -19,8 +19,13 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { METRO_BOUNDS } from "@/data/asos-stations";
 import { getCitiesWithOverrides } from "@/data/seed";
+import { getPreDevFacilitiesForMarket } from "@/data/pre-development-facilities";
 import PrintButton from "@/app/reports/gap/[cityId]/PrintButton";
-import GridMap, { type GridCellFeature } from "@/components/grid/GridMap";
+import GridMap, {
+  type GridCellFeature,
+  type HeliportPin,
+  type PreDevPin,
+} from "@/components/grid/GridMap";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "alan@airindex.io";
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
@@ -98,6 +103,34 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
   const allCities = await getCitiesWithOverrides();
   const city = allCities.find((c) => c.id === cityId);
   if (!city) notFound();
+
+  // All heliports that fall inside this metro's cells. Pulls by cityId
+  // (strict tracked-market mapping from NASR 5010 ingest).
+  const heliports = await prisma.heliport.findMany({
+    where: { cityId, statusCode: "O" },
+    select: { id: true, facilityName: true, city: true, lat: true, lng: true, ownershipType: true },
+  });
+
+  const heliportPins: HeliportPin[] = heliports.map((h) => ({
+    id: h.id,
+    name: h.facilityName,
+    city: h.city,
+    lat: h.lat,
+    lng: h.lng,
+    ownership: h.ownershipType === "PU" ? "Public" : h.ownershipType === "PR" ? "Private" : h.ownershipType,
+  }));
+
+  // Pre-development facilities (announced / permitting / under construction)
+  const preDevFacilities = getPreDevFacilitiesForMarket(cityId);
+  const preDevPins: PreDevPin[] = preDevFacilities.map((p) => ({
+    id: p.id,
+    name: p.name,
+    status: p.status,
+    lat: p.lat,
+    lng: p.lng,
+    type: p.type,
+    developer: p.developer,
+  }));
 
   // Tier rollup
   const fullCount = cells.filter((c) => c.tier === "full").length;
@@ -190,16 +223,63 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
 
         {/* Map */}
         {MAPBOX_TOKEN ? (
-          <GridMap cells={mapCells} bounds={bounds} mapboxToken={MAPBOX_TOKEN} />
+          <GridMap
+            cells={mapCells}
+            heliports={heliportPins}
+            preDev={preDevPins}
+            bounds={bounds}
+            mapboxToken={MAPBOX_TOKEN}
+          />
         ) : (
           <div style={{ padding: 24, border: `1px solid ${T.cardBorder}`, borderRadius: 12, background: T.subtleBg, color: T.textSecondary, fontSize: 13 }}>
             Mapbox token missing. Set <code style={{ background: "#eef2f7", padding: "1px 6px", borderRadius: 4 }}>NEXT_PUBLIC_MAPBOX_TOKEN</code> in env to render the grid.
           </div>
         )}
 
+        {/* Legend */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            gap: 18,
+            marginTop: 16,
+            padding: "12px 16px",
+            background: T.subtleBg,
+            border: `1px solid ${T.cardBorder}`,
+            borderRadius: 10,
+            fontSize: 12,
+            color: T.textSecondary,
+          }}
+        >
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, letterSpacing: "0.12em", color: T.textTertiary, textTransform: "uppercase" as const }}>
+            Legend
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 14, height: 14, background: T.green, opacity: 0.45, border: `1.5px solid ${T.green}`, borderRadius: 2 }} /> Full coverage (&lt;5 nm)
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 14, height: 14, background: T.amber, opacity: 0.45, border: `1.5px solid ${T.amber}`, borderRadius: 2 }} /> Partial (5–10 nm)
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 14, height: 14, background: T.red, opacity: 0.45, border: `1.5px solid ${T.red}`, borderRadius: 2 }} /> No coverage (&gt;10 nm)
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <span style={{ width: 10, height: 10, background: "#ffffff", border: `1.5px solid ${T.textPrimary}`, borderRadius: 10 }} /> FAA heliport ({heliportPins.length})
+          </span>
+          {preDevPins.length > 0 && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <span style={{ width: 12, height: 12, background: "#a78bfa", border: "2px solid #ffffff", borderRadius: 12 }} /> Pre-development ({preDevPins.length})
+            </span>
+          )}
+          <span style={{ marginLeft: "auto", fontSize: 11, color: T.textTertiary }}>
+            Click any cell for details →
+          </span>
+        </div>
+
         {/* Footer */}
-        <div style={{ marginTop: 24, paddingTop: 14, borderTop: `1px solid ${T.cardBorder}`, fontSize: 11, color: T.textTertiary, lineHeight: 1.6 }}>
-          Grid cells generated per Don Berchoff&apos;s 5nm rule (FAA NPRM Part 108, pp. 96–98). ASOS station coordinates sourced from FAA NASR. Cells shown: {cells.length} · Imagery © Mapbox © OpenStreetMap.
+        <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${T.cardBorder}`, fontSize: 11, color: T.textTertiary, lineHeight: 1.6 }}>
+          Grid cells generated per Don Berchoff&apos;s 5nm rule (FAA NPRM Part 108, pp. 96–98). ASOS station coordinates sourced from FAA NASR. Cells shown: {cells.length} · Heliports: {heliportPins.length} · Pre-development: {preDevPins.length} · Imagery © Mapbox © OpenStreetMap.
         </div>
       </div>
     </div>
