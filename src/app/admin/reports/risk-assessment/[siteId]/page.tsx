@@ -161,6 +161,8 @@ export default async function RiskAssessmentPage({
         @page { margin: 0.55in; size: letter; }
         .screen-only { display: none !important; }
         body, div { background: #fff !important; }
+        .print-together { page-break-inside: avoid; break-inside: avoid; }
+        .print-together img { max-height: 160px !important; }
       }`}</style>
 
       <div style={S.main}>
@@ -310,7 +312,7 @@ export default async function RiskAssessmentPage({
           const contextUrl = buildContextTileUrl({ lat: r.lat, lng: r.lng, zoom: 14, width: 380, height: 260 });
           if (!closeUrl || !contextUrl) return null;
           return (
-            <>
+            <div className="print-together">
               <div style={S.sectionTag}>Facility Visualization</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                 <div>
@@ -339,7 +341,7 @@ export default async function RiskAssessmentPage({
               <div style={{ fontSize: 10, color: "#9ca3af", marginBottom: 18, fontStyle: "italic" }}>
                 Imagery © Mapbox © Maxar. Marker indicates registered facility coordinates from FAA NASR 5010.
               </div>
-            </>
+            </div>
           );
         })()}
 
