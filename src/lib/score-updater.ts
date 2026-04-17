@@ -116,6 +116,7 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
         sourceRecordId: candidate.sourceRecordId,
         sourceUrl: candidate.sourceUrl,
         confidence: effectiveConfidence,
+        origin: "classifier",
         appliedAt: shouldAutoApply ? now : null,
       },
     });

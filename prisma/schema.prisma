@@ -210,11 +210,13 @@ model ScoringOverride {
   sourceRecordId String?   // links to IngestedRecord.id
   sourceUrl      String?
   confidence     String    // "high" | "medium" | "needs_review"
+  origin         String    @default("classifier") // "classifier" | "analyst" | "admin" — who/what created this override
   appliedAt      DateTime? // set when auto-applied
   supersededAt   DateTime? // set when a newer override replaces this one
   createdAt      DateTime  @default(now())
 
   @@index([cityId, field])
+  @@index([origin])
 }
 
 model AutoReviewResult {
