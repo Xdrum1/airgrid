@@ -892,7 +892,7 @@ export default async function LandingPage() {
                 </ul>
 
                 <Link
-                  href="/request-access"
+                  href={`/for/${c.id === "risk-site" ? "risk-assessment" : c.id}`}
                   className="link-arrow"
                   style={{
                     color: T.accentDeep,
@@ -905,7 +905,7 @@ export default async function LandingPage() {
                     gap: 6,
                   }}
                 >
-                  Request access
+                  See how it&apos;s used
                   <span className="arrow" aria-hidden="true" style={{ fontSize: 16, lineHeight: 1 }}>→</span>
                 </Link>
               </div>
