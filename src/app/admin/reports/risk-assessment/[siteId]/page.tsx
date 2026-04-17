@@ -446,7 +446,7 @@ export default async function RiskAssessmentPage({
 
         {/* Footer */}
         <div style={S.footerNote}>
-          This assessment is designed for underwriting documentation and is auditable
+          This assessment is intended for inclusion in underwriting documentation and audit review. Auditable
           against primary regulatory and compliance sources. This output is intended to
           support defensible underwriting decisions and reduce exposure to incomplete or
           fragmented data sources.

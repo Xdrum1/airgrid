@@ -714,7 +714,7 @@ export default async function InsuranceBriefingPage({
           lineHeight: 1.65,
         }}
       >
-        This briefing is designed for underwriting documentation and is auditable
+        This briefing is intended for inclusion in underwriting documentation and audit review. Auditable
         against primary regulatory and compliance sources. AirIndex Score (AIS)
         reflects current regulatory, infrastructure, and operational signals. All
         score changes are timestamped and traceable to source events.
