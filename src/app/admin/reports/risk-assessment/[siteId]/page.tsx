@@ -176,6 +176,28 @@ export default async function RiskAssessmentPage({
           <span>{today}</span>
         </div>
 
+        {/* About AirIndex — fixes cold-reader + forwarding gap */}
+        <div
+          style={{
+            background: "#f6f9fc",
+            border: "1px solid #e3e8ee",
+            borderRadius: 6,
+            padding: "10px 14px",
+            marginBottom: 16,
+            fontSize: 11,
+            color: "#697386",
+            lineHeight: 1.55,
+          }}
+        >
+          <strong style={{ color: "#0a2540" }}>About AirIndex (AIS).</strong>{" "}
+          AirIndex Score (AIS) is a real-time market-readiness rating for vertical flight,
+          built on an auditable 7-factor methodology using primary regulatory and infrastructure
+          data. Methodology:{" "}
+          <a href="https://www.airindex.io/methodology" style={{ color: accent, textDecoration: "none" }}>
+            airindex.io/methodology
+          </a>
+        </div>
+
         <h1 style={S.title}>{r.facilityName}</h1>
         <div style={S.subtitle}>
           {r.city}, {r.state}
@@ -227,7 +249,7 @@ export default async function RiskAssessmentPage({
           }}
         >
           <div style={{ fontSize: 10, fontWeight: 700, color: "#a16207", letterSpacing: "0.12em", textTransform: "uppercase" as const }}>
-            Underwriting Recommendation
+            Underwriting Recommendation (AIS-Based)
           </div>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#78350f", marginTop: 4, marginBottom: 4 }}>
             {r.underwriting.stance === "standard" && "Standard coverage terms"}
@@ -436,6 +458,8 @@ export default async function RiskAssessmentPage({
           <br />
           <br />
           <span style={{ color: "#aaa" }}>
+            Delivered within 24 hours of facility submission · AIS-backed
+            <br />
             AirIndex · Vertical Data Group · airindex.io · {today}
           </span>
         </div>
