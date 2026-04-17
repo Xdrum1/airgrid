@@ -340,6 +340,11 @@ export default async function ContainerPage({
           </p>
         ))}
 
+        {/* Authority signal */}
+        <div style={{ fontSize: 12, color: LT.textTertiary, fontStyle: "italic", marginBottom: 24 }}>
+          Designed for direct inclusion in decision workflows. Not a dashboard — a decision artifact.
+        </div>
+
         {/* Sample output */}
         <div
           style={{
