@@ -362,8 +362,9 @@ export default async function RiskAssessmentPage({
         {/* Compliance */}
         <div style={S.sectionTag}>Compliance Profile</div>
         <div style={{ fontSize: 11, color: "#6b7280", marginBottom: 8, fontStyle: "italic" }}>
-          &ldquo;Unknown&rdquo; indicates no verifiable record found in primary sources and is treated as a compliance gap.
-          Assessment derived from FAA NASR 5010, OE/AAA records, and state regulatory sources.
+          This assessment reflects verifiable regulatory and compliance records. Where documentation
+          is not publicly accessible or current, absence of record is treated as a potential exposure.
+          Derived from FAA NASR 5010, OE/AAA records, and state regulatory sources.
         </div>
         <div style={S.card}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, paddingBottom: 8, borderBottom: "1px solid #e5e7eb" }}>

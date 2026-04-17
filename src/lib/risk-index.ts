@@ -172,8 +172,8 @@ function buildGapFlags(c: {
       code: "OE_MISSING",
       severity: "high",
       title: "No FAA airspace determination on file",
-      detail: "No current 7460-1 determination found linked to this facility. Insurance exposure is ambiguous — verification recommended before renewal.",
-      remediation: "Facility-of-record files 7460-1 with FAA; airspace study establishes concur / concur-with-exception.",
+      detail: "No current airspace determination letter found linked to this facility. Insurance exposure is ambiguous — verification recommended before renewal.",
+      remediation: "Facility-of-record files FAA Form 7460-1 (Notice of Proposed Construction) to initiate an airspace study; the output is an Airspace Determination Letter.",
       tierImpact: "Typical resolution drops this factor out of the file — site moves one tier toward LOW.",
     });
   }
@@ -194,9 +194,9 @@ function buildGapFlags(c: {
       code: "EVTOL_VIABILITY",
       severity: "moderate",
       title: "eVTOL dimensional viability at risk",
-      detail: "Current TLOF/FATO dimensions are unlikely to accommodate certificated eVTOL aircraft without modification. Forward-looking capex risk.",
-      remediation: "Site modification or endorsement acknowledging current-aircraft-only coverage.",
-      tierImpact: "Forward-looking factor; does not typically block current-year coverage terms.",
+      detail: "Most existing heliport geometries do not meet current vertiport dimensional criteria (EB-105A) without structural expansion. FATO requires 2× the controlling dimension as a load-bearing surface; most hospital rooftop pads cannot physically accommodate this increase.",
+      remediation: "Site modification or endorsement acknowledging current-aircraft-only coverage. Physical expansion constrained by surrounding structures at most rooftop facilities.",
+      tierImpact: "Forward-looking structural constraint; does not block current-year coverage terms but signals long-term capex exposure.",
     });
   }
 
