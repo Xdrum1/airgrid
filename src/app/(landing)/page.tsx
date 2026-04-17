@@ -23,34 +23,34 @@ import PulseSubscribe from "@/components/PulseSubscribe";
 // Short "what you get" bullets per container — 3 lines each.
 const CONTAINER_DATA_LINES: Record<string, string[]> = {
   operator: [
-    "Market-by-market readiness scoring across 25 U.S. metros",
-    "Regulatory posture, vertiport pipeline, operator-graph intelligence",
-    "Forward signals for route planning and deployment sequencing",
+    "Market-by-market readiness scoring to prioritize deployment sequencing",
+    "Regulatory posture, vertiport pipeline, and operator-graph intelligence",
+    "Forward signals identifying when infrastructure supports capital commitment",
   ],
   infrastructure: [
-    "Gap-to-readiness analysis per market with cost + timeline framing",
-    "Jurisdictional permitting landscape and regulatory precedents",
-    "Peer-market benchmarking on zoning, legislation, and enforcement",
+    "Gap-to-readiness analysis identifying the binding constraint on deployment",
+    "Jurisdictional permitting landscape with cost and timeline to resolution",
+    "Peer-market benchmarking showing why comparable markets advance faster",
   ],
   municipality: [
-    "Peer-city benchmarking against same-tier and same-state markets",
+    "Peer-city benchmarking showing why comparable markets are advancing faster",
     "Federal program alignment and legislative-activity tracking",
-    "Economic-development positioning and infrastructure readiness",
+    "Gap-to-readiness roadmap with specific actions that close each gap",
   ],
   insurance: [
-    "City-level aviation liability exposure audit",
+    "City-level aviation liability exposure audit identifying undocumented compliance risk",
     "Heliport compliance framework + state regulatory burden layer",
-    "Precedent-driven exposure framing and peer-market comparisons",
+    "Precedent-driven exposure framing tied to real underwriting outcomes",
   ],
   investor: [
-    "Market and operator deployment intelligence for thesis timing",
+    "Market and operator deployment intelligence identifying when readiness supports capital",
     "Forward signals across regulatory, operator, and federal channels",
-    "Pulse-quality synthesis with source-traced primary data",
+    "Source-traced primary data — not analyst opinion, not press aggregation",
   ],
   "risk-site": [
-    "Single-facility risk assessment with 4-tier classification",
+    "Single-facility risk assessment with AIS-backed underwriting recommendation",
     "FAA registry + 5-question compliance + airspace determinations",
-    "Underwriting recommendation, peer benchmark, satellite visualization",
+    "Delivered within 24 hours, formatted for direct inclusion in underwriting files",
   ],
 };
 
@@ -776,7 +776,7 @@ export default async function LandingPage() {
                 color: T.textPrimary,
               }}
             >
-              Six products. One data platform.
+              One scoring system. Six decision outputs.
             </h2>
             <p
               style={{
@@ -786,7 +786,8 @@ export default async function LandingPage() {
                 margin: 0,
               }}
             >
-              Each container is shaped to a specific decision. Pick yours.
+              All outputs derived from the AirIndex Score (AIS) — a real-time,
+              auditable market-readiness rating. Each one shaped to a specific decision.
             </p>
           </div>
 
