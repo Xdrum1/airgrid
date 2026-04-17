@@ -237,6 +237,9 @@ export default async function RiskAssessmentPage({
             </span>
           </div>
           <div style={{ fontSize: 13, color: "#374151", marginTop: 6 }}>{r.exposureNote}</div>
+          <div style={{ fontSize: 11, color: "#6b7280", marginTop: 8, fontStyle: "italic" }}>
+            Tier reflects combined factor exposure including data gaps and forward viability constraints.
+          </div>
         </div>
 
         {/* Underwriting recommendation */}
@@ -358,6 +361,10 @@ export default async function RiskAssessmentPage({
 
         {/* Compliance */}
         <div style={S.sectionTag}>Compliance Profile</div>
+        <div style={{ fontSize: 11, color: "#6b7280", marginBottom: 8, fontStyle: "italic" }}>
+          &ldquo;Unknown&rdquo; indicates no verifiable record found in primary sources and is treated as a compliance gap.
+          Assessment derived from FAA NASR 5010, OE/AAA records, and state regulatory sources.
+        </div>
         <div style={S.card}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, paddingBottom: 8, borderBottom: "1px solid #e5e7eb" }}>
             <span style={{ fontWeight: 700, color: "#111" }}>Status: {r.complianceStatus.replace(/_/g, " ")}</span>
