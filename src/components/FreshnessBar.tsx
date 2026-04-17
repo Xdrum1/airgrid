@@ -62,7 +62,7 @@ export default async function FreshnessBar({
       <span style={{ color: "#555" }}>·</span>
       <span>Data as of {today}</span>
       <span style={{ color: "#555" }}>·</span>
-      <span>Methodology v1.3</span>
+      <span>AIS · Methodology v1.3</span>
       <span style={{ color: "#555" }}>·</span>
       <span>
         Sources:{" "}

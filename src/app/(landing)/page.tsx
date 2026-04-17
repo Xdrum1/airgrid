@@ -613,6 +613,9 @@ export default async function LandingPage() {
             >
               Biggest Movers This Week
             </div>
+            <div style={{ fontSize: 12, color: T.textTertiary, marginBottom: 14 }}>
+              AIS updates as signals change. Each movement is auto-detected and scored.
+            </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {movements.slice(0, 4).map((m) => {
                 const up = m.pointsDelta > 0;

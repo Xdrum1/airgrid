@@ -24,7 +24,7 @@ import PrintButton from "@/app/reports/gap/[cityId]/PrintButton";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "alan@airindex.io";
 
 export const metadata: Metadata = {
-  title: "RiskIndex Site Assessment — AirIndex",
+  title: "RiskIndex Assessment (AIS-backed) — AirIndex",
   robots: "noindex, nofollow",
 };
 
@@ -171,7 +171,7 @@ export default async function RiskAssessmentPage({
         {/* Header */}
         <div style={S.header}>
           <span>
-            <strong style={{ color: accent }}>AIRINDEX</strong> · RiskIndex Site Assessment
+            <strong style={{ color: accent }}>AIRINDEX</strong> · RiskIndex Assessment (AIS-backed)
           </span>
           <span>{today}</span>
         </div>
