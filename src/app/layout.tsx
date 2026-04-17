@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "AirIndex — UAM Market Intelligence",
-    description: "The intelligence infrastructure for urban air mobility. Market readiness data across 20+ U.S. markets, updated continuously from primary sources.",
+    description: "The market-readiness rating for vertical flight. AirIndex scores 25 U.S. markets on eVTOL operational readiness, updated continuously from primary sources.",
     siteName: "AirIndex",
     url: "https://www.airindex.io",
     images: [{ url: "/images/og-image.png", width: 1200, height: 630 }],
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@AirIndexHQ",
     title: "AirIndex — UAM Market Intelligence",
-    description: "The intelligence infrastructure for urban air mobility. Market readiness data across 20+ U.S. markets, updated continuously from primary sources.",
+    description: "The market-readiness rating for vertical flight. AirIndex scores 25 U.S. markets on eVTOL operational readiness, updated continuously from primary sources.",
     images: ["/images/og-image.png"],
   },
 };

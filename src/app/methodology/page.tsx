@@ -50,7 +50,7 @@ const FACTORS = [
     label: "Active Operator Presence",
     weight: 15,
     rationale:
-      "Active operator presence is scored as binary because the distinction between stated interest and operational commitment is meaningful to every buyer in the platform's audience. Operators are scored as present when they have made a public, verifiable commitment to a specific market — through route announcements, facility agreements, regulatory filings, or demonstrated flight operations. The 15-point weight reflects that operator presence is both a market readiness signal and a market readiness driver. Operators accelerate the regulatory and infrastructure development of the markets they commit to. Markets without any operator presence, regardless of legislative posture, remain theoretical deployment candidates rather than active ones.",
+      "Active operator presence is scored as binary because the distinction between stated interest and operational commitment is meaningful to every decision-maker in the platform's audience. Operators are scored as present when they have made a public, verifiable commitment to a specific market — through route announcements, facility agreements, regulatory filings, or demonstrated flight operations. The 15-point weight reflects that operator presence is both a market readiness signal and a market readiness driver. Operators accelerate the regulatory and infrastructure development of the markets they commit to. Markets without any operator presence, regardless of legislative posture, remain theoretical deployment candidates rather than active ones.",
     description:
       "Is at least one eVTOL manufacturer or air taxi operator actively engaged in the market? Operator presence is a market signal — operators choose launch markets based on regulatory readiness, infrastructure availability, demand projections, and competitive positioning. An operator committing resources to a market validates the other readiness factors.",
     qualifies:
@@ -277,7 +277,7 @@ export default function MethodologyPage() {
         {/* Section 1: What the Score Measures */}
         <Section id="overview" title="What the Score Measures">
           <p style={{ marginBottom: 16 }}>
-            The Readiness Score is a 0&ndash;{totalWeight} composite index that answers one question:
+            The AirIndex Score (AIS) is a 0&ndash;{totalWeight} composite index that answers one question:
             how prepared is this metropolitan area, right now, for commercial eVTOL operations?
             Each market is evaluated against seven factors spanning physical infrastructure,
             operator commitment, and regulatory environment.
@@ -932,7 +932,7 @@ export default function MethodologyPage() {
             What the Score Does Not Capture
           </h3>
           <p style={{ marginBottom: 16 }}>
-            The Readiness Score measures structural conditions, not market dynamics. It does not
+            The AirIndex Score (AIS) measures structural conditions, not market dynamics. It does not
             account for consumer demand, operator financial health, airspace complexity, noise
             sensitivity, community opposition, or competitive intensity between markets. These
             factors matter for commercial success but are outside the scope of a readiness

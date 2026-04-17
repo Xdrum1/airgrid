@@ -42,7 +42,7 @@ export default function SupportForm() {
     return (
       <div style={{ textAlign: "center", padding: "80px 20px" }}>
         <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 20, marginBottom: 12 }}>
-          Sign in to contact support
+          Access the client portal for support
         </h2>
         <p style={{ color: "#888", fontSize: 13, marginBottom: 24 }}>
           Please sign in first so we can help you faster.

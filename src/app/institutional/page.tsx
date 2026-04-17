@@ -135,7 +135,7 @@ export default async function InstitutionalPage() {
             color: "#0a2540",
           }}
         >
-          UAM intelligence infrastructure for teams and organizations
+          Real-time market intelligence for teams and organizations
         </h1>
         <p
           style={{

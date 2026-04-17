@@ -80,7 +80,7 @@ export default async function AboutPage() {
             fontFamily: "'Space Mono', monospace",
             marginBottom: 16,
           }}>
-            RATE THE SKY.
+            THE MARKET-READINESS RATING FOR VERTICAL FLIGHT.
           </div>
           <h1 style={{
             fontFamily: "'Space Grotesk', sans-serif",
@@ -124,7 +124,7 @@ export default async function AboutPage() {
               </a>
               , a South Carolina-based data intelligence company founded in 2026. We are not an
               aviation company. We are not a software company. We are a data intelligence company
-              that builds systematic, auditable intelligence infrastructure for emerging markets.
+              that builds real-time scoring systems for emerging infrastructure markets.
             </p>
             <p style={{ marginBottom: 14 }}>
               AirIndex is our first product — the UAM market readiness index we built because it
@@ -189,7 +189,7 @@ export default async function AboutPage() {
             What We Track
           </h2>
           <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, marginBottom: 24 }}>
-            Every market receives a 0-100 readiness score computed from seven weighted factors.
+            Every market receives a 0-100 AirIndex Score (AIS) computed from seven weighted factors.
             Scores update continuously as conditions change. Methodology v1.3 is{" "}
             <Link href="/methodology" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               fully published

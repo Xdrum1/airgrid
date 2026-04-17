@@ -298,7 +298,7 @@ export default async function GapReportPage({
                 marginBottom: 0,
               }}
             >
-              Rate the sky.
+              AirIndex · Vertical Data Group
             </p>
           </div>
 
@@ -1184,7 +1184,7 @@ export default async function GapReportPage({
             <p style={{ margin: "6px 0 0" }}>
               <span style={{ fontFamily: "'Courier New', monospace", fontWeight: 800, letterSpacing: "0.1em" }}>AIR</span>
               <span className="neon-accent" style={{ fontFamily: "'Courier New', monospace", fontWeight: 400, color: "#5B8DB8", letterSpacing: "0.1em" }}>INDEX</span>
-              {" "}&middot; Rate the sky.
+              {" "}&middot; AirIndex · Vertical Data Group
             </p>
             <p className="screen-only" style={{ margin: "8px 0 0", color: "#777" }}>
               Print this page (Ctrl+P / Cmd+P) to generate a PDF.

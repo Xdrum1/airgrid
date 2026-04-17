@@ -118,7 +118,7 @@ export default async function LandingPage() {
     if (city.stateLegislationStatus === "none" && s >= 30) return `No enacted AAM legislation — the gating factor.`;
     if (!city.hasVertiportZoning && s >= 50) return `Vertiport zoning not adopted — next project is a variance fight.`;
     if (city.weatherInfraLevel === "none") return `No low-altitude weather infrastructure coverage.`;
-    return `Score ${s}/100 — ${city.state} market.`;
+    return `${s} AIS — ${city.state} market.`;
   }
 
   const containers = liveContainers().sort(
