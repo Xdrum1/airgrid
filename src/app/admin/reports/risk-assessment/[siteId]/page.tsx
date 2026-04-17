@@ -457,8 +457,13 @@ export default async function RiskAssessmentPage({
           Methodology published at airindex.io/methodology.
           <br />
           <br />
+          This assessment is part of a portfolio-level view of facility risk
+          across a carrier&apos;s coverage footprint. Additional facilities can be
+          assessed within 24 hours upon request.
+          <br />
+          <br />
           <span style={{ color: "#aaa" }}>
-            Delivered within 24 hours of facility submission · AIS-backed
+            AIS Snapshot: {new Date().toISOString().slice(0, 10)} · {new Date().toISOString().slice(11, 16)} UTC · AIS-backed
             <br />
             AirIndex · Vertical Data Group · airindex.io · {today}
           </span>
