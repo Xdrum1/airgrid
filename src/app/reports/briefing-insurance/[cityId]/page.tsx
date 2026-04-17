@@ -703,6 +703,23 @@ export default async function InsuranceBriefingPage({
         </div>
       </div>
 
+      {/* E&O / provenance footer */}
+      <div
+        style={{
+          maxWidth: 780,
+          margin: "0 auto",
+          padding: "16px 26px 24px",
+          fontSize: 11,
+          color: "#697386",
+          lineHeight: 1.65,
+        }}
+      >
+        This briefing is designed for underwriting documentation and is auditable
+        against primary regulatory and compliance sources. AirIndex Score (AIS)
+        reflects current regulatory, infrastructure, and operational signals. All
+        score changes are timestamped and traceable to source events.
+      </div>
+
       <div className="screen-only">
         <SiteFooter />
       </div>

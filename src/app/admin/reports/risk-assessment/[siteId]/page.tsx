@@ -424,13 +424,15 @@ export default async function RiskAssessmentPage({
 
         {/* Footer */}
         <div style={S.footerNote}>
-          <strong>Scope.</strong> This site assessment composes FAA NASR 5010 registry data, RiskIndex 5-question
-          compliance framework, FAA OE/AAA airspace determination linkages, and AirIndex MCS state-context signals
-          into a single-facility risk view. Prepared for underwriter and infrastructure-owner evaluation.
+          This assessment is designed for underwriting documentation and is auditable
+          against primary regulatory and compliance sources. This output is intended to
+          support defensible underwriting decisions and reduce exposure to incomplete or
+          fragmented data sources.
           <br />
           <br />
-          <strong>Delivery.</strong> Draft assessment. Not for distribution without AirIndex review. Source citations
-          and underlying data available on request.
+          AirIndex Score (AIS) reflects current regulatory, infrastructure, and operational
+          signals. All score changes are timestamped and traceable to source events.
+          Methodology published at airindex.io/methodology.
           <br />
           <br />
           <span style={{ color: "#aaa" }}>
