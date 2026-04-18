@@ -335,7 +335,7 @@ export default async function LandingPage() {
         </p>
         <div style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
-            href="/request-access"
+            href="/contact"
             className="cta-primary"
             style={{
               display: "inline-block",
@@ -349,7 +349,7 @@ export default async function LandingPage() {
               borderRadius: 8,
             }}
           >
-            Request Access <span className="arrow" aria-hidden="true">→</span>
+            Talk to Us <span className="arrow" aria-hidden="true">→</span>
           </Link>
           <Link
             href="/methodology"
@@ -506,7 +506,7 @@ export default async function LandingPage() {
               </p>
             </div>
             <Link
-              href="/request-access"
+              href="/contact"
               className="link-arrow"
               style={{
                 fontSize: 13,
@@ -1139,7 +1139,7 @@ export default async function LandingPage() {
               textTransform: "uppercase",
             }}
           >
-            Request Access
+            Talk to Us
           </div>
           <h2
             style={{
