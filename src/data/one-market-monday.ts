@@ -109,6 +109,47 @@ export const ONE_MARKET_MONDAY_ISSUES: OneMarketMondayIssue[] = [
     footerNote:
       "AirIndex tracks regulatory, operator, and infrastructure signals across 25 US UAM markets. Miami's full factor breakdown, score history, and live intelligence feed are available on the platform. One Market Monday is AirIndex's weekly deep-dive on a single market in our coverage universe.",
   },
+  {
+    slug: "dallas-april-2026",
+    issueNumber: 3,
+    publishDate: "2026-04-21",
+    cityId: "dallas",
+    headline: "Dallas at 95: The Only Market With an Authorized Corridor — and No Weather Infrastructure to Fly It",
+    subhead:
+      "Dallas scores 95 on the AirIndex Score, tied with Los Angeles at the top of the index. It has enacted legislation, an authorized corridor, a vertiport under construction, and the only autonomous eVTOL operator in the country flight-testing in its airspace. The 5 points it's missing expose a structural gap that applies to every market in the index — and one that no operator can solve on its own.",
+    sections: [
+      {
+        heading: "The Score",
+        paragraphs: [
+          "Dallas is the most operationally ready eVTOL market in the United States — and still cannot support commercial operations. It sits at 95 on the AirIndex Score, LEADING tier, tied with Los Angeles at the top of the 25-market index. Six of seven factors deliver full credit. Enacted state legislation: TX HB 1735, signed into law in June 2023, remains the most comprehensive AAM enabling framework in the country. Active pilot program: Wisk Aero is conducting autonomous eVTOL flight testing in the DFW area under FAA coordination. Approved vertiport: DFW Vertiport Texas is under construction with permits filed. Vertiport zoning: the City of Dallas adopted a vertiport-specific zoning code amendment in June 2024. Active operator presence: Wisk is committed to the market. Regulatory posture: Texas maintains a pro-innovation aviation regulatory framework rated friendly.",
+          "The only factor not at full credit is weather infrastructure, which scores partial. DFW International and Dallas Love Field provide standard ASOS coverage, but no dedicated low-altitude sensing exists in the market. That gap is worth 5 points. It is the entire distance between 95 and 100.",
+          "Five points sounds small. It is not. The missing 5 points represent the absence of the infrastructure required to safely operate the authorized corridor.",
+        ],
+      },
+      {
+        heading: "The Angle",
+        paragraphs: [
+          "Dallas is the only market in the AirIndex coverage universe with an authorized air taxi corridor. The DFW-to-Downtown Dallas route has cleared regulatory hurdles that most markets have not begun. That makes Dallas the first real test of whether a market can move from regulatory readiness to operational readiness — and it is the weather gap that determines the answer.",
+          "Dallas has regulatory clearance to operate — but no validated visibility into whether those operations can be conducted safely. An authorized corridor without adequate weather infrastructure is a regulatory green light with no visibility on the road ahead. Standard ASOS stations at DFW and DAL report surface conditions — temperature, pressure, visibility, wind speed at runway level. They do not report what happens at 500 feet, where eVTOL aircraft will operate. They do not capture wind shear between buildings in the downtown approach zone. They do not measure the gust spread and turbulence that will determine whether an aircraft can safely hold its approach corridor on any given day.",
+          "This is not an AirIndex judgment. The USDOT National AAM Strategy, published December 2025, identifies weather as one of four infrastructure pillars for advanced air mobility alongside physical infrastructure, energy, and spectrum. ASTM International published F3673-24 in November 2024 — a formal standard for weather information performance at vertiports that defines 16 required weather parameters, most of which ASOS stations do not measure. The FAA NPRM Part 108, which governs vertiport operations, establishes distance-based proximity rules for weather station coverage. By those rules, a facility that relies on an ASOS station miles away does not meet the standard for full weather readiness.",
+          "Nationally, only 18 heliports out of 5,669 in the FAA registry have their own weather station. Dallas has 69 heliports in the metro area. None has dedicated weather sensing. The gap is not unique to Dallas — it is structural across every market in the index. But it is most visible in Dallas because Dallas is closest to actually needing it.",
+          "This is where the AirIndex Score exposes something the market narrative misses. Trade press covers operator milestones: Wisk's Gen 6 first flight in December 2025, the White House selection of Texas for autonomous eVTOL integration. Those are real achievements. But they describe the aircraft side of the equation, not the infrastructure side. The scoring model is designed to surface the infrastructure gaps that will constrain operations regardless of how ready the aircraft are. Weather is the constraint Dallas hasn't addressed yet, and it is the one factor that a single operator or a single city cannot solve alone.",
+        ],
+      },
+      {
+        heading: "What to Watch",
+        paragraphs: [
+          "Three forward signals will determine whether Dallas closes the gap between 95 and 100 — and in doing so, becomes the first market in the index to demonstrate full operational readiness.",
+          "1. Low-altitude weather sensing deployment. NTCOG (North Central Texas Council of Governments) is identified in federal stakeholder catalogs as a priority vertiport location for weather infrastructure evaluation. A single deployment of low-altitude sensing at the vertiport site — covering surface winds, winds aloft, gust spread, and visibility at approach altitude — would close the entire remaining gap and move Dallas to 100 AIS. No other market is one factor away from that threshold. The gap is identifiable. The solution is known. What remains is deployment.",
+          "2. Corridor weather characterization. The authorized DFW-to-Downtown corridor does not yet have a weather profile. IFR frequency, freezing precipitation patterns, and winds aloft along the route are unmeasured. Before the corridor can support scheduled operations, that data needs to exist. This is not scored directly in the current model, but it is tracked as a forward signal because corridor weather readiness will become a scoring input in future methodology versions.",
+          "3. A second operator. Dallas currently has one committed operator: Wisk Aero. The active operator presence factor scores full credit with one, but a second operator — particularly one pursuing Part 135 commercial operations rather than autonomous testing — would signal that the market supports more than one business model. Joby Aviation has selected Texas as an eIPP state; whether DFW specifically becomes a Joby operational market is the signal to watch.",
+          "Dallas at 95 is not a market waiting for regulatory permission. It has more regulatory infrastructure in place than any other market in the country. It is a market waiting for the physical infrastructure to match. If the highest-scoring market in the index cannot yet support safe commercial operations, the question every other market should be asking is: how far off are we?",
+        ],
+      },
+    ],
+    footerNote:
+      "AirIndex tracks regulatory, operator, and infrastructure signals across 25 US UAM markets. Dallas's full factor breakdown, score history, and live intelligence feed are available on the platform. One Market Monday is AirIndex's weekly deep-dive on a single market in our coverage universe.",
+  },
 ];
 
 export function getIssueBySlug(slug: string): OneMarketMondayIssue | undefined {
