@@ -191,7 +191,7 @@ function buildGapFlags(c: {
       code: "OE_MISSING",
       severity: "high",
       title: "No FAA airspace determination on file",
-      detail: "No current airspace determination letter found linked to this facility. Insurance exposure is ambiguous — verification recommended before renewal.",
+      detail: "No publicly accessible airspace determination letter identified for this facility; historical records may require FOIA retrieval. Insurance exposure is ambiguous — verification recommended before renewal.",
       remediation: "Facility-of-record files FAA Form 7460-1 (Notice of Proposed Construction) to initiate an airspace study; the output is an Airspace Determination Letter.",
       tierImpact: "Typical resolution drops this factor out of the file — site moves one tier toward LOW.",
     });

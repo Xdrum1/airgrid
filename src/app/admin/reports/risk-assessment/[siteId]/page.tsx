@@ -305,7 +305,7 @@ export default async function RiskAssessmentPage({
               {r.peerBenchmark.quartile === "lower-mid" && "lower-middle quartile"}
               {r.peerBenchmark.quartile === "bottom" && "bottom quartile"}
             </strong>{" "}
-            — cleaner than {r.peerBenchmark.betterThanPct}% of in-state peers.
+            {" "}({r.peerBenchmark.betterThanPct === 0 ? "0th" : `${r.peerBenchmark.betterThanPct}th`} percentile among in-state peers).
           </div>
         )}
 
@@ -340,6 +340,9 @@ export default async function RiskAssessmentPage({
                     Surrounding airspace context
                   </div>
                 </div>
+              </div>
+              <div style={{ fontSize: 10, color: "#6b7280", marginBottom: 6 }}>
+                Imagery-based validation: facility appears present at registered coordinates. Dimensional values not independently verified.
               </div>
               <div style={{ fontSize: 10, color: "#9ca3af", marginBottom: 18, fontStyle: "italic" }}>
                 Imagery © Mapbox © Maxar. Marker indicates registered facility coordinates from FAA NASR 5010.
@@ -381,7 +384,13 @@ export default async function RiskAssessmentPage({
           />
           <QRow label="Q3 — State enforcement posture" value={r.q3StateEnforcement} />
           <QRow label="Q4 — NFPA 418 jurisdiction adoption" value={r.q4Nfpa418} />
-          <QRow label="Q5 — eVTOL dimensional viability" value={r.q5EvtolViability} />
+          <QRow
+            label="Q5 — eVTOL structural viability"
+            value={r.q5EvtolViability}
+            note={r.dimensional.controllingDimension != null
+              ? "fails EB-105A 2D; 1.5D not verified"
+              : null}
+          />
         </div>
 
         {/* Dimensional constraint (eVTOL readiness) */}
@@ -428,8 +437,8 @@ export default async function RiskAssessmentPage({
                   </div>
                   <div style={{ fontSize: 11, color: r.dimensional.fatoGap15D! <= 0 ? "#047857" : "#b91c1c" }}>
                     {r.dimensional.fatoGap15D! <= 0
-                      ? "Within recorded pad dimensions"
-                      : `${r.dimensional.fatoGap15D} ft beyond recorded pad — site expansion required`}
+                      ? "Within recorded pad dimensions — current heliport compliance not independently verified"
+                      : `${r.dimensional.fatoGap15D} ft beyond recorded pad — current heliport compliance not independently verified`}
                   </div>
                 </div>
                 <div style={{
@@ -453,10 +462,22 @@ export default async function RiskAssessmentPage({
                 </div>
               </div>
 
+              {/* Structural finding callout */}
+              <div style={{ marginTop: 12, padding: "12px 16px", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 6 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", color: "#92400e", textTransform: "uppercase" as const, marginBottom: 4 }}>Structural Finding</div>
+                <div style={{ fontSize: 12, color: "#78350f", fontWeight: 500 }}>
+                  Based on available FAA data, existing pad dimensions suggest current helicopter operations may be supported, but eVTOL operations would require significant structural expansion ({r.dimensional.fatoGap2D} ft beyond recorded pad for EB-105A 2D FATO).
+                </div>
+              </div>
+
               <div style={{ marginTop: 10, fontSize: 11, color: "#6b7280", padding: "8px 10px", background: "#f9fafb", borderRadius: 4 }}>
                 Safety area perimeter: {r.dimensional.requiredSafetyArea} ft (OL × 0.28).
                 Whether the surrounding site can accommodate the required FATO and safety area depends on
                 available expansion area and obstruction environment — site-level validation required.
+              </div>
+
+              <div style={{ marginTop: 6, fontSize: 10, color: "#9ca3af", padding: "6px 10px", background: "#f9fafb", borderRadius: 4 }}>
+                FAA registry data may be outdated or inaccurate; dimensional estimates are derived from recorded values and should be validated against current site conditions.
               </div>
 
               <div style={{ marginTop: 12, fontSize: 10, color: "#9ca3af" }}>
