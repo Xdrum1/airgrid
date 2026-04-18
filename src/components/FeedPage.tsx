@@ -317,7 +317,7 @@ export default function FeedPage() {
                   {total - FREE_ITEMS} more intel items available
                 </div>
                 <Link
-                  href="/request-access"
+                  href="/contact"
                   style={{
                     display: "inline-block",
                     padding: "10px 28px",
@@ -331,7 +331,7 @@ export default function FeedPage() {
                     transition: "all 0.2s",
                   }}
                 >
-                  REQUEST ACCESS
+                  TALK TO US
                 </Link>
               </div>
             )}

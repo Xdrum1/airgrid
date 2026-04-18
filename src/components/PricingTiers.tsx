@@ -32,7 +32,7 @@ const TIERS: Tier[] = [
       "Market overview and rankings",
       "Insights and research",
     ],
-    cta: { label: "Request Access", href: "/request-access" },
+    cta: { label: "Talk to Us", href: "/contact" },
   },
   {
     name: "Professional",
@@ -54,7 +54,7 @@ const TIERS: Tier[] = [
       "Full monthly market report",
       "Email alerts & market subscriptions",
     ],
-    cta: { label: "Request Access", href: "/contact?tier=pro" },
+    cta: { label: "Talk to Us", href: "/contact?tier=pro" },
   },
   {
     name: "Institutional",

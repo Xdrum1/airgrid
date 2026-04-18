@@ -43,7 +43,7 @@ const UPDATES: Update[] = [
     tag: "feature",
     title: "\"What If\" Scenario Modeling",
     body: "Interactive scenario modeling on every city page. Toggle gap factors on and off to see projected score changes and tier transitions in real time. See exactly what happens if legislation passes, a pilot program launches, or weather infrastructure is deployed — individually or in combination.",
-    link: { label: "Request access", href: "/request-access" },
+    link: { label: "Talk to us", href: "/contact" },
     image: { src: "/images/scenario-phoenix.png", alt: "What If scenario modeling — Phoenix with legislation toggled showing 50 → 60 projection", width: 800, height: 200 },
   },
   {
@@ -51,7 +51,7 @@ const UPDATES: Update[] = [
     tag: "feature",
     title: "Score Timeline with Causal Events",
     body: "Every score change is now annotated with the event that caused it. The new Score Timeline shows date, delta, which factors moved, and a linked source citation for each change. See exactly why Miami went from 80 to 100, or why New York dropped from 70 to 55.",
-    link: { label: "Request access", href: "/request-access" },
+    link: { label: "Talk to us", href: "/contact" },
     image: { src: "/images/timeline-events.png", alt: "Score Timeline — San Francisco score changes with factor-level tags", width: 600, height: 480 },
   },
   {
@@ -80,7 +80,7 @@ const UPDATES: Update[] = [
     tag: "feature",
     title: "Heliport Infrastructure Map Layer",
     body: "5,647 FAA-registered heliports now visible on the map. Toggle between MARKETS and HELIPORTS views — density heatmap at overview zoom, individual facility markers when zoomed in. Click any heliport for FAA ID, ownership type, elevation, and use classification.",
-    link: { label: "Request access", href: "/request-access" },
+    link: { label: "Talk to us", href: "/contact" },
     image: { src: "/images/heliport-detail.png", alt: "Heliport map layer — San Francisco Bay Area with facility popup", width: 800, height: 500 },
   },
   {
@@ -93,8 +93,8 @@ const UPDATES: Update[] = [
     date: "2026-03-27",
     tag: "feature",
     title: "Federal Activity Tab",
-    body: "New Pro-gated dashboard tab tracking federal AAM legislation and regulatory activity. Two sections: Legislation (8 tracked Congress bills with live status via Congress.gov API) and FAA Dockets (regulations.gov documents with comment period tracking).",
-    link: { label: "Request access", href: "/request-access" },
+    body: "New gated dashboard tab tracking federal AAM legislation and regulatory activity. Two sections: Legislation (8 tracked Congress bills with live status via Congress.gov API) and FAA Dockets (regulations.gov documents with comment period tracking).",
+    link: { label: "Talk to us", href: "/contact" },
     image: { src: "/images/federal-activity.png", alt: "Federal Activity tab — AAM legislation tracking with live Congress bill status", width: 800, height: 400 },
   },
   {
@@ -108,7 +108,7 @@ const UPDATES: Update[] = [
     tag: "feature",
     title: "Gap Analysis Engine",
     body: "Every city detail panel now shows a Gap Analysis section identifying which readiness factors are missing, how many points are available, and specific recommendations to close each gap. Powered by the same engine behind our institutional gap reports.",
-    link: { label: "Request access", href: "/request-access" },
+    link: { label: "Talk to us", href: "/contact" },
   },
   {
     date: "2026-03-25",
@@ -145,14 +145,14 @@ const UPDATES: Update[] = [
     date: "2026-03-10",
     tag: "feature",
     title: "Trajectory API Endpoint",
-    body: "New API endpoint: GET /api/v1/markets/{cityId}/trajectory. Returns factor-level score deltas over time. Pro tier gets 90-day history, Institutional+ gets full history.",
+    body: "New API endpoint: GET /api/v1/markets/{cityId}/trajectory. Returns factor-level score deltas over time. Professional access includes 90-day history; institutional access includes full history.",
     link: { label: "API documentation", href: "/api/docs" },
   },
   {
     date: "2026-03-05",
     tag: "feature",
     title: "Market Watch Status & Analyst Notes",
-    body: "Markets now carry watch status indicators (Stable, Positive Watch, Negative Watch, Under Review) with outlook signals and analyst notes for Pro subscribers. See which markets are moving before the score changes.",
+    body: "Markets now carry watch status indicators (Stable, Positive Watch, Negative Watch, Under Review) with outlook signals and analyst notes for licensed clients. See which markets are moving before the score changes.",
   },
   {
     date: "2026-03-03",
@@ -178,21 +178,21 @@ const UPDATES: Update[] = [
     tag: "launch",
     title: "Invite-Only Access & Teaser Wall",
     body: "Launched the invite-only access system. Unauthenticated visitors see blurred operators, vertiports, corridors, and milestones in the detail panel. Request access, get approved by our team, and unlock the full dashboard.",
-    link: { label: "Request access", href: "/request-access" },
+    link: { label: "Talk to us", href: "/contact" },
   },
   {
     date: "2026-02-15",
     tag: "feature",
     title: "UAM Intel Feed",
     body: "Curated intelligence feed with regulatory, infrastructure, operator, and legislative categories. Auto-classified from our ingestion pipeline with editorial review. Published items include source attribution and market tagging.",
-    link: { label: "Request access", href: "/request-access" },
+    link: { label: "Talk to us", href: "/contact" },
   },
   {
     date: "2026-02-01",
     tag: "launch",
     title: "AirIndex Public Beta",
     body: "Launched the AirIndex UAM Readiness Intelligence platform tracking 21 US metropolitan areas across seven standardized readiness factors. Interactive map, city rankings, score breakdowns, and operator tracking.",
-    link: { label: "Request access", href: "/request-access" },
+    link: { label: "Talk to us", href: "/contact" },
   },
 ];
 

@@ -176,7 +176,7 @@ export default function SubscribeForm({ cityId, cityName, onSubscriptionChange, 
                 fontFamily: "'Inter', sans-serif",
               }}
             >
-              REQUEST ACCESS
+              TALK TO US
             </span>
           </Link>
         </div>

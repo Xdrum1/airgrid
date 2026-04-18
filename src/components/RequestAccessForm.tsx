@@ -310,7 +310,7 @@ export default function RequestAccessForm({
           marginTop: 8,
         }}
       >
-        {state === "submitting" ? "Submitting..." : "Request Access"}
+        {state === "submitting" ? "Submitting..." : "Talk to Us"}
       </button>
 
       {state === "error" && (

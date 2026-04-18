@@ -18,7 +18,7 @@ function daysSince(date: Date): number {
 
 export default async function WatchListPage() {
   const session = await auth();
-  if (!session?.user?.email) redirect("/request-access");
+  if (!session?.user?.email) redirect("/contact");
 
   const tier = await getUserTier(session.user.id);
   if (!hasProAccess(tier)) redirect("/pricing");

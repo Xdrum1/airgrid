@@ -188,7 +188,7 @@ export default function CorridorSubscribeForm({
           }}
         >
           <span style={{ color: "#5B8DB8", fontSize: 9, letterSpacing: 1, fontWeight: 700 }}>
-            REQUEST ACCESS TO TRACK
+            TALK TO US TO TRACK
           </span>
         </Link>
       </div>

@@ -130,7 +130,7 @@ export default async function DashboardPage() {
                 borderRadius: 6,
               }}
             >
-              Request Platform Access
+              Talk to Us
             </Link>
           </div>
         </div>

@@ -166,7 +166,7 @@ function UpgradeWall() {
             marginBottom: 16,
           }}
         >
-          Request Access
+          Talk to Us
         </Link>
         <div style={{ fontSize: 12, color: "#555" }}>
           Already have access?{" "}

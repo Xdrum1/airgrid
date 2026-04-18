@@ -123,7 +123,7 @@ function LoginForm() {
             >
               {isSignup
                 ? <>Track 20+ UAM markets, get alerts, access regulatory filings.<br />Enter your email to get started — no password needed.</>
-                : <>Existing member? Enter your email to receive a sign-in link.<br />New to AirIndex? <a href="/request-access" style={{ color: "#5B8DB8", textDecoration: "none" }}>Request access</a> to get started.</>
+                : <>Existing member? Enter your email to receive a sign-in link.<br />New to AirIndex? <a href="/contact" style={{ color: "#5B8DB8", textDecoration: "none" }}>Talk to us</a> to get started.</>
               }
             </p>
 
@@ -217,10 +217,10 @@ function LoginForm() {
                 <>
                   Need access?{" "}
                   <a
-                    href="/request-access"
+                    href="/contact"
                     style={{ color: "#5B8DB8", textDecoration: "none" }}
                   >
-                    Request access
+                    Talk to us
                   </a>
                 </>
               )}

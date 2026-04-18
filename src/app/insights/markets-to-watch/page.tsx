@@ -162,7 +162,7 @@ export default async function MarketsToWatchPage() {
                 borderRadius: 6,
               }}
             >
-              REQUEST ACCESS
+              TALK TO US
             </Link>
           </div>
         )}

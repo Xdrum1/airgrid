@@ -88,7 +88,7 @@ export default function PricingPage() {
           Market readiness data, gap analysis, regulatory monitoring, and infrastructure intelligence — scoped to what your organization needs.
         </p>
         <Link
-          href="/request-access"
+          href="/contact"
           style={{
             display: "inline-block",
             padding: "14px 36px",
@@ -102,7 +102,7 @@ export default function PricingPage() {
             borderRadius: 6,
           }}
         >
-          Request Access
+          Talk to Us
         </Link>
       </section>
 
@@ -182,7 +182,7 @@ export default function PricingPage() {
         </div>
         <div style={{ textAlign: "center", marginTop: 32 }}>
           <Link
-            href="/request-access"
+            href="/contact"
             style={{
               display: "inline-block",
               padding: "12px 32px",
@@ -195,7 +195,7 @@ export default function PricingPage() {
               textDecoration: "none",
             }}
           >
-            Request Access
+            Talk to Us
           </Link>
         </div>
       </section>

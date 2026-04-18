@@ -151,7 +151,7 @@ export default function ApiLandingPage() {
               marginLeft: "auto",
             }}
           >
-            REQUEST ACCESS &rarr;
+            TALK TO US &rarr;
           </Link>
         </div>
 
@@ -334,7 +334,7 @@ export default function ApiLandingPage() {
               textDecoration: "none",
             }}
           >
-            Request Access
+            Talk to Us
           </Link>
         </section>
 

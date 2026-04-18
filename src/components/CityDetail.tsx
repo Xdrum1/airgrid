@@ -447,7 +447,7 @@ export default function CityDetail({
                     fontFamily: "'Inter', sans-serif",
                   }}
                 >
-                  REQUEST ACCESS →
+                  TALK TO US →
                 </Link>
               </div>
             </div>
@@ -647,7 +647,7 @@ export default function CityDetail({
                     fontFamily: "'Inter', sans-serif",
                   }}
                 >
-                  REQUEST ACCESS →
+                  TALK TO US →
                 </Link>
               </div>
             </div>
