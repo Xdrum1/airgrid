@@ -384,6 +384,101 @@ export default async function RiskAssessmentPage({
           <QRow label="Q5 — eVTOL dimensional viability" value={r.q5EvtolViability} />
         </div>
 
+        {/* Dimensional constraint (eVTOL readiness) */}
+        {r.dimensional.controllingDimension != null && (
+          <>
+            <div style={S.sectionTag}>Dimensional Constraint (eVTOL Readiness)</div>
+            <div style={S.card}>
+              <div style={{ fontSize: 11, color: "#6b7280", marginBottom: 12 }}>
+                Computational pre-screen based on FAA NASR pad dimensions and AC 150/5390-2C formula chain.
+                Site-level validation (obstruction analysis, imagery confirmation) required before viability determination.
+              </div>
+              <div style={S.kv}>
+                <div>
+                  <div style={S.kvLabel}>Recorded Pad (TLOF)</div>
+                  <div style={S.kvVal}>{r.dimensional.padLengthFt} × {r.dimensional.padWidthFt} ft{r.dimensional.surfaceType ? ` (${r.dimensional.surfaceType})` : ""}</div>
+                </div>
+                <div>
+                  <div style={S.kvLabel}>Controlling Dimension</div>
+                  <div style={S.kvVal}>{r.dimensional.controllingDimension} ft</div>
+                </div>
+                <div>
+                  <div style={S.kvLabel}>Design Helicopter RD</div>
+                  <div style={S.kvVal}>{r.dimensional.maxDesignRD} ft</div>
+                </div>
+                <div>
+                  <div style={S.kvLabel}>Estimated Aircraft OL</div>
+                  <div style={S.kvVal}>{r.dimensional.estimatedOL} ft</div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
+                <div style={{
+                  flex: 1,
+                  padding: "10px 14px",
+                  borderRadius: 6,
+                  background: r.dimensional.fatoGap15D! <= 0 ? "#ecfdf5" : "#fef2f2",
+                  border: `1px solid ${r.dimensional.fatoGap15D! <= 0 ? "#a7f3d0" : "#fecaca"}`,
+                }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", color: "#374151", textTransform: "uppercase" as const, marginBottom: 4 }}>
+                    Heliport Standard (1.5D)
+                  </div>
+                  <div style={{ fontSize: 13, color: "#111", fontWeight: 600, marginBottom: 2 }}>
+                    Required FATO: {r.dimensional.requiredFato15D} ft
+                  </div>
+                  <div style={{ fontSize: 11, color: r.dimensional.fatoGap15D! <= 0 ? "#047857" : "#b91c1c" }}>
+                    {r.dimensional.fatoGap15D! <= 0
+                      ? "Within recorded pad dimensions"
+                      : `${r.dimensional.fatoGap15D} ft beyond recorded pad — site expansion required`}
+                  </div>
+                </div>
+                <div style={{
+                  flex: 1,
+                  padding: "10px 14px",
+                  borderRadius: 6,
+                  background: r.dimensional.fatoGap2D! <= 0 ? "#ecfdf5" : "#fef2f2",
+                  border: `1px solid ${r.dimensional.fatoGap2D! <= 0 ? "#a7f3d0" : "#fecaca"}`,
+                }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", color: "#374151", textTransform: "uppercase" as const, marginBottom: 4 }}>
+                    eVTOL Requirement (2D — EB-105A)
+                  </div>
+                  <div style={{ fontSize: 13, color: "#111", fontWeight: 600, marginBottom: 2 }}>
+                    Required FATO: {r.dimensional.requiredFato2D} ft
+                  </div>
+                  <div style={{ fontSize: 11, color: r.dimensional.fatoGap2D! <= 0 ? "#047857" : "#b91c1c" }}>
+                    {r.dimensional.fatoGap2D! <= 0
+                      ? "Within recorded pad dimensions"
+                      : `${r.dimensional.fatoGap2D} ft beyond recorded pad — structural expansion required`}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 10, fontSize: 11, color: "#6b7280", padding: "8px 10px", background: "#f9fafb", borderRadius: 4 }}>
+                Safety area perimeter: {r.dimensional.requiredSafetyArea} ft (OL × 0.28).
+                Whether the surrounding site can accommodate the required FATO and safety area depends on
+                available expansion area and obstruction environment — site-level validation required.
+              </div>
+
+              <div style={{ marginTop: 12, fontSize: 10, color: "#9ca3af" }}>
+                Data source: FAA NASR APT_RWY (pad dimensions). Formula: OL = 1.2 × RD; FATO = OL × D-factor; SA = OL × 0.28.
+                Pre/post AC 150/5390-2C (2012) pad notation differences may apply.
+              </div>
+            </div>
+          </>
+        )}
+
+        {r.dimensional.controllingDimension == null && (
+          <>
+            <div style={S.sectionTag}>Dimensional Constraint (eVTOL Readiness)</div>
+            <div style={S.card}>
+              <div style={{ fontSize: 12, color: "#6b7280" }}>
+                No pad dimension data available in FAA NASR records for this facility.
+                Dimensional viability assessment requires physical survey or satellite imagery analysis.
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Risk factors */}
         {r.gapFlags.length > 0 && (
           <>

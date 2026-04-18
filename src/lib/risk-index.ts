@@ -33,6 +33,21 @@ export interface UnderwritingRecommendation {
   conditions: string[];         // Policy conditions / endorsements to attach
 }
 
+export interface DimensionalAnalysis {
+  padLengthFt: number | null;
+  padWidthFt: number | null;
+  surfaceType: string | null;
+  controllingDimension: number | null;   // min(length, width) — the TLOF / binding constraint
+  estimatedOL: number | null;            // controlling dim × 1.2 (OL from RD per AC 1.8.31)
+  maxDesignRD: number | null;            // = controllingDimension (TLOF = 1×RD on legacy pads)
+  requiredFato15D: number | null;        // OL × 1.5 (current heliport standard)
+  requiredFato2D: number | null;         // OL × 2.0 (EB-105A eVTOL requirement)
+  requiredSafetyArea: number | null;     // OL × 0.28 (safety area perimeter)
+  fatoGap15D: number | null;             // requiredFato15D - controllingDimension (ft beyond pad)
+  fatoGap2D: number | null;              // requiredFato2D - controllingDimension (ft beyond pad)
+  dataSource: "nasr_apt_rwy" | "unknown";
+}
+
 export interface PeerBenchmark {
   peerCount: number;
   betterThanPct: number;        // % of peers this site is cleaner than (higher = better)
@@ -74,6 +89,9 @@ export interface SiteRiskAssessment {
 
   // State context
   stateContext: StateContext | null;
+
+  // Dimensional
+  dimensional: DimensionalAnalysis;
 
   // Derived
   gapFlags: SiteGapFlag[];
@@ -155,6 +173,7 @@ function buildGapFlags(c: {
   burdenLevel: string | null;
   burdenNote: string | null;
   stateCode: string;
+  dimensional?: DimensionalAnalysis;
 }): SiteGapFlag[] {
   const flags: SiteGapFlag[] = [];
 
@@ -190,11 +209,18 @@ function buildGapFlags(c: {
   }
 
   if (c.q5EvtolViability === "at_risk") {
+    const d = c.dimensional;
+    const hasDims = d && d.controllingDimension != null;
+    const dimDetail = hasDims
+      ? `Recorded pad (TLOF): ${d.padLengthFt}×${d.padWidthFt} ft. Design helicopter RD: ${d.maxDesignRD} ft, estimated OL: ${d.estimatedOL} ft. Required FATO at 1.5D (current standard): ${d.requiredFato15D} ft — ${d.fatoGap15D! > 0 ? `${d.fatoGap15D} ft beyond pad` : "within pad"}. Required FATO at 2D (EB-105A): ${d.requiredFato2D} ft — ${d.fatoGap2D! > 0 ? `${d.fatoGap2D} ft beyond pad` : "within pad"}. Whether the surrounding site can accommodate the required FATO depends on available expansion area and obstruction environment — site-level validation required.`
+      : "Most existing heliport geometries do not meet current vertiport dimensional criteria (EB-105A) without structural expansion. FATO requires 2× the controlling dimension as a load-bearing surface; most hospital rooftop pads cannot physically accommodate this increase.";
     flags.push({
       code: "EVTOL_VIABILITY",
       severity: "moderate",
-      title: "eVTOL dimensional viability at risk",
-      detail: "Most existing heliport geometries do not meet current vertiport dimensional criteria (EB-105A) without structural expansion. FATO requires 2× the controlling dimension as a load-bearing surface; most hospital rooftop pads cannot physically accommodate this increase.",
+      title: hasDims
+        ? `eVTOL dimensional constraint — FATO (2D) requires ${d.fatoGap2D} ft beyond recorded pad`
+        : "eVTOL dimensional viability at risk",
+      detail: dimDetail,
       remediation: "Site modification or endorsement acknowledging current-aircraft-only coverage. Physical expansion constrained by surrounding structures at most rooftop facilities.",
       tierImpact: "Forward-looking structural constraint; does not block current-year coverage terms but signals long-term capex exposure.",
     });
@@ -373,6 +399,66 @@ function buildExposureNote(
 }
 
 // ─────────────────────────────────────────────────────────
+// Dimensional pre-screen (Rex Alexander formula chain)
+// ─────────────────────────────────────────────────────────
+//
+// TLOF ≈ helicopter RD on legacy pads.
+// OL = 1.2 × RD (AC 150/5390-2C §1.8.31).
+// FATO (1.5D) = 1.5 × OL — current heliport standard.
+// FATO (2D)   = 2.0 × OL — EB-105A eVTOL requirement.
+// Safety Area = 0.28 × OL.
+//
+// This is a computational pre-screen, not a definitive filter.
+// Imagery validation, obstruction analysis, and site confirmation
+// are required before any viability determination.
+
+function computeDimensionalAnalysis(
+  padLengthFt: number | null,
+  padWidthFt: number | null,
+  surfaceType: string | null,
+): DimensionalAnalysis {
+  if (padLengthFt == null || padWidthFt == null) {
+    return {
+      padLengthFt, padWidthFt, surfaceType,
+      controllingDimension: null,
+      maxDesignRD: null,
+      estimatedOL: null,
+      requiredFato15D: null,
+      requiredFato2D: null,
+      requiredSafetyArea: null,
+      fatoGap15D: null,
+      fatoGap2D: null,
+      dataSource: "unknown",
+    };
+  }
+
+  const controllingDimension = Math.min(padLengthFt, padWidthFt);
+  // TLOF = 1×RD on legacy pads; RD is the controlling dimension
+  const maxDesignRD = controllingDimension;
+  // OL = 1.2 × RD (AC 150/5390-2C §1.8.31)
+  const estimatedOL = Math.round(controllingDimension * 1.2 * 10) / 10;
+  const requiredFato15D = Math.round(estimatedOL * 1.5 * 10) / 10;
+  const requiredFato2D = Math.round(estimatedOL * 2.0 * 10) / 10;
+  const requiredSafetyArea = Math.round(estimatedOL * 0.28 * 10) / 10;
+  // How much FATO extends beyond the pad — the expansion gap
+  const fatoGap15D = Math.round((requiredFato15D - controllingDimension) * 10) / 10;
+  const fatoGap2D = Math.round((requiredFato2D - controllingDimension) * 10) / 10;
+
+  return {
+    padLengthFt, padWidthFt, surfaceType,
+    controllingDimension,
+    maxDesignRD,
+    estimatedOL,
+    requiredFato15D,
+    requiredFato2D,
+    requiredSafetyArea,
+    fatoGap15D,
+    fatoGap2D,
+    dataSource: "nasr_apt_rwy",
+  };
+}
+
+// ─────────────────────────────────────────────────────────
 // Public entry
 // ─────────────────────────────────────────────────────────
 
@@ -389,6 +475,12 @@ export async function getSiteRiskAssessment(siteId: string): Promise<SiteRiskAss
   const oeCount = await prisma.oeaaaDetermination.count({
     where: { linkedHeliportId: siteId },
   });
+
+  const dimensional = computeDimensionalAnalysis(
+    heliport.padLengthFt,
+    heliport.padWidthFt,
+    heliport.surfaceType,
+  );
 
   let marketCity: City | null = null;
   if (heliport.cityId) {
@@ -421,6 +513,7 @@ export async function getSiteRiskAssessment(siteId: string): Promise<SiteRiskAss
     burdenLevel: stateCtx?.regulatoryBurdenLevel ?? null,
     burdenNote: stateCtx?.regulatoryBurdenNote ?? null,
     stateCode: heliport.state,
+    dimensional,
   }).sort((a, b) => {
     const ord = { critical: 0, high: 1, moderate: 2, low: 3 } as const;
     return ord[a.severity] - ord[b.severity];
@@ -472,6 +565,7 @@ export async function getSiteRiskAssessment(siteId: string): Promise<SiteRiskAss
 
     stateContext: stateCtx,
 
+    dimensional,
     gapFlags,
     exposureNote,
     underwriting,

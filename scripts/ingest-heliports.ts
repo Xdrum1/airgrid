@@ -94,6 +94,7 @@ function parseCSVLine(line: string): string[] {
 
 const DATA_DIR = path.join(process.cwd(), "data", "nasr");
 const CSV_FILE = path.join(DATA_DIR, "APT_BASE.csv");
+const RWY_FILE = path.join(DATA_DIR, "APT_RWY.csv");
 
 async function ensureData(): Promise<string> {
   if (existsSync(CSV_FILE)) {
@@ -151,6 +152,62 @@ interface HeliportRecord {
   lng: number;
   elevation: number | null;
   statusCode: string;
+  padLengthFt: number | null;
+  padWidthFt: number | null;
+  surfaceType: string | null;
+  surfaceCondition: string | null;
+}
+
+interface RwyRecord {
+  arptId: string;
+  rwyLen: number | null;
+  rwyWidth: number | null;
+  surfaceType: string | null;
+  condition: string | null;
+}
+
+async function loadRwyDimensions(): Promise<Map<string, RwyRecord>> {
+  const map = new Map<string, RwyRecord>();
+  if (!existsSync(RWY_FILE)) {
+    console.log("APT_RWY.csv not found — skipping pad dimensions");
+    return map;
+  }
+  const content = await readFile(RWY_FILE, "utf-8");
+  const lines = content.split("\n");
+  const header = parseCSVLine(lines[0]);
+  const col = (name: string) => header.indexOf(name);
+
+  const iSiteType = col("SITE_TYPE_CODE");
+  const iArptId = col("ARPT_ID");
+  const iLen = col("RWY_LEN");
+  const iWidth = col("RWY_WIDTH");
+  const iSurface = col("SURFACE_TYPE_CODE");
+  const iCond = col("COND");
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const fields = parseCSVLine(line);
+    if (fields[iSiteType] !== "H") continue;
+
+    const arptId = fields[iArptId];
+    const rwyLen = parseInt(fields[iLen]);
+    const rwyWidth = parseInt(fields[iWidth]);
+
+    // Keep the first pad per facility (H1 is primary)
+    if (!map.has(arptId)) {
+      map.set(arptId, {
+        arptId,
+        rwyLen: isNaN(rwyLen) ? null : rwyLen,
+        rwyWidth: isNaN(rwyWidth) ? null : rwyWidth,
+        surfaceType: fields[iSurface] || null,
+        condition: fields[iCond] || null,
+      });
+    }
+  }
+
+  console.log(`Loaded pad dimensions for ${map.size} heliports from APT_RWY.csv`);
+  return map;
 }
 
 async function main() {
@@ -158,6 +215,7 @@ async function main() {
   if (DRY_RUN) console.log("(DRY RUN — no database writes)\n");
 
   const csvPath = await ensureData();
+  const rwyDims = await loadRwyDimensions();
   const content = await readFile(csvPath, "utf-8");
   const lines = content.split("\n");
 
@@ -202,6 +260,7 @@ async function main() {
     const lngNormalized = lng > 0 ? -lng : lng;
 
     const elev = parseFloat(fields[iElev]);
+    const rwy = rwyDims.get(fields[iArptId]);
 
     heliports.push({
       id: fields[iArptId],
@@ -215,6 +274,10 @@ async function main() {
       lng: lngNormalized,
       elevation: isNaN(elev) ? null : elev,
       statusCode: fields[iStatus] || "O",
+      padLengthFt: rwy?.rwyLen ?? null,
+      padWidthFt: rwy?.rwyWidth ?? null,
+      surfaceType: rwy?.surfaceType ?? null,
+      surfaceCondition: rwy?.condition ?? null,
     });
   }
 
@@ -279,6 +342,10 @@ async function main() {
         elevation: h.elevation,
         statusCode: h.statusCode,
         cityId: matchMetro(h.lat, h.lng),
+        padLengthFt: h.padLengthFt,
+        padWidthFt: h.padWidthFt,
+        surfaceType: h.surfaceType,
+        surfaceCondition: h.surfaceCondition,
       })),
       skipDuplicates: true,
     });

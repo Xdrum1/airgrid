@@ -478,6 +478,10 @@ model Heliport {
   basedAircraft   Int?
   annualOps       Int?
   cityId          String?  // mapped AirIndex market ID (null if not in tracked metro)
+  padLengthFt     Int?     // from APT_RWY.csv RWY_LEN — pad dimension in feet
+  padWidthFt      Int?     // from APT_RWY.csv RWY_WIDTH — pad dimension in feet
+  surfaceType     String?  // from APT_RWY.csv SURFACE_TYPE_CODE — CONC, ASPH, TURF, etc.
+  surfaceCondition String? // from APT_RWY.csv COND — GOOD, FAIR, POOR
   ingestedAt      DateTime @default(now())
 
   @@index([cityId])
