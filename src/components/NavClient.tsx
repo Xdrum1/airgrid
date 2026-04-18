@@ -78,10 +78,6 @@ export default function NavClient({
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  // Ref — not state — so closures always see the latest handle. Avoids
-  // the rapid-hover race where setHoverTimeout(state) + stale closure
-  // could leak a pending close timer past a new open.
-  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Close everything on route change
   useEffect(() => {
@@ -125,39 +121,30 @@ export default function NavClient({
     [isActive]
   );
 
-  const handleMouseEnter = (label: string) => {
-    if (closeTimerRef.current) {
-      clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = null;
-    }
-    setOpenDropdown(label);
+  const handleToggle = (label: string) => {
+    setOpenDropdown((prev) => (prev === label ? null : label));
   };
 
-  const handleMouseLeave = () => {
-    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-    closeTimerRef.current = setTimeout(() => {
-      setOpenDropdown(null);
-      closeTimerRef.current = null;
-    }, 180);
-  };
-
-  // Clear pending timer on unmount
+  // Close dropdown when clicking outside the nav
+  const navRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    return () => {
-      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    const handler = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
+      }
     };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
   }, []);
 
   return (
     <>
       {/* ── Desktop nav ── */}
-      <div className="nav-desktop" style={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <div ref={navRef} className="nav-desktop" style={{ display: "flex", alignItems: "center", gap: 2 }}>
         {NAV_ITEMS.map((item) => (
           <div
             key={item.label}
             style={{ position: "relative" }}
-            onMouseEnter={() => item.children && handleMouseEnter(item.label)}
-            onMouseLeave={() => item.children && handleMouseLeave()}
           >
             {item.href ? (
               <Link
@@ -173,6 +160,10 @@ export default function NavClient({
             ) : (
               <span
                 className="nav-link"
+                role="button"
+                tabIndex={0}
+                onClick={() => handleToggle(item.label)}
+                onKeyDown={(e) => e.key === "Enter" && handleToggle(item.label)}
                 style={{
                   ...topLinkStyle,
                   color: isGroupActive(item) ? linkActiveColor : openDropdown === item.label ? linkHoverColor : linkColor,
