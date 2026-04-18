@@ -16,9 +16,9 @@ const FACTORS = [
   {
     key: "activePilotProgram",
     label: "Active Pilot Program",
-    weight: 15,
+    weight: 0,
     rationale:
-      "An active pilot program is scored as a binary factor because it represents demonstrated, verified operator commitment to a specific market — not intent, not a memorandum of understanding, not a press release. Pilot programs require FAA coordination, physical infrastructure, and operational investment. Their presence confirms that at least one operator and one regulatory body have made the market actionable. The 15-point weight reflects the significance of this signal relative to the full scoring range. A pilot program in isolation does not indicate a market is ready for full commercial operations, but its absence is a meaningful gap in any market that otherwise scores well on legislative and regulatory factors.",
+      "An active pilot program is scored as a binary factor because it represents demonstrated, verified operator commitment to a specific market — not intent, not a memorandum of understanding, not a press release. Pilot programs require FAA coordination, physical infrastructure, and operational investment. Their presence confirms that at least one operator and one regulatory body have made the market actionable. The weight assigned reflects the significance of this signal relative to the full scoring range. A pilot program in isolation does not indicate a market is ready for full commercial operations, but its absence is a meaningful gap in any market that otherwise scores well on legislative and regulatory factors.",
     description:
       "Has the market launched or hosted an active UAM pilot program? Pilot programs demonstrate real-world operational commitment — not just regulatory intent, but aircraft flying in the airspace under FAA-approved conditions. This is the strongest signal of market readiness because it requires simultaneous coordination of regulatory approval, operator participation, infrastructure access, and community engagement.",
     qualifies:
@@ -32,9 +32,9 @@ const FACTORS = [
   {
     key: "approvedVertiport",
     label: "Approved Vertiport",
-    weight: 15,
+    weight: 0,
     rationale:
-      "Approved vertiport status is binary because the distinction between a planned vertiport and an approved one is legally and operationally categorical. FAA airspace determination, local permitting, and structural approval represent a completed regulatory process — not a proposal. The 15-point weight reflects that physical infrastructure is a hard prerequisite for commercial operations. A market with approved vertiport infrastructure has cleared the most document-intensive, multi-stakeholder approval process in the readiness stack. The absence of approved vertiports in a market that otherwise scores well on legislation and regulatory posture is a specific, addressable gap — and the AirIndex gap analysis engine surfaces that gap explicitly.",
+      "Approved vertiport status is binary because the distinction between a planned vertiport and an approved one is legally and operationally categorical. FAA airspace determination, local permitting, and structural approval represent a completed regulatory process — not a proposal. The weight assigned reflects that physical infrastructure is a hard prerequisite for commercial operations. A market with approved vertiport infrastructure has cleared the most document-intensive, multi-stakeholder approval process in the readiness stack. The absence of approved vertiports in a market that otherwise scores well on legislation and regulatory posture is a specific, addressable gap — and the AirIndex gap analysis engine surfaces that gap explicitly.",
     description:
       "Does the market have at least one permitted, under-construction, or operational vertiport site? Vertiports are the physical infrastructure that makes commercial UAM possible. A market with approved vertiport sites has cleared the hardest regulatory and zoning hurdles — environmental review, community input, building permits, and FAA airspace coordination.",
     qualifies:
@@ -48,9 +48,9 @@ const FACTORS = [
   {
     key: "activeOperatorPresence",
     label: "Active Operator Presence",
-    weight: 15,
+    weight: 0,
     rationale:
-      "Active operator presence is scored as binary because the distinction between stated interest and operational commitment is meaningful to every decision-maker in the platform's audience. Operators are scored as present when they have made a public, verifiable commitment to a specific market — through route announcements, facility agreements, regulatory filings, or demonstrated flight operations. The 15-point weight reflects that operator presence is both a market readiness signal and a market readiness driver. Operators accelerate the regulatory and infrastructure development of the markets they commit to. Markets without any operator presence, regardless of legislative posture, remain theoretical deployment candidates rather than active ones.",
+      "Active operator presence is scored as binary because the distinction between stated interest and operational commitment is meaningful to every decision-maker in the platform's audience. Operators are scored as present when they have made a public, verifiable commitment to a specific market — through route announcements, facility agreements, regulatory filings, or demonstrated flight operations. The weight assigned reflects that operator presence is both a market readiness signal and a market readiness driver. Operators accelerate the regulatory and infrastructure development of the markets they commit to. Markets without any operator presence, regardless of legislative posture, remain theoretical deployment candidates rather than active ones.",
     description:
       "Is at least one eVTOL manufacturer or air taxi operator actively engaged in the market? Operator presence is a market signal — operators choose launch markets based on regulatory readiness, infrastructure availability, demand projections, and competitive positioning. An operator committing resources to a market validates the other readiness factors.",
     qualifies:
@@ -64,9 +64,9 @@ const FACTORS = [
   {
     key: "vertiportZoning",
     label: "Vertiport Zoning",
-    weight: 15,
+    weight: 0,
     rationale:
-      "Vertiport zoning addresses a gap that is distinct from both legislation and approved vertiport status. A state can enact AAM legislation without municipalities updating their zoning codes to accommodate vertical flight infrastructure. An approved vertiport can exist as a one-off variance without any systematic zoning framework. This factor scores whether a market has established a repeatable, codified zoning pathway for vertiport development — not just whether one vertiport has been approved. The 15-point binary weight reflects that zoning frameworks are the infrastructure layer for infrastructure: they determine whether the next vertiport in a market is straightforward or extraordinary.",
+      "Vertiport zoning addresses a gap that is distinct from both legislation and approved vertiport status. A state can enact AAM legislation without municipalities updating their zoning codes to accommodate vertical flight infrastructure. An approved vertiport can exist as a one-off variance without any systematic zoning framework. This factor scores whether a market has established a repeatable, codified zoning pathway for vertiport development — not just whether one vertiport has been approved. The weight assigned reflects that zoning frameworks are the infrastructure layer for infrastructure: they determine whether the next vertiport in a market is straightforward or extraordinary.",
     description:
       "Has the city or county adopted zoning provisions that accommodate vertiport development? Zoning is the earliest and most controllable municipal signal of UAM readiness. Markets that have proactively updated land-use codes to permit vertiports are removing barriers before operators arrive — signaling institutional readiness and reducing timeline risk for commercial deployments.",
     qualifies:
@@ -80,12 +80,12 @@ const FACTORS = [
   {
     key: "regulatoryPosture",
     label: "Regulatory Posture",
-    weight: 10,
+    weight: 0,
     graduated: true,
     rationale:
-      "Regulatory posture captures the orientation of a market's regulatory environment toward advanced air mobility — whether state and municipal agencies and officials are actively engaging with AAM development, passively permitting it, or creating friction. Unlike the binary factors above, regulatory posture is graduated because it exists on a spectrum. A market with a formally designated AAM coordinator, published guidance documents, and active participation in FAA programs scores differently than a market where AAM has not registered with regulators at all. The 10-point weight reflects that posture is an enabling condition rather than a prerequisite — a favorable posture accelerates everything else in the stack, but it cannot substitute for legislation, infrastructure, or operator commitment.",
+      "Regulatory posture captures the orientation of a market's regulatory environment toward advanced air mobility — whether state and municipal agencies and officials are actively engaging with AAM development, passively permitting it, or creating friction. Unlike the binary factors above, regulatory posture is graduated because it exists on a spectrum. A market with a formally designated AAM coordinator, published guidance documents, and active participation in FAA programs scores differently than a market where AAM has not registered with regulators at all. The weight assigned reflects that posture is an enabling condition rather than a prerequisite — a favorable posture accelerates everything else in the stack, but it cannot substitute for legislation, infrastructure, or operator commitment.",
     description:
-      "What is the overall regulatory stance toward UAM at the municipal level? This is the only graduated factor in the model. Rather than binary yes/no, regulatory posture is assessed on a three-level scale: Friendly (10 points), Neutral (5 points), or Restrictive (0 points). This reflects the reality that regulatory environments exist on a spectrum — a city can be passively permissive without being actively supportive. Note: Regulatory posture scoring reflects the observable framework of state and local regulations governing vertical flight infrastructure. The FAA does not hold enforcement authority over private-use heliports. Conditional and objectionable airspace determinations issued by the FAA carry no mandatory compliance mechanism for private-use facilities. REG scores reflect regulatory framework strength, not verified compliance rates.",
+      "What is the overall regulatory stance toward UAM at the municipal level? This is the only graduated factor in the model. Rather than binary yes/no, regulatory posture is assessed on a three-level scale: Friendly (full weight), Neutral (partial weight), or Restrictive (zero). This reflects the reality that regulatory environments exist on a spectrum — a city can be passively permissive without being actively supportive. Note: Regulatory posture scoring reflects the observable framework of state and local regulations governing vertical flight infrastructure. The FAA does not hold enforcement authority over private-use heliports. Conditional and objectionable airspace determinations issued by the FAA carry no mandatory compliance mechanism for private-use facilities. REG scores reflect regulatory framework strength, not verified compliance rates.",
     qualifies:
       "Friendly: City has formed a UAM task force, joined federal programs (e.g., NASA AAM National Campaign), issued public statements of support, or allocated staff/budget to UAM planning. Neutral: No active opposition or support; standard permitting processes apply without UAM-specific provisions. Restrictive: City has enacted ordinances limiting drone/eVTOL operations, issued public opposition, or created regulatory barriers beyond standard requirements.",
     doesNotQualify:
@@ -97,12 +97,12 @@ const FACTORS = [
   {
     key: "stateLegislation",
     label: "State Legislation",
-    weight: 20,
+    weight: 0,
     graduated: true,
     rationale:
-      "State legislation is the highest-weighted factor in the AirIndex scoring model because it is the foundational legal prerequisite for everything else. Without enacted AAM legislation, operators lack the legal certainty required to commit capital, vertiport developers lack the regulatory framework required to permit infrastructure, and municipalities lack the guidance required to update zoning codes. Legislation is not sufficient for market readiness — but it is the gating condition. The factor is graduated rather than binary because legislative quality varies: a comprehensive framework covering operator permitting, vertiport siting, and airspace coordination scores higher than a single enabling resolution. The weight of 20 points reflects the asymmetric importance of this factor — a market with enacted legislation and nothing else has a credible path to readiness; a market with strong infrastructure and no legislation does not.",
+      "State legislation is the highest-weighted factor in the AirIndex scoring model because it is the foundational legal prerequisite for everything else. Without enacted AAM legislation, operators lack the legal certainty required to commit capital, vertiport developers lack the regulatory framework required to permit infrastructure, and municipalities lack the guidance required to update zoning codes. Legislation is not sufficient for market readiness — but it is the gating condition. The factor is graduated rather than binary because legislative quality varies: a comprehensive framework covering operator permitting, vertiport siting, and airspace coordination scores higher than a single enabling resolution. The elevated weight reflects the asymmetric importance of this factor — a market with enacted legislation and nothing else has a credible path to readiness; a market with strong infrastructure and no legislation does not.",
     description:
-      "What is the state of UAM-enabling legislation? This factor uses a graduated three-tier model: Enacted (20 pts) — UAM-specific legislation signed into law; Actively Moving (10 pts) — UAM-specific bills in late legislative stages with real momentum; None (0 pts) — no meaningful UAM legislative activity. State-level legislation creates the legal framework that allows (or blocks) commercial UAM at scale. States with enacted legislation signal long-term institutional commitment. States with actively moving bills show community preparedness — a leading indicator of future enactment. This factor was doubled from 10 to 20 points in v1.3 based on field validation showing that legislation functions as a prerequisite — infrastructure developers require a legislative framework before committing capital.",
+      "What is the state of UAM-enabling legislation? This factor uses a graduated three-tier model: Enacted (full weight) — UAM-specific legislation signed into law; Actively Moving (partial weight) — UAM-specific bills in late legislative stages with real momentum; None (zero) — no meaningful UAM legislative activity. State-level legislation creates the legal framework that allows (or blocks) commercial UAM at scale. States with enacted legislation signal long-term institutional commitment. States with actively moving bills show community preparedness — a leading indicator of future enactment. This factor was elevated to the highest weight in v1.3 based on field validation showing that legislation functions as a prerequisite — infrastructure developers require a legislative framework before committing capital.",
     qualifies:
       "Enacted (full points): State-level UAM or AAM legislation signed into law — enabling acts, task force creation with legislative mandate, state DOT integration directives, or dedicated AAM appropriations. Actively Moving (partial points): UAM-specific bills in late stages — transmit to house, second reading, ordered enrolled, governor's desk, or committee recommendation for passage. Must show coordinated legislative activity, not just a single early-stage referral.",
     doesNotQualify:
@@ -114,12 +114,12 @@ const FACTORS = [
   {
     key: "weatherInfrastructure",
     label: "Weather Infrastructure",
-    weight: 10,
+    weight: 0,
     graduated: true,
     rationale:
-      "Weather infrastructure scores the availability of low-altitude meteorological data adequate for automated eVTOL flight operations. Conventional aviation weather infrastructure was built for airports and flight levels above 10,000 feet. eVTOL aircraft operate in the 30\u20132,000 foot AGL range — the low-altitude boundary layer where commercial weather data is sparse, delayed, and often inaccurate for the precision that autonomous flight requires. The USDOT National AAM Strategy (December 2025) explicitly identifies weather as one of four infrastructure pillars for advanced air mobility, alongside physical infrastructure, energy, and spectrum. The factor is graduated based on proximity of ASOS/AWOS stations to tracked facilities and deployment of low-altitude sensing infrastructure. The 10-point weight reflects the current state of the market — weather infrastructure is a universal gap across all tracked markets, but its absence is a deployment constraint rather than a legal or regulatory blocker. This factor is developed in partnership with TruWeather Solutions, whose methodology for ranking weather infrastructure readiness is grounded in FAA NPRM Part 108 standards.",
+      "Weather infrastructure scores the availability of low-altitude meteorological data adequate for automated eVTOL flight operations. Conventional aviation weather infrastructure was built for airports and flight levels above 10,000 feet. eVTOL aircraft operate in the 30\u20132,000 foot AGL range — the low-altitude boundary layer where commercial weather data is sparse, delayed, and often inaccurate for the precision that autonomous flight requires. The USDOT National AAM Strategy (December 2025) explicitly identifies weather as one of four infrastructure pillars for advanced air mobility, alongside physical infrastructure, energy, and spectrum. The factor is graduated based on proximity of ASOS/AWOS stations to tracked facilities and deployment of low-altitude sensing infrastructure. The weight assigned reflects the current state of the market — weather infrastructure is a universal gap across all tracked markets, but its absence is a deployment constraint rather than a legal or regulatory blocker. This factor is developed in partnership with TruWeather Solutions, whose methodology for ranking weather infrastructure readiness is grounded in FAA NPRM Part 108 standards.",
     description:
-      "Weather infrastructure readiness tracks low-altitude weather sensing at the city level. The USDOT AAM National Strategy identifies weather as one of four infrastructure pillars alongside physical, energy, and spectrum — making it a federally recognized prerequisite for commercial AAM operations, not an AirIndex-specific judgment. Weather remains the most uncertain and uncontrollable factor that will impact schedule reliability and operator dispatch rates, especially in built-up urban areas where confused winds will impact vertiport vehicle spacing and throughput. Better weather infrastructure will increase weather and wind certainty, contributing to a safer and more efficient airspace and vertiport ecosystem. States are a key enabler in closing the weather infrastructure gap. Weather data at or below 500 feet AGL is critical for eVTOL operations — standard airport weather stations (ASOS/AWOS) report conditions at runway level but do not capture the wind shear, turbulence, and microclimate data required for vertiport approach corridors. This factor uses a graduated three-tier model: Full (10 pts) — dedicated low-altitude sensing deployed in the market; Partial (5 pts) — standard airport weather infrastructure exists but lacks UAM-specific coverage; None (0 pts) — no meaningful weather infrastructure for low-altitude operations. As dedicated sensor networks expand across US markets, this factor will increasingly differentiate markets that have invested in operational weather infrastructure from those relying on general aviation coverage.",
+      "Weather infrastructure readiness tracks low-altitude weather sensing at the city level. The USDOT AAM National Strategy identifies weather as one of four infrastructure pillars alongside physical, energy, and spectrum — making it a federally recognized prerequisite for commercial AAM operations, not an AirIndex-specific judgment. Weather remains the most uncertain and uncontrollable factor that will impact schedule reliability and operator dispatch rates, especially in built-up urban areas where confused winds will impact vertiport vehicle spacing and throughput. Better weather infrastructure will increase weather and wind certainty, contributing to a safer and more efficient airspace and vertiport ecosystem. States are a key enabler in closing the weather infrastructure gap. Weather data at or below 500 feet AGL is critical for eVTOL operations — standard airport weather stations (ASOS/AWOS) report conditions at runway level but do not capture the wind shear, turbulence, and microclimate data required for vertiport approach corridors. This factor uses a graduated three-tier model: Full (full weight) — dedicated low-altitude sensing deployed in the market; Partial (partial weight) — standard airport weather infrastructure exists but lacks UAM-specific coverage; None (zero) — no meaningful weather infrastructure for low-altitude operations. As dedicated sensor networks expand across US markets, this factor will increasingly differentiate markets that have invested in operational weather infrastructure from those relying on general aviation coverage.",
     qualifies:
       "Full: Dedicated low-altitude weather sensors, eIPP (enhanced Instrument Performance Products) deployments, or UAM-specific weather observation networks operating within the metropolitan area. Partial: ASOS/AWOS weather stations at airports within the metro area providing surface-level observations applicable to nearby vertiport operations. None: No weather observation infrastructure relevant to low-altitude UAM operations.",
     doesNotQualify:
@@ -349,37 +349,9 @@ export default function MethodologyPage() {
                       </span>
                     )}
                   </div>
-                  <div
-                    style={{
-                      fontFamily: "'Space Mono', monospace",
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "#5B8DB8",
-                    }}
-                  >
-                    {f.weight} pts
-                  </div>
                 </div>
 
-                {/* Weight bar */}
-                <div
-                  style={{
-                    height: 3,
-                    background: "#e3e8ee",
-                    borderRadius: 2,
-                    marginBottom: 16,
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: `${(f.weight / totalWeight) * 100}%`,
-                      height: "100%",
-                      background: "#5B8DB8",
-                      borderRadius: 2,
-                    }}
-                  />
-                </div>
+                <div style={{ height: 1, background: "#e3e8ee", marginBottom: 16 }} />
 
                 {/* Institutional rationale — why this factor, why this weight */}
                 {f.rationale && (
@@ -473,8 +445,9 @@ export default function MethodologyPage() {
             Differential Weighting
           </h3>
           <p style={{ marginBottom: 16 }}>
-            Factors are not equally weighted. The model uses a three-tier weight structure that
-            encodes a thesis about what drives commercial readiness:
+            Factors are weighted differentially based on their direct impact on operational readiness.
+            The model uses a three-tier weight structure organized around a thesis about what drives
+            commercial deployment:
           </p>
           <div
             style={{
@@ -486,36 +459,39 @@ export default function MethodologyPage() {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ color: "#0a2540", fontSize: 13 }}>Legislative Framework</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", color: "#5B8DB8", fontSize: 13, fontWeight: 700 }}>20 pts</span>
+              <div>
+                <span style={{ color: "#0a2540", fontSize: 13, fontWeight: 600 }}>Tier 1 — Legislative Framework</span>
+                <span style={{ color: "#8792a2", fontSize: 11, marginLeft: 8 }}>highest weight</span>
               </div>
               <p style={{ color: "#425466", fontSize: 13, marginTop: -4 }}>
-                State Legislation &mdash; elevated to the highest weight in v1.3 based on field validation. Legislation creates the legal framework infrastructure developers require before committing capital. Community preparedness, reflected in legislative activity, precedes and enables operator engagement.
+                State Legislation &mdash; elevated to the highest weight in v1.3 based on field validation. Legislation creates the legal framework infrastructure developers require before committing capital.
               </p>
               <div style={{ height: 1, background: "#e3e8ee" }} />
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ color: "#0a2540", fontSize: 13 }}>Infrastructure &amp; Market Commitment</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", color: "#5B8DB8", fontSize: 13, fontWeight: 700 }}>15 pts each</span>
+              <div>
+                <span style={{ color: "#0a2540", fontSize: 13, fontWeight: 600 }}>Tier 2 — Infrastructure &amp; Market Commitment</span>
+                <span style={{ color: "#8792a2", fontSize: 11, marginLeft: 8 }}>moderate weight</span>
               </div>
               <p style={{ color: "#425466", fontSize: 13, marginTop: -4 }}>
                 Pilot Program, Approved Vertiport, Active Operator Presence, Vertiport Zoning &mdash; the operational and infrastructure signals. These require real capital, real approvals, and real operator commitment.
               </p>
               <div style={{ height: 1, background: "#e3e8ee" }} />
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ color: "#0a2540", fontSize: 13 }}>Regulatory &amp; Environmental Readiness</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", color: "#5B8DB8", fontSize: 13, fontWeight: 700 }}>10 pts each</span>
+              <div>
+                <span style={{ color: "#0a2540", fontSize: 13, fontWeight: 600 }}>Tier 3 — Regulatory &amp; Environmental Readiness</span>
+                <span style={{ color: "#8792a2", fontSize: 11, marginLeft: 8 }}>lower weight</span>
               </div>
               <p style={{ color: "#425466", fontSize: 13, marginTop: -4 }}>
-                Regulatory Posture, Weather Infrastructure &mdash; necessary but not sufficient. A friendly regulatory environment and weather sensing infrastructure support operations but do not alone make a market ready.
+                Regulatory Posture, Weather Infrastructure &mdash; necessary but not sufficient. A favorable regulatory environment and weather sensing infrastructure support operations but do not alone make a market ready.
               </p>
             </div>
           </div>
+          <p style={{ color: "#8792a2", fontSize: 12, fontStyle: "italic", marginBottom: 16 }}>
+            Specific factor weights and scoring thresholds are available to licensed clients as part of the AirIndex data license agreement.
+          </p>
           <p style={{ marginBottom: 24 }}>
             This hierarchy reflects current market conditions and field-validated insights from
             infrastructure developers and operators. Infrastructure and operational factors remain
             the strongest signals of near-term commercial readiness. State legislation was elevated
-            to 20 points in v1.3 based on field validation showing that legislation functions as a
+            to the highest weight in v1.3 based on field validation showing that legislation functions as a
             prerequisite &mdash; infrastructure developers require a legislative framework before
             committing capital, and community preparedness, reflected in legislative activity, often
             precedes and enables operator engagement.
@@ -792,39 +768,39 @@ export default function MethodologyPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
             {[
               {
-                label: "State Legislation (20 pts, Graduated)",
+                label: "State Legislation (Graduated, Tier 1 weight)",
                 sources: "LegiScan, state legislature official records, enacted bill text",
                 body: "If no enacted legislation can be confirmed from primary sources, the factor scores zero. Proposed bills, executive orders, and informal policy statements do not satisfy this factor. If a bill's status is uncertain (e.g., passed one chamber but not yet signed), it is held at the lower confirmed score until enactment is verified. Uncertainty flag: applied when bill status has not been verified within the prior 30-day ingestion window.",
               },
               {
-                label: "Active Pilot Program (15 pts, Binary)",
+                label: "Active Pilot Program (Binary, Tier 2 weight)",
                 sources: "FAA program records, operator press releases, regulatory filings",
                 body: "If no active pilot program can be confirmed from a primary source, the factor scores zero. Announced intentions and letters of intent do not satisfy this factor. A pilot program is confirmed only when operational evidence exists — FAA coordination records, facility agreements, or verified flight operations.",
               },
               {
-                label: "Approved Vertiport (15 pts, Binary)",
+                label: "Approved Vertiport (Binary, Tier 2 weight)",
                 sources: "FAA airspace determination records, local permitting databases, operator announcements",
                 body: "If no approved vertiport can be confirmed, the factor scores zero. Planned vertiports, vertiports under construction, and vertiports with pending applications do not satisfy this factor. Approval is defined as completed FAA airspace determination plus local permitting clearance.",
               },
               {
-                label: "Active Operator Presence (15 pts, Binary)",
+                label: "Active Operator Presence (Binary, Tier 2 weight)",
                 sources: "Operator public announcements, route filings, FAA records, OID (Operator Intelligence Database)",
                 body: "If no operator presence can be confirmed in the OID against primary source verification, the factor scores zero. Speculative route maps, investor presentations without operational commitment, and unverified third-party reports do not satisfy this factor.",
               },
               {
-                label: "Vertiport Zoning (15 pts, Binary)",
+                label: "Vertiport Zoning (Binary, Tier 2 weight)",
                 sources: "Municipal zoning codes, city ordinances, planning department records",
                 body: "If no vertiport-specific zoning framework can be confirmed from municipal primary sources, the factor scores zero. General commercial or aviation zoning that has not been specifically extended to vertical flight infrastructure does not satisfy this factor.",
               },
               {
-                label: "Regulatory Posture (10 pts, Graduated)",
+                label: "Regulatory Posture (Graduated, Tier 3 weight)",
                 sources: "FAA program participation records, state agency publications, RPL (Regulatory Precedent Library)",
                 body: "Regulatory posture is the factor most susceptible to data gaps because it is partially qualitative. Where primary source evidence is insufficient to assess posture with confidence, the factor defaults to the lowest graduated score (minimal engagement). The RPL is the primary evidence base. Markets with fewer than three verifiable regulatory precedents in the RPL default to the lowest tier.",
               },
               {
-                label: "Weather Infrastructure (10 pts, Graduated)",
+                label: "Weather Infrastructure (Graduated, Tier 3 weight)",
                 sources: "FAA NASR ASOS/AWOS station data, TruWeather deployment records, FAA 5010 heliport coordinates",
-                body: "Weather infrastructure scoring is calculated from measured station proximity to tracked facilities. Where ASOS/AWOS station data is unavailable for a specific metro area, the factor scores zero. Partial credit is calculated only from verified station locations within defined proximity thresholds (full credit ≤5nm, partial credit 5–10nm, no credit >10nm per FAA NPRM Part 108). TruWeather low-altitude sensing deployment data, when available, is applied as an additional scored input under v1.4 methodology.",
+                body: "Weather infrastructure scoring is calculated from measured station proximity to tracked facilities. Where ASOS/AWOS station data is unavailable for a specific metro area, the factor scores zero. Partial credit is calculated from verified station locations within defined proximity thresholds aligned with FAA NPRM Part 108 standards. TruWeather low-altitude sensing deployment data, when available, is applied as an additional scored input under v1.4 methodology.",
               },
             ].map((f) => (
               <div
