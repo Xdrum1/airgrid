@@ -130,6 +130,17 @@ async function main() {
   extraEmails.forEach((e) => allEmails.add(e.toLowerCase()));
   subscribers.forEach((s) => allEmails.add(s.email.toLowerCase()));
 
+  // --exclude flag: remove specific addresses from this send
+  const excludeIdx = args.indexOf("--exclude");
+  const excludeEmails = new Set<string>();
+  if (excludeIdx >= 0) {
+    for (let i = excludeIdx + 1; i < args.length; i++) {
+      if (args[i].startsWith("--")) break;
+      excludeEmails.add(args[i].toLowerCase());
+    }
+    excludeEmails.forEach((e) => allEmails.delete(e));
+  }
+
   const recipients = [...allEmails].sort();
 
   if (solo) {

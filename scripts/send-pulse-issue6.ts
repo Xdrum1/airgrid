@@ -29,7 +29,7 @@ const html = readFileSync(
 );
 
 const from = "AirIndex <hello@airindex.io>";
-const subject = "UAM Market Pulse — Issue 6 · Methodology in print · Apr 17, 2026";
+const subject = "UAM Market Pulse — Issue 6 · Florida is separating · Apr 17, 2026";
 
 async function main() {
   for (const to of recipients) {
