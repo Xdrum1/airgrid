@@ -174,6 +174,9 @@ function buildGapFlags(c: {
   burdenNote: string | null;
   stateCode: string;
   dimensional?: DimensionalAnalysis;
+  surfaceType?: string | null;
+  siteType?: string | null;
+  isInTrackedMetro?: boolean;
 }): SiteGapFlag[] {
   const flags: SiteGapFlag[] = [];
 
@@ -279,6 +282,32 @@ function buildGapFlags(c: {
     });
   }
 
+  // Airflow & ventilation exposure — rooftop facilities in urban contexts
+  const isRooftop = c.surfaceType?.toUpperCase() === "ROOF-TOP" ||
+    c.surfaceType?.toUpperCase() === "ROOFTOP";
+  const isHospital = c.siteType === "hospital";
+  const isUrban = c.isInTrackedMetro === true;
+
+  if (isRooftop && isUrban) {
+    flags.push({
+      code: "AIRFLOW_VENTILATION",
+      severity: isHospital ? "moderate" : "low",
+      title: "Airflow & ventilation exposure — rooftop configuration",
+      detail: `Rooftop facility in urban environment. ${isHospital ? "Hospital rooftop operations present elevated risk of rotor wash interaction with building HVAC intake systems and exhaust recirculation into occupied spaces. " : ""}Surrounding structures may create localized turbulence, wind shear amplification, and constrained approach geometry. These risks are not captured in FAA compliance records or standard airspace determinations.`,
+      remediation: "Site-level airflow engineering review recommended. Assess rotor wash dispersion, HVAC intake proximity, exhaust recirculation potential, and building canyon effects on approach corridors.",
+      tierImpact: "Does not affect current tier. Informs operational risk assessment and coverage conditions for rooftop facilities.",
+    });
+  } else if (isRooftop) {
+    flags.push({
+      code: "AIRFLOW_VENTILATION",
+      severity: "low",
+      title: "Airflow & ventilation exposure — rooftop configuration",
+      detail: "Rooftop facility. Rotor wash and exhaust dispersion characteristics differ from ground-level operations. Site-specific airflow assessment recommended before operational expansion or eVTOL conversion.",
+      remediation: "Site-level airflow review if operational expansion planned.",
+      tierImpact: "Does not affect current tier. Informational.",
+    });
+  }
+
   return flags;
 }
 
@@ -303,6 +332,9 @@ function buildUnderwritingRecommendation(
     }
     if (f.code === "EVTOL_VIABILITY") {
       conditions.push("Coverage scoped to current-certificated-aircraft operations");
+    }
+    if (f.code === "AIRFLOW_VENTILATION") {
+      conditions.push("Site-level airflow engineering review completed or waived on file");
     }
   }
 
@@ -514,6 +546,9 @@ export async function getSiteRiskAssessment(siteId: string): Promise<SiteRiskAss
     burdenNote: stateCtx?.regulatoryBurdenNote ?? null,
     stateCode: heliport.state,
     dimensional,
+    surfaceType: heliport.surfaceType,
+    siteType: compliance?.siteType ?? null,
+    isInTrackedMetro: !!heliport.cityId,
   }).sort((a, b) => {
     const ord = { critical: 0, high: 1, moderate: 2, low: 3 } as const;
     return ord[a.severity] - ord[b.severity];
