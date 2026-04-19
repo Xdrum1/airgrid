@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AirIndex — Airflow & Ventilation Risk Assessment</title>
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<script>
+window.__MBT_READY = fetch('/api/internal/mapbox-token').then(r=>r.json()).then(d=>{window.__MBT=d.token||'';return d.token;}).catch(()=>'');
+</script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #080c18; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; color: #fff; }
+
+  /* Panel */
+  .panel { position: fixed; top: 0; left: 0; width: 320px; height: 100%; background: rgba(8,12,24,0.95); backdrop-filter: blur(16px); border-right: 1px solid rgba(91,141,184,0.1); z-index: 30; padding: 20px 18px; overflow-y: auto; }
+  .panel-label { font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; color: #5B8DB8; font-weight: 700; margin-bottom: 12px; }
+  .fac-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .fac-id { font-size: 10px; color: #5B8DB8; font-family: monospace; margin-bottom: 14px; }
+  .section-tag { font-size: 7px; letter-spacing: 0.12em; text-transform: uppercase; color: #444; font-weight: 700; margin: 12px 0 5px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.04); }
+  .stat-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 11px; }
+  .stat-label { color: #666; } .stat-val { color: #bbb; font-family: monospace; font-size: 10px; }
+  .red { color: #ef4444; } .amber { color: #f59e0b; } .green { color: #10b981; }
+  .alert { padding: 10px 12px; border-radius: 5px; margin-top: 10px; font-size: 10px; line-height: 1.5; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.15); }
+  .alert-tag { font-size: 7px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 3px; color: #ef4444; }
+  .alert-text { color: #e8a0a0; }
+  .bldg-item { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 10px; }
+  .bldg-name { color: #888; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 6px; }
+  .bldg-h { color: #bbb; font-family: monospace; font-size: 9px; }
+  .bldg-d { color: #555; font-size: 9px; margin-left: 6px; }
+
+  /* View tabs */
+  .view-tabs { position: fixed; top: 14px; left: 356px; display: flex; gap: 4px; z-index: 25; }
+  .view-tab { padding: 7px 14px; border-radius: 5px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; cursor: pointer; border: 1px solid rgba(91,141,184,0.15); background: rgba(8,12,24,0.8); backdrop-filter: blur(8px); color: #777; transition: all 0.15s; }
+  .view-tab:hover { color: #bbb; border-color: rgba(91,141,184,0.3); }
+  .view-tab.active { color: #fff; border-color: #5B8DB8; background: rgba(91,141,184,0.15); }
+
+  /* Facility selector */
+  .fac-select { position: fixed; top: 14px; right: 16px; z-index: 25; }
+  .fac-select select { padding: 7px 12px; border-radius: 5px; font-size: 10px; font-weight: 600; background: rgba(8,12,24,0.8); backdrop-filter: blur(8px); color: #bbb; border: 1px solid rgba(91,141,184,0.15); cursor: pointer; font-family: monospace; }
+
+  /* View containers */
+  .view { position: absolute; top: 0; left: 320px; right: 0; height: 100%; display: none; }
+  .view.active { display: block; }
+  #map { width: 100%; height: 100%; }
+  #canvas-3d, #canvas-top { width: 100%; height: 100%; display: block; }
+
+  /* Legend */
+  .legend { position: fixed; bottom: 16px; left: 356px; background: rgba(8,12,24,0.85); backdrop-filter: blur(8px); border: 1px solid rgba(91,141,184,0.1); border-radius: 6px; padding: 10px 14px; z-index: 10; }
+  .legend-title { font-size: 7px; letter-spacing: 0.12em; text-transform: uppercase; color: #5B8DB8; font-weight: 700; margin-bottom: 6px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; padding: 2px 0; font-size: 9px; color: #777; }
+  .legend-swatch { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+
+  .disclaimer { position: fixed; bottom: 16px; right: 16px; background: rgba(8,12,24,0.8); border: 1px solid rgba(245,158,11,0.15); border-radius: 5px; padding: 6px 8px; z-index: 10; max-width: 180px; }
+  .disclaimer .dt { font-size: 7px; letter-spacing: 0.1em; text-transform: uppercase; color: #f59e0b; font-weight: 700; }
+  .disclaimer .dd { font-size: 8px; color: #555; line-height: 1.3; }
+  .brand-footer { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); font-size: 8px; letter-spacing: 0.08em; color: #222; z-index: 10; }
+
+  @media print {
+    .panel, .view-tabs, .fac-select, .legend, .disclaimer, .brand-footer, .metrics, button { display: none !important; }
+    .view { position: static !important; left: 0 !important; display: none !important; }
+    #view-report { display: block !important; background: #fff !important; padding: 0 !important; }
+    body { background: #fff !important; overflow: visible !important; }
+  }
+
+  /* Metrics bar */
+  .metrics { position: fixed; bottom: 56px; left: 356px; right: 220px; display: flex; gap: 8px; z-index: 10; }
+  .metric-card { flex: 1; background: rgba(8,12,24,0.85); backdrop-filter: blur(8px); border: 1px solid rgba(91,141,184,0.1); border-radius: 6px; padding: 8px 10px; text-align: center; }
+  .metric-val { font-size: 18px; font-weight: 700; font-family: monospace; }
+  .metric-label { font-size: 7px; letter-spacing: 0.1em; text-transform: uppercase; color: #555; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<!-- Panel -->
+<div class="panel" id="panel"></div>
+
+<!-- View tabs -->
+<div class="view-tabs">
+  <div class="view-tab active" data-view="satellite">Satellite</div>
+  <div class="view-tab" data-view="3d">3D Schematic</div>
+  <div class="view-tab" data-view="topdown">Top-Down</div>
+  <div class="view-tab" data-view="heatmap">Risk Heatmap</div>
+  <div class="view-tab" data-view="obstruction">Obstruction</div>
+  <div class="view-tab" data-view="report">Report</div>
+</div>
+
+<!-- Facility selector -->
+<div class="fac-select">
+  <select id="fac-selector">
+    <option value="25FA">25FA — Jackson Memorial, Miami</option>
+    <option value="75CL">75CL — UCLA Reagan Medical, LA</option>
+    <option value="CN10">CN10 — Harbor UCLA, Torrance (ground)</option>
+    <option value="61FL">61FL — Tampa General Hospital (ground)</option>
+  </select>
+</div>
+
+<!-- Views -->
+<div class="view active" id="view-satellite"><div id="map"></div><canvas id="sat-particles" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;"></canvas></div>
+<div class="view" id="view-3d"><canvas id="canvas-3d"></canvas></div>
+<div class="view" id="view-topdown"><canvas id="canvas-top"></canvas></div>
+<div class="view" id="view-heatmap"><canvas id="canvas-heat"></canvas></div>
+<div class="view" id="view-obstruction"><canvas id="canvas-obs"></canvas></div>
+<div class="view" id="view-report" style="overflow-y:auto;background:#f5f6f8;padding:40px 20px;"></div>
+
+<!-- Metrics -->
+<div class="metrics" id="metrics"></div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-title">Airflow Behavior</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:rgba(59,130,246,0.4);border:1px solid #3b82f6;"></div> Free airflow</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:rgba(245,158,11,0.4);border:1px solid #f59e0b;"></div> Channeling / deflection</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:rgba(239,68,68,0.4);border:1px solid #ef4444;"></div> Recirculation</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:rgba(139,92,246,0.4);border:1px solid #8b5cf6;"></div> HVAC intake exposure</div>
+</div>
+
+<div class="disclaimer"><div class="dt">Stage 2 — Heuristic</div><div class="dd">Building data: OSM. Wind: illustrative. Engineering study required for validated assessment.</div></div>
+<div class="brand-footer">AirIndex RiskIndex · Vertical Data Group</div>
+
+<script>
+// ── Facility Data ──
+const FACILITIES = {
+  "25FA": {
+    id: "25FA", name: "Jackson Memorial Hospital", city: "Miami, FL",
+    lat: 25.7906, lng: -80.2101, padFt: "50×50", surface: "CONC (Rooftop)",
+    windDir: "ESE", windDeg: 112, approach: "330° CW → 110°",
+    padZ: 25,
+    buildings: [
+      { name: "Hospital Tower South", h: 45, x: -10, y: 70, w: 60, d: 40 },
+      { name: "Ryder Trauma Center", h: 43, x: 80, y: -100, w: 50, d: 45 },
+      { name: "Medical Tower", h: 42, x: 130, y: 0, w: 35, d: 35 },
+      { name: "Main Hospital", h: 28, x: -30, y: -10, w: 80, d: 60 },
+      { name: "SpringHill Suites", h: 30, x: -100, y: 120, w: 30, d: 25 },
+      { name: "Diagnostic Treatment Ctr", h: 27, x: 70, y: -30, w: 40, d: 30 },
+      { name: "Ambulatory Care", h: 28, x: -60, y: 100, w: 45, d: 35 },
+      { name: "Holtz Children's", h: 26, x: 60, y: -150, w: 50, d: 40 },
+      { name: "Mental Health Center", h: 23, x: 110, y: 50, w: 35, d: 30 },
+      { name: "Rehab Building", h: 19, x: -80, y: -120, w: 40, d: 30 },
+    ],
+    geoBuildings: [
+      { name: "Hospital Tower South", h: 45, lat: 25.7888, lng: -80.2096, ft: 148 },
+      { name: "Ryder Trauma Center", h: 43, lat: 25.7927, lng: -80.2080, ft: 142 },
+      { name: "Medical Tower", h: 42, lat: 25.7906, lng: -80.2065, ft: 139 },
+      { name: "SpringHill Suites", h: 30, lat: 25.7869, lng: -80.2105, ft: 100 },
+      { name: "Diagnostic Treatment Ctr", h: 27, lat: 25.7912, lng: -80.2084, ft: 89 },
+      { name: "Ambulatory Care", h: 28, lat: 25.7875, lng: -80.2094, ft: 91 },
+      { name: "Holtz Children's", h: 26, lat: 25.7935, lng: -80.2078, ft: 85 },
+      { name: "Mental Health Center", h: 23, lat: 25.7895, lng: -80.2067, ft: 75 },
+    ],
+    metrics: { totalBldgs: 76, above100ft: 5, tallestFt: 148, tallestDist: 205, inWindPath: 3 },
+    dimensional: { tloFt: 50, olFt: 60, fato15D: 90, fato2D: 120, saFt: 16.8, padElevFt: 82 },
+    approachDeg: [{ from: 330, to: 110, label: "Primary" }],
+  },
+  "75CL": {
+    id: "75CL", name: "Ronald Reagan UCLA Medical Center", city: "Los Angeles, CA",
+    lat: 34.0661, lng: -118.4469, padFt: "50×50", surface: "ROOF-TOP",
+    windDir: "WSW", windDeg: 247, approach: "Obstruction-free (unspecified)",
+    padZ: 20,
+    buildings: [
+      { name: "Marion Davies Children's", h: 68, x: 120, y: 30, w: 45, d: 40 },
+      { name: "The Watermark", h: 49, x: 100, y: 110, w: 35, d: 30 },
+      { name: "Factor Health Sciences", h: 42, x: 140, y: -20, w: 40, d: 35 },
+      { name: "Semel Institute", h: 30, x: 60, y: -10, w: 50, d: 40 },
+      { name: "Medical Plaza 200", h: 27, x: 20, y: 40, w: 35, d: 30 },
+      { name: "Reagan Medical Main", h: 25, x: -20, y: 15, w: 70, d: 50 },
+      { name: "Mattel Children's", h: 24, x: 40, y: -30, w: 40, d: 35 },
+      { name: "Parking Structure 9", h: 18, x: -30, y: -40, w: 45, d: 40 },
+      { name: "Engineering VI", h: 15, x: 80, y: -100, w: 35, d: 30 },
+    ],
+    geoBuildings: [
+      { name: "Marion Davies Children's", h: 68, lat: 34.0652, lng: -118.4424, ft: 224 },
+      { name: "The Watermark", h: 49, lat: 34.0626, lng: -118.4431, ft: 160 },
+      { name: "Factor Health Sciences", h: 42, lat: 34.0668, lng: -118.4420, ft: 138 },
+      { name: "Semel Institute", h: 30, lat: 34.0658, lng: -118.4445, ft: 98 },
+      { name: "Medical Plaza 200", h: 27, lat: 34.0650, lng: -118.4460, ft: 89 },
+      { name: "Mattel Children's", h: 24, lat: 34.0665, lng: -118.4455, ft: 79 },
+      { name: "Parking Structure 9", h: 18, lat: 34.0670, lng: -118.4480, ft: 59 },
+    ],
+    metrics: { totalBldgs: 270, above100ft: 12, tallestFt: 224, tallestDist: 420, inWindPath: 5 },
+    dimensional: { tloFt: 50, olFt: 60, fato15D: 90, fato2D: 120, saFt: 16.8, padElevFt: 65 },
+    approachDeg: [{ from: 0, to: 360, label: "Unspecified" }],
+  },
+  "CN10": {
+    id: "CN10", name: "Harbor UCLA Medical Center", city: "Torrance, CA",
+    lat: 33.8284, lng: -118.2964, padFt: "65×65", surface: "MATS (Ground Level)",
+    windDir: "WSW", windDeg: 247, approach: "Unspecified",
+    padZ: 3,
+    buildings: [
+      { name: "Hospital Main Tower", h: 28, x: 40, y: -30, w: 70, d: 50 },
+      { name: "Emergency Dept Wing", h: 15, x: -50, y: 20, w: 55, d: 35 },
+      { name: "Medical Office Bldg", h: 22, x: 80, y: 40, w: 35, d: 30 },
+      { name: "Parking Structure", h: 16, x: -80, y: -60, w: 50, d: 45 },
+      { name: "Research Building", h: 18, x: 60, y: -100, w: 40, d: 30 },
+      { name: "Utility Plant", h: 8, x: -30, y: 80, w: 25, d: 20 },
+    ],
+    geoBuildings: [
+      { name: "Hospital Main Tower", h: 28, lat: 33.8281, lng: -118.2958, ft: 92 },
+      { name: "Medical Office Bldg", h: 22, lat: 33.8280, lng: -118.2952, ft: 72 },
+      { name: "Research Building", h: 18, lat: 33.8290, lng: -118.2956, ft: 59 },
+      { name: "Emergency Dept Wing", h: 15, lat: 33.8282, lng: -118.2970, ft: 49 },
+      { name: "Parking Structure", h: 16, lat: 33.8288, lng: -118.2972, ft: 52 },
+    ],
+    metrics: { totalBldgs: 45, above100ft: 0, tallestFt: 92, tallestDist: 50, inWindPath: 1 },
+    dimensional: { tloFt: 65, olFt: 78, fato15D: 117, fato2D: 156, saFt: 21.8, padElevFt: 44 },
+    approachDeg: [{ from: 0, to: 360, label: "Unspecified" }],
+  },
+  "61FL": {
+    id: "61FL", name: "Tampa General Hospital", city: "Tampa, FL",
+    lat: 27.9378, lng: -82.4533, padFt: "110×90", surface: "CONC (Ground Level)",
+    windDir: "ESE", windDeg: 120, approach: "Unspecified",
+    padZ: 2,
+    buildings: [
+      { name: "Main Hospital Tower", h: 35, x: 70, y: -20, w: 60, d: 50 },
+      { name: "Bayshore Pavilion", h: 28, x: -40, y: -60, w: 50, d: 40 },
+      { name: "Parking Garage A", h: 18, x: -100, y: 30, w: 55, d: 45 },
+      { name: "Emergency Center", h: 12, x: 30, y: 50, w: 40, d: 30 },
+      { name: "CareLink Building", h: 15, x: 120, y: 20, w: 35, d: 30 },
+    ],
+    geoBuildings: [
+      { name: "Main Hospital Tower", h: 35, lat: 27.9380, lng: -82.4525, ft: 115 },
+      { name: "Bayshore Pavilion", h: 28, lat: 27.9383, lng: -82.4540, ft: 92 },
+      { name: "Parking Garage A", h: 18, lat: 27.9376, lng: -82.4545, ft: 59 },
+      { name: "CareLink Building", h: 15, lat: 27.9377, lng: -82.4520, ft: 49 },
+    ],
+    metrics: { totalBldgs: 32, above100ft: 1, tallestFt: 115, tallestDist: 80, inWindPath: 1 },
+    dimensional: { tloFt: 90, olFt: 108, fato15D: 162, fato2D: 216, saFt: 30.2, padElevFt: 7 },
+    approachDeg: [{ from: 0, to: 360, label: "Unspecified" }],
+  }
+};
+
+// ── Obstruction Scoring Engine ──
+// Produces a 0-100 Obstruction Environment Score (OES)
+// Higher = more obstructed = more risk
+
+function computeObstructions(fac) {
+  let count = 0;
+  for (const b of fac.buildings) {
+    const dist = Math.sqrt(b.x * b.x + b.y * b.y);
+    const surfaceAtBldg = fac.dimensional.padElevFt + (dist * 3.28) / 8;
+    if (b.h * 3.28 > surfaceAtBldg) count++;
+  }
+  return count;
+}
+
+function computeInFato(fac) {
+  const fatoRadius = fac.dimensional.fato2D / 2 / 3.28;
+  let count = 0;
+  for (const b of fac.buildings) {
+    const dist = Math.sqrt(b.x * b.x + b.y * b.y);
+    if (dist < fatoRadius + Math.max(b.w, b.d) / 2) count++;
+  }
+  return count;
+}
+
+function computeFullScore(fac) {
+  const dim = fac.dimensional;
+  const WRAD = fac.windDeg * Math.PI / 180;
+  let s = {};
+
+  // 1. 8:1 Approach Surface Penetrations (0-25 pts)
+  let pen81 = 0;
+  for (const b of fac.buildings) {
+    const dist = Math.sqrt(b.x * b.x + b.y * b.y);
+    const surfaceFt = dim.padElevFt + (dist * 3.28) / 8;
+    const bFt = b.h * 3.28;
+    if (bFt > surfaceFt) pen81++;
+  }
+  s.pen81Count = pen81;
+  s.pen81Score = Math.min(25, pen81 * 8); // each penetration = 8 pts, max 25
+
+  // 2. FATO Zone Intrusions (0-25 pts)
+  const fato2Rm = dim.fato2D / 2 / 3.28;
+  const fato15Rm = dim.fato15D / 2 / 3.28;
+  let inFato2 = 0, inFato15 = 0;
+  for (const b of fac.buildings) {
+    const dist = Math.sqrt(b.x * b.x + b.y * b.y);
+    const edge = dist - Math.max(b.w, b.d) / 2;
+    if (edge < fato2Rm) inFato2++;
+    if (edge < fato15Rm) inFato15++;
+  }
+  s.inFato2D = inFato2;
+  s.inFato15D = inFato15;
+  s.fatoScore = Math.min(25, inFato2 * 6 + inFato15 * 3);
+
+  // 3. Wind Path Obstructions (0-25 pts)
+  let inWindPath = 0;
+  let tallestInPath = 0;
+  for (const b of fac.buildings) {
+    const bAngle = Math.atan2(b.x, -b.y) * 180 / Math.PI;
+    const bDeg = (bAngle + 360) % 360;
+    const diff = Math.abs(bDeg - fac.windDeg);
+    const wrap = diff > 180 ? 360 - diff : diff;
+    if (wrap < 40 && b.h * 3.28 > 50) {
+      inWindPath++;
+      tallestInPath = Math.max(tallestInPath, b.h * 3.28);
+    }
+  }
+  s.inWindPath = inWindPath;
+  s.tallestInWindPathFt = Math.round(tallestInPath);
+  s.windScore = Math.min(25, inWindPath * 7 + (tallestInPath > 100 ? 5 : 0));
+
+  // 4. Height-to-Distance Ratio (0-25 pts) — tallest structure relative to its proximity
+  let worstRatio = 0;
+  let worstBldg = null;
+  for (const b of fac.buildings) {
+    const dist = Math.sqrt(b.x * b.x + b.y * b.y);
+    if (dist < 10) continue;
+    const ratio = (b.h * 3.28) / (dist * 3.28);
+    if (ratio > worstRatio) {
+      worstRatio = ratio;
+      worstBldg = b.name;
+    }
+  }
+  s.worstRatio = Math.round(worstRatio * 100) / 100;
+  s.worstRatioBldg = worstBldg;
+  s.ratioScore = Math.min(25, Math.round(worstRatio * 50));
+
+  // Total OES
+  s.totalScore = Math.min(100, s.pen81Score + s.fatoScore + s.windScore + s.ratioScore);
+
+  // Tier
+  if (s.totalScore >= 70) s.tier = 'CRITICAL';
+  else if (s.totalScore >= 45) s.tier = 'ELEVATED';
+  else if (s.totalScore >= 20) s.tier = 'MODERATE';
+  else s.tier = 'LOW';
+
+  s.tierColor = s.tier === 'CRITICAL' ? '#ef4444' : s.tier === 'ELEVATED' ? '#f59e0b' : s.tier === 'MODERATE' ? '#3b82f6' : '#10b981';
+
+  return s;
+}
+
+let currentFac = FACILITIES["25FA"];
+let currentView = "satellite";
+let mapInstance = null;
+let animFrames = { satellite: null, "3d": null, topdown: null, heatmap: null };
+
+// ── Panel ──
+function renderPanel(fac) {
+  const m = fac.metrics;
+  const sc = computeFullScore(fac);
+  document.getElementById('panel').innerHTML = `
+    <div class="panel-label">Airflow & Ventilation Risk Assessment</div>
+    <div class="fac-name">${fac.name}</div>
+    <div class="fac-id">${fac.id} · ${fac.city} · Rooftop Heliport</div>
+    <div class="section-tag">Facility</div>
+    <div class="stat-row"><span class="stat-label">Pad (TLOF)</span><span class="stat-val">${fac.padFt} ft (${fac.surface})</span></div>
+    <div class="stat-row"><span class="stat-label">Prevailing Wind</span><span class="stat-val">${fac.windDir} (${fac.windDeg}°)</span></div>
+    <div class="stat-row"><span class="stat-label">Approach</span><span class="stat-val">${fac.approach}</span></div>
+    <div class="section-tag">Building Environment</div>
+    <div class="stat-row"><span class="stat-label">Within 500m</span><span class="stat-val">${m.totalBldgs}</span></div>
+    <div class="stat-row"><span class="stat-label">Above 100 ft</span><span class="stat-val amber">${m.above100ft}</span></div>
+    <div class="stat-row"><span class="stat-label">Tallest</span><span class="stat-val red">${m.tallestFt} ft / ${m.tallestDist}m</span></div>
+    <div class="stat-row"><span class="stat-label">In wind path</span><span class="stat-val amber">${m.inWindPath} structures</span></div>
+    <div class="section-tag">Obstruction Environment Score (OES)</div>
+    <div style="display:flex;align-items:center;gap:10px;margin:6px 0 10px;">
+      <div style="font-size:28px;font-weight:700;font-family:monospace;color:${sc.tierColor}">${sc.totalScore}</div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:${sc.tierColor};letter-spacing:0.08em;">${sc.tier}</div>
+        <div style="font-size:8px;color:#555;">out of 100</div>
+      </div>
+    </div>
+    <div class="stat-row"><span class="stat-label">8:1 surface penetrations</span><span class="stat-val red">${sc.pen81Count} (${sc.pen81Score} pts)</span></div>
+    <div class="stat-row"><span class="stat-label">FATO 2D zone intrusions</span><span class="stat-val amber">${sc.inFato2D} (${sc.fatoScore} pts)</span></div>
+    <div class="stat-row"><span class="stat-label">Wind path obstructions</span><span class="stat-val amber">${sc.inWindPath} (${sc.windScore} pts)</span></div>
+    <div class="stat-row"><span class="stat-label">Worst height ratio</span><span class="stat-val">${sc.worstRatio} (${sc.ratioScore} pts)</span></div>
+    <div class="section-tag">Dimensional</div>
+    <div class="stat-row"><span class="stat-label">TLOF</span><span class="stat-val">${fac.dimensional.tloFt}\u00d7${fac.dimensional.tloFt} ft</span></div>
+    <div class="stat-row"><span class="stat-label">FATO 1.5D required</span><span class="stat-val amber">${fac.dimensional.fato15D} ft</span></div>
+    <div class="stat-row"><span class="stat-label">FATO 2D required</span><span class="stat-val red">${fac.dimensional.fato2D} ft</span></div>
+    <div class="section-tag">Airflow Risk</div>
+    <div class="stat-row"><span class="stat-label">Channeling</span><span class="stat-val amber">Elevated</span></div>
+    <div class="stat-row"><span class="stat-label">Recirculation</span><span class="stat-val red">High</span></div>
+    <div class="stat-row"><span class="stat-label">HVAC exposure</span><span class="stat-val amber">Probable</span></div>
+    <div class="alert">
+      <div class="alert-tag">Obstruction Environment \u2014 ${sc.tier}</div>
+      <div class="alert-text">${sc.pen81Count > 0 ? sc.pen81Count + ' structure(s) penetrate the 8:1 approach surface. ' : ''}${sc.inFato2D > 0 ? sc.inFato2D + ' structure(s) intrude into the EB-105A FATO zone. ' : ''}Prevailing ${fac.windDir} wind crosses ${sc.inWindPath} obstruction(s) before reaching pad${sc.tallestInWindPathFt > 0 ? ' (tallest: ' + sc.tallestInWindPathFt + ' ft)' : ''}.</div>
+    </div>
+    <div class="section-tag">Structures</div>
+    ${fac.buildings.slice(0, 8).map(b => '<div class="bldg-item"><span class="bldg-name">' + b.name + '</span><span class="bldg-h">' + Math.round(b.h * 3.28) + ' ft</span></div>').join('')}
+    <div style="margin-top:12px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.03);font-size:7px;color:#333;line-height:1.4;">
+      Building heights: OpenStreetMap. Wind patterns heuristic. Validated assessment requires site-level engineering study.
+    </div>
+  `;
+}
+
+function renderMetrics(fac) {
+  const m = fac.metrics;
+  const sc = computeFullScore(fac);
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric-card"><div class="metric-val" style="color:${sc.tierColor}">${sc.totalScore}</div><div class="metric-label">OES Score</div></div>
+    <div class="metric-card"><div class="metric-val red">${sc.pen81Count}</div><div class="metric-label">8:1 Penetrations</div></div>
+    <div class="metric-card"><div class="metric-val amber">${sc.inFato2D}</div><div class="metric-label">In FATO 2D Zone</div></div>
+    <div class="metric-card"><div class="metric-val amber">${sc.inWindPath}</div><div class="metric-label">In Wind Path</div></div>
+    <div class="metric-card"><div class="metric-val" style="color:#ef4444">${m.tallestFt}<span style="font-size:10px;color:#666;">ft</span></div><div class="metric-label">Tallest Nearby</div></div>
+  `;
+}
+
+// ── Particle System (shared) ──
+function createParticleSystem(fac, toScreen, canvasW, canvasH) {
+  const WIND_RAD = fac.windDeg * Math.PI / 180;
+  const COUNT = 350;
+  const particles = [];
+
+  function create(init) {
+    const wvx = Math.sin(WIND_RAD) * 0.8;
+    const wvy = -Math.cos(WIND_RAD) * 0.8;
+    if (init) return { x: Math.random() * canvasW, y: Math.random() * canvasH, vx: wvx + (Math.random()-0.5)*0.3, vy: wvy + (Math.random()-0.5)*0.3, life: 200+Math.random()*300, age: Math.random()*250 };
+    // Spawn upwind
+    const spread = (Math.random()-0.5) * canvasH * 0.8;
+    const perpR = WIND_RAD + Math.PI/2;
+    const cx = canvasW/2, cy = canvasH/2;
+    return { x: cx + Math.sin(WIND_RAD)*canvasW*0.5 + Math.sin(perpR)*spread, y: cy - Math.cos(WIND_RAD)*canvasH*0.5 - Math.cos(perpR)*spread, vx: wvx+(Math.random()-0.5)*0.3, vy: wvy+(Math.random()-0.5)*0.3, life: 200+Math.random()*300, age: 0 };
+  }
+  for (let i = 0; i < COUNT; i++) particles.push(create(true));
+
+  return { particles, create, WIND_RAD };
+}
+
+function updateParticles(ctx, ps, fac, bldgScreens, padScreen, W, H) {
+  for (let i = 0; i < ps.particles.length; i++) {
+    const p = ps.particles[i];
+    let fx=0, fy=0, zone='free';
+
+    for (const b of bldgScreens) {
+      const dx = p.x-b.x, dy = p.y-b.y;
+      const dist = Math.sqrt(dx*dx+dy*dy);
+      const inf = Math.max(10, b.r || 15);
+      if (dist < inf && dist > 0) {
+        fx += dx/dist * 0.15 * (b.h||30)/30;
+        fy += dy/dist * 0.15 * (b.h||30)/30;
+        zone = 'channeling';
+      }
+      const wdx = -Math.sin(ps.WIND_RAD), wdy = Math.cos(ps.WIND_RAD);
+      const lee = (p.x-b.x)*wdx + (p.y-b.y)*wdy;
+      const lat = Math.abs((p.x-b.x)*wdy - (p.y-b.y)*wdx);
+      if (lee > 0 && lee < inf*2 && lat < inf) { fx += (Math.random()-0.5)*0.15; fy += (Math.random()-0.5)*0.15; zone = 'channeling'; }
+    }
+
+    if (padScreen) {
+      const pdx=p.x-padScreen.x, pdy=p.y-padScreen.y, pd=Math.sqrt(pdx*pdx+pdy*pdy);
+      if (pd < 50 && pd > 0) { const a=Math.atan2(pdy,pdx); fx+=Math.cos(a+Math.PI*0.6)*0.08; fy+=Math.sin(a+Math.PI*0.6)*0.08; zone='recirculation'; }
+    }
+
+    for (const b of bldgScreens) {
+      if ((b.h||0) < 25) continue;
+      const hx=b.x-Math.sin(ps.WIND_RAD)*12, hy=b.y+Math.cos(ps.WIND_RAD)*12;
+      const hd=Math.sqrt((p.x-hx)**2+(p.y-hy)**2);
+      if (hd < 20) { fx-=(p.x-hx)/hd*0.03; fy-=(p.y-hy)/hd*0.03; zone='hvac'; }
+    }
+
+    p.vx += (Math.sin(ps.WIND_RAD)*0.6-p.vx)*0.008+fx;
+    p.vy += (-Math.cos(ps.WIND_RAD)*0.6-p.vy)*0.008+fy;
+    p.vx*=0.995; p.vy*=0.995;
+    p.x+=p.vx; p.y+=p.vy; p.age++;
+
+    const fi=Math.min(p.age/20,1), fo=Math.max((p.life-p.age)/40,0), alpha=Math.min(fi,fo);
+    let r,g,b;
+    switch(zone){case'recirculation':r=239;g=68;b=68;break;case'channeling':r=245;g=158;b=11;break;case'hvac':r=139;g=92;b=246;break;default:r=59;g=130;b=246;}
+
+    const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+    ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x-p.vx*spd*5,p.y-p.vy*spd*5);
+    ctx.strokeStyle=`rgba(${r},${g},${b},${alpha*(zone==='free'?0.15:0.4)})`; ctx.lineWidth=zone==='free'?0.8:1.3; ctx.stroke();
+    ctx.beginPath(); ctx.arc(p.x,p.y,zone==='free'?1:1.5,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${r},${g},${b},${alpha*(zone==='free'?0.2:0.55)})`; ctx.fill();
+
+    if (p.age>p.life||p.x<-30||p.x>W+30||p.y<-30||p.y>H+30) ps.particles[i]=ps.create(false);
+  }
+}
+
+// ── Satellite View ──
+async function initSatellite(fac) {
+  if (window.__MBT_READY) await window.__MBT_READY;
+  if (mapInstance) { mapInstance.remove(); mapInstance = null; }
+  const container = document.getElementById('map');
+  if (!window.__MBT) { container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#555;font-size:12px;">Satellite view requires Mapbox token</div>'; return; }
+  mapInstance = new mapboxgl.Map({
+    container, style: 'mapbox://styles/mapbox/satellite-v9',
+    center: [fac.lng, fac.lat], zoom: 16.5, pitch: 50,
+    bearing: fac.windDeg - 180, attributionControl: false,
+    accessToken: window.__MBT
+  });
+  mapInstance.addControl(new mapboxgl.AttributionControl({compact:true}), 'bottom-right');
+
+  mapInstance.on('load', () => {
+    mapInstance.addSource('pad',{type:'geojson',data:{type:'Feature',geometry:{type:'Point',coordinates:[fac.lng,fac.lat]},properties:{}}});
+    mapInstance.addLayer({id:'pad-g',type:'circle',source:'pad',paint:{'circle-radius':25,'circle-color':'rgba(239,68,68,0.1)','circle-stroke-width':1,'circle-stroke-color':'rgba(239,68,68,0.3)'}});
+    mapInstance.addLayer({id:'pad-c',type:'circle',source:'pad',paint:{'circle-radius':8,'circle-color':'rgba(239,68,68,0.6)','circle-stroke-width':2,'circle-stroke-color':'#ef4444'}});
+
+    const bf = fac.geoBuildings.map(b=>({type:'Feature',geometry:{type:'Point',coordinates:[b.lng,b.lat]},properties:{h:b.h,r:Math.max(5,b.h/4)}}));
+    mapInstance.addSource('bldgs',{type:'geojson',data:{type:'FeatureCollection',features:bf}});
+    mapInstance.addLayer({id:'bldg-c',type:'circle',source:'bldgs',paint:{'circle-radius':['get','r'],'circle-color':'rgba(255,255,255,0.05)','circle-stroke-width':1,'circle-stroke-color':'rgba(255,255,255,0.15)'}});
+  });
+
+  // Particles
+  const c = document.getElementById('sat-particles');
+  const cx = c.getContext('2d');
+  const dpr = window.devicePixelRatio||1;
+  function resizeC() { c.width=(window.innerWidth-320)*dpr; c.height=window.innerHeight*dpr; c.style.width=(window.innerWidth-320)+'px'; c.style.height=window.innerHeight+'px'; cx.setTransform(dpr,0,0,dpr,0,0); }
+  resizeC();
+
+  const cW=window.innerWidth-320, cH=window.innerHeight;
+  const ps = createParticleSystem(fac, null, cW, cH);
+
+  function anim() {
+    if (currentView !== 'satellite') { animFrames.satellite = requestAnimationFrame(anim); return; }
+    cx.clearRect(0,0,cW,cH);
+    const padS = mapInstance.project([fac.lng,fac.lat]);
+    const panelOff = 320;
+    padS.x -= panelOff;
+    const bScreens = fac.geoBuildings.map(b => { const p=mapInstance.project([b.lng,b.lat]); return {x:p.x-panelOff,y:p.y,h:b.h,r:Math.max(8,b.h/3)}; });
+    updateParticles(cx, ps, fac, bScreens, padS, cW, cH);
+    animFrames.satellite = requestAnimationFrame(anim);
+  }
+  setTimeout(anim, 2000);
+}
+
+// ── 3D Schematic View ──
+function init3D(fac) {
+  const c = document.getElementById('canvas-3d');
+  const cx = c.getContext('2d');
+  const dpr = window.devicePixelRatio||1;
+  const W = window.innerWidth-320, H = window.innerHeight;
+  c.width=W*dpr; c.height=H*dpr; c.style.width=W+'px'; c.style.height=H+'px';
+  cx.setTransform(dpr,0,0,dpr,0,0);
+
+  const SCALE=0.65, VA=0.55, ROT=(fac.windDeg-90)*Math.PI/180;
+  function proj(x,y,z) {
+    const rx=x*Math.cos(ROT)-y*Math.sin(ROT), ry=x*Math.sin(ROT)+y*Math.cos(ROT);
+    return {x:W/2+rx*SCALE, y:H/2+ry*SCALE*VA-z*SCALE*0.8};
+  }
+
+  const ps = createParticleSystem(fac, null, W, H);
+  // Override particle positions to 3D projected space
+  ps.particles.forEach(p => { const pt=proj((Math.random()-0.5)*500,(Math.random()-0.5)*500,10+Math.random()*40); p.x=pt.x; p.y=pt.y; });
+
+  function drawBldg(b) {
+    const cs=[{x:b.x-b.w/2,y:b.y-b.d/2},{x:b.x+b.w/2,y:b.y-b.d/2},{x:b.x+b.w/2,y:b.y+b.d/2},{x:b.x-b.w/2,y:b.y+b.d/2}];
+    const t=cs.map(c=>proj(c.x,c.y,b.h)), bo=cs.map(c=>proj(c.x,c.y,0));
+    cx.beginPath(); cx.moveTo(bo[1].x,bo[1].y); cx.lineTo(t[1].x,t[1].y); cx.lineTo(t[2].x,t[2].y); cx.lineTo(bo[2].x,bo[2].y); cx.closePath();
+    cx.fillStyle='rgba(30,45,70,0.5)'; cx.fill(); cx.strokeStyle='rgba(91,141,184,0.1)'; cx.lineWidth=0.5; cx.stroke();
+    cx.beginPath(); cx.moveTo(bo[2].x,bo[2].y); cx.lineTo(t[2].x,t[2].y); cx.lineTo(t[3].x,t[3].y); cx.lineTo(bo[3].x,bo[3].y); cx.closePath();
+    cx.fillStyle='rgba(30,45,70,0.7)'; cx.fill(); cx.stroke();
+    cx.beginPath(); cx.moveTo(t[0].x,t[0].y); cx.lineTo(t[1].x,t[1].y); cx.lineTo(t[2].x,t[2].y); cx.lineTo(t[3].x,t[3].y); cx.closePath();
+    cx.fillStyle='rgba(30,45,70,0.35)'; cx.fill(); cx.stroke();
+    const lbl=proj(b.x,b.y,b.h+3); cx.fillStyle='rgba(255,255,255,0.25)'; cx.font='7px Helvetica'; cx.textAlign='center'; cx.fillText(Math.round(b.h*3.28)+'ft',lbl.x,lbl.y);
+  }
+
+  function anim() {
+    if (currentView !== '3d') { animFrames['3d'] = requestAnimationFrame(anim); return; }
+    cx.fillStyle='#080c18'; cx.fillRect(0,0,W,H);
+    // Grid
+    cx.strokeStyle='rgba(91,141,184,0.03)'; cx.lineWidth=0.5;
+    for(let i=-300;i<=300;i+=30){const p1=proj(i,-300,0),p2=proj(i,300,0);cx.beginPath();cx.moveTo(p1.x,p1.y);cx.lineTo(p2.x,p2.y);cx.stroke();const p3=proj(-300,i,0),p4=proj(300,i,0);cx.beginPath();cx.moveTo(p3.x,p3.y);cx.lineTo(p4.x,p4.y);cx.stroke();}
+
+    const sorted=[...fac.buildings].sort((a,b)=>(a.x*Math.sin(ROT)+a.y*Math.cos(ROT))-(b.x*Math.sin(ROT)+b.y*Math.cos(ROT)));
+    let padDrawn=false;
+    const padD=0;
+    for(const b of sorted){
+      const bd=b.x*Math.sin(ROT)+b.y*Math.cos(ROT);
+      if(!padDrawn&&bd>padD){
+        const pc=proj(0,0,fac.padZ); const grd=cx.createRadialGradient(pc.x,pc.y,3,pc.x,pc.y,30);grd.addColorStop(0,'rgba(239,68,68,0.12)');grd.addColorStop(1,'rgba(239,68,68,0)');cx.fillStyle=grd;cx.beginPath();cx.arc(pc.x,pc.y,30,0,Math.PI*2);cx.fill();
+        cx.strokeStyle='rgba(239,68,68,0.5)';cx.lineWidth=2;cx.beginPath();cx.arc(pc.x,pc.y,10,0,Math.PI*2);cx.stroke();
+        cx.fillStyle='rgba(239,68,68,0.4)';cx.font='bold 12px Helvetica';cx.textAlign='center';cx.textBaseline='middle';cx.fillText('H',pc.x,pc.y);
+        padDrawn=true;
+      }
+      drawBldg(b);
+    }
+    if(!padDrawn){const pc=proj(0,0,fac.padZ);cx.strokeStyle='rgba(239,68,68,0.5)';cx.lineWidth=2;cx.beginPath();cx.arc(pc.x,pc.y,10,0,Math.PI*2);cx.stroke();}
+
+    // Particles with building interaction in projected space
+    const bScreens=fac.buildings.map(b=>{const p=proj(b.x,b.y,b.h/2);return{x:p.x,y:p.y,h:b.h,r:Math.max(8,b.h/3)};});
+    const padScreen=proj(0,0,fac.padZ);
+    updateParticles(cx,ps,fac,bScreens,padScreen,W,H);
+    animFrames['3d']=requestAnimationFrame(anim);
+  }
+  anim();
+}
+
+// ── Top-Down View ──
+function initTopDown(fac) {
+  const c = document.getElementById('canvas-top');
+  const cx = c.getContext('2d');
+  const dpr = window.devicePixelRatio||1;
+  const W = window.innerWidth-320, H = window.innerHeight;
+  c.width=W*dpr; c.height=H*dpr; c.style.width=W+'px'; c.style.height=H+'px';
+  cx.setTransform(dpr,0,0,dpr,0,0);
+
+  const SCALE = 1.2;
+  const CX = W/2, CY = H/2;
+  function toS(x,y) { return { x: CX+x*SCALE, y: CY+y*SCALE }; }
+
+  const ps = createParticleSystem(fac, null, W, H);
+
+  function anim() {
+    if (currentView !== 'topdown') { animFrames.topdown = requestAnimationFrame(anim); return; }
+    cx.fillStyle='#080c18'; cx.fillRect(0,0,W,H);
+
+    // Grid
+    cx.strokeStyle='rgba(91,141,184,0.03)'; cx.lineWidth=0.5;
+    for(let i=-300;i<=300;i+=30){const p1=toS(i,-300),p2=toS(i,300);cx.beginPath();cx.moveTo(p1.x,p1.y);cx.lineTo(p2.x,p2.y);cx.stroke();const p3=toS(-300,i),p4=toS(300,i);cx.beginPath();cx.moveTo(p3.x,p3.y);cx.lineTo(p4.x,p4.y);cx.stroke();}
+
+    // Wind direction arrow
+    const WRAD=fac.windDeg*Math.PI/180;
+    const ws=toS(Math.sin(WRAD)*280,-Math.cos(WRAD)*280), we=toS(-Math.sin(WRAD)*50,Math.cos(WRAD)*50);
+    cx.strokeStyle='rgba(59,130,246,0.2)'; cx.lineWidth=1.5; cx.setLineDash([8,4]);
+    cx.beginPath(); cx.moveTo(ws.x,ws.y); cx.lineTo(we.x,we.y); cx.stroke(); cx.setLineDash([]);
+    cx.fillStyle='rgba(59,130,246,0.3)'; cx.font='9px Helvetica'; cx.textAlign='center';
+    cx.fillText('Wind '+fac.windDir+' '+fac.windDeg+'°', ws.x, ws.y-10);
+
+    // Buildings (top-down rectangles, color by height)
+    for (const b of fac.buildings) {
+      const tl=toS(b.x-b.w/2, b.y-b.d/2);
+      const opacity = Math.min(0.9, 0.3 + b.h/60);
+      cx.fillStyle=`rgba(30,50,80,${opacity})`;
+      cx.strokeStyle=`rgba(91,141,184,${0.1+b.h/100})`;
+      cx.lineWidth=1;
+      cx.beginPath(); cx.rect(tl.x, tl.y, b.w*SCALE, b.d*SCALE); cx.fill(); cx.stroke();
+      // Height label
+      const center=toS(b.x, b.y);
+      cx.fillStyle=`rgba(255,255,255,${0.2+b.h/80})`; cx.font='8px Helvetica'; cx.textAlign='center';
+      cx.fillText(Math.round(b.h*3.28)+'ft', center.x, center.y+3);
+    }
+
+    // Pad
+    const pc=toS(0,0);
+    const grd=cx.createRadialGradient(pc.x,pc.y,5,pc.x,pc.y,35);grd.addColorStop(0,'rgba(239,68,68,0.15)');grd.addColorStop(1,'rgba(239,68,68,0)');
+    cx.fillStyle=grd; cx.beginPath(); cx.arc(pc.x,pc.y,35,0,Math.PI*2); cx.fill();
+    cx.strokeStyle='rgba(239,68,68,0.6)'; cx.lineWidth=2; cx.beginPath(); cx.arc(pc.x,pc.y,12,0,Math.PI*2); cx.stroke();
+    cx.fillStyle='rgba(239,68,68,0.5)'; cx.font='bold 12px Helvetica'; cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText('H',pc.x,pc.y);
+
+    // Particles
+    const bScreens=fac.buildings.map(b=>{const p=toS(b.x,b.y);return{x:p.x,y:p.y,h:b.h,r:Math.max(b.w,b.d)*SCALE/2};});
+    updateParticles(cx,ps,fac,bScreens,pc,W,H);
+    animFrames.topdown=requestAnimationFrame(anim);
+  }
+  anim();
+}
+
+// ── Heatmap View ──
+function initHeatmap(fac) {
+  const c = document.getElementById('canvas-heat');
+  const cx = c.getContext('2d');
+  const dpr = window.devicePixelRatio||1;
+  const W = window.innerWidth-320, H = window.innerHeight;
+  c.width=W*dpr; c.height=H*dpr; c.style.width=W+'px'; c.style.height=H+'px';
+  cx.setTransform(dpr,0,0,dpr,0,0);
+
+  const SCALE=1.2, CX=W/2, CY=H/2;
+  function toS(x,y){return{x:CX+x*SCALE,y:CY+y*SCALE};}
+  const WRAD=fac.windDeg*Math.PI/180;
+
+  // Compute risk grid
+  const GRID=80;
+  const cellW=W/GRID, cellH=H/GRID;
+  const risk=[];
+  for(let gy=0;gy<GRID;gy++){risk[gy]=[];for(let gx=0;gx<GRID;gx++){
+    const wx=(gx*cellW+cellW/2-CX)/SCALE, wy=(gy*cellH+cellH/2-CY)/SCALE;
+    let r=0;
+    // Pad proximity
+    const pd=Math.sqrt(wx*wx+wy*wy); if(pd<40) r+=0.8*(1-pd/40);
+    // Building wake zones
+    for(const b of fac.buildings){
+      const dx=wx-b.x, dy=wy-b.y, dist=Math.sqrt(dx*dx+dy*dy);
+      // Lee side
+      const wdx=-Math.sin(WRAD), wdy=Math.cos(WRAD);
+      const lee=-(dx*wdx+dy*wdy), lat=Math.abs(dx*wdy-dy*(-wdx));
+      const halfS=Math.max(b.w,b.d)/2;
+      if(lee>0&&lee<b.h*2&&lat<halfS*1.5) r+=0.5*(1-lee/(b.h*2))*(b.h/45);
+      // Windward updraft
+      if(lee<0&&lee>-15&&lat<halfS&&dist<halfS*2) r+=0.3*(b.h/45);
+      // HVAC
+      if(dist<20&&b.h>25) r+=0.4;
+    }
+    risk[gy][gx]=Math.min(1,r);
+  }}
+
+  function anim() {
+    if (currentView !== 'heatmap') { animFrames.heatmap = requestAnimationFrame(anim); return; }
+    cx.fillStyle='#080c18'; cx.fillRect(0,0,W,H);
+
+    // Heatmap
+    for(let gy=0;gy<GRID;gy++)for(let gx=0;gx<GRID;gx++){
+      const v=risk[gy][gx]; if(v<0.05) continue;
+      let r,g,b;
+      if(v>0.6){r=239;g=68;b=68;} else if(v>0.3){r=245;g=158;b=11;} else{r=59;g=130;b=246;}
+      cx.fillStyle=`rgba(${r},${g},${b},${v*0.4})`;
+      cx.fillRect(gx*cellW,gy*cellH,cellW+1,cellH+1);
+    }
+
+    // Buildings
+    for(const b of fac.buildings){
+      const tl=toS(b.x-b.w/2,b.y-b.d/2);
+      cx.fillStyle='rgba(20,30,50,0.9)'; cx.strokeStyle='rgba(91,141,184,0.2)'; cx.lineWidth=1;
+      cx.beginPath(); cx.rect(tl.x,tl.y,b.w*SCALE,b.d*SCALE); cx.fill(); cx.stroke();
+      const center=toS(b.x,b.y); cx.fillStyle='rgba(255,255,255,0.3)'; cx.font='7px Helvetica'; cx.textAlign='center';
+      cx.fillText(Math.round(b.h*3.28)+'ft',center.x,center.y+3);
+    }
+
+    // Pad
+    const pc=toS(0,0);
+    cx.strokeStyle='rgba(239,68,68,0.7)'; cx.lineWidth=2; cx.beginPath(); cx.arc(pc.x,pc.y,12,0,Math.PI*2); cx.stroke();
+    cx.fillStyle='rgba(239,68,68,0.5)'; cx.font='bold 12px Helvetica'; cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText('H',pc.x,pc.y);
+
+    // Wind
+    const ws=toS(Math.sin(WRAD)*250,-Math.cos(WRAD)*250);
+    cx.fillStyle='rgba(59,130,246,0.3)'; cx.font='9px Helvetica'; cx.textAlign='center';
+    cx.fillText('Wind '+fac.windDir, ws.x, ws.y);
+
+    // Heatmap legend
+    cx.fillStyle='rgba(8,12,24,0.8)'; cx.beginPath(); cx.roundRect(W-150,20,130,70,6); cx.fill();
+    cx.strokeStyle='rgba(91,141,184,0.1)'; cx.stroke();
+    cx.fillStyle='#5B8DB8'; cx.font='7px Helvetica'; cx.textAlign='left'; cx.fillText('RISK INTENSITY',W-140,35);
+    const cols=[{c:'rgba(59,130,246,0.4)',l:'Low'},{c:'rgba(245,158,11,0.5)',l:'Moderate'},{c:'rgba(239,68,68,0.5)',l:'High'}];
+    cols.forEach((c,i)=>{cx.fillStyle=c.c;cx.fillRect(W-140,42+i*16,10,10);cx.fillStyle='#777';cx.font='8px Helvetica';cx.fillText(c.l,W-125,51+i*16);});
+
+    animFrames.heatmap=requestAnimationFrame(anim);
+  }
+  anim();
+}
+
+// ── View switching ──
+document.querySelectorAll('.view-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    tab.classList.add('active');
+    currentView = tab.dataset.view;
+    document.getElementById('view-'+currentView).classList.add('active');
+    initView(currentFac, currentView);
+  });
+});
+
+// ── Facility switching ──
+document.getElementById('fac-selector').addEventListener('change', (e) => {
+  currentFac = FACILITIES[e.target.value];
+  renderPanel(currentFac);
+  renderMetrics(currentFac);
+  // Cancel all animations
+  Object.values(animFrames).forEach(f => { if(f) cancelAnimationFrame(f); });
+  initView(currentFac, currentView);
+});
+
+// ── Obstruction View ──
+function initObstruction(fac) {
+  const c = document.getElementById('canvas-obs');
+  const cx = c.getContext('2d');
+  const dpr = window.devicePixelRatio||1;
+  const W = window.innerWidth-320, H = window.innerHeight;
+  c.width=W*dpr; c.height=H*dpr; c.style.width=W+'px'; c.style.height=H+'px';
+  cx.setTransform(dpr,0,0,dpr,0,0);
+
+  const SCALE = 1.0;
+  const CX = W/2, CY = H/2;
+  function toS(x,y) { return { x: CX+x*SCALE, y: CY+y*SCALE }; }
+
+  const dim = fac.dimensional;
+  const fatoR15 = dim.fato15D / 2 / 3.28 * SCALE; // pixels
+  const fatoR2 = dim.fato2D / 2 / 3.28 * SCALE;
+  const saR = (dim.fato2D / 2 + dim.saFt) / 3.28 * SCALE;
+  const tloR = dim.tloFt / 2 / 3.28 * SCALE;
+
+  // 8:1 approach surface computation
+  function get81Height(distM) {
+    return dim.padElevFt + (distM * 3.28) / 8;
+  }
+
+  function anim() {
+    if (currentView !== 'obstruction') { animFrames.obstruction = requestAnimationFrame(anim); return; }
+    cx.fillStyle = '#080c18';
+    cx.fillRect(0, 0, W, H);
+
+    // Grid
+    cx.strokeStyle='rgba(91,141,184,0.03)'; cx.lineWidth=0.5;
+    for(let i=-300;i<=300;i+=30){const p1=toS(i,-300),p2=toS(i,300);cx.beginPath();cx.moveTo(p1.x,p1.y);cx.lineTo(p2.x,p2.y);cx.stroke();const p3=toS(-300,i),p4=toS(300,i);cx.beginPath();cx.moveTo(p3.x,p3.y);cx.lineTo(p4.x,p4.y);cx.stroke();}
+
+    // Safety Area zone (outermost)
+    cx.beginPath(); cx.arc(CX, CY, saR, 0, Math.PI*2);
+    cx.fillStyle = 'rgba(239,68,68,0.03)';
+    cx.fill();
+    cx.strokeStyle = 'rgba(239,68,68,0.15)'; cx.lineWidth = 1; cx.setLineDash([4,4]);
+    cx.stroke(); cx.setLineDash([]);
+    // Label
+    cx.fillStyle = 'rgba(239,68,68,0.3)'; cx.font = '8px Helvetica'; cx.textAlign = 'center';
+    cx.fillText('Safety Area (' + dim.saFt + ' ft perimeter)', CX, CY - saR - 6);
+
+    // FATO 2D zone
+    cx.beginPath(); cx.arc(CX, CY, fatoR2, 0, Math.PI*2);
+    cx.fillStyle = 'rgba(239,68,68,0.04)';
+    cx.fill();
+    cx.strokeStyle = 'rgba(239,68,68,0.3)'; cx.lineWidth = 1.5; cx.setLineDash([6,3]);
+    cx.stroke(); cx.setLineDash([]);
+    cx.fillStyle = 'rgba(239,68,68,0.4)'; cx.font = '9px Helvetica';
+    cx.fillText('FATO 2D — ' + dim.fato2D + ' ft (EB-105A)', CX, CY - fatoR2 - 6);
+
+    // FATO 1.5D zone
+    cx.beginPath(); cx.arc(CX, CY, fatoR15, 0, Math.PI*2);
+    cx.fillStyle = 'rgba(245,158,11,0.04)';
+    cx.fill();
+    cx.strokeStyle = 'rgba(245,158,11,0.35)'; cx.lineWidth = 1.5; cx.setLineDash([6,3]);
+    cx.stroke(); cx.setLineDash([]);
+    cx.fillStyle = 'rgba(245,158,11,0.4)'; cx.font = '9px Helvetica';
+    cx.fillText('FATO 1.5D — ' + dim.fato15D + ' ft (current std)', CX, CY - fatoR15 - 6);
+
+    // TLOF (pad)
+    cx.beginPath(); cx.arc(CX, CY, tloR, 0, Math.PI*2);
+    cx.fillStyle = 'rgba(16,185,129,0.08)';
+    cx.fill();
+    cx.strokeStyle = 'rgba(16,185,129,0.6)'; cx.lineWidth = 2;
+    cx.stroke();
+    cx.fillStyle = 'rgba(16,185,129,0.5)'; cx.font = 'bold 12px Helvetica'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    cx.fillText('H', CX, CY);
+    cx.font = '8px Helvetica'; cx.textBaseline = 'alphabetic';
+    cx.fillText('TLOF ' + dim.tloFt + '×' + dim.tloFt + ' ft', CX, CY + tloR + 12);
+
+    // Approach corridors (8:1 surface shown as expanding wedge)
+    const WRAD = fac.windDeg * Math.PI / 180;
+    for (const ap of fac.approachDeg || []) {
+      if (ap.from === 0 && ap.to === 360) continue; // skip unspecified
+      const fromR = ap.from * Math.PI / 180;
+      const toR = ap.to * Math.PI / 180;
+      // Draw arc
+      cx.beginPath();
+      cx.moveTo(CX, CY);
+      // Sweep CW from 'from' to 'to'
+      let startA = -fromR + Math.PI/2; // convert compass to canvas angle
+      let endA = -toR + Math.PI/2;
+      if (ap.to < ap.from) endA -= Math.PI * 2; // handle wrap
+      cx.arc(CX, CY, 280, startA, endA, true);
+      cx.closePath();
+      cx.fillStyle = 'rgba(59,130,246,0.04)';
+      cx.fill();
+      cx.strokeStyle = 'rgba(59,130,246,0.2)'; cx.lineWidth = 1; cx.setLineDash([5,3]);
+      cx.stroke(); cx.setLineDash([]);
+      // Label
+      const midDeg = ap.from + ((ap.to > ap.from ? ap.to - ap.from : 360 - ap.from + ap.to) / 2);
+      const midR = midDeg * Math.PI / 180;
+      cx.fillStyle = 'rgba(59,130,246,0.3)'; cx.font = '8px Helvetica';
+      cx.fillText(ap.label + ' approach', CX + Math.sin(midR)*250, CY - Math.cos(midR)*250);
+    }
+
+    // Buildings with obstruction coloring
+    for (const b of fac.buildings) {
+      const tl = toS(b.x - b.w/2, b.y - b.d/2);
+      const center = toS(b.x, b.y);
+      const distM = Math.sqrt(b.x*b.x + b.y*b.y);
+      const bHeightFt = b.h * 3.28;
+      const surfaceHeightFt = get81Height(distM);
+      const penetrates81 = bHeightFt > surfaceHeightFt;
+      const inFato2D = distM < dim.fato2D / 2 / 3.28 + Math.max(b.w,b.d)/2;
+      const inFato15D = distM < dim.fato15D / 2 / 3.28 + Math.max(b.w,b.d)/2;
+
+      // Color by severity
+      let fillColor, strokeColor;
+      if (penetrates81) {
+        fillColor = 'rgba(239,68,68,0.3)'; strokeColor = 'rgba(239,68,68,0.6)';
+      } else if (inFato2D) {
+        fillColor = 'rgba(245,158,11,0.2)'; strokeColor = 'rgba(245,158,11,0.5)';
+      } else if (inFato15D) {
+        fillColor = 'rgba(245,158,11,0.1)'; strokeColor = 'rgba(245,158,11,0.3)';
+      } else {
+        fillColor = 'rgba(30,50,80,0.5)'; strokeColor = 'rgba(91,141,184,0.15)';
+      }
+
+      cx.fillStyle = fillColor; cx.strokeStyle = strokeColor; cx.lineWidth = penetrates81 ? 2 : 1;
+      cx.beginPath(); cx.rect(tl.x, tl.y, b.w*SCALE, b.d*SCALE); cx.fill(); cx.stroke();
+
+      // Height label
+      cx.fillStyle = penetrates81 ? 'rgba(239,68,68,0.7)' : inFato2D ? 'rgba(245,158,11,0.6)' : 'rgba(255,255,255,0.25)';
+      cx.font = (penetrates81 ? 'bold ' : '') + '8px Helvetica'; cx.textAlign = 'center';
+      cx.fillText(Math.round(bHeightFt) + 'ft', center.x, center.y - 2);
+
+      // Name for significant buildings
+      if (penetrates81 || inFato2D) {
+        cx.fillStyle = 'rgba(255,255,255,0.3)'; cx.font = '7px Helvetica';
+        cx.fillText(b.name.substring(0, 20), center.x, center.y + 9);
+      }
+
+      // Penetration indicator
+      if (penetrates81) {
+        cx.fillStyle = 'rgba(239,68,68,0.5)'; cx.font = '7px Helvetica';
+        cx.fillText('⚠ 8:1 PENETRATION', center.x, center.y + 18);
+      }
+    }
+
+    // Wind direction
+    const ws = toS(Math.sin(WRAD)*270, -Math.cos(WRAD)*270);
+    cx.fillStyle = 'rgba(59,130,246,0.25)'; cx.font = '9px Helvetica'; cx.textAlign = 'center';
+    cx.fillText('Wind ' + fac.windDir + ' ' + fac.windDeg + '°', ws.x, ws.y);
+
+    // Obstruction legend
+    cx.fillStyle='rgba(8,12,24,0.85)'; cx.beginPath(); cx.roundRect(W-170,20,155,110,6); cx.fill();
+    cx.strokeStyle='rgba(91,141,184,0.1)'; cx.stroke();
+    cx.fillStyle='#5B8DB8'; cx.font='7px Helvetica'; cx.textAlign='left'; cx.fillText('OBSTRUCTION ANALYSIS',W-160,35);
+    const items = [
+      { c:'rgba(16,185,129,0.5)', l:'TLOF (pad)' },
+      { c:'rgba(245,158,11,0.4)', l:'Inside FATO 1.5D zone' },
+      { c:'rgba(239,68,68,0.3)', l:'Inside FATO 2D zone' },
+      { c:'rgba(239,68,68,0.6)', l:'Penetrates 8:1 surface' },
+      { c:'rgba(59,130,246,0.3)', l:'Approach corridor' },
+    ];
+    items.forEach((item, i) => {
+      cx.fillStyle = item.c; cx.fillRect(W-160, 42+i*14, 10, 10);
+      cx.fillStyle = '#777'; cx.font = '8px Helvetica'; cx.fillText(item.l, W-145, 51+i*14);
+    });
+
+    animFrames.obstruction = requestAnimationFrame(anim);
+  }
+  anim();
+}
+
+// ── Report View (printable/PDF) ──
+function initReport(fac) {
+  const sc = computeFullScore(fac);
+  const m = fac.metrics;
+  const dim = fac.dimensional;
+  const container = document.getElementById('view-report');
+
+  const tierBg = sc.tier === 'CRITICAL' ? '#fef2f2' : sc.tier === 'ELEVATED' ? '#fffbeb' : sc.tier === 'MODERATE' ? '#eff6ff' : '#ecfdf5';
+  const tierBorder = sc.tier === 'CRITICAL' ? '#fecaca' : sc.tier === 'ELEVATED' ? '#fde68a' : sc.tier === 'MODERATE' ? '#bfdbfe' : '#a7f3d0';
+
+  container.innerHTML = `
+  <div style="max-width:680px;margin:0 auto;background:#fff;border-radius:10px;border:1px solid #e0e0e0;overflow:hidden;font-family:'Helvetica Neue',Arial,sans-serif;">
+    <!-- Header -->
+    <div style="padding:28px 36px 20px;border-bottom:1px solid #f0f0f0;">
+      <div style="font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:#5B8DB8;font-weight:700;">AirIndex RiskIndex — Airflow & Obstruction Assessment</div>
+      <div style="font-size:20px;font-weight:700;color:#111;margin:10px 0 4px;">${fac.name}</div>
+      <div style="font-size:12px;color:#888;font-family:monospace;">${fac.id} · ${fac.city} · ${fac.surface}</div>
+      <div style="font-size:10px;color:#bbb;margin-top:8px;">Assessment Date: ${new Date().toISOString().slice(0,10)} · Stage 2 (Heuristic)</div>
+    </div>
+
+    <!-- OES Score -->
+    <div style="padding:24px 36px;display:flex;gap:24px;align-items:center;border-bottom:1px solid #f0f0f0;">
+      <div style="text-align:center;">
+        <div style="font-size:42px;font-weight:700;font-family:monospace;color:${sc.tierColor};">${sc.totalScore}</div>
+        <div style="font-size:10px;font-weight:700;color:${sc.tierColor};letter-spacing:0.1em;">${sc.tier}</div>
+        <div style="font-size:9px;color:#999;margin-top:2px;">OES (0–100)</div>
+      </div>
+      <div style="flex:1;font-size:12px;color:#555;line-height:1.6;">
+        The Obstruction Environment Score (OES) quantifies the physical and airflow constraints surrounding the facility based on building proximity, approach surface penetrations, dimensional zone intrusions, and prevailing wind interactions. Higher score = more constrained environment.
+      </div>
+    </div>
+
+    <!-- Score Breakdown -->
+    <div style="padding:20px 36px;border-bottom:1px solid #f0f0f0;">
+      <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:12px;">Score Breakdown</div>
+      <table style="width:100%;font-size:12px;border-collapse:collapse;">
+        <tr style="border-bottom:1px solid #f5f5f5;">
+          <td style="padding:8px 0;color:#555;">8:1 Approach Surface Penetrations</td>
+          <td style="padding:8px 0;text-align:right;font-family:monospace;color:#111;font-weight:600;">${sc.pen81Count} structure${sc.pen81Count !== 1 ? 's' : ''}</td>
+          <td style="padding:8px 0 8px 16px;text-align:right;font-family:monospace;color:${sc.pen81Score > 0 ? '#ef4444' : '#10b981'};">${sc.pen81Score}/25</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f5f5f5;">
+          <td style="padding:8px 0;color:#555;">FATO Zone Intrusions (2D)</td>
+          <td style="padding:8px 0;text-align:right;font-family:monospace;color:#111;font-weight:600;">${sc.inFato2D} structure${sc.inFato2D !== 1 ? 's' : ''}</td>
+          <td style="padding:8px 0 8px 16px;text-align:right;font-family:monospace;color:${sc.fatoScore > 0 ? '#f59e0b' : '#10b981'};">${sc.fatoScore}/25</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f5f5f5;">
+          <td style="padding:8px 0;color:#555;">Wind Path Obstructions</td>
+          <td style="padding:8px 0;text-align:right;font-family:monospace;color:#111;font-weight:600;">${sc.inWindPath} structure${sc.inWindPath !== 1 ? 's' : ''}${sc.tallestInWindPathFt > 0 ? ' (tallest: '+sc.tallestInWindPathFt+' ft)' : ''}</td>
+          <td style="padding:8px 0 8px 16px;text-align:right;font-family:monospace;color:${sc.windScore > 0 ? '#f59e0b' : '#10b981'};">${sc.windScore}/25</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;color:#555;">Height-to-Distance Ratio</td>
+          <td style="padding:8px 0;text-align:right;font-family:monospace;color:#111;font-weight:600;">${sc.worstRatio}${sc.worstRatioBldg ? ' ('+sc.worstRatioBldg.substring(0,25)+')' : ''}</td>
+          <td style="padding:8px 0 8px 16px;text-align:right;font-family:monospace;color:${sc.ratioScore > 10 ? '#f59e0b' : '#10b981'};">${sc.ratioScore}/25</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Score visualization bar -->
+    <div style="padding:16px 36px;border-bottom:1px solid #f0f0f0;">
+      <div style="display:flex;gap:2px;height:8px;border-radius:4px;overflow:hidden;background:#f0f0f0;">
+        <div style="width:${sc.pen81Score}%;background:#ef4444;border-radius:${sc.pen81Score > 0 ? '4px 0 0 4px' : '0'};transition:width 0.5s;" title="8:1 Penetrations: ${sc.pen81Score}/25"></div>
+        <div style="width:${sc.fatoScore}%;background:#f59e0b;" title="FATO Intrusions: ${sc.fatoScore}/25"></div>
+        <div style="width:${sc.windScore}%;background:#3b82f6;" title="Wind Path: ${sc.windScore}/25"></div>
+        <div style="width:${sc.ratioScore}%;background:#8b5cf6;border-radius:${sc.ratioScore > 0 ? '0 4px 4px 0' : '0'};" title="Height Ratio: ${sc.ratioScore}/25"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:8px;color:#999;">
+        <span><span style="display:inline-block;width:8px;height:8px;background:#ef4444;border-radius:2px;vertical-align:middle;margin-right:3px;"></span>8:1 Surface</span>
+        <span><span style="display:inline-block;width:8px;height:8px;background:#f59e0b;border-radius:2px;vertical-align:middle;margin-right:3px;"></span>FATO Zone</span>
+        <span><span style="display:inline-block;width:8px;height:8px;background:#3b82f6;border-radius:2px;vertical-align:middle;margin-right:3px;"></span>Wind Path</span>
+        <span><span style="display:inline-block;width:8px;height:8px;background:#8b5cf6;border-radius:2px;vertical-align:middle;margin-right:3px;"></span>Height Ratio</span>
+      </div>
+    </div>
+
+    <!-- Facility Data -->
+    <div style="padding:20px 36px;border-bottom:1px solid #f0f0f0;">
+      <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:12px;">Facility Data</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;font-size:12px;">
+        <div><span style="color:#999;">TLOF</span><br><span style="color:#111;font-weight:500;">${dim.tloFt}×${dim.tloFt} ft</span></div>
+        <div><span style="color:#999;">Surface</span><br><span style="color:#111;font-weight:500;">${fac.surface}</span></div>
+        <div><span style="color:#999;">Required FATO (1.5D)</span><br><span style="color:#b45309;font-weight:600;">${dim.fato15D} ft</span></div>
+        <div><span style="color:#999;">Required FATO (2D — EB-105A)</span><br><span style="color:#b91c1c;font-weight:600;">${dim.fato2D} ft</span></div>
+        <div><span style="color:#999;">Prevailing Wind</span><br><span style="color:#111;font-weight:500;">${fac.windDir} (${fac.windDeg}°)</span></div>
+        <div><span style="color:#999;">Approach Corridor</span><br><span style="color:#111;font-weight:500;">${fac.approach}</span></div>
+      </div>
+    </div>
+
+    <!-- Building Environment -->
+    <div style="padding:20px 36px;border-bottom:1px solid #f0f0f0;">
+      <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:12px;">Building Environment (500m radius)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div style="text-align:center;padding:10px;background:#f9fafb;border-radius:6px;">
+          <div style="font-size:22px;font-weight:700;color:#111;">${m.totalBldgs}</div>
+          <div style="font-size:9px;color:#888;margin-top:2px;">Total structures</div>
+        </div>
+        <div style="text-align:center;padding:10px;background:#f9fafb;border-radius:6px;">
+          <div style="font-size:22px;font-weight:700;color:#f59e0b;">${m.above100ft}</div>
+          <div style="font-size:9px;color:#888;margin-top:2px;">Above 100 ft</div>
+        </div>
+        <div style="text-align:center;padding:10px;background:#f9fafb;border-radius:6px;">
+          <div style="font-size:22px;font-weight:700;color:#ef4444;">${m.tallestFt} ft</div>
+          <div style="font-size:9px;color:#888;margin-top:2px;">Tallest (${m.tallestDist}m)</div>
+        </div>
+      </div>
+      <table style="width:100%;font-size:11px;border-collapse:collapse;">
+        <thead><tr style="border-bottom:2px solid #e5e7eb;">
+          <th style="text-align:left;padding:6px 0;color:#999;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;">Structure</th>
+          <th style="text-align:right;padding:6px 0;color:#999;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;">Height</th>
+          <th style="text-align:right;padding:6px 0;color:#999;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;">Status</th>
+        </tr></thead>
+        <tbody>
+          ${fac.buildings.slice(0, 8).map(b => {
+            const dist = Math.sqrt(b.x*b.x + b.y*b.y);
+            const surfFt = dim.padElevFt + (dist * 3.28) / 8;
+            const bFt = Math.round(b.h * 3.28);
+            const pen = bFt > surfFt;
+            const inFato = dist < dim.fato2D / 2 / 3.28 + Math.max(b.w,b.d)/2;
+            const status = pen ? '<span style="color:#ef4444;font-weight:600;">8:1 PENETRATION</span>' : inFato ? '<span style="color:#f59e0b;">In FATO zone</span>' : '<span style="color:#10b981;">Clear</span>';
+            return `<tr style="border-bottom:1px solid #f5f5f5;">
+              <td style="padding:5px 0;color:#333;">${b.name}</td>
+              <td style="padding:5px 0;text-align:right;font-family:monospace;color:#111;">${bFt} ft</td>
+              <td style="padding:5px 0;text-align:right;font-size:10px;">${status}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Structural Finding -->
+    <div style="padding:20px 36px;border-bottom:1px solid #f0f0f0;">
+      <div style="padding:14px 18px;background:${tierBg};border:1px solid ${tierBorder};border-radius:6px;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${sc.tierColor};margin-bottom:4px;">Structural Finding — ${sc.tier}</div>
+        <div style="font-size:12px;color:#333;line-height:1.6;">
+          ${sc.pen81Count > 0 ? 'Based on available data, ' + sc.pen81Count + ' structure(s) penetrate the 8:1 approach surface. ' : ''}
+          ${sc.inFato2D > 0 ? sc.inFato2D + ' structure(s) fall within the EB-105A FATO zone, constraining potential expansion. ' : ''}
+          Prevailing ${fac.windDir} wind crosses ${sc.inWindPath} obstruction(s) before reaching the pad, introducing potential wind channeling and turbulence at approach altitude.
+          ${fac.surface.includes('ROOF') || fac.surface.includes('Rooftop') ? ' Hospital rooftop configuration presents additional airflow and ventilation exposure not captured in standard compliance assessments.' : ''}
+        </div>
+      </div>
+    </div>
+
+    <!-- Assessment Methodology -->
+    <div style="padding:20px 36px;border-bottom:1px solid #f0f0f0;">
+      <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#999;font-weight:700;margin-bottom:10px;">Assessment Methodology</div>
+      <div style="font-size:11px;color:#666;line-height:1.7;">
+        <p style="margin:0 0 8px;">The Obstruction Environment Score (OES) evaluates four dimensions of physical constraint:</p>
+        <p style="margin:0 0 4px;"><strong style="color:#444;">8:1 Approach Surface (0–25 pts)</strong> — Structures whose height exceeds the FAA 8:1 approach slope computed from pad elevation and distance. Based on AC 150/5390-2C approach surface geometry.</p>
+        <p style="margin:0 0 4px;"><strong style="color:#444;">FATO Zone Intrusions (0–25 pts)</strong> — Structures within the EB-105A 2D FATO perimeter that would constrain expansion for eVTOL operations. Dimensional chain: TLOF \u2192 OL (\u00d71.2) \u2192 FATO (OL \u00d7 2.0).</p>
+        <p style="margin:0 0 4px;"><strong style="color:#444;">Wind Path Obstructions (0–25 pts)</strong> — Structures above 50 ft within \u00b140\u00b0 of the prevailing wind direction that may channel, deflect, or create lee-side turbulence affecting the pad.</p>
+        <p style="margin:0 0 4px;"><strong style="color:#444;">Height-to-Distance Ratio (0–25 pts)</strong> — The worst-case ratio of building height to distance from pad. Higher ratios indicate structures that dominate the local obstruction environment.</p>
+        <p style="margin:8px 0 0;color:#999;font-size:10px;">This is a Stage 2 heuristic assessment. Stage 3 (validated) requires site-level wind measurement data and engineering analysis. Airflow behavior shown in visualizations is illustrative, not modeled from measured conditions.</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:16px 36px;background:#f9fafb;">
+      <div style="font-size:9px;color:#999;line-height:1.5;">
+        Building heights sourced from OpenStreetMap. Obstruction environment scored from recorded dimensions and spatial relationships.
+        This assessment is based on observable site configuration and does not replace a formal obstruction evaluation or airflow analysis.
+        Intended for preliminary screening and risk identification — not for engineering certification or regulatory compliance purposes.
+      </div>
+      <div style="font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;margin-top:8px;">
+        AirIndex RiskIndex · Vertical Data Group, LLC · airindex.io
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:16px;">
+    <button onclick="window.print()" style="padding:8px 20px;background:#5B8DB8;color:#fff;border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:0.04em;">Save as PDF</button>
+  </div>
+  `;
+}
+
+function initView(fac, view) {
+  switch(view) {
+    case 'satellite': initSatellite(fac); break;
+    case '3d': init3D(fac); break;
+    case 'topdown': initTopDown(fac); break;
+    case 'heatmap': initHeatmap(fac); break;
+    case 'obstruction': initObstruction(fac); break;
+    case 'report': initReport(fac); break;
+  }
+}
+
+// ── Init ──
+renderPanel(currentFac);
+renderMetrics(currentFac);
+initSatellite(currentFac);
+init3D(currentFac);
+initTopDown(currentFac);
+initHeatmap(currentFac);
+initObstruction(currentFac);
+initReport(currentFac);
+</script>
+</body>
+</html>

@@ -1,6 +1,9 @@
 # Private/confidential docs — NEVER COMMIT
 private/
 
+# Demo config (contains API tokens)
+public/demo/*/config.js
+
 # Dependencies
 node_modules/
 .pnp

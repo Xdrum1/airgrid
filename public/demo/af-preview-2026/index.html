@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AirIndex — Interactive Airflow Design Tool</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #080c18; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; color: #fff; }
+  canvas { display: block; }
+
+  .panel { position: fixed; top: 0; left: 0; width: 340px; height: 100%; background: rgba(8,12,24,0.95); backdrop-filter: blur(16px); border-right: 1px solid rgba(91,141,184,0.1); z-index: 30; padding: 20px 18px; overflow-y: auto; }
+  .panel-label { font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; color: #5B8DB8; font-weight: 700; margin-bottom: 10px; }
+  .fac-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .fac-id { font-size: 10px; color: #5B8DB8; font-family: monospace; margin-bottom: 12px; }
+  .section-tag { font-size: 7px; letter-spacing: 0.12em; text-transform: uppercase; color: #444; font-weight: 700; margin: 12px 0 5px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.04); }
+  .stat-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 11px; }
+  .stat-label { color: #666; } .stat-val { color: #bbb; font-family: monospace; font-size: 10px; }
+  .red { color: #ef4444; } .amber { color: #f59e0b; } .green { color: #10b981; }
+
+  /* Controls */
+  .control-group { margin: 8px 0; }
+  .control-label { font-size: 9px; color: #666; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .control-label .val { color: #5B8DB8; font-family: monospace; }
+  input[type="range"] { width: 100%; height: 4px; -webkit-appearance: none; background: rgba(91,141,184,0.2); border-radius: 2px; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #5B8DB8; cursor: pointer; }
+
+  .toggle-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; font-size: 10px; color: #888; cursor: pointer; }
+  .toggle-row input { accent-color: #5B8DB8; }
+  .toggle-row:hover { color: #bbb; }
+
+  .oes-live { display: flex; align-items: center; gap: 10px; margin: 8px 0 12px; padding: 10px 12px; background: rgba(91,141,184,0.06); border: 1px solid rgba(91,141,184,0.12); border-radius: 6px; }
+  .oes-score { font-size: 32px; font-weight: 700; font-family: monospace; transition: color 0.3s; }
+  .oes-tier { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; transition: color 0.3s; }
+
+  .hint { font-size: 9px; color: #444; line-height: 1.4; margin-top: 6px; padding: 6px 8px; background: rgba(245,158,11,0.04); border: 1px solid rgba(245,158,11,0.08); border-radius: 4px; }
+
+  .btn { padding: 6px 12px; border: 1px solid rgba(91,141,184,0.2); background: rgba(91,141,184,0.08); color: #5B8DB8; font-size: 9px; font-weight: 600; letter-spacing: 0.06em; border-radius: 4px; cursor: pointer; margin-right: 4px; margin-top: 4px; }
+  .btn:hover { background: rgba(91,141,184,0.15); }
+  .btn.active { background: rgba(91,141,184,0.2); border-color: #5B8DB8; }
+
+  .brand { position: fixed; top: 14px; right: 16px; font-size: 8px; letter-spacing: 0.1em; color: #222; z-index: 10; }
+  .disclaimer { position: fixed; bottom: 14px; right: 14px; font-size: 8px; color: #333; z-index: 10; }
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div class="panel" id="panel">
+  <div class="panel-label">Interactive Airflow Design Tool</div>
+  <div style="font-size:9px;color:#555;line-height:1.4;margin-bottom:10px;padding:6px 8px;background:rgba(91,141,184,0.04);border:1px solid rgba(91,141,184,0.08);border-radius:4px;">
+    Explore how building environment and wind direction affect airflow risk at a facility. Adjust parameters to model "what if" scenarios.
+  </div>
+  <select id="fac-selector" style="width:100%;padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(91,141,184,0.15);border-radius:4px;color:#bbb;font-size:10px;font-family:monospace;margin-bottom:10px;cursor:pointer;">
+    <option value="25FA">25FA — Jackson Memorial, Miami</option>
+    <option value="75CL">75CL — UCLA Reagan Medical, LA</option>
+  </select>
+  <div class="fac-name" id="fac-name">Jackson Memorial Hospital</div>
+  <div class="fac-id" id="fac-id">25FA · Miami, FL · 50×50 ft CONC</div>
+
+  <!-- Live OES -->
+  <div class="oes-live">
+    <div>
+      <div class="oes-score" id="oes-score">0</div>
+      <div class="oes-tier" id="oes-tier">—</div>
+    </div>
+    <div style="flex:1;font-size:9px;color:#666;line-height:1.4;">
+      Obstruction Environment Score<br>Updates live as you adjust parameters
+    </div>
+  </div>
+
+  <!-- Wind Control -->
+  <div class="section-tag">Wind Direction</div>
+  <div class="control-group">
+    <div class="control-label"><span>Direction</span><span class="val" id="wind-val">ESE 112°</span></div>
+    <input type="range" id="wind-slider" min="0" max="359" value="112" />
+  </div>
+  <div class="control-group">
+    <div class="control-label"><span>Speed factor</span><span class="val" id="speed-val">1.0×</span></div>
+    <input type="range" id="speed-slider" min="2" max="20" value="10" />
+  </div>
+
+  <!-- Building Controls -->
+  <div class="section-tag">Building Environment</div>
+  <div id="building-controls"></div>
+  <div style="margin-top:6px;">
+    <button class="btn" id="add-bldg-btn">+ Add Building</button>
+    <button class="btn" id="reset-btn">Reset</button>
+    <button class="btn" id="export-btn">Export Snapshot</button>
+  </div>
+
+  <!-- Layer Toggles -->
+  <div class="section-tag">Layer Visibility</div>
+  <label class="toggle-row"><input type="checkbox" id="show-fato" checked /> FATO Zones (1.5D / 2D)</label>
+  <label class="toggle-row"><input type="checkbox" id="show-81" checked /> 8:1 Approach Surface</label>
+  <label class="toggle-row"><input type="checkbox" id="show-particles" checked /> Particle Flow</label>
+  <label class="toggle-row"><input type="checkbox" id="show-wind-path" checked /> Wind Path Highlight</label>
+  <label class="toggle-row"><input type="checkbox" id="show-hvac" checked /> HVAC Zones</label>
+
+  <!-- Score Breakdown -->
+  <div class="section-tag">Score Breakdown (Live)</div>
+  <div class="stat-row"><span class="stat-label">8:1 penetrations</span><span class="stat-val" id="sb-pen">—</span></div>
+  <div class="stat-row"><span class="stat-label">FATO 2D intrusions</span><span class="stat-val" id="sb-fato">—</span></div>
+  <div class="stat-row"><span class="stat-label">Wind path obstructions</span><span class="stat-val" id="sb-wind">—</span></div>
+  <div class="stat-row"><span class="stat-label">Height ratio</span><span class="stat-val" id="sb-ratio">—</span></div>
+
+  <!-- Multi-direction OES polar chart -->
+  <div class="section-tag">Directional Risk Profile</div>
+  <canvas id="polar-chart" width="280" height="200" style="width:100%;border-radius:6px;background:rgba(255,255,255,0.02);margin-bottom:6px;"></canvas>
+  <div style="font-size:8px;color:#555;text-align:center;">OES score by wind direction · Red = constrained · Green = viable</div>
+
+  <!-- 8:1 Profile View -->
+  <div class="section-tag">8:1 Approach Profile (along wind)</div>
+  <canvas id="profile-view" width="280" height="160" style="width:100%;border-radius:6px;background:rgba(255,255,255,0.02);margin-bottom:6px;"></canvas>
+  <div style="font-size:8px;color:#555;text-align:center;">Cross-section along prevailing wind · Red = penetrates 8:1 surface</div>
+
+  <div class="hint">
+    Drag the wind direction slider to see how airflow patterns change. The directional risk profile shows which wind directions create the most constraint. The 8:1 profile updates to show the cross-section along the current wind direction.
+  </div>
+
+  <div style="margin-top:12px;font-size:7px;color:#222;letter-spacing:0.1em;text-transform:uppercase;">AirIndex RiskIndex · Vertical Data Group</div>
+</div>
+
+<div class="brand">AirIndex · airindex.io</div>
+<div class="disclaimer">Interactive prototype · Stage 2 · Heuristic</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H, dpr;
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── State ──
+const FACILITY_DATA = {
+  "25FA": {
+    name: "Jackson Memorial Hospital", id: "25FA", city: "Miami, FL", pad: "50×50 ft CONC",
+    windDeg: 112, padElevFt: 82, tloFt: 50, fato15D: 90, fato2D: 120,
+    buildings: [
+      { name: "Hospital Tower South", h: 45, x: -10, y: 70, w: 60, d: 40 },
+      { name: "Ryder Trauma Center", h: 43, x: 80, y: -100, w: 50, d: 45 },
+      { name: "Medical Tower", h: 42, x: 130, y: 0, w: 35, d: 35 },
+      { name: "Main Hospital", h: 28, x: -30, y: -10, w: 80, d: 60 },
+      { name: "SpringHill Suites", h: 30, x: -100, y: 120, w: 30, d: 25 },
+      { name: "Diagnostic Treatment Ctr", h: 27, x: 70, y: -30, w: 40, d: 30 },
+      { name: "Ambulatory Care", h: 28, x: -60, y: 100, w: 45, d: 35 },
+      { name: "Holtz Children's", h: 26, x: 60, y: -150, w: 50, d: 40 },
+    ],
+  },
+  "75CL": {
+    name: "Ronald Reagan UCLA Medical Center", id: "75CL", city: "Los Angeles, CA", pad: "50×50 ft ROOF-TOP",
+    windDeg: 247, padElevFt: 65, tloFt: 50, fato15D: 90, fato2D: 120,
+    buildings: [
+      { name: "Marion Davies Children's", h: 68, x: 120, y: 30, w: 45, d: 40 },
+      { name: "The Watermark", h: 49, x: 100, y: 110, w: 35, d: 30 },
+      { name: "Factor Health Sciences", h: 42, x: 140, y: -20, w: 40, d: 35 },
+      { name: "Semel Institute", h: 30, x: 60, y: -10, w: 50, d: 40 },
+      { name: "Medical Plaza 200", h: 27, x: 20, y: 40, w: 35, d: 30 },
+      { name: "Reagan Medical Main", h: 25, x: -20, y: 15, w: 70, d: 50 },
+      { name: "Mattel Children's", h: 24, x: 40, y: -30, w: 40, d: 35 },
+      { name: "Parking Structure 9", h: 18, x: -30, y: -40, w: 45, d: 40 },
+    ],
+  },
+};
+
+let currentFacId = "25FA";
+let windDeg = 112;
+let speedFactor = 1.0;
+const PAD = { x: 0, y: 0, z: 25 };
+let DIM = { tloFt: 50, fato15D: 90, fato2D: 120, padElevFt: 82 };
+
+let INITIAL_BUILDINGS = JSON.parse(JSON.stringify(FACILITY_DATA["25FA"].buildings));
+let buildings = JSON.parse(JSON.stringify(INITIAL_BUILDINGS));
+
+function loadFacility(facId) {
+  const fac = FACILITY_DATA[facId];
+  if (!fac) return;
+  currentFacId = facId;
+  windDeg = fac.windDeg;
+  DIM = { tloFt: fac.tloFt, fato15D: fac.fato15D, fato2D: fac.fato2D, padElevFt: fac.padElevFt };
+  INITIAL_BUILDINGS = JSON.parse(JSON.stringify(fac.buildings));
+  buildings = JSON.parse(JSON.stringify(INITIAL_BUILDINGS));
+
+  document.getElementById('fac-name').textContent = fac.name;
+  document.getElementById('fac-id').textContent = fac.id + ' · ' + fac.city + ' · ' + fac.pad;
+  document.getElementById('wind-slider').value = windDeg;
+  document.getElementById('wind-val').textContent = degToCompass(windDeg) + ' ' + windDeg + '°';
+  speedFactor = 1.0;
+  document.getElementById('speed-slider').value = 10;
+  document.getElementById('speed-val').textContent = '1.0×';
+
+  renderBuildingControls();
+  updateUI();
+  // Reset particles
+  for (let i = 0; i < particles.length; i++) particles[i] = createP(true);
+}
+
+// Layers
+let showFato = true, show81 = true, showParticles = true, showWindPath = true, showHvac = true;
+
+// ── OES Scoring ──
+function computeOES() {
+  const windRad = windDeg * Math.PI / 180;
+  let pen81 = 0, inFato2 = 0, inWindPath = 0, tallestWind = 0, worstRatio = 0, worstName = '';
+
+  for (const b of buildings) {
+    const dist = Math.sqrt(b.x * b.x + b.y * b.y);
+    const bFt = b.h * 3.28;
+    const surfFt = DIM.padElevFt + (dist * 3.28) / 8;
+    if (bFt > surfFt) pen81++;
+
+    const edge = dist - Math.max(b.w, b.d) / 2;
+    if (edge < DIM.fato2D / 2 / 3.28) inFato2++;
+
+    const bAngle = Math.atan2(b.x, -b.y) * 180 / Math.PI;
+    const bDeg = (bAngle + 360) % 360;
+    const diff = Math.abs(bDeg - windDeg);
+    const wrap = diff > 180 ? 360 - diff : diff;
+    if (wrap < 40 && bFt > 50) { inWindPath++; tallestWind = Math.max(tallestWind, bFt); }
+
+    if (dist > 10) {
+      const ratio = bFt / (dist * 3.28);
+      if (ratio > worstRatio) { worstRatio = ratio; worstName = b.name; }
+    }
+  }
+
+  const pen81Score = Math.min(25, pen81 * 8);
+  const fatoScore = Math.min(25, inFato2 * 6);
+  const windScore = Math.min(25, inWindPath * 7 + (tallestWind > 100 ? 5 : 0));
+  const ratioScore = Math.min(25, Math.round(worstRatio * 50));
+  const total = Math.min(100, pen81Score + fatoScore + windScore + ratioScore);
+
+  let tier, color;
+  if (total >= 70) { tier = 'CRITICAL'; color = '#ef4444'; }
+  else if (total >= 45) { tier = 'ELEVATED'; color = '#f59e0b'; }
+  else if (total >= 20) { tier = 'MODERATE'; color = '#3b82f6'; }
+  else { tier = 'LOW'; color = '#10b981'; }
+
+  return { total, tier, color, pen81, pen81Score, inFato2, fatoScore, inWindPath, windScore, worstRatio: Math.round(worstRatio * 100) / 100, ratioScore };
+}
+
+function updateUI() {
+  const s = computeOES();
+  document.getElementById('oes-score').textContent = s.total;
+  document.getElementById('oes-score').style.color = s.color;
+  document.getElementById('oes-tier').textContent = s.tier;
+  document.getElementById('oes-tier').style.color = s.color;
+  document.getElementById('sb-pen').textContent = s.pen81 + ' (' + s.pen81Score + ' pts)';
+  document.getElementById('sb-pen').className = 'stat-val ' + (s.pen81Score > 0 ? 'red' : 'green');
+  document.getElementById('sb-fato').textContent = s.inFato2 + ' (' + s.fatoScore + ' pts)';
+  document.getElementById('sb-fato').className = 'stat-val ' + (s.fatoScore > 0 ? 'amber' : 'green');
+  document.getElementById('sb-wind').textContent = s.inWindPath + ' (' + s.windScore + ' pts)';
+  document.getElementById('sb-wind').className = 'stat-val ' + (s.windScore > 0 ? 'amber' : 'green');
+  document.getElementById('sb-ratio').textContent = s.worstRatio + ' (' + s.ratioScore + ' pts)';
+  renderPolarChart();
+  renderProfileView();
+}
+
+// ── Multi-direction OES ──
+function computeOESForDeg(deg) {
+  let pen81 = 0, inFato2 = 0, inWindPath = 0, tallestWind = 0, worstRatio = 0;
+  for (const b of buildings) {
+    const dist = Math.sqrt(b.x * b.x + b.y * b.y);
+    const bFt = b.h * 3.28;
+    const surfFt = DIM.padElevFt + (dist * 3.28) / 8;
+    if (bFt > surfFt) pen81++;
+    const edge = dist - Math.max(b.w, b.d) / 2;
+    if (edge < DIM.fato2D / 2 / 3.28) inFato2++;
+    const bAngle = Math.atan2(b.x, -b.y) * 180 / Math.PI;
+    const bDeg = (bAngle + 360) % 360;
+    const diff = Math.abs(bDeg - deg);
+    const wrap = diff > 180 ? 360 - diff : diff;
+    if (wrap < 40 && bFt > 50) { inWindPath++; tallestWind = Math.max(tallestWind, bFt); }
+    if (dist > 10) { const ratio = bFt / (dist * 3.28); if (ratio > worstRatio) worstRatio = ratio; }
+  }
+  const total = Math.min(100,
+    Math.min(25, pen81 * 8) +
+    Math.min(25, inFato2 * 6) +
+    Math.min(25, inWindPath * 7 + (tallestWind > 100 ? 5 : 0)) +
+    Math.min(25, Math.round(worstRatio * 50))
+  );
+  return total;
+}
+
+function renderPolarChart() {
+  const c = document.getElementById('polar-chart');
+  const cx = c.getContext('2d');
+  const w = c.width, h = c.height;
+  cx.clearRect(0, 0, w, h);
+
+  const centerX = w / 2, centerY = h / 2 + 5;
+  const maxR = Math.min(w, h) / 2 - 25;
+
+  // Compute OES for 16 directions
+  const dirs = [];
+  for (let i = 0; i < 16; i++) {
+    const deg = i * 22.5;
+    dirs.push({ deg, score: computeOESForDeg(deg), label: COMPASS[i] });
+  }
+
+  // Find worst and best
+  const worst = dirs.reduce((a, b) => a.score > b.score ? a : b);
+  const best = dirs.reduce((a, b) => a.score < b.score ? a : b);
+
+  // Draw concentric rings
+  for (let r = 25; r <= 100; r += 25) {
+    const radius = (r / 100) * maxR;
+    cx.beginPath(); cx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    cx.strokeStyle = 'rgba(91,141,184,0.08)'; cx.lineWidth = 0.5; cx.stroke();
+    if (r === 50) {
+      cx.fillStyle = 'rgba(91,141,184,0.15)'; cx.font = '7px Helvetica'; cx.textAlign = 'right';
+      cx.fillText(r + '', centerX - radius - 3, centerY + 3);
+    }
+  }
+
+  // Draw compass labels
+  cx.fillStyle = 'rgba(255,255,255,0.2)'; cx.font = '8px Helvetica'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+  for (let i = 0; i < 16; i++) {
+    const deg = i * 22.5;
+    const rad = (deg - 90) * Math.PI / 180;
+    const lx = centerX + Math.cos(rad) * (maxR + 14);
+    const ly = centerY + Math.sin(rad) * (maxR + 14);
+    if (i % 2 === 0) cx.fillText(COMPASS[i], lx, ly);
+  }
+
+  // Draw filled polygon
+  cx.beginPath();
+  for (let i = 0; i < 16; i++) {
+    const rad = (dirs[i].deg - 90) * Math.PI / 180;
+    const r = (dirs[i].score / 100) * maxR;
+    const x = centerX + Math.cos(rad) * r;
+    const y = centerY + Math.sin(rad) * r;
+    if (i === 0) cx.moveTo(x, y); else cx.lineTo(x, y);
+  }
+  cx.closePath();
+  cx.fillStyle = 'rgba(239,68,68,0.1)';
+  cx.fill();
+  cx.strokeStyle = 'rgba(239,68,68,0.4)';
+  cx.lineWidth = 1.5;
+  cx.stroke();
+
+  // Draw points with color coding
+  for (let i = 0; i < 16; i++) {
+    const rad = (dirs[i].deg - 90) * Math.PI / 180;
+    const r = (dirs[i].score / 100) * maxR;
+    const x = centerX + Math.cos(rad) * r;
+    const y = centerY + Math.sin(rad) * r;
+    const color = dirs[i].score >= 70 ? '#ef4444' : dirs[i].score >= 45 ? '#f59e0b' : dirs[i].score >= 20 ? '#3b82f6' : '#10b981';
+    cx.beginPath(); cx.arc(x, y, 3, 0, Math.PI * 2);
+    cx.fillStyle = color; cx.fill();
+  }
+
+  // Current wind direction indicator
+  const curRad = (windDeg - 90) * Math.PI / 180;
+  cx.beginPath();
+  cx.moveTo(centerX, centerY);
+  cx.lineTo(centerX + Math.cos(curRad) * (maxR + 5), centerY + Math.sin(curRad) * (maxR + 5));
+  cx.strokeStyle = 'rgba(59,130,246,0.5)'; cx.lineWidth = 1.5; cx.setLineDash([3, 2]); cx.stroke(); cx.setLineDash([]);
+
+  // Labels for worst/best
+  cx.font = '8px Helvetica'; cx.textAlign = 'left';
+  cx.fillStyle = '#ef4444'; cx.fillText('Worst: ' + worst.label + ' (' + worst.score + ')', 4, h - 16);
+  cx.fillStyle = '#10b981'; cx.fillText('Best: ' + best.label + ' (' + best.score + ')', 4, h - 4);
+  cx.fillStyle = 'rgba(59,130,246,0.5)'; cx.textAlign = 'right';
+  cx.fillText('Current: ' + computeOESForDeg(windDeg), w - 4, h - 4);
+}
+
+// ── 8:1 Profile View ──
+function renderProfileView() {
+  const c = document.getElementById('profile-view');
+  const cx = c.getContext('2d');
+  const w = c.width, h = c.height;
+  cx.clearRect(0, 0, w, h);
+
+  const wr = windDeg * Math.PI / 180;
+  const padX = w / 2, groundY = h - 20;
+  const scale = 0.4; // meters to pixels
+  const heightScale = 1.2; // exaggerate height for visibility
+
+  // Ground line
+  cx.strokeStyle = 'rgba(91,141,184,0.15)'; cx.lineWidth = 1;
+  cx.beginPath(); cx.moveTo(10, groundY); cx.lineTo(w - 10, groundY); cx.stroke();
+
+  // Pad elevation
+  const padElPx = DIM.padElevFt / 3.28 * heightScale * scale;
+  cx.fillStyle = 'rgba(16,185,129,0.3)';
+  cx.fillRect(padX - 8, groundY - padElPx - 6, 16, 6);
+  cx.strokeStyle = 'rgba(16,185,129,0.6)'; cx.lineWidth = 1;
+  cx.strokeRect(padX - 8, groundY - padElPx - 6, 16, 6);
+  cx.fillStyle = 'rgba(16,185,129,0.4)'; cx.font = '7px Helvetica'; cx.textAlign = 'center';
+  cx.fillText('PAD', padX, groundY - padElPx - 10);
+  cx.fillText(DIM.padElevFt + 'ft', padX, groundY - padElPx + 12);
+
+  // 8:1 approach surface lines (both directions from pad)
+  cx.strokeStyle = 'rgba(245,158,11,0.4)'; cx.lineWidth = 1; cx.setLineDash([4, 3]);
+  // Left (upwind)
+  const slopeEndL = groundY - padElPx - 6 - (w / 2) / 8 * heightScale;
+  cx.beginPath(); cx.moveTo(padX, groundY - padElPx - 6); cx.lineTo(10, Math.max(5, slopeEndL)); cx.stroke();
+  // Right (downwind)
+  const slopeEndR = groundY - padElPx - 6 - (w / 2) / 8 * heightScale;
+  cx.beginPath(); cx.moveTo(padX, groundY - padElPx - 6); cx.lineTo(w - 10, Math.max(5, slopeEndR)); cx.stroke();
+  cx.setLineDash([]);
+
+  // Label
+  cx.fillStyle = 'rgba(245,158,11,0.3)'; cx.font = '7px Helvetica'; cx.textAlign = 'left';
+  cx.fillText('8:1 Surface', 12, Math.max(12, slopeEndL - 4));
+
+  // Project buildings onto wind axis
+  for (const b of buildings) {
+    // Project building position onto wind direction axis
+    const projDist = b.x * Math.sin(wr) + (-b.y) * Math.cos(wr); // positive = upwind
+    const lateralDist = Math.abs(b.x * Math.cos(wr) - (-b.y) * Math.sin(wr));
+
+    // Only show buildings within 80m lateral of wind path
+    if (lateralDist > 80) continue;
+
+    const bScreenX = padX - projDist * scale;
+    const bHeightPx = b.h * heightScale * scale;
+    const bWidthPx = Math.max(6, Math.max(b.w, b.d) * scale * 0.3);
+
+    // 8:1 surface height at this distance
+    const distFromPad = Math.abs(projDist);
+    const surfaceHeightFt = DIM.padElevFt + (distFromPad * 3.28) / 8;
+    const surfaceHeightPx = surfaceHeightFt / 3.28 * heightScale * scale;
+    const bFt = b.h * 3.28;
+    const penetrates = bFt > surfaceHeightFt;
+
+    // Draw building
+    const bTop = groundY - bHeightPx;
+    cx.fillStyle = penetrates ? 'rgba(239,68,68,0.4)' : 'rgba(30,50,80,0.6)';
+    cx.strokeStyle = penetrates ? 'rgba(239,68,68,0.7)' : 'rgba(91,141,184,0.2)';
+    cx.lineWidth = penetrates ? 1.5 : 0.5;
+    cx.fillRect(bScreenX - bWidthPx / 2, bTop, bWidthPx, bHeightPx);
+    cx.strokeRect(bScreenX - bWidthPx / 2, bTop, bWidthPx, bHeightPx);
+
+    // Height label
+    cx.fillStyle = penetrates ? 'rgba(239,68,68,0.7)' : 'rgba(255,255,255,0.3)';
+    cx.font = (penetrates ? 'bold ' : '') + '6px Helvetica'; cx.textAlign = 'center';
+    cx.fillText(Math.round(bFt) + "'", bScreenX, bTop - 3);
+
+    // Penetration marker
+    if (penetrates) {
+      const surfY = groundY - surfaceHeightPx;
+      cx.fillStyle = 'rgba(239,68,68,0.3)';
+      cx.fillRect(bScreenX - bWidthPx / 2, bTop, bWidthPx, surfY - bTop);
+      cx.fillStyle = '#ef4444'; cx.font = 'bold 6px Helvetica';
+      cx.fillText('▲', bScreenX, bTop - 10);
+    }
+  }
+
+  // Wind direction label
+  cx.fillStyle = 'rgba(59,130,246,0.4)'; cx.font = '8px Helvetica';
+  cx.textAlign = 'left'; cx.fillText('← Upwind (' + degToCompass(windDeg) + ')', 8, 12);
+  cx.textAlign = 'right'; cx.fillText('Downwind →', w - 8, 12);
+}
+
+function renderBuildingControls() {
+  const container = document.getElementById('building-controls');
+  container.innerHTML = buildings.map((b, i) => `
+    <div style="margin-bottom:6px;padding:6px 8px;background:rgba(255,255,255,0.02);border-radius:4px;">
+      <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;">
+        <span style="color:#888;">${b.name.substring(0, 22)}</span>
+        <span style="color:#5B8DB8;font-family:monospace;">${Math.round(b.h * 3.28)} ft</span>
+      </div>
+      <input type="range" min="0" max="80" value="${b.h}" data-idx="${i}" class="bldg-slider" />
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.bldg-slider').forEach(slider => {
+    slider.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      buildings[idx].h = parseInt(e.target.value);
+      renderBuildingControls();
+      updateUI();
+    });
+  });
+}
+
+// ── Controls ──
+const windSlider = document.getElementById('wind-slider');
+const speedSlider = document.getElementById('speed-slider');
+
+const COMPASS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+function degToCompass(d) { return COMPASS[Math.round(d / 22.5) % 16]; }
+
+windSlider.addEventListener('input', () => {
+  windDeg = parseInt(windSlider.value);
+  document.getElementById('wind-val').textContent = degToCompass(windDeg) + ' ' + windDeg + '°';
+  updateUI();
+});
+
+speedSlider.addEventListener('input', () => {
+  speedFactor = parseInt(speedSlider.value) / 10;
+  document.getElementById('speed-val').textContent = speedFactor.toFixed(1) + '×';
+});
+
+document.getElementById('show-fato').addEventListener('change', (e) => { showFato = e.target.checked; });
+document.getElementById('show-81').addEventListener('change', (e) => { show81 = e.target.checked; });
+document.getElementById('show-particles').addEventListener('change', (e) => { showParticles = e.target.checked; });
+document.getElementById('show-wind-path').addEventListener('change', (e) => { showWindPath = e.target.checked; });
+document.getElementById('show-hvac').addEventListener('change', (e) => { showHvac = e.target.checked; });
+
+document.getElementById('fac-selector').addEventListener('change', (e) => {
+  loadFacility(e.target.value);
+});
+
+document.getElementById('export-btn').addEventListener('click', () => {
+  const s = computeOES();
+  const fac = FACILITY_DATA[currentFacId];
+  const dirs = [];
+  for (let i = 0; i < 16; i++) dirs.push({ dir: COMPASS[i], deg: i * 22.5, score: computeOESForDeg(i * 22.5) });
+  const worst = dirs.reduce((a, b) => a.score > b.score ? a : b);
+  const best = dirs.reduce((a, b) => a.score < b.score ? a : b);
+
+  const text = [
+    'AIRFLOW & OBSTRUCTION SNAPSHOT',
+    '═'.repeat(40),
+    'Facility: ' + fac.name + ' (' + fac.id + ')',
+    'Location: ' + fac.city,
+    'Date: ' + new Date().toISOString().slice(0, 10),
+    '',
+    'OES SCORE: ' + s.total + ' / 100 (' + s.tier + ')',
+    '  8:1 Penetrations: ' + s.pen81 + ' (' + s.pen81Score + '/25)',
+    '  FATO Intrusions:  ' + s.inFato2 + ' (' + s.fatoScore + '/25)',
+    '  Wind Path:        ' + s.inWindPath + ' (' + s.windScore + '/25)',
+    '  Height Ratio:     ' + s.worstRatio + ' (' + s.ratioScore + '/25)',
+    '',
+    'CURRENT SETTINGS:',
+    '  Wind Direction: ' + degToCompass(windDeg) + ' ' + windDeg + '°',
+    '  Speed Factor:   ' + speedFactor.toFixed(1) + '×',
+    '',
+    'DIRECTIONAL PROFILE:',
+    '  Worst: ' + worst.dir + ' (' + worst.score + ')',
+    '  Best:  ' + best.dir + ' (' + best.score + ')',
+    '',
+    'BUILDINGS:',
+    ...buildings.map(b => '  ' + b.name + ': ' + Math.round(b.h * 3.28) + ' ft'),
+    '',
+    'Stage 2 Heuristic · AirIndex RiskIndex · Vertical Data Group',
+  ].join('\n');
+
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'OES_Snapshot_' + fac.id + '_' + new Date().toISOString().slice(0, 10) + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  buildings = JSON.parse(JSON.stringify(INITIAL_BUILDINGS));
+  windDeg = 112; windSlider.value = 112;
+  speedFactor = 1.0; speedSlider.value = 10;
+  document.getElementById('wind-val').textContent = 'ESE 112°';
+  document.getElementById('speed-val').textContent = '1.0×';
+  renderBuildingControls();
+  updateUI();
+});
+
+document.getElementById('add-bldg-btn').addEventListener('click', () => {
+  buildings.push({
+    name: 'New Structure ' + (buildings.length + 1),
+    h: 25,
+    x: (Math.random() - 0.5) * 200,
+    y: (Math.random() - 0.5) * 200,
+    w: 35, d: 30,
+  });
+  renderBuildingControls();
+  updateUI();
+});
+
+// ── Drawing ──
+const SCALE = 1.1;
+const CX_OFF = 340;
+function toS(x, y) { return { x: (W - CX_OFF) / 2 + CX_OFF + x * SCALE, y: H / 2 + y * SCALE }; }
+
+// Particles
+const PCOUNT = 350;
+const particles = [];
+function createP(init) {
+  const wr = windDeg * Math.PI / 180;
+  const wvx = Math.sin(wr) * 0.8 * speedFactor;
+  const wvy = -Math.cos(wr) * 0.8 * speedFactor;
+  if (init) return { x: (Math.random() - 0.5) * (W - CX_OFF) + (W + CX_OFF) / 2, y: Math.random() * H, vx: wvx + (Math.random() - 0.5) * 0.3, vy: wvy + (Math.random() - 0.5) * 0.3, life: 200 + Math.random() * 300, age: Math.random() * 250 };
+  const spread = (Math.random() - 0.5) * H * 0.8;
+  const perpR = windDeg * Math.PI / 180 + Math.PI / 2;
+  const cx = (W + CX_OFF) / 2, cy = H / 2;
+  return { x: cx + Math.sin(windDeg * Math.PI / 180) * (W - CX_OFF) * 0.45 + Math.sin(perpR) * spread, y: cy - Math.cos(windDeg * Math.PI / 180) * H * 0.45 - Math.cos(perpR) * spread, vx: wvx + (Math.random() - 0.5) * 0.2, vy: wvy + (Math.random() - 0.5) * 0.2, life: 200 + Math.random() * 300, age: 0 };
+}
+for (let i = 0; i < PCOUNT; i++) particles.push(createP(true));
+
+function animate() {
+  ctx.fillStyle = '#080c18';
+  ctx.fillRect(0, 0, W, H);
+
+  const wr = windDeg * Math.PI / 180;
+  const pc = toS(0, 0);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(91,141,184,0.03)'; ctx.lineWidth = 0.5;
+  for (let i = -300; i <= 300; i += 30) {
+    const p1 = toS(i, -300), p2 = toS(i, 300);
+    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+    const p3 = toS(-300, i), p4 = toS(300, i);
+    ctx.beginPath(); ctx.moveTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.stroke();
+  }
+
+  // FATO zones
+  if (showFato) {
+    const f2r = DIM.fato2D / 2 / 3.28 * SCALE;
+    const f15r = DIM.fato15D / 2 / 3.28 * SCALE;
+    ctx.beginPath(); ctx.arc(pc.x, pc.y, f2r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(239,68,68,0.03)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(239,68,68,0.2)'; ctx.lineWidth = 1; ctx.setLineDash([5, 3]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(239,68,68,0.25)'; ctx.font = '8px Helvetica'; ctx.textAlign = 'center';
+    ctx.fillText('FATO 2D — ' + DIM.fato2D + ' ft', pc.x, pc.y - f2r - 5);
+
+    ctx.beginPath(); ctx.arc(pc.x, pc.y, f15r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(245,158,11,0.03)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(245,158,11,0.2)'; ctx.lineWidth = 1; ctx.setLineDash([5, 3]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(245,158,11,0.25)'; ctx.font = '8px Helvetica';
+    ctx.fillText('FATO 1.5D — ' + DIM.fato15D + ' ft', pc.x, pc.y - f15r - 5);
+  }
+
+  // Wind path highlight
+  if (showWindPath) {
+    const wpStart = toS(Math.sin(wr) * 300, -Math.cos(wr) * 300);
+    const wpEnd = toS(-Math.sin(wr) * 300, Math.cos(wr) * 300);
+    const perpX = Math.cos(wr) * 40 * SCALE, perpY = Math.sin(wr) * 40 * SCALE;
+    ctx.beginPath();
+    ctx.moveTo(wpStart.x - perpX, wpStart.y - perpY);
+    ctx.lineTo(wpEnd.x - perpX, wpEnd.y - perpY);
+    ctx.lineTo(wpEnd.x + perpX, wpEnd.y + perpY);
+    ctx.lineTo(wpStart.x + perpX, wpStart.y + perpY);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(59,130,246,0.03)';
+    ctx.fill();
+  }
+
+  // Wind direction arrow
+  const ws = toS(Math.sin(wr) * 260, -Math.cos(wr) * 260);
+  ctx.fillStyle = 'rgba(59,130,246,0.3)'; ctx.font = '10px Helvetica'; ctx.textAlign = 'center';
+  ctx.fillText(degToCompass(windDeg) + ' ' + windDeg + '°', ws.x, ws.y - 8);
+  ctx.strokeStyle = 'rgba(59,130,246,0.25)'; ctx.lineWidth = 1.5; ctx.setLineDash([6, 4]);
+  ctx.beginPath(); ctx.moveTo(ws.x, ws.y); ctx.lineTo(pc.x, pc.y); ctx.stroke(); ctx.setLineDash([]);
+
+  // Buildings
+  for (const b of buildings) {
+    const tl = toS(b.x - b.w / 2, b.y - b.d / 2);
+    const center = toS(b.x, b.y);
+    const dist = Math.sqrt(b.x * b.x + b.y * b.y);
+    const bFt = b.h * 3.28;
+    const surfFt = DIM.padElevFt + (dist * 3.28) / 8;
+    const pen = bFt > surfFt;
+    const inFato = dist < DIM.fato2D / 2 / 3.28 + Math.max(b.w, b.d) / 2;
+
+    // Check wind path
+    const bAngle = Math.atan2(b.x, -b.y) * 180 / Math.PI;
+    const bDeg = (bAngle + 360) % 360;
+    const diff = Math.abs(bDeg - windDeg);
+    const wrap = diff > 180 ? 360 - diff : diff;
+    const inWind = wrap < 40 && bFt > 50;
+
+    let fillColor, strokeColor;
+    if (pen && show81) { fillColor = 'rgba(239,68,68,0.25)'; strokeColor = 'rgba(239,68,68,0.5)'; }
+    else if (inFato && showFato) { fillColor = 'rgba(245,158,11,0.15)'; strokeColor = 'rgba(245,158,11,0.4)'; }
+    else if (inWind && showWindPath) { fillColor = 'rgba(59,130,246,0.12)'; strokeColor = 'rgba(59,130,246,0.3)'; }
+    else { fillColor = 'rgba(30,50,80,0.6)'; strokeColor = 'rgba(91,141,184,0.12)'; }
+
+    ctx.fillStyle = fillColor; ctx.strokeStyle = strokeColor; ctx.lineWidth = pen ? 2 : 1;
+    ctx.beginPath(); ctx.rect(tl.x, tl.y, b.w * SCALE, b.d * SCALE); ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle = pen ? 'rgba(239,68,68,0.6)' : inWind ? 'rgba(59,130,246,0.4)' : 'rgba(255,255,255,0.25)';
+    ctx.font = (pen ? 'bold ' : '') + '8px Helvetica'; ctx.textAlign = 'center';
+    ctx.fillText(Math.round(bFt) + 'ft', center.x, center.y + 3);
+
+    // HVAC zones
+    if (showHvac && b.h > 20) {
+      const hx = center.x - Math.sin(wr) * 12;
+      const hy = center.y + Math.cos(wr) * 12;
+      const grad = ctx.createRadialGradient(hx, hy, 3, hx, hy, 25);
+      grad.addColorStop(0, 'rgba(139,92,246,0.12)'); grad.addColorStop(1, 'rgba(139,92,246,0)');
+      ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(hx, hy, 25, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  // Pad
+  const tloR = DIM.tloFt / 2 / 3.28 * SCALE;
+  const grad = ctx.createRadialGradient(pc.x, pc.y, tloR * 0.5, pc.x, pc.y, tloR * 2.5);
+  grad.addColorStop(0, 'rgba(239,68,68,0.1)'); grad.addColorStop(1, 'rgba(239,68,68,0)');
+  ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(pc.x, pc.y, tloR * 2.5, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(16,185,129,0.5)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(pc.x, pc.y, tloR, 0, Math.PI * 2); ctx.stroke();
+  ctx.fillStyle = 'rgba(16,185,129,0.4)'; ctx.font = 'bold 12px Helvetica'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('H', pc.x, pc.y); ctx.textBaseline = 'alphabetic';
+
+  // Particles
+  if (showParticles) {
+    const wvx = Math.sin(wr) * 0.6 * speedFactor;
+    const wvy = -Math.cos(wr) * 0.6 * speedFactor;
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      let fx = 0, fy = 0, zone = 'free';
+
+      for (const b of buildings) {
+        const bCenter = toS(b.x, b.y);
+        const dx = p.x - bCenter.x, dy = p.y - bCenter.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const inf = Math.max(b.w, b.d) * SCALE / 2 + 10;
+        if (dist < inf && dist > 0) {
+          fx += dx / dist * 0.12 * (b.h / 30);
+          fy += dy / dist * 0.12 * (b.h / 30);
+          zone = 'channeling';
+        }
+        const wdx = -Math.sin(wr), wdy = Math.cos(wr);
+        const lee = (p.x - bCenter.x) * wdx + (p.y - bCenter.y) * wdy;
+        const lat = Math.abs((p.x - bCenter.x) * wdy - (p.y - bCenter.y) * wdx);
+        if (lee > 0 && lee < inf * 1.5 && lat < inf) { fx += (Math.random() - 0.5) * 0.12; fy += (Math.random() - 0.5) * 0.12; zone = 'channeling'; }
+      }
+
+      const pdx = p.x - pc.x, pdy = p.y - pc.y, pd = Math.sqrt(pdx * pdx + pdy * pdy);
+      if (pd < 50 && pd > 0) { const a = Math.atan2(pdy, pdx); fx += Math.cos(a + Math.PI * 0.6) * 0.08; fy += Math.sin(a + Math.PI * 0.6) * 0.08; zone = 'recirculation'; }
+
+      p.vx += (wvx - p.vx) * 0.01 + fx;
+      p.vy += (wvy - p.vy) * 0.01 + fy;
+      p.vx *= 0.995; p.vy *= 0.995;
+      p.x += p.vx; p.y += p.vy; p.age++;
+
+      const fi = Math.min(p.age / 20, 1), fo = Math.max((p.life - p.age) / 40, 0), alpha = Math.min(fi, fo);
+      let r, g, b2;
+      switch (zone) { case 'recirculation': r = 239; g = 68; b2 = 68; break; case 'channeling': r = 245; g = 158; b2 = 11; break; default: r = 59; g = 130; b2 = 246; }
+
+      const spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * spd * 5, p.y - p.vy * spd * 5);
+      ctx.strokeStyle = `rgba(${r},${g},${b2},${alpha * (zone === 'free' ? 0.12 : 0.35)})`; ctx.lineWidth = zone === 'free' ? 0.7 : 1.2; ctx.stroke();
+      ctx.beginPath(); ctx.arc(p.x, p.y, zone === 'free' ? 0.8 : 1.3, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b2},${alpha * (zone === 'free' ? 0.15 : 0.45)})`; ctx.fill();
+
+      if (p.age > p.life || p.x < CX_OFF - 30 || p.x > W + 30 || p.y < -30 || p.y > H + 30) particles[i] = createP(false);
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+// Init
+renderBuildingControls();
+updateUI();
+animate();
+</script>
+</body>
+</html>
