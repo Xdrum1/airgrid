@@ -41,6 +41,14 @@
 
   .brand { position: fixed; top: 14px; right: 16px; font-size: 8px; letter-spacing: 0.1em; color: #222; z-index: 10; }
   .disclaimer { position: fixed; bottom: 14px; right: 14px; font-size: 8px; color: #333; z-index: 10; }
+
+  @media (max-width: 768px) {
+    body { overflow: auto; }
+    .panel { position: relative; width: 100%; height: auto; min-height: auto; border-right: none; border-bottom: 1px solid rgba(91,141,184,0.1); padding: 16px 14px; }
+    canvas { width: 100% !important; height: 50vh !important; }
+    .brand { position: static; text-align: center; padding: 8px; }
+    .disclaimer { position: static; text-align: center; padding: 4px; }
+  }
 </style>
 </head>
 <body>
