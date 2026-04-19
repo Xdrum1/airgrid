@@ -42,10 +42,12 @@
   .brand { position: fixed; top: 14px; right: 16px; font-size: 8px; letter-spacing: 0.1em; color: #222; z-index: 10; }
   .disclaimer { position: fixed; bottom: 14px; right: 14px; font-size: 8px; color: #333; z-index: 10; }
 
+  .mobile-notice { display: none; }
   @media (max-width: 768px) {
     body { overflow: auto; }
-    .panel { position: relative; width: 100%; height: auto; min-height: auto; border-right: none; border-bottom: 1px solid rgba(91,141,184,0.1); padding: 16px 14px; }
-    canvas { width: 100% !important; height: 50vh !important; }
+    .mobile-notice { display: block; position: fixed; top: 0; left: 0; right: 0; background: rgba(91,141,184,0.12); border-bottom: 1px solid rgba(91,141,184,0.2); padding: 10px 16px; z-index: 50; text-align: center; font-size: 11px; color: #5B8DB8; backdrop-filter: blur(8px); }
+    .panel { position: relative; width: 100%; height: auto; min-height: auto; border-right: none; border-bottom: 1px solid rgba(91,141,184,0.1); padding: 50px 14px 16px; }
+    canvas { display: none; }
     .brand { position: static; text-align: center; padding: 8px; }
     .disclaimer { position: static; text-align: center; padding: 4px; }
   }
@@ -53,6 +55,7 @@
 </head>
 <body>
 
+<div class="mobile-notice">Best viewed on desktop — interactive visualization requires a larger screen</div>
 <canvas id="c"></canvas>
 
 <div class="panel" id="panel">
