@@ -11,6 +11,7 @@
  * Scope: 15 demo facilities in RISK_DEMO_SITE_IDS for now
  */
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { auth } from "@/auth";
 import {
@@ -569,6 +570,19 @@ export default async function RiskAssessmentPage({
             </div>
           </>
         )}
+
+        {/* Airflow assessment link */}
+        <div style={{ ...S.card, textAlign: "center", marginBottom: 20 }}>
+          <Link
+            href={`/admin/reports/airflow/${r.facilityId}`}
+            style={{ color: "#5B8DB8", textDecoration: "none", fontSize: 13, fontWeight: 600 }}
+          >
+            View Airflow & Obstruction Assessment →
+          </Link>
+          <div style={{ fontSize: 10, color: "#999", marginTop: 4 }}>
+            Building environment, 8:1 approach surface analysis, OES scoring
+          </div>
+        </div>
 
         {/* Footer */}
         <div style={S.footerNote}>
