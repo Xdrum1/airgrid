@@ -37,9 +37,9 @@ const CHECKLIST = [
   },
   {
     q: "Q5: eVTOL Dimensional Viability",
-    desc: "Can the TLOF/FATO accommodate eVTOL minimum dimensions (50\u00d750 ft)? Most hospital helipads were built to a 40\u00d740 ft standard and cannot expand.",
-    source: "FAA NASR site classification",
-    status: "Live — hospital sites flagged",
+    desc: "Can the TLOF/FATO accommodate eVTOL dimensional requirements? Most existing pads were built to standards that do not meet EB-105A 2D FATO requirements.",
+    source: "FAA NASR APT_RWY pad dimensions + AC 150/5390-2C formula chain",
+    status: "Live — dimensional pre-screen active",
   },
 ];
 
@@ -158,9 +158,9 @@ export default function HeliportAuditPage() {
             FAA Advisory Circulars are used as the &ldquo;standard of care&rdquo; in civil aviation lawsuits.
             Deviation from the standard equals negligence exposure. Insurance carriers are covering heliport
             assets they have never verified. State DOTs are planning AAM corridors anchored to heliports
-            that may not meet current standards. And the FAA is expected to publish a unified vertical
-            flight infrastructure Advisory Circular around June 2026 — facilities that aren&apos;t compliant
-            when it takes effect face immediate regulatory exposure.
+            that may not meet current standards. As the FAA continues to develop unified vertical
+            flight infrastructure standards, facilities that are not aligned with evolving requirements
+            face increasing regulatory exposure.
           </p>
         </div>
 

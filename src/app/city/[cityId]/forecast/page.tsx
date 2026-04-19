@@ -167,20 +167,20 @@ export default async function ForecastPage({ params }: Props) {
             HOW THIS FORECAST IS GENERATED
           </div>
           <p style={{ margin: "0 0 10px" }}>
-            AirIndex aggregates forward signals from five sources:
+            AirIndex aggregates forward signals from multiple sources:
           </p>
           <ul style={{ margin: "0 0 10px 18px", paddingLeft: 0 }}>
-            <li><strong style={{ color: "#aaa" }}>Classifier outputs</strong> — high and medium confidence pipeline events with mapped decision windows (FAA corridor filings: 60–90 days, etc.)</li>
-            <li><strong style={{ color: "#aaa" }}>Pending overrides</strong> — classifier outputs awaiting analyst promotion</li>
-            <li><strong style={{ color: "#aaa" }}>MarketWatch trajectory</strong> — POSITIVE/NEGATIVE/DEVELOPING with IMPROVING/STABLE/DETERIORATING outlook</li>
-            <li><strong style={{ color: "#aaa" }}>Pre-development facility milestones</strong> — facilities not yet in FAA NASR with known permit timelines</li>
-            <li><strong style={{ color: "#aaa" }}>Score velocity</strong> — signal density vs other markets, acceleration detection</li>
+            <li><strong style={{ color: "#aaa" }}>Detected signals</strong> — events with mapped decision windows and confidence levels</li>
+            <li><strong style={{ color: "#aaa" }}>Signals under review</strong> — detected events awaiting analyst confirmation</li>
+            <li><strong style={{ color: "#aaa" }}>MarketWatch trajectory</strong> — directional outlook based on signal momentum</li>
+            <li><strong style={{ color: "#aaa" }}>Pre-development milestones</strong> — facilities with known permit or development timelines</li>
+            <li><strong style={{ color: "#aaa" }}>Score velocity</strong> — signal density and acceleration relative to other markets</li>
           </ul>
           <p style={{ margin: "0 0 10px" }}>
             Score impact estimates account for the city&apos;s current factor credit. If a market already has full credit on a factor, predicted events on that factor are flagged as validation-only (no score change).
           </p>
           <p style={{ margin: 0 }}>
-            Every prediction is logged to the platform&apos;s scorecard. Track record metrics will be published once verification windows close (60–90 days from initial deployment, April 2026).
+            Every prediction is logged. Track record metrics will be published once initial predictions mature.
           </p>
         </div>
       </main>

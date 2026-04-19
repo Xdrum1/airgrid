@@ -109,7 +109,7 @@ const FACTORS = [
       "Bills introduced but stalled in early committee without movement. Resolutions without legal force (classified as Actively Moving at most, not Enacted). Executive orders without legislative backing. General aviation or drone legislation without UAM-specific provisions.",
     actionable:
       "Advocate for state-level AAM enabling legislation. Support bills that define vertiports in state building codes, establish state-level UAM task forces, or direct state DOTs to integrate AAM into transportation planning. States with coordinated multi-bill UAM legislative clusters (e.g., Arizona's 2026 pattern) are 12–18 months from enacted legislation.",
-    sources: "State legislature records (LegiScan), governor's office press releases, state DOT publications, legislative tracking services.",
+    sources: "State legislature records, governor's office press releases, state DOT publications, legislative tracking services.",
   },
   {
     key: "weatherInfrastructure",
@@ -133,28 +133,28 @@ const FACTORS = [
 const TIERS = [
   {
     label: "ADVANCED",
-    range: "75\u2013100",
+    range: "Upper tier",
     color: "#00ff88",
     description:
       "An ADVANCED market has the foundational legal, regulatory, and physical infrastructure in place to support commercial eVTOL operations. The state has enacted AAM legislation. At least one operator has made a public commitment to the market. Vertiport infrastructure has received formal approval or is in active development. Zoning frameworks address vertical flight infrastructure. Regulatory posture is proactive rather than reactive. Weather infrastructure provides meaningful low-altitude coverage. A market in the ADVANCED tier is not necessarily ready for immediate commercial launch \u2014 but the structural prerequisites exist for an operator to execute with manageable risk. These markets are where capital goes first.",
   },
   {
     label: "MODERATE",
-    range: "50\u201374",
+    range: "Mid-upper tier",
     color: "#5B8DB8",
     description:
       "A MODERATE market has meaningful progress on multiple readiness dimensions but has not yet assembled the full prerequisite stack. State legislation may be enacted but operator presence is limited, or operator presence exists without supporting zoning frameworks. Multiple scoring factors are substantially satisfied, though the full prerequisite stack is incomplete. A MODERATE market represents an active transition \u2014 infrastructure or regulatory gaps exist but are trackable and closeable within a defined timeline. These markets are where developers and city planners are making preparatory investments and where operators are monitoring for trigger events before committing resources.",
   },
   {
     label: "EARLY",
-    range: "30\u201349",
+    range: "Mid-lower tier",
     color: "#f59e0b",
     description:
       "An EARLY market has one or two meaningful readiness signals \u2014 typically enacted state legislation or a favorable regulatory posture \u2014 but lacks the operational infrastructure required for near-term eVTOL deployment. No approved vertiports, no active operator presence, and limited or no zoning framework. The market has signaled intent but has not yet translated that intent into infrastructure. EARLY markets are where the gap between legislative ambition and operational reality is most visible. For developers and city planners, these markets represent medium-term pipeline opportunities. For operators, they are watch-list markets, not deployment markets.",
   },
   {
     label: "NASCENT",
-    range: "0\u201329",
+    range: "Lower tier",
     color: "#ff4444",
     description:
       "A NASCENT market has minimal or no readiness signals across the scoring framework. No enacted AAM legislation, no operator presence, no approved vertiports, no vertiport zoning, and limited regulatory engagement with advanced air mobility. This does not mean the market lacks potential \u2014 geography, population density, or infrastructure assets may make it an eventual candidate. But the foundational prerequisites for commercial eVTOL operations have not been established. NASCENT markets require the most investment of time, capital, and regulatory development before they can support operations. Washington D.C. \u2014 the nation's regulatory capital \u2014 currently scores in this tier, which illustrates that policy familiarity at the federal level does not translate to local market readiness.",
@@ -615,8 +615,8 @@ export default function MethodologyPage() {
             {[
               { label: "Weather Infrastructure Registry", desc: "FAA ASOS/AWOS station registry, eIPP deployment maps, airport authority weather records, and weather technology provider deployment data for low-altitude sensing verification." },
               { label: "Federal Register", desc: "Proposed and final rulemaking, airspace designations, notices of availability, and FAA advisory circulars related to UAM and vertiport operations." },
-              { label: "SEC EDGAR", desc: "10-K/10-Q filings, 8-K disclosures, and S-1 registrations from publicly traded operators (Joby Aviation, Archer Aviation, Blade Air Mobility) for market commitments and partnership announcements." },
-              { label: "State Legislative Records", desc: "Bill tracking via LegiScan and state legislature databases for UAM/AAM enabling legislation, task force creation, and appropriations across all 50 states." },
+              { label: "Operator Disclosures", desc: "Public financial filings and disclosures from publicly traded operators for market commitments and partnership announcements." },
+              { label: "State Legislative Records", desc: "Bill tracking via state legislature databases for UAM/AAM enabling legislation, task force creation, and appropriations across all 50 states." },
               { label: "Municipal Records", desc: "City council minutes, zoning board decisions, planning commission records, and building permit databases for vertiport approvals and zoning amendments." },
             ].map((s) => (
               <div
@@ -769,7 +769,7 @@ export default function MethodologyPage() {
             {[
               {
                 label: "State Legislation (Graduated, Tier 1 weight)",
-                sources: "LegiScan, state legislature official records, enacted bill text",
+                sources: "State legislature official records, enacted bill text, legislative tracking services",
                 body: "If no enacted legislation can be confirmed from primary sources, the factor scores zero. Proposed bills, executive orders, and informal policy statements do not satisfy this factor. If a bill's status is uncertain (e.g., passed one chamber but not yet signed), it is held at the lower confirmed score until enactment is verified. Uncertainty flag: applied when bill status has not been verified within the prior 30-day ingestion window.",
               },
               {

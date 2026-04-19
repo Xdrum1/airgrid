@@ -47,9 +47,9 @@ const FEATURES = [
       "Every score change is linked to the specific filing, regulatory event, or infrastructure update that caused it.",
   },
   {
-    label: "Real-Time Data",
+    label: "Continuously Updated",
     detail:
-      "Ratings update as new FAA filings, state legislation, and operator milestones are ingested and classified.",
+      "Ratings update daily as new regulatory filings, state legislation, and operator milestones are detected and classified.",
   },
   {
     label: "Clean REST Interface",
@@ -105,7 +105,7 @@ export default function ApiLandingPage() {
           <p style={{ fontSize: 16, color: "#425466", lineHeight: 1.7, maxWidth: 560 }}>
             Programmatic access to UAM market readiness ratings across 20+ U.S. cities.
             Every rating is independently scored using the AirIndex seven-factor methodology,
-            built on primary data from the FAA, SEC EDGAR, Federal Register, and state
+            built on primary data from federal agencies, regulatory filings, and state
             legislative records.
           </p>
         </div>

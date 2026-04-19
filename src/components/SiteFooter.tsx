@@ -83,6 +83,11 @@ export default function SiteFooter({ theme = "dark" }: { theme?: "dark" | "light
           </a>
         </div>
       </div>
+      <div style={{ marginTop: 16, textAlign: "center" }}>
+        <span style={{ color: dim, fontSize: 10, letterSpacing: "0.04em", fontStyle: "italic" }}>
+          Helping determine whether a site is likely to be operationally viable — not just approved.
+        </span>
+      </div>
     </footer>
   );
 }

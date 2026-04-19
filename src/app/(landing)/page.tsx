@@ -330,8 +330,8 @@ export default async function LandingPage() {
             fontWeight: 400,
           }}
         >
-          AirIndex scores 25 U.S. markets on eVTOL operational readiness —
-          city level today, vertiport and corridor level on the grid.
+          From regulatory readiness to operational viability — scored at
+          the market level, assessed at the facility level.
         </p>
         <div style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link
@@ -786,7 +786,7 @@ export default async function LandingPage() {
                 margin: 0,
               }}
             >
-              All outputs derived from the AirIndex Score (AIS) — a real-time,
+              All outputs derived from the AirIndex Score (AIS) — a continuously updated,
               auditable market-readiness rating. Each one shaped to a specific decision.
             </p>
           </div>

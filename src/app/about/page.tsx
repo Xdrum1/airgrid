@@ -124,7 +124,7 @@ export default async function AboutPage() {
               </a>
               , a South Carolina-based data intelligence company founded in 2026. We are not an
               aviation company. We are not a software company. We are a data intelligence company
-              that builds real-time scoring systems for emerging infrastructure markets.
+              that builds continuously updated scoring systems for emerging infrastructure markets.
             </p>
             <p style={{ marginBottom: 14 }}>
               AirIndex is our first product — the UAM market readiness index we built because it
@@ -198,46 +198,33 @@ export default async function AboutPage() {
 
           {/* 7-Factor Model */}
           <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 32 }}>
-            {Object.entries(SCORE_WEIGHTS).map(([key, weight]) => {
-              const info = WEIGHT_LABELS[key];
-              return (
-                <div key={key} style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "10px 16px",
-                  background: "#f9fbfd",
-                  border: "1px solid #e3e8ee",
-                  borderRadius: 6,
-                }}>
-                  <span style={{
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: "#5B8DB8",
-                    minWidth: 28,
-                  }}>
-                    {weight}
-                  </span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ color: "#0a2540", fontSize: 13, fontWeight: 500 }}>
-                      {info?.label || key}
-                    </div>
-                    <div style={{ color: "#8792a2", fontSize: 11, marginTop: 2 }}>
-                      {info?.desc}
-                    </div>
+            {Object.entries(WEIGHT_LABELS).map(([key, info]) => (
+              <div key={key} style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "10px 16px",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
+                borderRadius: 6,
+              }}>
+                <div style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "#5B8DB8",
+                  flexShrink: 0,
+                }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ color: "#0a2540", fontSize: 13, fontWeight: 500 }}>
+                    {info?.label || key}
                   </div>
-                  <div style={{ width: 80, height: 3, borderRadius: 2, background: "#e3e8ee", overflow: "hidden" }}>
-                    <div style={{
-                      height: "100%",
-                      width: `${weight * 5}%`,
-                      background: "rgba(91,141,184,0.4)",
-                      borderRadius: 2,
-                    }} />
+                  <div style={{ color: "#8792a2", fontSize: 11, marginTop: 2 }}>
+                    {info?.desc}
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
 
           {/* Data Categories */}
@@ -324,7 +311,7 @@ export default async function AboutPage() {
               { name: "Regulatory Precedent Library", code: "RPL", desc: "Structured regulatory documents — federal rules, state legislation, FAA orders — with factor mappings and momentum tracking" },
               { name: "Market Context Store", code: "MCS", desc: "State-level enforcement posture, regional clusters, and peer market groupings for benchmarking" },
               { name: "Operator Intelligence Database", code: "OID", desc: "Operator deployment stages, certifications, financing history, and vertiport commitments per market" },
-              { name: "Federal Programs Intelligence", code: "FPIS", desc: "Federal grant and SBIR programs mapped to scoring factors — surfaces funding pathways in gap analysis" },
+              { name: "Forward Signals Pipeline", code: "FSP", desc: "Tracks events approaching resolution — legislation advancing, operators committing, infrastructure clearing approval" },
             ].map((c) => (
               <div key={c.code} style={{
                 padding: "14px 16px",

@@ -17,7 +17,7 @@ const CAPABILITIES = [
   {
     title: "Regulatory & Legislative Monitoring",
     description: "Automated pipeline tracking federal filings, state legislation, operator disclosures, and FAA regulatory actions across every tracked market.",
-    items: ["Federal Register monitoring", "Congress.gov bill tracking", "State legislation via LegiScan", "SEC EDGAR operator filings"],
+    items: ["Federal regulatory monitoring", "Congressional bill tracking", "State legislation tracking", "Operator disclosure monitoring"],
   },
   {
     title: "Infrastructure Intelligence",
@@ -51,7 +51,7 @@ const FAQS = [
   },
   {
     q: "What data sources does AirIndex use?",
-    a: "Primary sources: FAA Federal Register, Congress.gov, state legislatures via LegiScan, SEC EDGAR, FAA NASR 5010, and regulations.gov. Every score is auditable and traceable to its origin records.",
+    a: "AirIndex draws exclusively from primary government and regulatory databases — federal agencies, state legislatures, FAA registries, and regulatory filings. Every score is auditable and traceable to its origin records.",
   },
   {
     q: "Can we integrate AirIndex data into our own systems?",

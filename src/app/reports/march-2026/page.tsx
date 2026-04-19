@@ -40,7 +40,7 @@ const TOP_STORIES = [
   {
     color: "#5B8DB8",
     title: "Scoring methodology v1.3 shipped",
-    body: "State Legislation elevated to highest-weighted factor (20 pts). Weather Infrastructure replaces LAANC as the seventh factor, with graduated scoring (none/partial/full). No market currently scores 100 — even Dallas and LA carry a 5-point weather infrastructure gap, reflecting the absence of comprehensive low-altitude weather sensing networks at scale.",
+    body: "State Legislation elevated to highest-weighted factor. Weather Infrastructure replaces LAANC as the seventh factor, with graduated scoring. No market currently scores 100 — even Dallas and LA carry a weather infrastructure gap, reflecting the absence of comprehensive low-altitude weather sensing networks at scale.",
   },
   {
     color: "#f59e0b",

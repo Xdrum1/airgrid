@@ -8,7 +8,7 @@ import { getScoreTier, getScoreColor } from "@/lib/scoring";
 
 const TRIGGER_LABELS: Record<string, { label: string; color: string; icon: string }> = {
   LEGISLATION: { label: "Legislative Momentum", color: "#7c3aed", icon: "📜" },
-  PIPELINE_OVERRIDE: { label: "Pending Override", color: "#f59e0b", icon: "⚡" },
+  PIPELINE_OVERRIDE: { label: "Signal Under Review", color: "#f59e0b", icon: "⚡" },
   ELEVATED_ACTIVITY: { label: "Elevated Activity", color: "#0891b2", icon: "📊" },
 };
 
@@ -256,8 +256,8 @@ export default async function WatchListPage() {
           }}
         >
           <p style={{ color: "#444", fontSize: 11, lineHeight: 1.6 }}>
-            Watch list updated daily at 06:00 UTC. Automated evaluation of legislation,
-            pipeline overrides, and classification activity across all tracked markets.
+            Watch list updated daily. Automated evaluation of legislative activity,
+            detected signals, and market momentum across all tracked markets.
           </p>
         </div>
       </div>

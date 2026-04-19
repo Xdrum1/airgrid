@@ -102,9 +102,8 @@ export default async function MarketsToWatchPage() {
           lineHeight: 1.7,
         }}>
           <strong style={{ color: "#5B8DB8", letterSpacing: 1 }}>HOW WE RANK</strong> &middot;
-          Significance is computed from: high-confidence near-term signals (5pts each), high-confidence
-          medium-term signals (3pts), expected score change in next 30 days (5pts), MarketWatch status
-          (NEGATIVE_WATCH +5, POSITIVE_WATCH +3), and signal acceleration (+2). Higher score = more
+          Significance is computed from signal confidence, resolution timeframe, expected score
+          impact, market momentum, and signal acceleration. Higher significance = more
           notable forward activity.
         </div>
 

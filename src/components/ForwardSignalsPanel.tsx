@@ -300,8 +300,8 @@ export default function ForwardSignalsPanel({ report, compact = false, dark = tr
           lineHeight: 1.6,
         }}>
           Generated {report.generatedAt.toISOString().slice(0, 10)} · AirIndex Forward Signals v1.0 ·
-          Aggregates classifier outputs, MarketWatch trajectory, and pre-development facility milestones.
-          Confidence reflects classification quality and source reliability, not outcome certainty.
+          Aggregates detected signals, market trajectory, and pre-development facility milestones.
+          Confidence reflects signal reliability, not outcome certainty.
         </div>
       )}
     </div>

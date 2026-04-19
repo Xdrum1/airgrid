@@ -93,7 +93,7 @@ const UPDATES: Update[] = [
     date: "2026-03-27",
     tag: "feature",
     title: "Federal Activity Tab",
-    body: "New gated dashboard tab tracking federal AAM legislation and regulatory activity. Two sections: Legislation (8 tracked Congress bills with live status via Congress.gov API) and FAA Dockets (regulations.gov documents with comment period tracking).",
+    body: "New gated dashboard tab tracking federal AAM legislation and regulatory activity. Two sections: Legislation (8 tracked Congressional bills with live status) and FAA Dockets (federal regulatory documents with comment period tracking).",
     link: { label: "Talk to us", href: "/contact" },
     image: { src: "/images/federal-activity.png", alt: "Federal Activity tab — AAM legislation tracking with live Congress bill status", width: 800, height: 400 },
   },
@@ -139,7 +139,7 @@ const UPDATES: Update[] = [
     date: "2026-03-12",
     tag: "improvement",
     title: "AI Classification Prompt v4",
-    body: "Upgraded our Haiku-powered filing classification to reduce false negatives on stock-framed headlines and improve metro area geographic matching across 17 metro areas. Overall accuracy baseline: ~80% across HIGH/MEDIUM/NEEDS_REVIEW confidence tiers.",
+    body: "Upgraded our AI-assisted classification to reduce false negatives on stock-framed headlines and improve metro area geographic matching across 17 metro areas. Accuracy baseline improved across all confidence tiers.",
   },
   {
     date: "2026-03-10",

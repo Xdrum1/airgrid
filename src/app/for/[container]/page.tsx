@@ -29,20 +29,20 @@ const PAGES: Record<string, ContainerPage> = {
     slug: "insurance",
     eyebrow: "For Aviation Insurance",
     headline:
-      "How aviation underwriters structure defensible facility-level risk assessments.",
+      "Is this site actually operable — or just approved?",
     problem: [
-      "Underwriting aviation facilities requires pulling fragmented data across FAA records, state enforcement posture, airspace determinations, and fire-code adoption — from multiple agencies, in multiple formats.",
-      "Most of it is manual. Most of it is undocumented in the file. When a loss event occurs, the question becomes: what did you know, and when did you know it?",
+      "Most underwriting workflows validate regulatory compliance — FAA registration, airspace determinations, fire-code adoption. But compliance does not answer whether a facility can actually support safe operations.",
+      "Physical constraints, dimensional limitations, and environmental exposure at the site level are rarely evaluated. When a loss event occurs, the question becomes: what did you know, and when did you know it?",
     ],
     whatAisDoes: [
-      "AirIndex produces a RiskIndex Assessment for each facility — a single document that composes FAA registry data, 5-question compliance framework, airspace determinations, state regulatory burden, and peer benchmarking into an underwriting-ready artifact with an explicit coverage recommendation.",
-      "Every assessment is AIS-backed: derived from the same real-time scoring methodology published at airindex.io/methodology. All data points are auditable against primary sources.",
+      "AirIndex evaluates each facility across three layers: regulatory compliance, physical feasibility, and potential operational exposure. The output is a single underwriting-ready document with an explicit coverage recommendation — not a compliance check, but an operability assessment.",
+      "Every assessment is AIS-backed: derived from the same continuously updated scoring methodology published at airindex.io/methodology. All data points are auditable against primary sources.",
     ],
     decisionSupported: [
       "Coverage terms and conditions",
       "Renewal-contingent endorsements",
       "E&O defensibility of the underwriting file",
-      "Portfolio-level facility risk aggregation",
+      "Multi-facility risk comparison across insured sites",
     ],
     withoutIt:
       "Facilities are underwritten with incomplete compliance documentation, increasing exposure to post-event review. Gaps that are invisible without systematic assessment become liabilities after a loss event.",
@@ -63,19 +63,19 @@ const PAGES: Record<string, ContainerPage> = {
     slug: "risk-assessment",
     eyebrow: "For Underwriters & Facility Owners",
     headline:
-      "What a facility-level risk assessment looks like before it enters an underwriting file.",
+      "Three questions most facility assessments don't answer.",
     problem: [
-      "Every aviation facility has a compliance profile — FAA registration status, airspace determination, fire-code adoption, dimensional viability. Today, assembling that profile for a single facility takes 4-6 hours of manual research across fragmented sources.",
-      "Most underwriting files don't contain this data at all. The gap isn't visible until a loss event forces the question.",
+      "Standard assessments ask: is it allowed? They check FAA registration, airspace determination, fire-code adoption. But they rarely ask: can it physically work? Will it behave under real-world conditions?",
+      "Dimensional constraints, airflow exposure, and environmental risk at the site level are invisible in FAA records. Assembling even the compliance layer takes 4-6 hours of manual research across fragmented sources. Most underwriting files skip it entirely.",
     ],
     whatAisDoes: [
-      "The RiskIndex Assessment compresses that 4-6 hour research task into a single AIS-backed document delivered within 24 hours. Compliance grid, airspace flags, state context, satellite imagery, and an explicit underwriting recommendation — formatted for direct inclusion in the file.",
-      "\"Unknown\" indicates no verifiable record found in primary sources and is treated as a compliance gap. Every data point traces to FAA NASR 5010, OE/AAA records, or state regulatory sources.",
+      "The RiskIndex Assessment evaluates all three layers — regulatory compliance, physical feasibility, and operational exposure — in a single AIS-backed document delivered within 24 hours. Compliance grid, dimensional pre-screen, airflow flags, state context, satellite imagery, and an explicit underwriting recommendation.",
+      "Every data point traces to FAA NASR 5010, OE/AAA records, or state regulatory sources. Where records are absent, the gap is flagged — not assumed away.",
     ],
     decisionSupported: [
       "Underwriting documentation and file completion",
       "Conditional coverage endorsements",
-      "Portfolio risk aggregation across insured facilities",
+      "Multi-facility risk comparison across insured sites",
       "Compliance gap identification before renewal",
     ],
     withoutIt:
@@ -103,7 +103,7 @@ const PAGES: Record<string, ContainerPage> = {
       "Most developers scope projects using incomplete information: press coverage, conference conversations, and outdated feasibility studies. The binding constraint on deployment is often invisible until capital is already committed.",
     ],
     whatAisDoes: [
-      "AirIndex produces a gap-to-readiness analysis for each market that identifies the specific factor suppressing readiness — whether it's legislation, zoning, operator presence, or weather infrastructure — with cost and timeline to resolution.",
+      "AirIndex produces a gap-to-readiness analysis for each market that identifies the specific factor suppressing readiness — whether it's legislation, zoning, operator presence, or weather infrastructure — and what would need to change for the market to advance.",
       "Every analysis is AIS-backed: the same 7-factor scoring model that updates as real-world signals change. Peer-market benchmarking shows why comparable markets are advancing faster.",
     ],
     decisionSupported: [
@@ -118,7 +118,7 @@ const PAGES: Record<string, ContainerPage> = {
     sampleBullets: [
       "AIS score with 7-factor breakdown per market",
       "Gap-to-readiness analysis with binding constraint identified",
-      "Cost and timeline framing per gap",
+      "Gap remediation path with precedent from peer markets",
       "Peer-market benchmarking (why others advance faster)",
       "State regulatory burden context (process friction, not just posture)",
       "Forward signals with decision windows",
@@ -138,7 +138,7 @@ const PAGES: Record<string, ContainerPage> = {
     ],
     whatAisDoes: [
       "AirIndex scores 25 U.S. markets on the ground conditions that determine where commercial eVTOL operations actually launch — legislation, pilot programs, vertiport approvals, zoning, regulatory posture, and weather infrastructure.",
-      "Forward signals identify markets approaching readiness inflection points before consensus forms. AIS updates as signals change — legislation passes, bills fail, operators commit.",
+      "Forward signals track events approaching resolution — legislation advancing, operators committing, infrastructure clearing approval. AIS updates as signals change.",
     ],
     decisionSupported: [
       "Market entry sequencing and timing",
@@ -152,8 +152,8 @@ const PAGES: Record<string, ContainerPage> = {
     sampleBullets: [
       "Market-by-market AIS scoring across 25 U.S. metros",
       "7-factor breakdown showing exactly what's present and what's missing",
-      "Forward signals with predicted factor impact and decision windows",
-      "Operator-graph intelligence (who's committed where)",
+      "Forward signals tracking events approaching resolution",
+      "Operator presence tracking (who is committed where)",
       "Regulatory posture + legislative trajectory per state",
     ],
     cta: "Tell us which markets you're evaluating. We return a readiness comparison within 48 hours.",
@@ -171,11 +171,11 @@ const PAGES: Record<string, ContainerPage> = {
     ],
     whatAisDoes: [
       "AirIndex scores every tracked market on the same 7-factor framework and publishes the methodology. Cities see exactly where they rank, which peers are advancing faster, and what specific actions close each gap.",
-      "Federal program alignment shows which grants, pilots, and DOT initiatives map to a city's current readiness profile. Gap-to-readiness roadmaps provide actionable steps — not just scores.",
+      "Gap-to-readiness analysis shows which specific factors suppress the score and what actions close each gap — with precedent from peer markets that have already advanced.",
     ],
     decisionSupported: [
       "Economic development positioning and attraction strategy",
-      "Federal program targeting and grant alignment",
+      "Readiness gap prioritization",
       "Peer benchmarking against same-tier and same-state markets",
       "Zoning and legislative action prioritization",
     ],
@@ -186,7 +186,7 @@ const PAGES: Record<string, ContainerPage> = {
       "AIS score with factor-level comparison against 5 peer cities",
       "Gap analysis showing which factors suppress the score",
       "Specific actions that move each factor (with precedent examples)",
-      "Federal program map showing alignment opportunities",
+      "State regulatory context and legislative trajectory",
       "State legislative context and regulatory burden assessment",
     ],
     cta: "Tell us your city. We return a peer-benchmarked readiness assessment.",
@@ -494,7 +494,7 @@ export default async function ContainerPage({
             lineHeight: 1.6,
           }}
         >
-          All outputs derived from the AirIndex Score (AIS) — a real-time,
+          All outputs derived from the AirIndex Score (AIS) — a continuously updated,
           auditable market-readiness rating.{" "}
           <Link href="/methodology" style={{ color: LT.accent, textDecoration: "none" }}>
             Methodology

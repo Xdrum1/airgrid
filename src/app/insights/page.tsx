@@ -57,14 +57,14 @@ const INSIGHTS: Insight[] = [
   {
     date: "2026-03-24",
     category: "methodology",
-    title: "Why We Weight Legislation at 20%",
+    title: "Why Legislation Is the Highest-Weighted Factor",
     summary:
       "State-level legislation is the single highest-weighted factor in the AirIndex scoring model. Here's the reasoning — and what infrastructure developers taught us about why it matters.",
     body: [
-      "In version 1.3 of our scoring methodology, state legislation carries a 20% weight — the highest of any single factor. This isn't arbitrary. It reflects a structural reality: without enabling state legislation, no amount of operator interest or vertiport construction can create a commercially viable UAM market.",
+      "In version 1.3 of our scoring methodology, state legislation carries the highest weight of any single factor. This isn't arbitrary. It reflects a structural reality: without enabling state legislation, no amount of operator interest or vertiport construction can create a commercially viable UAM market.",
       "We learned this directly from infrastructure developers who stress-test our 7-factor model against real capital allocation decisions. Their feedback was clear: when they evaluate a market for vertiport investment, the first question isn't 'are there operators here?' It's 'does the state legal framework allow what we need to build?' Legislation creates the floor that everything else stands on.",
-      "The graduated scoring (enacted legislation = full points, actively moving = partial, nothing = zero) captures the reality that legislative progress is a spectrum, not a binary. A state with a UAM bill in committee is meaningfully different from one with no activity at all — and both are different from one where comprehensive frameworks are already signed into law.",
-      "This weighting has proven predictive. Markets with enacted legislation (Texas, Florida, Nevada) consistently cluster at the top of our index, while markets with strong operator interest but no legislative framework (several Northeast cities) score lower than their press coverage would suggest.",
+      "The graduated scoring captures the reality that legislative progress is a spectrum, not a binary. A state with a UAM bill in committee is meaningfully different from one with no activity at all — and both are different from one where comprehensive frameworks are already signed into law.",
+      "This weighting has proven predictive. Markets with enacted legislation consistently cluster at the top of our index, while markets with strong operator interest but no legislative framework score lower than their press coverage would suggest.",
     ],
     link: { label: "Read the full methodology", href: "/methodology" },
   },
@@ -78,7 +78,7 @@ const INSIGHTS: Insight[] = [
       "When we expanded our Federal Register ingestion window from 90 days to 730 days and added new search terms ('powered lift', SFAR), the results were striking. We went from 5 tracked federal filings to 84 — a 1,580% increase in our regulatory signal coverage.",
       "More important than the raw number is the distribution. Filing activity has clearly accelerated over the past 18 months. The FAA's powered lift rulemaking, Part 135 certificate applications from operators like Joby, and city-level UAM integration plans appearing in the Federal Register all point to a regulatory environment that is moving faster than most market participants realize.",
       "One filing in particular triggered a score change: Archer Aviation's White House Urban Air Mobility Pilot Program, which we had missed in our 90-day window. That single filing validated Miami's active pilot program status and moved the city's score from 80 to 100. This is exactly why comprehensive historical coverage matters — a single missed filing can mean a 20-point scoring error.",
-      "Our classification pipeline now runs across four primary sources — Federal Register, LegiScan, SEC EDGAR, and operator news — with 1,340 total records and an ~80% accuracy rate on our AI-assisted classification layer.",
+      "Our classification pipeline now ingests from multiple primary government and regulatory sources, with over 1,300 tracked records processed through a high-accuracy AI-assisted classification layer.",
     ],
   },
   {
