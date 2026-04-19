@@ -11,6 +11,7 @@ import { RISK_DEMO_SITE_IDS } from "@/lib/risk-index";
 import { loadAirflowData } from "@/lib/airflow-data";
 import { computeOES, getBuildingStatuses } from "@/lib/obstruction-score";
 import Link from "next/link";
+import AirflowMapWrapper from "@/components/airflow/AirflowMapWrapper";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
 
@@ -104,6 +105,22 @@ export default async function AirflowReportPage({
                 <span>● Wind Path ({oes.windScore}/25)</span>
                 <span>● Height Ratio ({oes.ratioScore}/25)</span>
               </div>
+            </div>
+
+            {/* Satellite Visualization */}
+            <div style={{ marginBottom: 20 }}>
+              <AirflowMapWrapper
+                lat={data.lat}
+                lng={data.lng}
+                windDeg={data.windDeg}
+                windDir={data.windDir}
+                buildings={statuses.map(s => {
+                  const b = data.buildings.find(b2 => b2.name === s.name);
+                  return { name: s.name, heightFt: s.heightFt, lat: b?.lat ?? data.lat, lng: b?.lng ?? data.lng, status: s.status };
+                }).filter(b => b.lat !== data.lat)}
+                approachFrom={data.approach.includes("°") ? parseInt(data.approach) : undefined}
+                approachTo={data.approach.includes("to") ? parseInt(data.approach.split("to")[1]) : undefined}
+              />
             </div>
 
             {/* Score Breakdown */}

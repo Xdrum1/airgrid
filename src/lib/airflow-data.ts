@@ -69,20 +69,18 @@ export async function loadAirflowData(siteId: string): Promise<FacilityAirflowDa
       });
   }
 
-  // Parse approach corridors from NASR remarks if available
+  // Load approach corridors from pre-parsed JSON
   let approach = "Unspecified";
   try {
-    const rmkPath = path.join(process.cwd(), "data", "nasr", "APT_RMK.csv");
-    if (existsSync(rmkPath)) {
-      const rmkContent = readFileSync(rmkPath, "utf-8");
-      const siteLines = rmkContent.split("\n").filter(l => l.includes(`"${siteId}"`));
-      for (const line of siteLines) {
-        const apchMatch = line.match(/APCH\/DEP\s+OPNS\s+COND\s+(\d+)\s+.*?TO\s+(\d+)/i) ||
-                           line.match(/INGRESS\/EGRESS\s+(\d+)\/(\d+)/i);
-        if (apchMatch) {
-          approach = `${apchMatch[1]}° to ${apchMatch[2]}°`;
-          break;
-        }
+    const corridorPath = path.join(process.cwd(), "data", "approach-corridors.json");
+    if (existsSync(corridorPath)) {
+      const corridors = JSON.parse(readFileSync(corridorPath, "utf-8")) as Array<{
+        facilityId: string;
+        corridors: Array<{ fromDeg: number; toDeg: number; label: string }>;
+      }>;
+      const match = corridors.find(c => c.facilityId === siteId);
+      if (match && match.corridors.length > 0) {
+        approach = match.corridors.map(c => c.label).join(" | ");
       }
     }
   } catch {
