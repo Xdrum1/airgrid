@@ -15,6 +15,34 @@ import { prisma } from "@/lib/prisma";
 import { getStateContext, type StateContext } from "@/lib/mcs";
 import { getCitiesWithOverrides } from "@/data/seed";
 import type { City } from "@/types";
+import { existsSync, readFileSync } from "fs";
+import path from "path";
+
+// Check NASR APT_RMK for rooftop indicators
+let rooftopCache: Set<string> | null = null;
+function isRooftopFromRemarks(siteId: string): boolean {
+  if (!rooftopCache) {
+    rooftopCache = new Set();
+    try {
+      const rmkPath = path.join(process.cwd(), "data", "nasr", "APT_RMK.csv");
+      if (existsSync(rmkPath)) {
+        const content = readFileSync(rmkPath, "utf-8");
+        const lines = content.split("\n");
+        for (const line of lines) {
+          if (/rooftop|roof.top/i.test(line)) {
+            // Extract all quoted fields
+            const fields = line.match(/"([^"]*)"/g);
+            if (fields && fields.length >= 5) {
+              const id = fields[4].replace(/"/g, "");
+              rooftopCache.add(id);
+            }
+          }
+        }
+      }
+    } catch { /* silently skip */ }
+  }
+  return rooftopCache.has(siteId);
+}
 
 export type RiskTier = "LOW" | "MODERATE" | "ELEVATED" | "CRITICAL";
 
@@ -177,6 +205,7 @@ function buildGapFlags(c: {
   surfaceType?: string | null;
   siteType?: string | null;
   isInTrackedMetro?: boolean;
+  isRooftopFromRemarks?: boolean;
 }): SiteGapFlag[] {
   const flags: SiteGapFlag[] = [];
 
@@ -284,7 +313,8 @@ function buildGapFlags(c: {
 
   // Airflow & ventilation exposure — rooftop facilities in urban contexts
   const isRooftop = c.surfaceType?.toUpperCase() === "ROOF-TOP" ||
-    c.surfaceType?.toUpperCase() === "ROOFTOP";
+    c.surfaceType?.toUpperCase() === "ROOFTOP" ||
+    c.isRooftopFromRemarks === true;
   const isHospital = c.siteType === "hospital";
   const isUrban = c.isInTrackedMetro === true;
 
@@ -558,6 +588,7 @@ export async function getSiteRiskAssessment(siteId: string): Promise<SiteRiskAss
     surfaceType: heliport.surfaceType,
     siteType: compliance?.siteType ?? null,
     isInTrackedMetro: !!heliport.cityId,
+    isRooftopFromRemarks: isRooftopFromRemarks(heliport.id),
   }).sort((a, b) => {
     const ord = { critical: 0, high: 1, moderate: 2, low: 3 } as const;
     return ord[a.severity] - ord[b.severity];
