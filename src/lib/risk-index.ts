@@ -320,27 +320,27 @@ function buildGapFlags(c: {
 
   if (isRooftop && isUrban && isHospital) {
     flags.push({
-      code: "AIRFLOW_VENTILATION",
+      code: "OEL_EXPOSURE",
       severity: "high",
-      title: "Airflow & ventilation exposure — hospital rooftop",
+      title: "Operational exposure (OEL) — hospital rooftop",
       detail: "Hospital rooftop configuration with likely proximity to HVAC intake systems presents elevated risk of airflow disruption and potential exhaust recirculation into occupied spaces. Surrounding structures may create localized turbulence, wind shear amplification, and constrained approach geometry. This condition may impact patient safety and operational viability. These risks are not captured in FAA compliance records or standard airspace determinations.",
       remediation: "Formal airflow and ventilation risk assessment recommended. Assess rotor wash dispersion, HVAC intake proximity, exhaust recirculation potential, and building canyon effects on approach corridors.",
       tierImpact: "May affect tier if combined with other facility-level risk factors. Informs operational risk assessment and coverage conditions.",
     });
   } else if (isRooftop && isUrban) {
     flags.push({
-      code: "AIRFLOW_VENTILATION",
+      code: "OEL_EXPOSURE",
       severity: "moderate",
-      title: "Airflow & ventilation exposure — rooftop configuration",
+      title: "Operational exposure (OEL) — rooftop configuration",
       detail: "Rooftop configuration with surrounding structures introduces potential airflow disruption and exhaust recirculation risk. Proximity to building systems may impact operational safety. These risks are not captured in FAA compliance records or standard airspace determinations.",
       remediation: "Site-level airflow and ventilation risk assessment recommended where applicable.",
       tierImpact: "Does not affect current tier. Informs operational risk assessment and coverage conditions for rooftop facilities.",
     });
   } else if (isRooftop) {
     flags.push({
-      code: "AIRFLOW_VENTILATION",
+      code: "OEL_EXPOSURE",
       severity: "low",
-      title: "Airflow & ventilation exposure — rooftop configuration",
+      title: "Operational exposure (OEL) — rooftop configuration",
       detail: "Rooftop facility. Rotor wash and exhaust dispersion characteristics differ from ground-level operations. This assessment is based on observable site configuration and does not replace a formal engineering airflow study.",
       remediation: "Site-level airflow review recommended if operational expansion planned.",
       tierImpact: "Does not affect current tier. Informational.",
@@ -372,8 +372,8 @@ function buildUnderwritingRecommendation(
     if (f.code === "EVTOL_VIABILITY") {
       conditions.push("Coverage scoped to current-certificated-aircraft operations");
     }
-    if (f.code === "AIRFLOW_VENTILATION") {
-      conditions.push("Site-level airflow and ventilation risk assessment documented where applicable");
+    if (f.code === "OEL_EXPOSURE") {
+      conditions.push("Site-level operational exposure assessment documented where applicable");
     }
   }
 

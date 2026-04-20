@@ -613,10 +613,10 @@ export default async function RiskAssessmentPage({
             href={`/admin/reports/airflow/${r.facilityId}`}
             style={{ color: "#5B8DB8", textDecoration: "none", fontSize: 13, fontWeight: 600 }}
           >
-            View Airflow & Obstruction Assessment →
+            View Operational Exposure Assessment (OEL) →
           </Link>
           <div style={{ fontSize: 10, color: "#999", marginTop: 4 }}>
-            Building environment, 8:1 approach surface analysis, OES scoring
+            OES obstruction scoring, OEL exposure flagging, building environment analysis
           </div>
         </div>
 

@@ -69,7 +69,7 @@ const PAGES: Record<string, ContainerPage> = {
       "Dimensional constraints, airflow exposure, and environmental risk at the site level are invisible in FAA records. Assembling even the compliance layer takes 4-6 hours of manual research across fragmented sources. Most underwriting files skip it entirely.",
     ],
     whatAisDoes: [
-      "The RiskIndex Assessment evaluates all three layers — regulatory compliance, physical feasibility, and operational exposure — in a single AIS-backed document delivered within 24 hours. Compliance grid, dimensional pre-screen, airflow flags, state context, satellite imagery, and an explicit underwriting recommendation.",
+      "The RiskIndex Assessment evaluates all three layers — regulatory compliance, physical feasibility, and operational exposure — in a single AIS-backed document delivered within 24 hours. Compliance grid, dimensional pre-screen, operational exposure flags (OEL), state context, satellite imagery, and an explicit underwriting recommendation.",
       "Every data point traces to FAA NASR 5010, OE/AAA records, or state regulatory sources. Where records are absent, the gap is flagged — not assumed away.",
     ],
     decisionSupported: [

@@ -1,5 +1,5 @@
 /**
- * Airflow & Obstruction Assessment — Admin Report
+ * Operational Exposure Assessment (OEL) — Admin Report
  *
  * Stage 2: heuristic scoring from OSM building heights + NASR pad data.
  * Renders OES score, building analysis, and structural findings.
@@ -52,7 +52,7 @@ export default async function AirflowReportPage({
             ← RiskIndex Report
           </Link>
           <span style={{ color: "#d1d5db" }}>|</span>
-          <span style={{ fontSize: 11, color: "#999", fontFamily: "monospace" }}>Airflow & Obstruction Assessment</span>
+          <span style={{ fontSize: 11, color: "#999", fontFamily: "monospace" }}>Operational Exposure Assessment (OEL)</span>
         </div>
         <span style={{ fontSize: 10, color: "#bbb" }}>Stage 2 · Heuristic</span>
       </div>
@@ -61,7 +61,7 @@ export default async function AirflowReportPage({
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
           <div style={{ fontSize: 9, letterSpacing: "0.16em", textTransform: "uppercase", color: "#5B8DB8", fontWeight: 700, marginBottom: 8 }}>
-            AirIndex RiskIndex — Airflow & Obstruction Assessment
+            AirIndex RiskIndex — Operational Exposure Assessment (OEL)
           </div>
           <h1 style={{ fontSize: 24, fontWeight: 700, color: "#111", margin: "0 0 4px", fontFamily: "'Space Grotesk', sans-serif" }}>
             {data.facilityName}
