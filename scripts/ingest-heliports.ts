@@ -156,6 +156,8 @@ interface HeliportRecord {
   padWidthFt: number | null;
   surfaceType: string | null;
   surfaceCondition: string | null;
+  activationDate: string | null;
+  lastInfoResponse: string | null;
 }
 
 interface RwyRecord {
@@ -235,6 +237,8 @@ async function main() {
   const iLngDec = col("LONG_DECIMAL");
   const iElev = col("ELEV");
   const iStatus = col("ARPT_STATUS");
+  const iActivation = col("ACTIVATION_DATE");
+  const iLastInfo = col("LAST_INFO_RESPONSE");
 
   console.log(`Parsing ${(lines.length - 1).toLocaleString()} APT records...`);
 
@@ -278,6 +282,8 @@ async function main() {
       padWidthFt: rwy?.rwyWidth ?? null,
       surfaceType: rwy?.surfaceType ?? null,
       surfaceCondition: rwy?.condition ?? null,
+      activationDate: fields[iActivation] || null,
+      lastInfoResponse: fields[iLastInfo] || null,
     });
   }
 
@@ -346,6 +352,8 @@ async function main() {
         padWidthFt: h.padWidthFt,
         surfaceType: h.surfaceType,
         surfaceCondition: h.surfaceCondition,
+        activationDate: h.activationDate,
+        lastInfoResponse: h.lastInfoResponse,
       })),
       skipDuplicates: true,
     });

@@ -21,6 +21,8 @@ import {
 } from "@/lib/risk-index";
 import { buildSatelliteTileUrl, buildContextTileUrl } from "@/lib/satellite-tile";
 import { getDataQuality } from "@/lib/data-quality-score";
+import { loadAirflowData } from "@/lib/airflow-data";
+import { computeOES } from "@/lib/obstruction-score";
 import PrintButton from "@/app/reports/gap/[cityId]/PrintButton";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "alan@airindex.io";
@@ -152,6 +154,8 @@ export default async function RiskAssessmentPage({
   if (!r) notFound();
 
   const dq = getDataQuality(upper);
+  const airflowData = await loadAirflowData(upper);
+  const oes = airflowData ? computeOES(airflowData) : null;
 
   const today = new Date().toLocaleDateString("en-US", {
     month: "long",
@@ -607,17 +611,44 @@ export default async function RiskAssessmentPage({
           </>
         )}
 
-        {/* Airflow assessment link */}
-        <div style={{ ...S.card, textAlign: "center", marginBottom: 20 }}>
-          <Link
-            href={`/admin/reports/airflow/${r.facilityId}`}
-            style={{ color: "#5B8DB8", textDecoration: "none", fontSize: 13, fontWeight: 600 }}
-          >
-            View Operational Exposure Assessment (OEL) →
-          </Link>
-          <div style={{ fontSize: 10, color: "#999", marginTop: 4 }}>
-            OES obstruction scoring, OEL exposure flagging, building environment analysis
-          </div>
+        {/* OES + OEL summary */}
+        <div style={S.sectionTag}>Obstruction & Operational Exposure</div>
+        <div style={S.card}>
+          {oes ? (
+            <>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 10 }}>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 28, fontWeight: 700, fontFamily: "monospace", color: oes.tierColor }}>{oes.totalScore}</div>
+                  <div style={{ fontSize: 9, color: "#999" }}>OES</div>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: oes.tierColor, textTransform: "uppercase" as const, letterSpacing: "0.06em" }}>{oes.tier}</div>
+                  <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.4 }}>
+                    {oes.pen81Count > 0 && `${oes.pen81Count} 8:1 penetration${oes.pen81Count > 1 ? "s" : ""}. `}
+                    {oes.inFato2D > 0 && `${oes.inFato2D} FATO zone intrusion${oes.inFato2D > 1 ? "s" : ""}. `}
+                    {oes.inWindPath > 0 && `${oes.inWindPath} wind path obstruction${oes.inWindPath > 1 ? "s" : ""}.`}
+                    {oes.pen81Count === 0 && oes.inFato2D === 0 && oes.inWindPath === 0 && "No significant obstructions detected in available building data."}
+                  </div>
+                </div>
+              </div>
+              <Link
+                href={`/admin/reports/airflow/${r.facilityId}`}
+                style={{ color: "#5B8DB8", textDecoration: "none", fontSize: 12, fontWeight: 600 }}
+              >
+                View full OES + OEL assessment →
+              </Link>
+            </>
+          ) : (
+            <>
+              <div style={{ fontSize: 12, color: "#888", marginBottom: 6 }}>No building height data available for OES scoring. Building data required for obstruction analysis.</div>
+              <Link
+                href={`/admin/reports/airflow/${r.facilityId}`}
+                style={{ color: "#5B8DB8", textDecoration: "none", fontSize: 12, fontWeight: 600 }}
+              >
+                View Operational Exposure Assessment (OEL) →
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Footer */}
