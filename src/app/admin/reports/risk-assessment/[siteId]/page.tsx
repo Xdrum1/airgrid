@@ -20,6 +20,7 @@ import {
   type SiteGapFlag,
 } from "@/lib/risk-index";
 import { buildSatelliteTileUrl, buildContextTileUrl } from "@/lib/satellite-tile";
+import { getDataQuality } from "@/lib/data-quality-score";
 import PrintButton from "@/app/reports/gap/[cityId]/PrintButton";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "alan@airindex.io";
@@ -149,6 +150,8 @@ export default async function RiskAssessmentPage({
 
   const r = await getSiteRiskAssessment(upper);
   if (!r) notFound();
+
+  const dq = getDataQuality(upper);
 
   const today = new Date().toLocaleDateString("en-US", {
     month: "long",
@@ -362,6 +365,39 @@ export default async function RiskAssessmentPage({
             <div><div style={S.kvLabel}>Linked OE Determinations</div><div style={S.kvVal}>{r.oeDeterminationCount}</div></div>
           </div>
         </div>
+
+        {/* Data Reliability */}
+        {dq && (
+          <>
+            <div style={S.sectionTag}>Data Reliability</div>
+            <div style={S.card}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 12 }}>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 28, fontWeight: 700, fontFamily: "monospace", color: dq.dqsScore >= 80 ? "#10b981" : dq.dqsScore >= 60 ? "#f59e0b" : "#ef4444" }}>{dq.dqsScore}</div>
+                  <div style={{ fontSize: 9, color: "#999" }}>DQS</div>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: dq.stalenessColor, textTransform: "uppercase" as const, letterSpacing: "0.06em", marginBottom: 2 }}>{dq.staleness === "very_stale" ? "Very Stale" : dq.staleness}</div>
+                  <div style={{ fontSize: 11, color: "#6b7280", lineHeight: 1.5 }}>{dq.reliabilityLabel}</div>
+                </div>
+              </div>
+              <div style={S.kv}>
+                <div><div style={S.kvLabel}>Activation Date</div><div style={S.kvVal}>{dq.activationDate ?? "Unknown"}{dq.activationYear ? ` (${new Date().getFullYear() - dq.activationYear} years ago)` : ""}</div></div>
+                <div><div style={S.kvLabel}>AC Era</div><div style={S.kvVal}>{dq.acVersion ?? "Unknown"}</div></div>
+                <div><div style={S.kvLabel}>Last Info Response</div><div style={S.kvVal}>{dq.lastInfoResponse ?? "None on file"}</div></div>
+                <div><div style={S.kvLabel}>Position Source Date</div><div style={S.kvVal}>{dq.positionSourceDate ?? "None on file"}</div></div>
+              </div>
+              {dq.dimensionalNote && (
+                <div style={{ marginTop: 10, padding: "8px 10px", background: "#f9fafb", borderRadius: 4, fontSize: 10, color: "#6b7280", lineHeight: 1.5 }}>
+                  <strong style={{ color: "#374151" }}>Dimensional interpretation:</strong> {dq.dimensionalNote}
+                </div>
+              )}
+              <div style={{ marginTop: 8, fontSize: 9, color: "#9ca3af" }}>
+                Data Quality Score (DQS) reflects completeness and currency of FAA NASR records. Based on methodology from VFS Forum 80 data quality assessment (2024).
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Compliance */}
         <div style={S.sectionTag}>Compliance Profile</div>
