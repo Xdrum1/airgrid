@@ -21,6 +21,8 @@ export interface DataQualityAssessment {
   positionSourceDate: string | null;
   elevationSourceDate: string | null;
   lastInspection: string | null;
+  isLikelyHospital: boolean;
+  hospitalMisclassified: boolean; // matches hospital keywords but not flagged medical-use
 
   // Computed
   acEra: string | null;
@@ -149,6 +151,13 @@ export function getDataQuality(facilityId: string): DataQualityAssessment | null
     : staleness === "very_stale" ? "#991b1b"
     : "#6b7280";
 
+  // Hospital reconciliation
+  const facilityName = record["ARPT_NAME"] || "";
+  const HOSPITAL_KEYWORDS = ["hospital", "medical", "health", "mercy", "memorial", "clinic", "trauma", "care", "emergency", "children", "pediatric", "veterans"];
+  const isLikelyHospital = HOSPITAL_KEYWORDS.some(kw => facilityName.toLowerCase().includes(kw));
+  const useCode = record["FACILITY_USE_CODE"] || "";
+  const hospitalMisclassified = isLikelyHospital && !facilityName.toLowerCase().includes("medical use");
+
   // DQS Score (0-100)
   let dqs = 100;
   dqs -= blanks * 5;
@@ -179,6 +188,8 @@ export function getDataQuality(facilityId: string): DataQualityAssessment | null
     acEra: era?.label ?? null,
     acVersion: era?.version ?? null,
     dimensionalNote: era?.dimensionalNote ?? "Activation date unknown — AC era cannot be determined. Dimensional data interpretation uncertain.",
+    isLikelyHospital,
+    hospitalMisclassified,
     dataAgeYears: ageYears,
     blankCriticalFields: blanks,
     dqsScore: dqs,

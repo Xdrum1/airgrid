@@ -396,6 +396,11 @@ export default async function RiskAssessmentPage({
                   <strong style={{ color: "#374151" }}>Dimensional interpretation:</strong> {dq.dimensionalNote}
                 </div>
               )}
+              {dq.isLikelyHospital && dq.hospitalMisclassified && (
+                <div style={{ marginTop: 6, padding: "8px 10px", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 4, fontSize: 10, color: "#92400e", lineHeight: 1.5 }}>
+                  <strong>Classification note:</strong> Facility name suggests healthcare use but is not classified as Medical-Use in FAA records. 332+ healthcare facilities nationwide share this classification gap.
+                </div>
+              )}
               <div style={{ marginTop: 8, fontSize: 9, color: "#9ca3af" }}>
                 Data Quality Score (DQS) reflects completeness and currency of FAA NASR records. Based on methodology from VFS Forum 80 data quality assessment (2024).
               </div>

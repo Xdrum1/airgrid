@@ -66,6 +66,8 @@
   <select id="fac-selector" style="width:100%;padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(91,141,184,0.15);border-radius:4px;color:#bbb;font-size:10px;font-family:monospace;margin-bottom:10px;cursor:pointer;">
     <option value="25FA">25FA — Jackson Memorial, Miami</option>
     <option value="75CL">75CL — UCLA Reagan Medical, LA</option>
+    <option value="CA46">CA46 — Cedars-Sinai, LA (597 bldgs)</option>
+    <option value="1FD5">1FD5 — Aventura Hospital, Miami (311ft nearby)</option>
   </select>
   <div class="fac-name" id="fac-name">Jackson Memorial Hospital</div>
   <div class="fac-id" id="fac-id">25FA · Miami, FL · 50×50 ft CONC</div>
@@ -179,6 +181,31 @@ const FACILITY_DATA = {
       { name: "Reagan Medical Main", h: 25, x: -20, y: 15, w: 70, d: 50 },
       { name: "Mattel Children's", h: 24, x: 40, y: -30, w: 40, d: 35 },
       { name: "Parking Structure 9", h: 18, x: -30, y: -40, w: 45, d: 40 },
+    ],
+  },
+  "CA46": {
+    name: "Cedars-Sinai Medical Center", id: "CA46", city: "Los Angeles, CA", pad: "62×62 ft CONC (Rooftop)",
+    windDeg: 247, padElevFt: 334, tloFt: 62, fato15D: 112, fato2D: 149,
+    buildings: [
+      { name: "Cedars-Sinai Main Tower", h: 59, x: 30, y: -20, w: 60, d: 45 },
+      { name: "Saperstein Critical Care", h: 58, x: -80, y: 40, w: 50, d: 40 },
+      { name: "Davis Research Building", h: 54, x: -120, y: -30, w: 45, d: 35 },
+      { name: "Beverly Center", h: 47, x: 100, y: 80, w: 70, d: 60 },
+      { name: "Sofitel Beverly Hills", h: 40, x: 140, y: -60, w: 35, d: 30 },
+      { name: "Advanced Health Sciences", h: 35, x: -50, y: -80, w: 40, d: 35 },
+      { name: "Medical Office Tower", h: 30, x: 60, y: 50, w: 35, d: 30 },
+    ],
+  },
+  "1FD5": {
+    name: "HCA Florida Aventura Hospital", id: "1FD5", city: "Aventura, FL", pad: "55×55 ft MATS (Rooftop)",
+    windDeg: 112, padElevFt: 164, tloFt: 55, fato15D: 99, fato2D: 132,
+    buildings: [
+      { name: "Aventura Tower South", h: 95, x: -60, y: 50, w: 40, d: 35 },
+      { name: "Aventura Tower North", h: 82, x: 80, y: -100, w: 35, d: 30 },
+      { name: "Condo Tower West", h: 82, x: -120, y: -40, w: 35, d: 30 },
+      { name: "Wells Fargo Building", h: 48, x: 150, y: 80, w: 30, d: 25 },
+      { name: "Medical Office East", h: 30, x: 70, y: 30, w: 35, d: 30 },
+      { name: "Parking Structure", h: 20, x: -40, y: -60, w: 50, d: 40 },
     ],
   },
 };
