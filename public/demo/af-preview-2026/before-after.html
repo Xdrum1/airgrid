@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AirIndex — Before & After</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #ffffff; font-family: 'Helvetica Neue', Arial, sans-serif; color: #111; }
+
+  .page { max-width: 680px; margin: 0 auto; padding: 48px 32px 60px; }
+
+  .header { margin-bottom: 36px; }
+  .eyebrow { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #5B8DB8; font-weight: 700; margin-bottom: 10px; }
+  h1 { font-size: 26px; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .subtitle { font-size: 14px; color: #666; line-height: 1.6; }
+
+  /* Problem block */
+  .problem { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; }
+  .problem-tag { font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: #991b1b; font-weight: 700; margin-bottom: 8px; }
+  .problem-text { font-size: 15px; color: #7f1d1d; line-height: 1.6; font-weight: 500; }
+
+  /* Stats grid */
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .stat-card { padding: 16px 18px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; }
+  .stat-num { font-size: 28px; font-weight: 700; color: #111; font-family: 'Courier New', monospace; }
+  .stat-label { font-size: 11px; color: #888; margin-top: 4px; line-height: 1.4; }
+  .stat-highlight { color: #b91c1c; }
+
+  /* Before / After */
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .col { padding: 20px 22px; border-radius: 8px; }
+  .col-before { background: #f9fafb; border: 1px solid #e5e7eb; }
+  .col-after { background: #f0f9ff; border: 1px solid #bae6fd; }
+  .col-tag { font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; margin-bottom: 12px; }
+  .col-before .col-tag { color: #991b1b; }
+  .col-after .col-tag { color: #0369a1; }
+  .col-item { display: flex; gap: 8px; padding: 5px 0; font-size: 12px; line-height: 1.5; color: #444; }
+  .col-item .icon { flex-shrink: 0; font-size: 14px; }
+  .col-before .icon { color: #ef4444; }
+  .col-after .icon { color: #10b981; }
+  .col-time { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.06); font-size: 11px; color: #999; }
+  .col-time strong { color: #111; }
+
+  /* What you get */
+  .output { margin-bottom: 28px; }
+  .output-tag { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: #5B8DB8; font-weight: 700; margin-bottom: 12px; }
+  .output-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .output-item { padding: 12px 14px; background: #f9fbfd; border: 1px solid #e3e8ee; border-radius: 6px; }
+  .output-item .name { font-size: 12px; font-weight: 600; color: #111; margin-bottom: 2px; }
+  .output-item .desc { font-size: 10px; color: #888; line-height: 1.4; }
+
+  /* Closing */
+  .closing { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; }
+  .closing-tag { font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase; color: #92400e; font-weight: 700; margin-bottom: 6px; }
+  .closing-text { font-size: 14px; color: #78350f; line-height: 1.6; font-weight: 500; }
+
+  /* CTA */
+  .cta { text-align: center; margin-top: 32px; }
+  .cta-text { font-size: 13px; color: #666; margin-bottom: 8px; }
+  .cta-link { display: inline-block; padding: 12px 28px; background: #5B8DB8; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-decoration: none; border-radius: 6px; }
+
+  /* Footer */
+  .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #f0f0f0; text-align: center; }
+  .footer-brand { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #ccc; }
+  .footer-note { font-size: 9px; color: #bbb; margin-top: 4px; }
+
+  @media (max-width: 600px) {
+    .page { padding: 24px 16px 40px; }
+    .stats { grid-template-columns: 1fr; }
+    .comparison { grid-template-columns: 1fr; }
+    .output-grid { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    .page { padding: 24px; }
+    .cta { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="eyebrow">AirIndex RiskIndex</div>
+    <h1>What changes when you evaluate whether a site is actually operable — not just approved.</h1>
+    <div class="subtitle">Most aviation facility assessments rely on FAA records. The challenge is that those records are often incomplete or outdated. AirIndex structures the evaluation to account for that — before decisions are made.</div>
+  </div>
+
+  <!-- Problem statement -->
+  <div class="problem">
+    <div class="problem-tag">The data problem</div>
+    <div class="problem-text">The FAA system was not designed for this level of evaluation or this scale of deployment. 99% of heliports are privately owned — the FAA is not required to verify whether their data is current. Decisions are being made on top of this data.</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-num">6,185</div>
+      <div class="stat-label">U.S. heliports in FAA registry</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num stat-highlight">99%</div>
+      <div class="stat-label">Private-use — no federal data verification requirement</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">2,849</div>
+      <div class="stat-label">Medical-use heliports (46% of all)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num stat-highlight">332</div>
+      <div class="stat-label">Hospital facilities not identified as medical-use in FAA data</div>
+    </div>
+  </div>
+
+  <!-- Before / After -->
+  <div class="comparison">
+    <div class="col col-before">
+      <div class="col-tag">Before AirIndex</div>
+      <div class="col-item"><span class="icon">✕</span> Manual FAA ADIP lookup per facility</div>
+      <div class="col-item"><span class="icon">✕</span> No dimensional verification against current standards</div>
+      <div class="col-item"><span class="icon">✕</span> No obstruction environment analysis</div>
+      <div class="col-item"><span class="icon">✕</span> No airflow or ventilation exposure screening</div>
+      <div class="col-item"><span class="icon">✕</span> Airspace determination status unknown or assumed</div>
+      <div class="col-item"><span class="icon">✕</span> No peer benchmarking across portfolio</div>
+      <div class="col-item"><span class="icon">✕</span> Compliance gaps invisible until loss event</div>
+      <div class="col-time">Time per facility: <strong>4–6 hours</strong> (if performed at all — and rarely consistently)</div>
+    </div>
+    <div class="col col-after">
+      <div class="col-tag">After AirIndex</div>
+      <div class="col-item"><span class="icon">✓</span> Structured compliance grid (5 questions, per facility)</div>
+      <div class="col-item"><span class="icon">✓</span> Dimensional pre-screen against 1.5D and 2D FATO standards</div>
+      <div class="col-item"><span class="icon">✓</span> Obstruction environment scored (8:1 surface, FATO zones)</div>
+      <div class="col-item"><span class="icon">✓</span> Potential airflow & ventilation exposure flagged by severity based on site configuration</div>
+      <div class="col-item"><span class="icon">✓</span> Airspace determination status verified against OE/AAA</div>
+      <div class="col-item"><span class="icon">✓</span> Peer benchmark (percentile among in-state facilities)</div>
+      <div class="col-item"><span class="icon">✓</span> Explicit underwriting recommendation with conditions</div>
+      <div style="font-size:11px;color:#0369a1;margin-top:8px;font-weight:500;">Structured to support underwriting decisions — not just documentation review.</div>
+      <div class="col-time">Time per facility: <strong>24 hours</strong> (delivered to file)</div>
+    </div>
+  </div>
+
+  <!-- What you get -->
+  <div class="output">
+    <div class="output-tag">What the output includes</div>
+    <div class="output-grid">
+      <div class="output-item">
+        <div class="name">Risk Classification</div>
+        <div class="desc">4-tier (LOW / MODERATE / ELEVATED / CRITICAL) with 0–100 score</div>
+      </div>
+      <div class="output-item">
+        <div class="name">Underwriting Recommendation</div>
+        <div class="desc">4 stances with suggested policy conditions — copy-ready</div>
+      </div>
+      <div class="output-item">
+        <div class="name">Dimensional Constraint</div>
+        <div class="desc">1.5D vs 2D FATO gap quantified with expansion requirement</div>
+      </div>
+      <div class="output-item">
+        <div class="name">Obstruction Score (OES)</div>
+        <div class="desc">Building environment, 8:1 approach surface, wind path analysis</div>
+      </div>
+      <div class="output-item">
+        <div class="name">Airflow Exposure</div>
+        <div class="desc">Rooftop ventilation and HVAC interaction risk screening</div>
+      </div>
+      <div class="output-item">
+        <div class="name">Satellite Visualization</div>
+        <div class="desc">Facility imagery with registered coordinates confirmation</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing -->
+  <div class="closing">
+    <div class="closing-tag">Why this matters</div>
+    <div class="closing-text">In one documented case, a heliport was recorded as 100×100 ft in FAA data. The actual landing area was 40×40 ft — and obstructions penetrated required safety surfaces. The incident was attributed to pilot error. The underlying infrastructure issues were not captured in the data. This is exactly the type of discrepancy we aim to surface before it reaches the underwriting file.</div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <div class="cta-text">Send us 3–5 facilities. We return assessments within 24 hours.</div>
+    <a href="https://www.airindex.io/contact" class="cta-link">Talk to Us</a>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-brand">AirIndex RiskIndex · Vertical Data Group, LLC · airindex.io</div>
+    <div class="footer-note">Data sources: FAA NASR 5010, OE/AAA, OpenStreetMap. Statistics: VFS Forum 80 (2024), NASA, AHA.</div>
+  </div>
+
+</div>
+</body>
+</html>
