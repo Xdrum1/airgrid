@@ -254,6 +254,22 @@ export default function ApiLandingPage() {
           </div>
         </section>
 
+        {/* UTM integration note */}
+        <div
+          style={{
+            background: "rgba(91, 141, 184, 0.04)",
+            border: "1px solid rgba(91, 141, 184, 0.12)",
+            borderRadius: 8,
+            padding: "16px 20px",
+            marginBottom: 48,
+            fontSize: 13,
+            color: "#425466",
+            lineHeight: 1.6,
+          }}
+        >
+          AirIndex data can also feed directly into UTM and traffic management platforms — the same structured intelligence, delivered as an integration layer for operational planning systems.
+        </div>
+
         {/* Quick example */}
         <section style={{ marginBottom: 48 }}>
           <h2
