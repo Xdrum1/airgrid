@@ -1,9 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getCitiesWithOverrides, MARKET_COUNT } from "@/data/seed";
-import { calculateReadinessScoreFromFkb } from "@/lib/scoring";
-import { liveContainers } from "@/lib/containers";
-import { getFactorMovements, type FactorMovement } from "@/lib/editorial/factor-movements";
+import { MARKET_COUNT } from "@/data/seed";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollReveal from "@/components/landing/ScrollReveal";
@@ -11,120 +8,15 @@ import StatNumber from "@/components/landing/StatNumber";
 import PulseSubscribe from "@/components/PulseSubscribe";
 
 // ─────────────────────────────────────────────────────────
-// Stripe-direction light homepage.
+// Conversion-focused homepage.
 //
-// Centerpiece: container cards. Each card names the audience, lists
-// the data delivered, and offers a single CTA. No pricing on the
-// marketing site — institutional access is negotiated.
+// Structure follows the advisor framework:
+// Hero → Stats → Framework → Dashboard (proof) → Products → Urgency → Sample → Buyers → API → Pulse → CTA
 //
 // Split intentionally preserved: dashboard is dark, marketing is light.
 // ─────────────────────────────────────────────────────────
 
-// Short "what you get" bullets per container — 3 lines each.
-const CONTAINER_DATA_LINES: Record<string, string[]> = {
-  operator: [
-    "Market-by-market readiness scoring to prioritize deployment sequencing",
-    "Regulatory posture, vertiport pipeline, and operator-graph intelligence",
-    "Forward signals identifying when infrastructure supports capital commitment",
-  ],
-  infrastructure: [
-    "Gap-to-readiness analysis identifying the binding constraint on deployment",
-    "Jurisdictional permitting landscape with cost and timeline to resolution",
-    "Peer-market benchmarking showing why comparable markets advance faster",
-  ],
-  municipality: [
-    "Peer-city benchmarking showing why comparable markets are advancing faster",
-    "Federal program alignment and legislative-activity tracking",
-    "Gap-to-readiness roadmap with specific actions that close each gap",
-  ],
-  insurance: [
-    "City-level aviation liability exposure audit identifying undocumented compliance risk",
-    "Heliport compliance framework + state regulatory burden layer",
-    "Precedent-driven exposure framing tied to real underwriting outcomes",
-  ],
-  investor: [
-    "Market and operator deployment intelligence identifying when readiness supports capital",
-    "Forward signals across regulatory, operator, and federal channels",
-    "Source-traced primary data — not analyst opinion, not press aggregation",
-  ],
-  "risk-site": [
-    "Single-facility risk assessment with AIS-backed underwriting recommendation",
-    "FAA registry + 5-question compliance + airspace determinations",
-    "Delivered within 24 hours, formatted for direct inclusion in underwriting files",
-  ],
-};
-
-const CONTAINER_AUDIENCE_LABEL: Record<string, string> = {
-  operator: "For eVTOL Operators",
-  infrastructure: "For Infrastructure Developers",
-  municipality: "For Cities & State Agencies",
-  insurance: "For Aviation Insurance",
-  investor: "For Institutional Investors",
-  "risk-site": "For Underwriters & Facility Owners",
-};
-
-// Order containers to put the warmest / most-relevant first
-const CONTAINER_ORDER: Record<string, number> = {
-  insurance: 1,
-  "risk-site": 2,
-  infrastructure: 3,
-  operator: 4,
-  municipality: 5,
-  investor: 6,
-};
-
-// Per-persona accent color (card top-border stripe)
-const CONTAINER_ACCENT: Record<string, string> = {
-  insurance: "#f59e0b",       // warm amber — compliance / risk
-  "risk-site": "#f97316",     // coral — facility-level risk
-  infrastructure: "#5B8DB8",  // brand blue — building / planning
-  operator: "#2dd4bf",        // mint — motion / deployment
-  municipality: "#0a2540",    // deep navy — civic authority
-  investor: "#a78bfa",        // soft lavender — capital markets
-};
-
 export default async function LandingPage() {
-  const cities = await getCitiesWithOverrides();
-  const scoredUnsorted = await Promise.all(
-    cities.map(async (city) => {
-      const { score } = await calculateReadinessScoreFromFkb(city);
-      return { ...city, score };
-    })
-  );
-  const scored = scoredUnsorted.sort((a, b) => b.score - a.score);
-
-  // Factor movements for "Biggest Movers This Week" — from tonight's ledger infra
-  let movements: FactorMovement[] = [];
-  try {
-    movements = await getFactorMovements({ windowDays: 7 });
-  } catch {
-    // Non-blocking — page renders without movements on failure
-  }
-
-  // Punchline generator — computes one tension line per city from scoring breakdown
-  function getPunchline(city: { id: string; city: string; state: string; score: number; weatherInfraLevel?: string; stateLegislationStatus?: string; hasActivePilotProgram?: boolean; activeOperators?: string[]; hasVertiportZoning?: boolean; regulatoryPosture?: string }): string {
-    const s = city.score;
-    // Check for recent movements first
-    const m = movements.find((mv) => mv.cityId === city.id);
-    if (m) {
-      const dir = m.pointsDelta > 0 ? "↑" : "↓";
-      return `${m.factorLabel} ${dir}${Math.abs(m.pointsDelta)} → ${m.reason.split("—")[0].trim().slice(0, 80)}`;
-    }
-    // Static punchlines from factor gaps
-    if (s === 0) return `The regulatory capital of the U.S. has zero readiness signals.`;
-    if (s >= 90 && city.weatherInfraLevel !== "full") return `Only weather infrastructure prevents a perfect score.`;
-    if (!city.hasActivePilotProgram && s >= 50) return `No active pilot program despite strong fundamentals.`;
-    if ((city.activeOperators?.length ?? 0) === 0 && s >= 30) return `Zero operator presence — capital hasn't committed yet.`;
-    if (city.stateLegislationStatus === "none" && s >= 30) return `No enacted AAM legislation — the gating factor.`;
-    if (!city.hasVertiportZoning && s >= 50) return `Vertiport zoning not adopted — next project is a variance fight.`;
-    if (city.weatherInfraLevel === "none") return `No low-altitude weather infrastructure coverage.`;
-    return `${s} AIS — ${city.state} market.`;
-  }
-
-  const containers = liveContainers().sort(
-    (a, b) => (CONTAINER_ORDER[a.id] ?? 99) - (CONTAINER_ORDER[b.id] ?? 99),
-  );
-
   // ── Design tokens ──
   const T = {
     bg: "#ffffff",
@@ -150,7 +42,7 @@ export default async function LandingPage() {
       <SiteNav theme="light" />
 
       {/* ════════════════════════════════════════════════════ */}
-      {/* Hero — with diagonal gradient wash                    */}
+      {/* 1. HERO                                               */}
       {/* ════════════════════════════════════════════════════ */}
       <div
         style={{
@@ -160,7 +52,7 @@ export default async function LandingPage() {
           overflow: "hidden",
         }}
       >
-        {/* Decorative glow — slow drift for subtle life */}
+        {/* Decorative glows */}
         <div
           aria-hidden="true"
           className="hero-glow"
@@ -191,16 +83,8 @@ export default async function LandingPage() {
             pointerEvents: "none",
           }}
         />
-      <section
-        style={{
-          position: "relative",
-          maxWidth: 980,
-          margin: "0 auto",
-          padding: "clamp(64px, 9vw, 120px) 24px clamp(40px, 6vw, 72px)",
-          textAlign: "center",
-        }}
-      >
-        {/* Concentric airspace circles — radar-like cue behind the hero */}
+
+        {/* Concentric airspace circles */}
         <svg
           aria-hidden="true"
           viewBox="0 0 600 600"
@@ -228,13 +112,10 @@ export default async function LandingPage() {
           <circle cx="300" cy="300" r="160" fill="none" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.28" />
           <circle cx="300" cy="300" r="100" fill="none" stroke="#5B8DB8" strokeWidth="0.9" opacity="0.36" />
           <circle cx="300" cy="300" r="48" fill="url(#airspaceFade)" />
-          {/* Cardinal sweep lines */}
           <line x1="300" y1="20" x2="300" y2="100" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
           <line x1="300" y1="500" x2="300" y2="580" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
           <line x1="20" y1="300" x2="100" y2="300" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
           <line x1="500" y1="300" x2="580" y2="300" stroke="#5B8DB8" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
-
-          {/* Radar sweep — rotating beam */}
           <g className="hero-radar-sweep">
             <defs>
               <linearGradient id="radarBeam" x1="50%" y1="50%" x2="50%" y2="0%">
@@ -243,154 +124,135 @@ export default async function LandingPage() {
                 <stop offset="100%" stopColor="#5B8DB8" stopOpacity="0" />
               </linearGradient>
             </defs>
-            <line
-              x1="300"
-              y1="300"
-              x2="300"
-              y2="20"
-              stroke="url(#radarBeam)"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-            />
+            <line x1="300" y1="300" x2="300" y2="20" stroke="url(#radarBeam)" strokeWidth="1.4" strokeLinecap="round" />
           </g>
-
-          {/* Expanding ping — two, staggered */}
-          <circle
-            className="hero-radar-ping"
-            cx="300" cy="300" r="280"
-            fill="none"
-            stroke="#5B8DB8"
-            strokeWidth="1"
-          />
-          <circle
-            className="hero-radar-ping hero-radar-ping--delay"
-            cx="300" cy="300" r="280"
-            fill="none"
-            stroke="#2dd4bf"
-            strokeWidth="0.8"
-          />
+          <circle className="hero-radar-ping" cx="300" cy="300" r="280" fill="none" stroke="#5B8DB8" strokeWidth="1" />
+          <circle className="hero-radar-ping hero-radar-ping--delay" cx="300" cy="300" r="280" fill="none" stroke="#2dd4bf" strokeWidth="0.8" />
         </svg>
 
-        {/* Domain chip — explicit aviation signal */}
-        <div style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", marginBottom: 22 }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "7px 16px",
-              borderRadius: 999,
-              background: "#ffffff",
-              border: `1px solid ${T.cardBorder}`,
-              boxShadow: "0 1px 2px rgba(10,37,64,0.04)",
-              fontFamily: "'Space Mono', monospace",
-              fontSize: 10.5,
-              letterSpacing: "0.12em",
-              color: T.textSecondary,
-              textTransform: "uppercase",
-            }}
-          >
-            <span aria-hidden="true" style={{
-              display: "inline-block",
-              width: 7,
-              height: 7,
-              borderRadius: 999,
-              background: "#2dd4bf",
-              boxShadow: "0 0 0 3px rgba(45,212,191,0.2)",
-            }} />
-            Urban Air Mobility · Heliports · Vertiports
-          </span>
-        </div>
+        <section
+          style={{
+            position: "relative",
+            maxWidth: 980,
+            margin: "0 auto",
+            padding: "clamp(64px, 9vw, 120px) 24px clamp(40px, 6vw, 72px)",
+            textAlign: "center",
+          }}
+        >
+          {/* Domain chip */}
+          <div style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", marginBottom: 22 }}>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "7px 16px",
+                borderRadius: 999,
+                background: "#ffffff",
+                border: `1px solid ${T.cardBorder}`,
+                boxShadow: "0 1px 2px rgba(10,37,64,0.04)",
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 10.5,
+                letterSpacing: "0.12em",
+                color: T.textSecondary,
+                textTransform: "uppercase",
+              }}
+            >
+              <span aria-hidden="true" style={{
+                display: "inline-block",
+                width: 7,
+                height: 7,
+                borderRadius: 999,
+                background: "#2dd4bf",
+                boxShadow: "0 0 0 3px rgba(45,212,191,0.2)",
+              }} />
+              Urban Air Mobility · Heliports · Vertiports
+            </span>
+          </div>
 
-        <h1
-          style={{
-            position: "relative",
-            zIndex: 1,
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 700,
-            fontSize: "clamp(34px, 5vw, 56px)",
-            lineHeight: 1.1,
-            letterSpacing: "-0.02em",
-            margin: "0 auto 22px",
-            maxWidth: 820,
-            color: T.textPrimary,
-          }}
-        >
-          Which cities are ready for vertical flight — and what&apos;s holding them back.
-        </h1>
-        <p
-          style={{
-            position: "relative",
-            zIndex: 1,
-            color: T.textSecondary,
-            fontSize: "clamp(16px, 1.6vw, 19px)",
-            lineHeight: 1.6,
-            maxWidth: 620,
-            margin: "0 auto 40px",
-            fontWeight: 400,
-          }}
-        >
-          From regulatory readiness to operational viability — scored at
-          the market level, assessed at the facility level.
-        </p>
-        <div style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
-          <Link
-            href="/contact"
-            className="cta-primary"
+          <h1
             style={{
-              display: "inline-block",
-              padding: "14px 28px",
-              background: T.textPrimary,
-              color: "#ffffff",
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: "0.01em",
-              textDecoration: "none",
-              borderRadius: 8,
-            }}
-          >
-            Talk to Us <span className="arrow" aria-hidden="true">→</span>
-          </Link>
-          <Link
-            href="/methodology"
-            className="cta-secondary"
-            style={{
-              display: "inline-block",
-              padding: "14px 28px",
-              border: `1px solid ${T.cardBorder}`,
+              position: "relative",
+              zIndex: 1,
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(34px, 5vw, 56px)",
+              lineHeight: 1.1,
+              letterSpacing: "-0.02em",
+              margin: "0 auto 22px",
+              maxWidth: 820,
               color: T.textPrimary,
-              fontSize: 14,
-              fontWeight: 600,
-              textDecoration: "none",
-              borderRadius: 8,
-              background: "#ffffff",
             }}
           >
-            Methodology <span className="arrow" aria-hidden="true">→</span>
-          </Link>
-          <Link
-            href="/sample"
-            className="cta-secondary"
+            Not every approved site is operationally viable.{" "}
+            <span style={{ color: T.accent }}>AirIndex shows the difference.</span>
+          </h1>
+          <p
             style={{
-              display: "inline-block",
-              padding: "14px 28px",
-              border: `1px solid ${T.cardBorder}`,
-              color: T.textPrimary,
-              fontSize: 14,
-              fontWeight: 600,
-              textDecoration: "none",
-              borderRadius: 8,
-              background: "#ffffff",
+              position: "relative",
+              zIndex: 1,
+              color: T.textSecondary,
+              fontSize: "clamp(16px, 1.6vw, 19px)",
+              lineHeight: 1.6,
+              maxWidth: 660,
+              margin: "0 auto 36px",
+              fontWeight: 400,
             }}
           >
-            See a Sample <span className="arrow" aria-hidden="true">→</span>
-          </Link>
-        </div>
-      </section>
+            AirIndex helps operators, insurers, and infrastructure teams determine
+            where urban air mobility can actually work — before capital or engineering
+            is committed.
+          </p>
+          <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+            <Link
+              href="/contact"
+              className="cta-primary"
+              style={{
+                display: "inline-block",
+                padding: "16px 32px",
+                background: T.textPrimary,
+                color: "#ffffff",
+                fontSize: 15,
+                fontWeight: 600,
+                letterSpacing: "0.01em",
+                textDecoration: "none",
+                borderRadius: 8,
+              }}
+            >
+              Send Us Your Sites <span className="arrow" aria-hidden="true">→</span>
+            </Link>
+            <p
+              style={{
+                color: T.textTertiary,
+                fontSize: 13,
+                margin: 0,
+              }}
+            >
+              Have 2–3 sites you&apos;re evaluating? We&apos;ll run a structured assessment.
+            </p>
+            <Link
+              href="/sample"
+              className="cta-secondary"
+              style={{
+                display: "inline-block",
+                padding: "12px 24px",
+                border: `1px solid ${T.cardBorder}`,
+                color: T.textPrimary,
+                fontSize: 14,
+                fontWeight: 600,
+                textDecoration: "none",
+                borderRadius: 8,
+                background: "#ffffff",
+              }}
+            >
+              View Sample Assessment <span className="arrow" aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </section>
       </div>
 
       {/* ════════════════════════════════════════════════════ */}
-      {/* Stats strip                                           */}
+      {/* Stats strip — proof in numbers                        */}
       {/* ════════════════════════════════════════════════════ */}
       <section
         style={{
@@ -411,7 +273,7 @@ export default async function LandingPage() {
           }}
         >
           {[
-            { value: MARKET_COUNT, suffix: "", display: undefined as string | undefined, label: "U.S. markets tracked", accent: "#5B8DB8", delay: 0 },
+            { value: MARKET_COUNT, suffix: "", display: undefined as string | undefined, label: "U.S. markets scored", accent: "#5B8DB8", delay: 0 },
             { value: 5647, suffix: "", display: "5,647" as string | undefined, label: "Heliports mapped", accent: "#2dd4bf", delay: 150 },
             { value: 7, suffix: "", display: undefined as string | undefined, label: "Scoring factors", accent: "#a78bfa", delay: 300 },
             { value: 496, suffix: "+", display: undefined as string | undefined, label: "Regulatory precedents", accent: "#f59e0b", delay: 450 },
@@ -463,142 +325,105 @@ export default async function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════ */}
-      {/* Top-market ticker — scoring made visible above the fold */}
+      {/* 2. THE CORE FRAMEWORK — three questions                */}
       {/* ════════════════════════════════════════════════════ */}
       <ScrollReveal>
         <section
           style={{
-            maxWidth: 1120,
+            maxWidth: 1040,
             margin: "0 auto",
-            padding: "clamp(48px, 6vw, 72px) 24px clamp(16px, 2vw, 24px)",
+            padding: "clamp(40px, 5vw, 64px) 24px",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-              marginBottom: 32,
-              flexWrap: "wrap",
-              gap: 12,
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: 11,
-                  letterSpacing: "0.14em",
-                  color: T.accent,
-                  marginBottom: 10,
-                  textTransform: "uppercase",
-                }}
-              >
-                Market Snapshot · Public
-              </div>
-              <h2
-                style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  fontWeight: 700,
-                  fontSize: "clamp(22px, 2.6vw, 28px)",
-                  color: T.textPrimary,
-                  margin: "0 0 6px",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                Top 6 U.S. markets by readiness
-              </h2>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 13,
-                  color: T.textSecondary,
-                  lineHeight: 1.55,
-                  maxWidth: 640,
-                }}
-              >
-                Scores update continuously as AirIndex detects changes in
-                regulatory, infrastructure, and operator signals. Full
-                index of 25 markets available to licensed clients.
-              </p>
-            </div>
-            <Link
-              href="/contact"
-              className="link-arrow"
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <div
               style={{
-                fontSize: 13,
-                color: T.accentDeep,
-                textDecoration: "none",
-                fontWeight: 600,
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                color: T.accent,
+                marginBottom: 12,
+                textTransform: "uppercase",
               }}
             >
-              Full index (licensed) <span className="arrow" aria-hidden="true">→</span>
-            </Link>
+              The Framework
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700,
+                fontSize: "clamp(24px, 3vw, 34px)",
+                letterSpacing: "-0.02em",
+                lineHeight: 1.15,
+                margin: "0 0 12px",
+                color: T.textPrimary,
+              }}
+            >
+              Every deployment decision comes down to three questions.
+            </h2>
           </div>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(min(240px, 100%), 1fr))",
-              gap: 12,
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
+              gap: 18,
             }}
           >
-            {scored.slice(0, 6).map((city) => (
+            {[
+              {
+                q: "Is it allowed?",
+                desc: "Regulatory status, legislation, and market readiness.",
+                color: "#5B8DB8",
+                num: "01",
+              },
+              {
+                q: "Can it work?",
+                desc: "Facility dimensions, obstruction environment, and physical feasibility.",
+                color: "#2dd4bf",
+                num: "02",
+              },
+              {
+                q: "Will it behave?",
+                desc: "Airflow exposure, rooftop risk, and operational conditions.",
+                color: "#f59e0b",
+                num: "03",
+              },
+            ].map((item) => (
               <div
-                key={city.id}
+                key={item.q}
                 style={{
-                  background: "#ffffff",
+                  padding: "28px 26px",
+                  borderRadius: 12,
                   border: `1px solid ${T.cardBorder}`,
-                  borderRadius: 10,
-                  padding: "18px 20px",
+                  borderTop: `3px solid ${item.color}`,
+                  background: "#ffffff",
                 }}
               >
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-end",
-                    gap: 10,
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 11,
+                    color: item.color,
+                    letterSpacing: "0.1em",
+                    marginBottom: 10,
                   }}
                 >
-                  <div>
-                    <div
-                      style={{
-                        fontFamily: "'Space Grotesk', sans-serif",
-                        fontWeight: 700,
-                        fontSize: 17,
-                        color: T.textPrimary,
-                        letterSpacing: "-0.01em",
-                      }}
-                    >
-                      {city.city}
-                    </div>
-                    <div style={{ fontSize: 11, color: T.textTertiary, marginTop: 2 }}>{city.state}</div>
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "'Space Grotesk', sans-serif",
-                      fontWeight: 700,
-                      fontSize: 28,
-                      color: T.textPrimary,
-                      lineHeight: 1,
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    {city.score} <span style={{ fontSize: 11, fontWeight: 500, color: T.textTertiary, letterSpacing: "0.06em" }}>AIS</span>
-                  </div>
+                  {item.num}
                 </div>
                 <div
                   style={{
-                    marginTop: 10,
-                    paddingTop: 10,
-                    borderTop: `1px solid ${T.divider}`,
-                    fontSize: 12,
-                    color: T.textSecondary,
-                    lineHeight: 1.5,
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 22,
+                    color: T.textPrimary,
+                    marginBottom: 8,
                   }}
                 >
-                  {getPunchline(city)}
+                  {item.q}
+                </div>
+                <div style={{ fontSize: 14, color: T.textSecondary, lineHeight: 1.6 }}>
+                  {item.desc}
                 </div>
               </div>
             ))}
@@ -607,382 +432,30 @@ export default async function LandingPage() {
       </ScrollReveal>
 
       {/* ════════════════════════════════════════════════════ */}
-      {/* Biggest Movers This Week — live competitive pressure */}
-      {/* ════════════════════════════════════════════════════ */}
-      {movements.length > 0 && (
-        <ScrollReveal>
-          <section
-            style={{
-              maxWidth: 1120,
-              margin: "0 auto",
-              padding: "clamp(24px, 3vw, 40px) 24px 0",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "'Space Mono', monospace",
-                fontSize: 11,
-                letterSpacing: "0.14em",
-                color: T.accent,
-                marginBottom: 14,
-                textTransform: "uppercase",
-              }}
-            >
-              Biggest Movers This Week
-            </div>
-            <div style={{ fontSize: 12, color: T.textTertiary, marginBottom: 14 }}>
-              AIS updates as signals change. Each movement is auto-detected and scored.
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {movements.slice(0, 4).map((m) => {
-                const up = m.pointsDelta > 0;
-                const color = up ? "#16a34a" : "#dc2626";
-                const arrow = up ? "↑" : "↓";
-                const daysAgo = Math.floor((Date.now() - m.appliedAt.getTime()) / (24 * 60 * 60 * 1000));
-                const timeLabel = daysAgo === 0 ? "today" : daysAgo === 1 ? "yesterday" : `${daysAgo}d ago`;
-                return (
-                  <div
-                    key={m.cityId + m.field}
-                    style={{
-                      display: "flex",
-                      alignItems: "baseline",
-                      gap: 12,
-                      padding: "12px 16px",
-                      background: T.bg,
-                      border: `1px solid ${T.cardBorder}`,
-                      borderLeft: `3px solid ${color}`,
-                      borderRadius: 8,
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 15, color: T.textPrimary }}>
-                      {m.cityName}, {m.state}
-                    </span>
-                    <span style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700, fontSize: 14, color }}>
-                      {arrow}{Math.abs(m.pointsDelta)}
-                    </span>
-                    <span style={{ fontSize: 13, color: T.textSecondary }}>
-                      — {m.reason.split("—")[0].trim().slice(0, 60)}
-                    </span>
-                    <span style={{ fontSize: 11, color: T.textTertiary, marginLeft: "auto" }}>
-                      {timeLabel}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        </ScrollReveal>
-      )}
-
-      {/* ════════════════════════════════════════════════════ */}
-      {/* How to improve — the policy-pressure unlock          */}
+      {/* Platform proof — framed dashboard preview              */}
       {/* ════════════════════════════════════════════════════ */}
       <ScrollReveal>
         <section
           style={{
-            maxWidth: 1120,
-            margin: "0 auto",
-            padding: "clamp(40px, 5vw, 64px) 24px clamp(24px, 3vw, 40px)",
-          }}
-        >
-          <div
-            style={{
-              background: T.subtleBg,
-              border: `1px solid ${T.cardBorder}`,
-              borderRadius: 14,
-              padding: "clamp(24px, 3vw, 36px)",
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))",
-              gap: 28,
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: 11,
-                  letterSpacing: "0.14em",
-                  color: T.accent,
-                  textTransform: "uppercase",
-                  marginBottom: 12,
-                }}
-              >
-                How Markets Improve
-              </div>
-              <h2
-                style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  fontWeight: 700,
-                  fontSize: "clamp(20px, 2.4vw, 26px)",
-                  color: T.textPrimary,
-                  margin: "0 0 12px",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                Markets improve their AirIndex score by unlocking three signals.
-              </h2>
-              <p style={{ color: T.textSecondary, fontSize: 14, lineHeight: 1.6, margin: 0 }}>
-                Every score change is traceable to a specific action.
-                Full gap analysis available to licensed clients.
-              </p>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {[
-                { signal: "Vertiport zoning approval", detail: "Codified municipal pathway — not a one-off variance" },
-                { signal: "Active pilot programs", detail: "FAA-recognized operational demonstration in the market" },
-                { signal: "Federal regulatory alignment", detail: "State legislation enacted + proactive regulatory posture" },
-              ].map((s) => (
-                <div
-                  key={s.signal}
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 12,
-                    padding: "12px 16px",
-                    background: T.bg,
-                    border: `1px solid ${T.cardBorder}`,
-                    borderRadius: 8,
-                  }}
-                >
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: 999,
-                      background: T.accent,
-                      marginTop: 6,
-                      flexShrink: 0,
-                    }}
-                  />
-                  <div>
-                    <div style={{ fontWeight: 600, color: T.textPrimary, fontSize: 14 }}>{s.signal}</div>
-                    <div style={{ color: T.textTertiary, fontSize: 12, marginTop: 2 }}>{s.detail}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* ════════════════════════════════════════════════════ */}
-      {/* Container cards — the centerpiece                    */}
-      {/* ════════════════════════════════════════════════════ */}
-      <ScrollReveal>
-        <section
-          id="products"
-          style={{
-            maxWidth: 1120,
-            margin: "0 auto",
-            padding: "clamp(64px, 8vw, 120px) 24px clamp(32px, 5vw, 56px)",
-            scrollMarginTop: 80,
-          }}
-        >
-          <div style={{ textAlign: "center", marginBottom: 56, maxWidth: 720, marginLeft: "auto", marginRight: "auto" }}>
-            <h2
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                fontSize: "clamp(28px, 3.6vw, 40px)",
-                letterSpacing: "-0.02em",
-                lineHeight: 1.15,
-                margin: "0 0 16px",
-                color: T.textPrimary,
-              }}
-            >
-              One scoring system. Six decision outputs.
-            </h2>
-            <p
-              style={{
-                color: T.textSecondary,
-                fontSize: 17,
-                lineHeight: 1.6,
-                margin: 0,
-              }}
-            >
-              All outputs derived from the AirIndex Score (AIS) — a continuously updated,
-              auditable market-readiness rating. Each one shaped to a specific decision.
-            </p>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))",
-              gap: 20,
-            }}
-          >
-            {containers.map((c) => {
-              const accent = CONTAINER_ACCENT[c.id] ?? T.accent;
-              return (
-              <div
-                key={c.id}
-                className="container-card"
-                style={{
-                  background: "#ffffff",
-                  border: `1px solid ${T.cardBorder}`,
-                  borderTop: `4px solid ${accent}`,
-                  borderRadius: 14,
-                  padding: "24px 26px 28px",
-                  display: "flex",
-                  flexDirection: "column",
-                  minHeight: 320,
-                  boxShadow: `0 1px 2px rgba(10,37,64,0.04)`,
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: 10,
-                    letterSpacing: "0.12em",
-                    color: accent,
-                    marginBottom: 12,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {CONTAINER_AUDIENCE_LABEL[c.id] ?? c.audience}
-                </div>
-                <h3
-                  style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    fontWeight: 700,
-                    fontSize: 22,
-                    color: T.textPrimary,
-                    margin: "0 0 12px",
-                    letterSpacing: "-0.01em",
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {c.name}
-                </h3>
-                <p
-                  style={{
-                    color: T.textSecondary,
-                    fontSize: 14,
-                    lineHeight: 1.6,
-                    margin: "0 0 18px",
-                  }}
-                >
-                  {c.audience}
-                </p>
-
-                <ul
-                  style={{
-                    listStyle: "none",
-                    padding: 0,
-                    margin: "0 0 28px",
-                    flex: 1,
-                  }}
-                >
-                  {(CONTAINER_DATA_LINES[c.id] ?? []).map((line, i) => (
-                    <li
-                      key={i}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: 10,
-                        color: T.textSecondary,
-                        fontSize: 13.5,
-                        lineHeight: 1.55,
-                        padding: "8px 0",
-                        borderTop: i === 0 ? `1px solid ${T.divider}` : "none",
-                        borderBottom: `1px solid ${T.divider}`,
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: "inline-block",
-                          width: 4,
-                          height: 4,
-                          borderRadius: 4,
-                          background: T.accent,
-                          marginTop: 8,
-                          flexShrink: 0,
-                        }}
-                      />
-                      <span>{line}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  href={`/for/${c.id === "risk-site" ? "risk-assessment" : c.id}`}
-                  className="link-arrow"
-                  style={{
-                    color: T.accentDeep,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    textDecoration: "none",
-                    marginTop: "auto",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                >
-                  See how it&apos;s used
-                  <span className="arrow" aria-hidden="true" style={{ fontSize: 16, lineHeight: 1 }}>→</span>
-                </Link>
-              </div>
-              );
-            })}
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* ════════════════════════════════════════════════════ */}
-      {/* Platform proof — dashboard preview                    */}
-      {/* ════════════════════════════════════════════════════ */}
-      <ScrollReveal>
-        <section
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(45,212,191,0.08) 0%, rgba(91,141,184,0.04) 30%, " + T.subtleBg + " 60%)",
-            padding: "clamp(64px, 9vw, 120px) 24px",
-            marginTop: 40,
+            background: T.subtleBg,
+            padding: "clamp(56px, 7vw, 96px) 24px",
             position: "relative",
           }}
         >
-          <div
-            aria-hidden="true"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: 3,
-              background:
-                "linear-gradient(90deg, transparent 0%, #2dd4bf 20%, #5B8DB8 50%, #a78bfa 80%, transparent 100%)",
-              opacity: 0.6,
-            }}
-          />
           <div style={{ maxWidth: 1040, margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: 48 }}>
-              <div
-                style={{
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: 11,
-                  letterSpacing: "0.14em",
-                  color: "#0d9488",
-                  marginBottom: 16,
-                  textTransform: "uppercase",
-                }}
-              >
-                The Platform · Live
-              </div>
+            <div style={{ textAlign: "center", marginBottom: 40 }}>
               <h2
                 style={{
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 700,
-                  fontSize: "clamp(26px, 3.4vw, 36px)",
+                  fontSize: "clamp(24px, 3vw, 34px)",
                   letterSpacing: "-0.02em",
-                  margin: "0 0 14px",
+                  margin: "0 0 12px",
                   color: T.textPrimary,
+                  lineHeight: 1.2,
                 }}
               >
-                One source of truth underneath every container.
+                What we actually see when evaluating a market or facility.
               </h2>
               <p
                 style={{
@@ -993,9 +466,7 @@ export default async function LandingPage() {
                   margin: "0 auto",
                 }}
               >
-                Continuously ingested from primary government, regulatory,
-                and market sources. Cross-referenced, classified, and delivered
-                in the form each container is built for.
+                Market readiness, facility viability, and operational exposure — structured in one system.
               </p>
             </div>
 
@@ -1009,30 +480,600 @@ export default async function LandingPage() {
                 background: "#050508",
               }}
             >
+              {/* Callout annotations */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "12%",
+                  left: 24,
+                  zIndex: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                }}
+              >
+                {[
+                  { label: "Market Score (AIS)", color: "#5B8DB8" },
+                  { label: "Facility Risk (RiskIndex)", color: "#2dd4bf" },
+                  { label: "Obstruction Exposure (OES)", color: "#f59e0b" },
+                ].map((callout) => (
+                  <span
+                    key={callout.label}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: "5px 12px",
+                      borderRadius: 6,
+                      background: "rgba(5,5,8,0.75)",
+                      backdropFilter: "blur(8px)",
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 10,
+                      letterSpacing: "0.06em",
+                      color: "#ffffff",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        display: "inline-block",
+                        width: 6,
+                        height: 6,
+                        borderRadius: 6,
+                        background: callout.color,
+                      }}
+                    />
+                    {callout.label}
+                  </span>
+                ))}
+              </div>
               <Image
                 src="/images/dashboard-preview.png"
-                alt="AirIndex intelligence platform — market readiness scoring across U.S. markets"
+                alt="AirIndex intelligence platform — market readiness scoring, facility risk, and obstruction exposure in one view"
                 width={1920}
                 height={1080}
                 style={{ width: "100%", height: "auto", display: "block" }}
                 priority
               />
             </div>
-            <div
+
+            <p
               style={{
-                fontSize: 12,
-                color: T.textTertiary,
                 textAlign: "center",
-                marginTop: 14,
-                fontStyle: "italic",
+                marginTop: 20,
+                color: T.textSecondary,
+                fontSize: 15,
+                lineHeight: 1.6,
+                maxWidth: 600,
+                marginLeft: "auto",
+                marginRight: "auto",
               }}
             >
-              Live terminal view — accessible to licensed clients and design partners.
+              This is how we determine whether a site is actually operable — not just approved.
+            </p>
+          </div>
+        </section>
+      </ScrollReveal>
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* 3. PRODUCT SIMPLIFIED — three layers                   */}
+      {/* ════════════════════════════════════════════════════ */}
+      <ScrollReveal>
+        <section
+          style={{
+            background: T.subtleBg,
+            padding: "clamp(56px, 7vw, 96px) 24px",
+          }}
+        >
+          <div style={{ maxWidth: 1040, margin: "0 auto" }}>
+            <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <div
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 11,
+                  letterSpacing: "0.14em",
+                  color: T.accent,
+                  marginBottom: 12,
+                  textTransform: "uppercase",
+                }}
+              >
+                The Platform
+              </div>
+              <h2
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "clamp(26px, 3.2vw, 36px)",
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1.15,
+                  margin: "0 0 14px",
+                  color: T.textPrimary,
+                }}
+              >
+                One platform. Three layers of intelligence.
+              </h2>
+              <p
+                style={{
+                  color: T.textSecondary,
+                  fontSize: 16,
+                  lineHeight: 1.6,
+                  maxWidth: 600,
+                  margin: "0 auto",
+                }}
+              >
+                Built from primary government, regulatory, and market sources.
+                Cross-referenced, classified, and delivered in the form your decision requires.
+              </p>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))",
+                gap: 20,
+              }}
+            >
+              {[
+                {
+                  name: "Market Readiness",
+                  tag: "AIS",
+                  desc: "Scores cities and states based on legislation, infrastructure, and operator activity.",
+                  bullets: [
+                    `${MARKET_COUNT} U.S. markets scored 0–100 on 7 factors`,
+                    "Regulatory posture, operator presence, zoning, weather infrastructure",
+                    "Score changes traced to specific actions — fully auditable",
+                  ],
+                  color: "#5B8DB8",
+                  href: "/methodology",
+                },
+                {
+                  name: "Facility Viability",
+                  tag: "RiskIndex",
+                  desc: "Evaluates individual heliports and vertiports for compliance, data quality, and operational feasibility.",
+                  bullets: [
+                    "5,647 FAA-registered heliports mapped and classified",
+                    "Data quality scoring, dimensional analysis, AC era classification",
+                    "Hospital misclassification detection, surface condition, staleness",
+                  ],
+                  color: "#2dd4bf",
+                  href: "/sample",
+                },
+                {
+                  name: "Operational Exposure",
+                  tag: "OES + OEL",
+                  desc: "Identifies obstruction risks, airflow issues, and conditions that impact real-world operations.",
+                  bullets: [
+                    "8:1 approach surface analysis, FATO zone intrusions",
+                    "Wind path obstructions, rooftop thermal risk flagging",
+                    "Environmental context layer with low-altitude weather data",
+                  ],
+                  color: "#f59e0b",
+                  href: "/contact",
+                },
+              ].map((layer) => (
+                <div
+                  key={layer.name}
+                  className="container-card"
+                  style={{
+                    background: "#ffffff",
+                    border: `1px solid ${T.cardBorder}`,
+                    borderTop: `4px solid ${layer.color}`,
+                    borderRadius: 14,
+                    padding: "28px 26px 24px",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 10,
+                      letterSpacing: "0.12em",
+                      color: layer.color,
+                      marginBottom: 10,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {layer.tag}
+                  </div>
+                  <h3
+                    style={{
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontWeight: 700,
+                      fontSize: 22,
+                      color: T.textPrimary,
+                      margin: "0 0 10px",
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    {layer.name}
+                  </h3>
+                  <p
+                    style={{
+                      color: T.textSecondary,
+                      fontSize: 14,
+                      lineHeight: 1.6,
+                      margin: "0 0 18px",
+                    }}
+                  >
+                    {layer.desc}
+                  </p>
+                  <ul
+                    style={{
+                      listStyle: "none",
+                      padding: 0,
+                      margin: "0 0 20px",
+                      flex: 1,
+                    }}
+                  >
+                    {layer.bullets.map((b, i) => (
+                      <li
+                        key={i}
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: 10,
+                          color: T.textSecondary,
+                          fontSize: 13,
+                          lineHeight: 1.55,
+                          padding: "7px 0",
+                          borderBottom: `1px solid ${T.divider}`,
+                        }}
+                      >
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: 4,
+                            height: 4,
+                            borderRadius: 4,
+                            background: layer.color,
+                            marginTop: 7,
+                            flexShrink: 0,
+                          }}
+                        />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href={layer.href}
+                    className="link-arrow"
+                    style={{
+                      color: T.accentDeep,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      textDecoration: "none",
+                      marginTop: "auto",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    Learn more <span className="arrow" aria-hidden="true" style={{ fontSize: 16, lineHeight: 1 }}>→</span>
+                  </Link>
+                </div>
+              ))}
             </div>
           </div>
         </section>
       </ScrollReveal>
 
+      {/* ════════════════════════════════════════════════════ */}
+      {/* 4. URGENCY — the data problem                         */}
+      {/* ════════════════════════════════════════════════════ */}
+      <ScrollReveal>
+        <section
+          style={{
+            maxWidth: 820,
+            margin: "0 auto",
+            padding: "clamp(56px, 7vw, 96px) 24px",
+          }}
+        >
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <div
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                color: "#dc2626",
+                marginBottom: 12,
+                textTransform: "uppercase",
+              }}
+            >
+              The Data Problem
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700,
+                fontSize: "clamp(24px, 3vw, 32px)",
+                letterSpacing: "-0.02em",
+                lineHeight: 1.2,
+                margin: "0 0 20px",
+                color: T.textPrimary,
+              }}
+            >
+              Most infrastructure decisions rely on incomplete or outdated facility data.
+            </h2>
+          </div>
+          <div
+            style={{
+              color: T.textSecondary,
+              fontSize: 16,
+              lineHeight: 1.7,
+              textAlign: "center",
+            }}
+          >
+            <p style={{ margin: "0 0 16px" }}>
+              Many heliports have not been updated in years.
+              Dimensional standards have changed.
+              Operational risks like airflow and obstruction exposure are
+              rarely captured in structured datasets.
+            </p>
+            <p
+              style={{
+                margin: 0,
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700,
+                fontSize: 20,
+                color: T.textPrimary,
+              }}
+            >
+              Approved does not mean operable.
+            </p>
+          </div>
+        </section>
+      </ScrollReveal>
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* 5. SAMPLE / PROOF — see what we find                   */}
+      {/* ════════════════════════════════════════════════════ */}
+      <ScrollReveal>
+        <section
+          style={{
+            background: T.subtleBg,
+            padding: "clamp(56px, 7vw, 96px) 24px",
+          }}
+        >
+          <div
+            style={{
+              maxWidth: 880,
+              margin: "0 auto",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))",
+              gap: 40,
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 11,
+                  letterSpacing: "0.14em",
+                  color: T.accent,
+                  marginBottom: 12,
+                  textTransform: "uppercase",
+                }}
+              >
+                See What We Find
+              </div>
+              <h2
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "clamp(22px, 2.8vw, 30px)",
+                  letterSpacing: "-0.01em",
+                  margin: "0 0 14px",
+                  color: T.textPrimary,
+                  lineHeight: 1.2,
+                }}
+              >
+                A single facility assessment shows what traditional data misses.
+              </h2>
+              <p
+                style={{
+                  color: T.textSecondary,
+                  fontSize: 15,
+                  lineHeight: 1.6,
+                  margin: "0 0 24px",
+                }}
+              >
+                Compliance gaps, dimensional constraints, data staleness,
+                obstruction exposure — structured into a format underwriters
+                and operators can act on immediately.
+              </p>
+              <Link
+                href="/sample"
+                className="cta-primary"
+                style={{
+                  display: "inline-block",
+                  padding: "14px 28px",
+                  background: T.textPrimary,
+                  color: "#ffffff",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  borderRadius: 8,
+                }}
+              >
+                View Sample Assessment <span className="arrow" aria-hidden="true">→</span>
+              </Link>
+            </div>
+
+            {/* Preview card — mimics the assessment output */}
+            <div
+              style={{
+                background: "#ffffff",
+                border: `1px solid ${T.cardBorder}`,
+                borderRadius: 12,
+                padding: "24px",
+                boxShadow: "0 8px 24px -8px rgba(10,37,64,0.1)",
+              }}
+            >
+              {[
+                { label: "Data Quality", value: "Low", color: "#dc2626" },
+                { label: "Compliance", value: "Pass", color: "#16a34a" },
+                { label: "Dimensional", value: "Constrained", color: "#f59e0b" },
+                { label: "Obstruction Score", value: "Elevated", color: "#f59e0b" },
+                { label: "Operational Exposure", value: "High", color: "#dc2626" },
+              ].map((finding, i) => (
+                <div
+                  key={finding.label}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "12px 0",
+                    borderBottom: i < 4 ? `1px solid ${T.divider}` : "none",
+                  }}
+                >
+                  <span style={{ fontSize: 14, color: T.textSecondary }}>{finding.label}</span>
+                  <span
+                    style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: finding.color,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    {finding.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* 6. WHO IT'S FOR — buyer self-identification            */}
+      {/* ════════════════════════════════════════════════════ */}
+      <ScrollReveal>
+        <section
+          style={{
+            maxWidth: 1040,
+            margin: "0 auto",
+            padding: "clamp(56px, 7vw, 96px) 24px",
+          }}
+        >
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <h2
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700,
+                fontSize: "clamp(26px, 3.2vw, 36px)",
+                letterSpacing: "-0.02em",
+                lineHeight: 1.15,
+                margin: "0 0 12px",
+                color: T.textPrimary,
+              }}
+            >
+              Built for teams making real decisions.
+            </h2>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))",
+              gap: 16,
+            }}
+          >
+            {[
+              { who: "Operators", decision: "Where to deploy", accent: "#2dd4bf" },
+              { who: "Insurers", decision: "What risk actually exists", accent: "#f59e0b" },
+              { who: "Infrastructure Teams", decision: "What needs to change", accent: "#5B8DB8" },
+              { who: "Government / AHJ", decision: "What\u2019s coming and what\u2019s not ready", accent: "#a78bfa" },
+            ].map((buyer) => (
+              <div
+                key={buyer.who}
+                style={{
+                  padding: "22px 24px",
+                  background: "#ffffff",
+                  border: `1px solid ${T.cardBorder}`,
+                  borderLeft: `3px solid ${buyer.accent}`,
+                  borderRadius: 10,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 16,
+                    color: T.textPrimary,
+                    marginBottom: 4,
+                  }}
+                >
+                  {buyer.who}
+                </div>
+                <div style={{ fontSize: 14, color: T.textSecondary, lineHeight: 1.5 }}>
+                  {buyer.decision}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </ScrollReveal>
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* 7. API / TECH — integration mention                    */}
+      {/* ════════════════════════════════════════════════════ */}
+      <section
+        style={{
+          maxWidth: 820,
+          margin: "0 auto",
+          padding: "clamp(48px, 6vw, 80px) 24px",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            padding: "24px 32px",
+            borderRadius: 12,
+            background: T.subtleBg,
+            border: `1px solid ${T.cardBorder}`,
+          }}
+        >
+          <h3
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: 20,
+              color: T.textPrimary,
+              margin: "0 0 8px",
+            }}
+          >
+            Integrate directly into your workflow.
+          </h3>
+          <p
+            style={{
+              color: T.textSecondary,
+              fontSize: 15,
+              lineHeight: 1.6,
+              margin: "0 0 16px",
+            }}
+          >
+            AirIndex data is available via API for planning systems,
+            analytics platforms, and internal tools.
+          </p>
+          <Link
+            href="/api"
+            className="link-arrow"
+            style={{
+              fontSize: 14,
+              color: T.accentDeep,
+              textDecoration: "none",
+              fontWeight: 600,
+            }}
+          >
+            API Documentation <span className="arrow" aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </section>
 
       {/* ════════════════════════════════════════════════════ */}
       {/* Pulse subscribe                                       */}
@@ -1098,7 +1139,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ════════════════════════════════════════════════════ */}
-      {/* Closing CTA — deep navy panel to break the white     */}
+      {/* 8. FINAL CTA — start with a real site                  */}
       {/* ════════════════════════════════════════════════════ */}
       <section
         style={{
@@ -1156,7 +1197,7 @@ export default async function LandingPage() {
               textTransform: "uppercase",
             }}
           >
-            Talk to Us
+            Get Started
           </div>
           <h2
             style={{
@@ -1169,7 +1210,7 @@ export default async function LandingPage() {
               color: "#ffffff",
             }}
           >
-            The intelligence layer for the decisions that shape the sky.
+            Start with a real site.
           </h2>
           <p
             style={{
@@ -1179,8 +1220,8 @@ export default async function LandingPage() {
               margin: "0 0 32px",
             }}
           >
-            Licensed access begins with a conversation about your specific
-            decision and the data gap you need closed.
+            Send us 2–3 facilities you&apos;re evaluating and we&apos;ll run
+            a structured assessment. No commitment, no sales pitch — just data.
           </p>
           <Link
             href="/contact"
@@ -1197,7 +1238,7 @@ export default async function LandingPage() {
               boxShadow: "0 10px 30px rgba(91,141,184,0.3)",
             }}
           >
-            Talk to Us <span className="arrow" aria-hidden="true">→</span>
+            Send Us Your Sites <span className="arrow" aria-hidden="true">→</span>
           </Link>
         </div>
       </section>
