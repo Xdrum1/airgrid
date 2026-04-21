@@ -185,7 +185,7 @@ export default async function LandingPage() {
             }}
           >
             Not every approved site is operationally viable.{" "}
-            <span style={{ color: T.accent }}>AirIndex shows the difference.</span>
+            <span style={{ color: T.accent }}>AirIndex helps you tell the difference.</span>
           </h1>
           <p
             style={{
@@ -545,13 +545,33 @@ export default async function LandingPage() {
                 color: T.textSecondary,
                 fontSize: 15,
                 lineHeight: 1.6,
-                maxWidth: 600,
+                maxWidth: 640,
                 marginLeft: "auto",
                 marginRight: "auto",
               }}
             >
-              This is how we determine whether a site is actually operable — not just approved.
+              This is how we determine whether a site is actually viable — before time and capital are committed.
             </p>
+
+            {/* Mid-page CTA — second touch */}
+            <div style={{ textAlign: "center", marginTop: 28 }}>
+              <Link
+                href="/contact"
+                className="cta-primary"
+                style={{
+                  display: "inline-block",
+                  padding: "13px 26px",
+                  background: T.textPrimary,
+                  color: "#ffffff",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  borderRadius: 8,
+                }}
+              >
+                Have sites to evaluate? Let&apos;s look at them. <span className="arrow" aria-hidden="true">→</span>
+              </Link>
+            </div>
           </div>
         </section>
       </ScrollReveal>
@@ -794,7 +814,7 @@ export default async function LandingPage() {
                 color: T.textPrimary,
               }}
             >
-              Most infrastructure decisions rely on incomplete or outdated facility data.
+              Most infrastructure decisions today are made using incomplete or outdated facility data.
             </h2>
           </div>
           <div
@@ -810,6 +830,9 @@ export default async function LandingPage() {
               Dimensional standards have changed.
               Operational risks like airflow and obstruction exposure are
               rarely captured in structured datasets.
+            </p>
+            <p style={{ margin: "0 0 16px" }}>
+              Approved sites fail in real-world conditions more often than expected.
             </p>
             <p
               style={{
@@ -870,7 +893,7 @@ export default async function LandingPage() {
                   lineHeight: 1.2,
                 }}
               >
-                A single facility assessment shows what traditional data misses.
+                A single facility assessment reveals what traditional data misses.
               </h2>
               <p
                 style={{
@@ -984,10 +1007,10 @@ export default async function LandingPage() {
             }}
           >
             {[
-              { who: "Operators", decision: "Where to deploy", accent: "#2dd4bf" },
-              { who: "Insurers", decision: "What risk actually exists", accent: "#f59e0b" },
-              { who: "Infrastructure Teams", decision: "What needs to change", accent: "#5B8DB8" },
-              { who: "Government / AHJ", decision: "What\u2019s coming and what\u2019s not ready", accent: "#a78bfa" },
+              { who: "Operators", decision: "Deciding where to deploy", accent: "#2dd4bf" },
+              { who: "Insurers", decision: "Evaluating what risk actually exists", accent: "#f59e0b" },
+              { who: "Infrastructure Teams", decision: "Determining what needs to change", accent: "#5B8DB8" },
+              { who: "Government / AHJ", decision: "Understanding what\u2019s coming and what\u2019s not ready", accent: "#a78bfa" },
             ].map((buyer) => (
               <div
                 key={buyer.who}
