@@ -153,7 +153,7 @@ export default async function RiskAssessmentPage({
   const r = await getSiteRiskAssessment(upper);
   if (!r) notFound();
 
-  const dq = getDataQuality(upper);
+  const dq = await getDataQuality(upper);
   const airflowData = await loadAirflowData(upper);
   const oes = airflowData ? computeOES(airflowData) : null;
 

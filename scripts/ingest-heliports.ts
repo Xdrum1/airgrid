@@ -158,6 +158,9 @@ interface HeliportRecord {
   surfaceCondition: string | null;
   activationDate: string | null;
   lastInfoResponse: string | null;
+  lastInspection: string | null;
+  positionSrcDate: string | null;
+  elevationSrcDate: string | null;
 }
 
 interface RwyRecord {
@@ -239,6 +242,9 @@ async function main() {
   const iStatus = col("ARPT_STATUS");
   const iActivation = col("ACTIVATION_DATE");
   const iLastInfo = col("LAST_INFO_RESPONSE");
+  const iLastInspection = col("LAST_INSPECTION");
+  const iPosSrcDate = col("POSITION_SRC_DATE");
+  const iElevSrcDate = col("ELEVATION_SRC_DATE");
 
   console.log(`Parsing ${(lines.length - 1).toLocaleString()} APT records...`);
 
@@ -284,6 +290,9 @@ async function main() {
       surfaceCondition: rwy?.condition ?? null,
       activationDate: fields[iActivation] || null,
       lastInfoResponse: fields[iLastInfo] || null,
+      lastInspection: fields[iLastInspection] || null,
+      positionSrcDate: fields[iPosSrcDate] || null,
+      elevationSrcDate: fields[iElevSrcDate] || null,
     });
   }
 
@@ -354,6 +363,9 @@ async function main() {
         surfaceCondition: h.surfaceCondition,
         activationDate: h.activationDate,
         lastInfoResponse: h.lastInfoResponse,
+        lastInspection: h.lastInspection,
+        positionSrcDate: h.positionSrcDate,
+        elevationSrcDate: h.elevationSrcDate,
       })),
       skipDuplicates: true,
     });

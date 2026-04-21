@@ -2,16 +2,11 @@
  * Heliport Data Quality Score (DQS)
  *
  * Scores the reliability of FAA NASR data for a given heliport.
- * Based on Rex Alexander's VFS Forum 80 findings (May 2024):
- *   - 99.2% of heliports have at least one blank critical field
- *   - 54.7% built before 1994 (pre-TLOF terminology)
- *   - "The database is FUBAR" for private-use (99% of all heliports)
+ * Based on Rex Alexander's VFS Forum 80 findings (May 2024).
  *
- * Reads raw NASR APT_BASE.csv fields for a facility and produces
- * a scored assessment of data staleness, completeness, and AC era.
+ * Reads from the Heliport table in the database (no CSV dependency).
  */
-import { existsSync, readFileSync } from "fs";
-import path from "path";
+import { prisma } from "@/lib/prisma";
 
 export interface DataQualityAssessment {
   facilityId: string;
@@ -22,15 +17,15 @@ export interface DataQualityAssessment {
   elevationSourceDate: string | null;
   lastInspection: string | null;
   isLikelyHospital: boolean;
-  hospitalMisclassified: boolean; // matches hospital keywords but not flagged medical-use
+  hospitalMisclassified: boolean;
 
   // Computed
   acEra: string | null;
   acVersion: string | null;
-  dimensionalNote: string | null; // explains what NASR dimensions likely mean for this era
+  dimensionalNote: string | null;
   dataAgeYears: number | null;
   blankCriticalFields: number;
-  dqsScore: number; // 0-100, higher = better quality
+  dqsScore: number;
   staleness: "current" | "aging" | "stale" | "very_stale" | "unknown";
   stalenessColor: string;
   reliabilityLabel: string;
@@ -56,10 +51,9 @@ const AC_ERAS: ACEra[] = [
 ];
 
 function parseNASRDate(dateStr: string | null): Date | null {
-  if (!dateStr || dateStr.trim() === "" || dateStr === '""') return null;
+  if (!dateStr || dateStr.trim() === "") return null;
   const clean = dateStr.replace(/"/g, "").trim();
   if (!clean) return null;
-  // YYYY/MM/DD or YYYY/MM
   const parts = clean.split("/");
   if (parts.length >= 2 && parseInt(parts[0]) > 1900) {
     return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2] || "1"));
@@ -72,43 +66,30 @@ function yearsSince(date: Date | null): number | null {
   return Math.round((Date.now() - date.getTime()) / (365.25 * 24 * 60 * 60 * 1000) * 10) / 10;
 }
 
-// Cache the parsed CSV data
-let csvCache: Map<string, Record<string, string>> | null = null;
+const HOSPITAL_KEYWORDS = ["hospital", "medical", "health", "mercy", "memorial", "clinic", "trauma", "care", "emergency", "children", "pediatric", "veterans"];
 
-function loadCSVCache(): Map<string, Record<string, string>> {
-  if (csvCache) return csvCache;
-  const csvPath = path.join(process.cwd(), "data", "nasr", "APT_BASE.csv");
-  if (!existsSync(csvPath)) return new Map();
+export async function getDataQuality(facilityId: string): Promise<DataQualityAssessment | null> {
+  const heliport = await prisma.heliport.findUnique({
+    where: { id: facilityId },
+    select: {
+      id: true,
+      facilityName: true,
+      useType: true,
+      activationDate: true,
+      lastInfoResponse: true,
+      lastInspection: true,
+      positionSrcDate: true,
+      elevationSrcDate: true,
+    },
+  });
 
-  const content = readFileSync(csvPath, "utf-8");
-  const lines = content.split("\n");
-  const headers = lines[0].split(",").map(h => h.replace(/"/g, "").trim());
+  if (!heliport) return null;
 
-  csvCache = new Map();
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    // Simple CSV parse — fields may be quoted
-    const fields = line.split(",").map(f => f.replace(/"/g, "").trim());
-    if (fields[headers.indexOf("SITE_TYPE_CODE")] !== "H") continue;
-    const id = fields[headers.indexOf("ARPT_ID")];
-    const record: Record<string, string> = {};
-    headers.forEach((h, idx) => { record[h] = fields[idx] || ""; });
-    csvCache.set(id, record);
-  }
-  return csvCache;
-}
-
-export function getDataQuality(facilityId: string): DataQualityAssessment | null {
-  const cache = loadCSVCache();
-  const record = cache.get(facilityId);
-  if (!record) return null;
-
-  const activation = record["ACTIVATION_DATE"] || null;
-  const lastInspection = record["LAST_INSPECTION"] || null;
-  const lastInfo = record["LAST_INFO_RESPONSE"] || null;
-  const posSrcDate = record["POSITION_SRC_DATE"] || null;
-  const elevSrcDate = record["ELEVATION_SRC_DATE"] || null;
+  const activation = heliport.activationDate || null;
+  const lastInspection = heliport.lastInspection || null;
+  const lastInfo = heliport.lastInfoResponse || null;
+  const posSrcDate = heliport.positionSrcDate || null;
+  const elevSrcDate = heliport.elevationSrcDate || null;
 
   // Parse activation year
   let activationYear: number | null = null;
@@ -152,10 +133,8 @@ export function getDataQuality(facilityId: string): DataQualityAssessment | null
     : "#6b7280";
 
   // Hospital reconciliation
-  const facilityName = record["ARPT_NAME"] || "";
-  const HOSPITAL_KEYWORDS = ["hospital", "medical", "health", "mercy", "memorial", "clinic", "trauma", "care", "emergency", "children", "pediatric", "veterans"];
+  const facilityName = heliport.facilityName || "";
   const isLikelyHospital = HOSPITAL_KEYWORDS.some(kw => facilityName.toLowerCase().includes(kw));
-  const useCode = record["FACILITY_USE_CODE"] || "";
   const hospitalMisclassified = isLikelyHospital && !facilityName.toLowerCase().includes("medical use");
 
   // DQS Score (0-100)
@@ -185,11 +164,11 @@ export function getDataQuality(facilityId: string): DataQualityAssessment | null
     positionSourceDate: posSrcDate,
     elevationSourceDate: elevSrcDate,
     lastInspection,
+    isLikelyHospital,
+    hospitalMisclassified,
     acEra: era?.label ?? null,
     acVersion: era?.version ?? null,
     dimensionalNote: era?.dimensionalNote ?? "Activation date unknown — AC era cannot be determined. Dimensional data interpretation uncertain.",
-    isLikelyHospital,
-    hospitalMisclassified,
     dataAgeYears: ageYears,
     blankCriticalFields: blanks,
     dqsScore: dqs,
