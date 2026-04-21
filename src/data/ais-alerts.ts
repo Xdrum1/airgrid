@@ -56,6 +56,27 @@ export const AIS_ALERTS: AisAlert[] = [
     source: "Arizona State Legislature / LegiScan",
     sourceUrl: "https://legiscan.com/AZ/bill/SB1827/2026",
   },
+  {
+    slug: "phoenix-sb1457-advancing",
+    alertNumber: 2,
+    publishDate: "2026-04-21",
+    cityId: "phoenix",
+    headline: "Phoenix recovers to 50 AIS after new air mobility bill advances",
+    whatHappened:
+      "Arizona SB1457 — an air mobility fund bill — received 'Do Pass' from the House Committee of the Whole on April 20. This is a different legislative vehicle from SB1827, which failed 6-12 in House Appropriations on March 31. SB1457 ties air mobility infrastructure funding to border security operations, creating a broader coalition of support than the standalone AAM package that collapsed in March.",
+    aisImpact: {
+      scoreBefore: 40,
+      scoreAfter: 50,
+      factor: "State Legislation",
+      factorChange: "none → actively_moving (SB1457 advancing)",
+      tierBefore: "EARLY",
+      tierAfter: "MODERATE",
+    },
+    whyItMatters:
+      "Phoenix dropped from 50 to 40 on April 10 after the three-bill AAM package failed. SB1457 represents Arizona's second attempt through a different approach — bundling air mobility with border security funding. A 'Do Pass' from committee is a meaningful signal but the bill still requires a House floor vote and governor's signature before it can be classified as enacted. AirIndex has classified this as actively_moving, not enacted. If signed, Phoenix would move to 60 — a 20-point recovery from the March collapse.",
+    source: "LegiScan / Arizona State Legislature",
+    sourceUrl: "https://legiscan.com/AZ/bill/SB1457/2026",
+  },
 ];
 
 export function getAlertBySlug(slug: string): AisAlert | undefined {
