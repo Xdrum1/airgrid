@@ -669,7 +669,7 @@ export default async function LandingPage() {
                     "Environmental context layer with low-altitude weather data",
                   ],
                   color: "#f59e0b",
-                  href: "/contact",
+                  href: "/sample",
                 },
               ].map((layer) => (
                 <div
