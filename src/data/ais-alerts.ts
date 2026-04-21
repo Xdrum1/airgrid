@@ -61,9 +61,9 @@ export const AIS_ALERTS: AisAlert[] = [
     alertNumber: 2,
     publishDate: "2026-04-21",
     cityId: "phoenix",
-    headline: "Phoenix recovers to 50 AIS after new air mobility bill advances",
+    headline: "Phoenix rebounds after legislative setback as new air mobility bill advances",
     whatHappened:
-      "Arizona SB1457 — an air mobility fund bill — received 'Do Pass' from the House Committee of the Whole on April 20. This is a different legislative vehicle from SB1827, which failed 6-12 in House Appropriations on March 31. SB1457 ties air mobility infrastructure funding to border security operations, creating a broader coalition of support than the standalone AAM package that collapsed in March.",
+      "Arizona SB1457 — an air mobility fund bill — received a 'Do Pass' from the House Committee of the Whole on April 20. This follows the failure of SB1827 in House Appropriations on March 31. Unlike the prior standalone AAM package, SB1457 ties air mobility infrastructure funding to border security operations, expanding the coalition of support.",
     aisImpact: {
       scoreBefore: 40,
       scoreAfter: 50,
@@ -73,7 +73,7 @@ export const AIS_ALERTS: AisAlert[] = [
       tierAfter: "MODERATE",
     },
     whyItMatters:
-      "Phoenix dropped from 50 to 40 on April 10 after the three-bill AAM package failed. SB1457 represents Arizona's second attempt through a different approach — bundling air mobility with border security funding. A 'Do Pass' from committee is a meaningful signal but the bill still requires a House floor vote and governor's signature before it can be classified as enacted. AirIndex has classified this as actively_moving, not enacted. If signed, Phoenix would move to 60 — a 20-point recovery from the March collapse.",
+      "Phoenix dropped from 50 to 40 on April 10 after a three-bill AAM package failed. SB1457 represents a second attempt through a different legislative strategy — bundling AAM funding with border security. A 'Do Pass' from committee is a meaningful signal, but the bill still requires a House floor vote and governor signature before it can be classified as enacted. AirIndex has classified this as actively_moving, not enacted. If signed, Phoenix would move to 60 — recovering fully from the March legislative collapse. This reflects a broader pattern: markets that fail standalone AAM legislation may re-emerge through multi-use funding vehicles with wider political support. Watch for: House floor scheduling and related funding language in adjacent bills.",
     source: "LegiScan / Arizona State Legislature",
     sourceUrl: "https://legiscan.com/AZ/bill/SB1457/2026",
   },

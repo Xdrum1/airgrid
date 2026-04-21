@@ -78,14 +78,14 @@ function renderAlertHtml(alert: AisAlert, recipientEmail?: string): string {
 
         <!-- Headline -->
         <tr><td style="padding:0 40px 20px;">
-          <h1 style="font:700 24px/1.3 'Helvetica Neue',Arial,sans-serif;color:#111;margin:0;letter-spacing:-0.02em;">
+          <h1 style="font:700 28px/1.3 'Helvetica Neue',Arial,sans-serif;color:#111;margin:0;letter-spacing:-0.02em;">
             ${escapeHtml(alert.headline)}
           </h1>
         </td></tr>
 
         <!-- What happened -->
         <tr><td style="padding:0 40px 20px;">
-          <p style="font:15px/1.7 'Helvetica Neue',Arial,sans-serif;color:#333;margin:0;">
+          <p style="font:17px/1.75 'Helvetica Neue',Arial,sans-serif;color:#333;margin:0;">
             ${escapeHtml(alert.whatHappened)}
           </p>
         </td></tr>
@@ -99,23 +99,23 @@ function renderAlertHtml(alert: AisAlert, recipientEmail?: string): string {
               </div>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="font:13px/1.5 'Helvetica Neue',sans-serif;color:#666;padding:4px 0;">Score</td>
-                  <td style="font:700 14px/1.5 'Courier New',monospace;color:#111;text-align:right;padding:4px 0;">
+                  <td style="font:15px/1.5 'Helvetica Neue',sans-serif;color:#666;padding:6px 0;">Score</td>
+                  <td style="font:700 16px/1.5 'Courier New',monospace;color:#111;text-align:right;padding:6px 0;">
                     ${alert.aisImpact.scoreBefore} → ${alert.aisImpact.scoreAfter}
                     <span style="color:${deltaColor};margin-left:6px;">(${deltaStr})</span>
                   </td>
                 </tr>
                 <tr>
-                  <td style="font:13px/1.5 'Helvetica Neue',sans-serif;color:#666;padding:4px 0;">Factor</td>
-                  <td style="font:13px/1.5 'Helvetica Neue',sans-serif;color:#111;text-align:right;padding:4px 0;">${escapeHtml(alert.aisImpact.factor)}</td>
+                  <td style="font:15px/1.5 'Helvetica Neue',sans-serif;color:#666;padding:6px 0;">Factor</td>
+                  <td style="font:15px/1.5 'Helvetica Neue',sans-serif;color:#111;text-align:right;padding:6px 0;">${escapeHtml(alert.aisImpact.factor)}</td>
                 </tr>
                 <tr>
-                  <td style="font:13px/1.5 'Helvetica Neue',sans-serif;color:#666;padding:4px 0;">Change</td>
-                  <td style="font:12px/1.5 'Courier New',monospace;color:#444;text-align:right;padding:4px 0;">${escapeHtml(alert.aisImpact.factorChange)}</td>
+                  <td style="font:15px/1.5 'Helvetica Neue',sans-serif;color:#666;padding:6px 0;">Change</td>
+                  <td style="font:14px/1.5 'Courier New',monospace;color:#444;text-align:right;padding:6px 0;">${escapeHtml(alert.aisImpact.factorChange)}</td>
                 </tr>
                 ${tierChanged ? `<tr>
-                  <td style="font:13px/1.5 'Helvetica Neue',sans-serif;color:#666;padding:4px 0;">Tier</td>
-                  <td style="font:700 13px/1.5 'Helvetica Neue',sans-serif;color:${deltaColor};text-align:right;padding:4px 0;">${alert.aisImpact.tierBefore} → ${alert.aisImpact.tierAfter}</td>
+                  <td style="font:15px/1.5 'Helvetica Neue',sans-serif;color:#666;padding:6px 0;">Tier</td>
+                  <td style="font:700 15px/1.5 'Helvetica Neue',sans-serif;color:${deltaColor};text-align:right;padding:6px 0;">${alert.aisImpact.tierBefore} → ${alert.aisImpact.tierAfter}</td>
                 </tr>` : ""}
               </table>
             </td></tr>
@@ -127,7 +127,7 @@ function renderAlertHtml(alert: AisAlert, recipientEmail?: string): string {
           <div style="font:700 10px/1 'Courier New',monospace;color:#374151;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">
             WHY IT MATTERS
           </div>
-          <p style="font:15px/1.75 'Helvetica Neue',Arial,sans-serif;color:#333;margin:0;">
+          <p style="font:17px/1.75 'Helvetica Neue',Arial,sans-serif;color:#333;margin:0;">
             ${escapeHtml(alert.whyItMatters)}
           </p>
         </td></tr>
