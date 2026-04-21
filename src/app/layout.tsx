@@ -48,6 +48,10 @@ export default function RootLayout({
         />
       </head>
       <body>
+        {/* RB2B Visitor Identification */}
+        <Script id="rb2b-pixel" strategy="afterInteractive">
+          {`!function(key){if(window.reb2b)return;window.reb2b={loaded:true};var s=document.createElement("script");s.async=true;s.src="https://ddwl4m2hdecbv.cloudfront.net/b/"+key+"/"+key+".js.gz";document.getElementsByTagName("script")[0].parentNode.insertBefore(s,document.getElementsByTagName("script")[0]);}("4O7Z0HEYG2NX");`}
+        </Script>
         {/* Plausible Analytics (cookieless, GDPR-compliant) */}
         <Script
           src="https://plausible.io/js/pa-d8Fqfg9wRL9bqO620StZS.js"

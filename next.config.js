@@ -28,10 +28,10 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              `script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''} https://plausible.io https://*.sentry.io https://js.stripe.com`,
+              `script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV === 'development' ? "'unsafe-eval'" : ''} https://plausible.io https://*.sentry.io https://js.stripe.com https://ddwl4m2hdecbv.cloudfront.net`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https://*.mapbox.com https://*.tiles.mapbox.com https://*.stripe.com",
-              "connect-src 'self' https://*.mapbox.com https://*.tiles.mapbox.com https://events.mapbox.com https://plausible.io https://*.sentry.io https://*.ingest.sentry.io https://api.stripe.com",
+              "connect-src 'self' https://*.mapbox.com https://*.tiles.mapbox.com https://events.mapbox.com https://plausible.io https://*.sentry.io https://*.ingest.sentry.io https://api.stripe.com https://ddwl4m2hdecbv.cloudfront.net https://*.rb2b.com",
               "font-src 'self' https://fonts.gstatic.com",
               "frame-src https://js.stripe.com https://hooks.stripe.com",
               "worker-src blob:",
