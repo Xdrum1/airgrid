@@ -368,6 +368,23 @@ export default async function LandingPage() {
           >
             Methodology <span className="arrow" aria-hidden="true">→</span>
           </Link>
+          <Link
+            href="/sample"
+            className="cta-secondary"
+            style={{
+              display: "inline-block",
+              padding: "14px 28px",
+              border: `1px solid ${T.cardBorder}`,
+              color: T.textPrimary,
+              fontSize: 14,
+              fontWeight: 600,
+              textDecoration: "none",
+              borderRadius: 8,
+              background: "#ffffff",
+            }}
+          >
+            See a Sample <span className="arrow" aria-hidden="true">→</span>
+          </Link>
         </div>
       </section>
       </div>
