@@ -215,6 +215,9 @@ function renderEmailHtml(issue: OneMarketMondayIssue, recipientEmail?: string): 
           <p style="font:12px/1.7 'Helvetica Neue',Arial,sans-serif;color:#888;margin:0 0 16px;">
             ${escapeHtml(issue.footerNote)}
           </p>
+          <p style="font:13px/1.7 'Helvetica Neue',Arial,sans-serif;color:#666;margin:0 0 14px;font-style:italic;">
+            Evaluating a specific market or facility? Happy to run a quick assessment — just reply to this email.
+          </p>
           <p style="font:11px/1.6 'Helvetica Neue',Arial,sans-serif;color:#aaa;margin:0;">
             AirIndex · UAM Market Readiness Intelligence · <a href="${track(BASE_URL)}" style="color:#5B8DB8;text-decoration:none;">airindex.io</a>
           </p>

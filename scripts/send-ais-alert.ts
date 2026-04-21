@@ -141,6 +141,9 @@ function renderAlertHtml(alert: AisAlert, recipientEmail?: string): string {
 
         <!-- Footer -->
         <tr><td style="padding:20px 40px;border-top:1px solid #e5e7eb;">
+          <p style="font:13px/1.7 'Helvetica Neue',sans-serif;color:#666;margin:0 0 12px;font-style:italic;">
+            Tracking a specific market or evaluating facilities? Reply to this email — happy to run a quick assessment.
+          </p>
           <p style="font:11px/1.5 'Helvetica Neue',sans-serif;color:#999;margin:0;">
             AIS Alerts are event-driven signals from the AirIndex scoring system. Full market data at
             <a href="${track("https://www.airindex.io")}" style="color:#5B8DB8;text-decoration:none;">airindex.io</a>.
