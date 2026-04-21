@@ -487,6 +487,9 @@ model Heliport {
   lastInspection   String?  // from APT_BASE.csv LAST_INSPECTION
   positionSrcDate  String?  // from APT_BASE.csv POSITION_SRC_DATE
   elevationSrcDate String?  // from APT_BASE.csv ELEVATION_SRC_DATE
+  isAtAirport      Boolean  @default(false) // within 0.5nm of ASOS station (airport co-located)
+  nearestAsosId    String?  // nearest ASOS station identifier
+  nearestAsosNm    Float?   // distance to nearest ASOS in nautical miles
   ingestedAt       DateTime @default(now())
 
   @@index([cityId])
