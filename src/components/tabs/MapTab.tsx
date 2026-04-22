@@ -44,6 +44,7 @@ export default function MapTab({
   heliportGeoJSON,
   showHeliports,
   onToggleHeliports,
+  onHeliportSelect,
 }: {
   cities: City[];
   selected: City;
@@ -64,6 +65,7 @@ export default function MapTab({
   heliportGeoJSON?: GeoJSON.FeatureCollection | null;
   showHeliports?: boolean;
   onToggleHeliports?: () => void;
+  onHeliportSelect?: (siteId: string) => void;
 }) {
   return (
     <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
@@ -84,6 +86,7 @@ export default function MapTab({
         heliportGeoJSON={heliportGeoJSON}
         showHeliports={showHeliports}
         onToggleHeliports={onToggleHeliports}
+        onHeliportSelect={onHeliportSelect}
       />
 
       {/* Mobile: floating MARKETS button */}

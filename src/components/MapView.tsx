@@ -37,6 +37,7 @@ interface MapViewProps {
   heliportGeoJSON?: GeoJSON.FeatureCollection | null;
   showHeliports?: boolean;
   onToggleHeliports?: () => void;
+  onHeliportSelect?: (siteId: string) => void;
 }
 
 interface HeliportPopupInfo {
@@ -635,6 +636,7 @@ export default function MapView({
   heliportGeoJSON,
   showHeliports = true,
   onToggleHeliports,
+  onHeliportSelect,
 }: MapViewProps) {
   const mapRef = useRef<MapRef>(null);
   const [popup, setPopup] = useState<PopupInfo | null>(null);
@@ -1303,6 +1305,31 @@ export default function MapView({
                     )}
                   </div>
                 </div>
+              )}
+              {/* Assess button */}
+              {onHeliportSelect && (
+                <button
+                  onClick={() => {
+                    onHeliportSelect(heliportPopup.id);
+                    setHeliportPopup(null);
+                  }}
+                  style={{
+                    marginTop: 10,
+                    width: "100%",
+                    padding: "7px 12px",
+                    borderRadius: 5,
+                    border: "1px solid rgba(91,141,184,0.4)",
+                    background: "rgba(91,141,184,0.12)",
+                    color: "#5B8DB8",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: 1,
+                    cursor: "pointer",
+                    fontFamily: "'Space Mono', monospace",
+                  }}
+                >
+                  ASSESS SITE →
+                </button>
               )}
             </div>
           </Popup>

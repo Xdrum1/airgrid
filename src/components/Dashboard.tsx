@@ -20,6 +20,7 @@ import type { FilterKey, TabKey, MobilePanel } from "./dashboard-types";
 import DashboardHeader from "./DashboardHeader";
 import CityListPanel from "./CityListPanel";
 import CityDetailPanel from "./CityDetailPanel";
+import FacilityDecisionPanel from "./FacilityDecisionPanel";
 
 // Tabs
 import MapTab from "./tabs/MapTab";
@@ -46,6 +47,7 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialTab = (searchParams.get("tab") as TabKey) || "map";
+  const initialFacility = searchParams.get("siteId");
   const isMobile = useIsMobile();
   const userTier = (session?.user as { tier?: string } | undefined)?.tier ?? "free";
 
@@ -127,7 +129,8 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
   const [showAllCorridors, setShowAllCorridors] = useState(false);
   const [fetchedCorridors, setFetchedCorridors] = useState<Corridor[]>(CORRIDORS);
   const [heliportGeoJSON, setHeliportGeoJSON] = useState<GeoJSON.FeatureCollection | null>(null);
-  const [showHeliports, setShowHeliports] = useState(false);
+  const [showHeliports, setShowHeliports] = useState(!!initialFacility);
+  const [selectedHeliportId, setSelectedHeliportId] = useState<string | null>(initialFacility);
 
   // Fetch corridors from DB
   useEffect(() => {
@@ -487,6 +490,10 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
               heliportGeoJSON={heliportGeoJSON}
               showHeliports={showHeliports}
               onToggleHeliports={() => setShowHeliports((v) => !v)}
+              onHeliportSelect={(siteId: string) => {
+                setSelectedHeliportId(siteId);
+                if (isMobile) setMobilePanel("facility");
+              }}
             />
           ) : (
             <RankingsTab
@@ -503,8 +510,8 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
           )}
         </div>
 
-        {/* RIGHT — Detail Panel */}
-        {(!isMobile || mobilePanel === "detail") && (
+        {/* RIGHT — Detail Panel (City or Facility) */}
+        {(!isMobile || mobilePanel === "detail") && !selectedHeliportId && (
           <CityDetailPanel
             selected={selected}
             vertiports={cityVertiports}
@@ -523,6 +530,17 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
             watchStatus={watchData[selected.id]?.watchStatus}
             outlook={watchData[selected.id]?.outlook}
             analystNote={watchData[selected.id]?.analystNote}
+          />
+        )}
+        {(!isMobile || mobilePanel === "facility") && selectedHeliportId && (
+          <FacilityDecisionPanel
+            siteId={selectedHeliportId}
+            isMobile={isMobile}
+            onClose={() => {
+              setSelectedHeliportId(null);
+              if (isMobile) setMobilePanel("none");
+            }}
+            isAuthenticated={isAuthenticated}
           />
         )}
       </div>
