@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { requireAdmin } from "@/lib/admin-helpers";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
-  // Admin auth required
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const adminErr = await requireAdmin(req);
+  if (adminErr) return adminErr;
 
   const body = await req.json();
   const { input, mode } = body as { input: string; mode: "id" | "state" | "name" };

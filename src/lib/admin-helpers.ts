@@ -50,7 +50,7 @@ export function refreshAdminCookie(response: NextResponse): NextResponse {
   response.cookies.set(COOKIE_NAME, fresh, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
     maxAge: 4 * 60 * 60, // 4 hours in seconds
     path: "/",
   });
