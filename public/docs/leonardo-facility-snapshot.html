@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facility-Level Viability Snapshot | AirIndex</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #0a2540;
+    background: #ffffff;
+    line-height: 1.6;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 40px 64px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #0a2540;
+  }
+
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+  }
+  .logo-air { font-weight: 700; color: #0a2540; }
+  .logo-index { font-weight: 400; color: #5B8DB8; }
+
+  .meta {
+    text-align: right;
+    font-size: 10px;
+    color: #697386;
+    letter-spacing: 0.05em;
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #0a2540;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: #425466;
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0a2540;
+    margin: 32px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e3e8ee;
+  }
+
+  .market-card {
+    padding: 16px 20px;
+    border: 1px solid #e3e8ee;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .market-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .market-meta {
+    font-size: 11px;
+    color: #697386;
+    margin-top: 2px;
+  }
+
+  .market-constraint {
+    font-size: 12px;
+    color: #425466;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  .score-block {
+    text-align: right;
+  }
+
+  .score-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .score-tier {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: #697386;
+    margin-top: 2px;
+  }
+
+  .advanced { color: #16a34a; }
+  .moderate { color: #f59e0b; }
+
+  .finding {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f2f5;
+    font-size: 13px;
+    color: #425466;
+    line-height: 1.55;
+  }
+
+  .finding:last-child { border-bottom: none; }
+
+  .finding-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 6px;
+    background: #f59e0b;
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .finding-dot.red { background: #dc2626; }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 20px 0 32px;
+  }
+
+  .stat-box {
+    text-align: center;
+    padding: 14px 8px;
+    border: 1px solid #e3e8ee;
+    border-radius: 6px;
+  }
+
+  .stat-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #0a2540;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    color: #697386;
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: #5B8DB8;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .cta-block {
+    margin-top: 40px;
+    padding: 20px 24px;
+    border-radius: 8px;
+    background: #f6f9fc;
+    border: 1px solid #e3e8ee;
+    font-size: 13px;
+    color: #425466;
+    line-height: 1.6;
+  }
+
+  .cta-block strong { color: #0a2540; }
+
+  .footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid #e3e8ee;
+    font-size: 10px;
+    color: #697386;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media print {
+    body { padding: 24px; }
+    .market-card { break-inside: avoid; }
+  }
+
+  .page-break {
+    page-break-before: always;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo"><span class="logo-air">AIR</span><span class="logo-index">INDEX</span></div>
+  </div>
+  <div class="meta">
+    FACILITY VIABILITY SNAPSHOT<br>
+    APRIL 2026 | CONFIDENTIAL
+  </div>
+</div>
+
+<h1>Facility-Level Viability Snapshot &mdash; U.S. Rotorcraft &rarr; AAM Transition</h1>
+<p class="subtitle">
+  U.S. markets evaluated for rotorcraft-to-AAM transition readiness.
+  Market scores reflect regulatory, infrastructure, and operator factors.
+  Facility-level findings identify where operational constraints appear
+  below the market score.
+</p>
+
+<div class="stat-row">
+  <div class="stat-box">
+    <div class="stat-num">5</div>
+    <div class="stat-label">Markets evaluated</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">368</div>
+    <div class="stat-label">Heliports in scope</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">7</div>
+    <div class="stat-label">Scoring factors</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">0</div>
+    <div class="stat-label">Full weather coverage</div>
+  </div>
+</div>
+
+<div class="section-label">Page 1 &mdash; Market Readiness</div>
+
+<h2>Markets by Readiness</h2>
+
+<div class="market-card">
+  <div>
+    <div class="market-name">Los Angeles, CA</div>
+    <div class="market-meta">146 heliports &middot; 2 operators (Joby, Archer) &middot; 3 vertiports</div>
+    <div class="market-constraint">
+      Highest-scoring market. Legislation enacted, zoning adopted, operators committed.
+      <strong>Only constraint is weather infrastructure</strong> &mdash; no dedicated low-altitude
+      sensing deployed despite major airport ASOS coverage.<br>
+      <em style="color:#697386;font-size:11px;">What breaks at the facility level: dense urban obstruction environments + data staleness across 146 sites</em>
+    </div>
+  </div>
+  <div class="score-block">
+    <div class="score-num advanced">95</div>
+    <div class="score-tier">ADVANCED</div>
+  </div>
+</div>
+
+<div class="market-card">
+  <div>
+    <div class="market-name">Dallas, TX</div>
+    <div class="market-meta">69 heliports &middot; 1 operator (Wisk) &middot; 2 vertiports &middot; authorized corridor</div>
+    <div class="market-constraint">
+      FAA-authorized corridor in place. TX HB 1735 enacted.
+      <strong>Weather infrastructure is the remaining gap</strong> &mdash; DFW/DAL ASOS provide regional coverage
+      but no low-altitude AAM sensing along the corridor.<br>
+      <em style="color:#697386;font-size:11px;">What breaks at the facility level: weather gap along authorized corridor + no low-altitude sensing</em>
+    </div>
+  </div>
+  <div class="score-block">
+    <div class="score-num advanced">95</div>
+    <div class="score-tier">ADVANCED</div>
+  </div>
+</div>
+
+<div class="market-card">
+  <div>
+    <div class="market-name">Miami, FL</div>
+    <div class="market-meta">37 heliports &middot; 2 operators (Joby, Archer) &middot; 2 vertiports</div>
+    <div class="market-constraint">
+      Florida Advanced Air Mobility Act enacted. Strong operator presence.
+      <strong>No active pilot program despite strong fundamentals</strong> &mdash; next score movement
+      likely tied to operator demonstration launch.<br>
+      <em style="color:#697386;font-size:11px;">What breaks at the facility level: rooftop airflow exposure + hospital helipad misclassification</em>
+    </div>
+  </div>
+  <div class="score-block">
+    <div class="score-num advanced">80</div>
+    <div class="score-tier">ADVANCED</div>
+  </div>
+</div>
+
+<div class="market-card">
+  <div>
+    <div class="market-name">Phoenix, AZ</div>
+    <div class="market-meta">48 heliports &middot; 1 operator (Joby) &middot; 0 vertiports</div>
+    <div class="market-constraint">
+      Active pilot program, but <strong>no approved vertiport and no enacted legislation</strong>.
+      AZ SB1827 (Office of AAM) failed in House committee Mar 2026. Legislative volatility
+      is the primary risk factor.<br>
+      <em style="color:#697386;font-size:11px;">What breaks at the facility level: legislative uncertainty + no vertiport infrastructure to evaluate</em>
+    </div>
+  </div>
+  <div class="score-block">
+    <div class="score-num moderate">50</div>
+    <div class="score-tier">MODERATE</div>
+  </div>
+</div>
+
+<div class="market-card">
+  <div>
+    <div class="market-name">Houston, TX</div>
+    <div class="market-meta">68 heliports &middot; 0 operators &middot; 0 vertiports</div>
+    <div class="market-constraint">
+      Benefits from TX HB 1735 (state law) and friendly posture, but
+      <strong>zero operator presence and no approved vertiport</strong>.
+      Large heliport base (offshore/medical) creates transition infrastructure,
+      but capital hasn't committed.<br>
+      <em style="color:#697386;font-size:11px;">What breaks at the facility level: offshore/medical heliport mix creates non-standard transition path</em>
+    </div>
+  </div>
+  <div class="score-block">
+    <div class="score-num moderate">50</div>
+    <div class="score-tier">MODERATE</div>
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<div class="section-label">Page 2 &mdash; What Shows Up at the Facility Level</div>
+
+<h2>Below the Market Score</h2>
+<p style="font-size: 13px; color: #425466; margin-bottom: 20px; line-height: 1.6;">
+  Market readiness scores reflect regulatory and operator conditions. They do not capture
+  what happens at the individual facility. The following patterns represent constraints that
+  do not appear in market-level scoring but directly impact operational feasibility at the
+  site level. Across the 368 heliports in these five metros:
+</p>
+
+<div class="finding">
+  <span class="finding-dot red"></span>
+  <div>
+    <strong>Dimensional compliance does not mean operational viability.</strong>
+    Many facilities meet minimum pad dimensions but have constrained FATO zones,
+    limited expansion space, and approach surfaces that would require variance
+    under current Advisory Circular standards for larger airframes.
+  </div>
+</div>
+
+<div class="finding">
+  <span class="finding-dot red"></span>
+  <div>
+    <strong>Rooftop airflow exposure is not captured in registry data.</strong>
+    Hospital and urban rooftop heliports face thermal updraft, HVAC exhaust proximity,
+    and recirculation effects from surrounding structures. None of this appears in
+    FAA facility records. It must be assessed independently.
+  </div>
+</div>
+
+<div class="finding">
+  <span class="finding-dot"></span>
+  <div>
+    <strong>Pre-1994 facilities create interpretation ambiguity.</strong>
+    Over 40% of U.S. heliports were built before the current dimensional terminology
+    (TLOF, FATO, Safety Area) was standardized. Dimensional data in the registry
+    often reflects legacy definitions that don't map cleanly to current requirements.
+  </div>
+</div>
+
+<div class="finding">
+  <span class="finding-dot"></span>
+  <div>
+    <strong>Obstruction environments vary significantly within the same metro.</strong>
+    Two facilities in the same city can have completely different 8:1 approach surface
+    profiles. One may be clear; the other may have multiple penetrations. Market-level
+    readiness does not predict site-level operability.
+  </div>
+</div>
+
+<div class="finding">
+  <span class="finding-dot"></span>
+  <div>
+    <strong>Data staleness is widespread.</strong>
+    Many facility records have not had positional or dimensional data verified in over
+    a decade. Activation dates, surface conditions, and inspection records are frequently
+    blank or outdated. Planning on this baseline introduces silent risk.
+  </div>
+</div>
+
+<div class="finding">
+  <span class="finding-dot"></span>
+  <div>
+    <strong>No market has full low-altitude weather coverage.</strong>
+    All five markets rely on airport ASOS stations for surface weather. None have
+    dedicated low-altitude sensing along potential AAM corridors. Weather infrastructure
+    is the universal remaining gap, even in ADVANCED-tier markets.
+  </div>
+</div>
+
+<p style="font-size: 12px; color: #425466; margin-top: 24px; line-height: 1.6; font-style: italic;">
+  For OEMs and operators, these conditions determine where existing infrastructure can
+  realistically support next-generation aircraft without significant modification.
+</p>
+
+<div class="cta-block">
+  <strong>Next step:</strong> If there are specific facilities or markets relevant to your planning,
+  I can run them through the system and walk through the results. Each facility assessment
+  covers data quality, compliance, dimensional analysis, obstruction environment, and
+  operational exposure &mdash; structured for operational and R&D evaluation.
+</div>
+
+<div class="footer">
+  <div>
+    <span class="logo"><span class="logo-air">AIR</span><span class="logo-index">INDEX</span></span>
+    &nbsp;&middot;&nbsp; airindex.io
+  </div>
+  <div>
+    Prepared April 2026 &middot; Confidential
+  </div>
+</div>
+
+</body>
+</html>
