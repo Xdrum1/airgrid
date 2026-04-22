@@ -4,6 +4,7 @@ import Link from "next/link";
 import { City } from "@/types";
 import { getScoreColor, getPostureConfig } from "@/lib/scoring";
 import { WATCH_STATUS_COLORS, WATCH_STATUS_LABELS } from "@/lib/dashboard-constants";
+import { getConstraintLine } from "@/lib/market-command";
 import ScoreBar from "./ScoreBar";
 
 export default function CityCard({
@@ -128,6 +129,20 @@ export default function CityCard({
         </div>
       </div>
       <ScoreBar value={city.score ?? 0} color={color} />
+      {getConstraintLine(city) && (
+        <div
+          style={{
+            fontSize: 9,
+            color: "#f59e0b",
+            marginTop: 6,
+            fontFamily: "'Space Mono', monospace",
+            letterSpacing: "0.02em",
+            opacity: 0.8,
+          }}
+        >
+          {getConstraintLine(city)}
+        </div>
+      )}
       <Link
         href={`/city/${city.id}`}
         onClick={(e) => e.stopPropagation()}

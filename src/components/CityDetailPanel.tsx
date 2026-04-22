@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { City, Vertiport, Corridor } from "@/types";
 import { getScoreColor, getScoreTier, getPostureConfig } from "@/lib/scoring";
+import { getPrimaryConstraint, getNextTrigger } from "@/lib/market-command";
 import { VERTIPORT_STATUS_COLORS, CORRIDOR_STATUS_COLORS, WATCH_STATUS_COLORS, WATCH_STATUS_LABELS, OUTLOOK_COLORS, OUTLOOK_LABELS } from "@/lib/dashboard-constants";
 import { hasProAccess } from "@/lib/billing-shared";
 import { OPERATORS_MAP } from "@/data/seed";
@@ -38,6 +39,7 @@ export default function CityDetailPanel({
   watchStatus,
   outlook,
   analystNote,
+  scoreDelta,
 }: {
   selected: City;
   vertiports: Vertiport[];
@@ -56,6 +58,7 @@ export default function CityDetailPanel({
   watchStatus?: string;
   outlook?: string;
   analystNote?: string | null;
+  scoreDelta?: { delta: number; previousScore: number; currentScore: number; changedAt: string };
 }) {
   const scoreColor = getScoreColor(selected.score ?? 0);
   const posture = getPostureConfig(selected.regulatoryPosture);
@@ -277,6 +280,76 @@ export default function CityDetailPanel({
             .
           </p>
         )}
+
+        {/* What Changed */}
+        {scoreDelta && scoreDelta.delta !== 0 && (
+          <div
+            style={{
+              marginTop: 12,
+              padding: "10px 12px",
+              borderRadius: 6,
+              background: scoreDelta.delta > 0
+                ? "rgba(0,255,136,0.06)"
+                : "rgba(255,68,68,0.06)",
+              border: `1px solid ${scoreDelta.delta > 0 ? "rgba(0,255,136,0.15)" : "rgba(255,68,68,0.15)"}`,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+              <span
+                style={{
+                  fontSize: 8,
+                  letterSpacing: 1,
+                  color: scoreDelta.delta > 0 ? "#00ff88" : "#ff4444",
+                  fontFamily: "'Space Mono', monospace",
+                }}
+              >
+                SCORE CHANGE
+              </span>
+            </div>
+            <div style={{ fontSize: 11, color: "#e0e0e0", lineHeight: 1.4 }}>
+              <span style={{ fontWeight: 700, color: scoreDelta.delta > 0 ? "#00ff88" : "#ff4444" }}>
+                {scoreDelta.delta > 0 ? "+" : ""}{scoreDelta.delta}
+              </span>
+              {" "}→ {scoreDelta.previousScore} to {scoreDelta.currentScore}
+              <span style={{ color: "#777", fontSize: 10 }}>
+                {" "}· {new Date(scoreDelta.changedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Primary Constraint + Next Trigger */}
+        {(() => {
+          const constraint = getPrimaryConstraint(selected);
+          const trigger = getNextTrigger(selected);
+          if (!constraint) return null;
+          return (
+            <div
+              style={{
+                marginTop: 12,
+                padding: "10px 12px",
+                borderRadius: 6,
+                background: "rgba(245,158,11,0.06)",
+                border: "1px solid rgba(245,158,11,0.15)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                <span style={{ fontSize: 8, letterSpacing: 1, color: "#f59e0b", fontFamily: "'Space Mono', monospace" }}>
+                  CONSTRAINT
+                </span>
+              </div>
+              <div style={{ fontSize: 11, color: "#e0e0e0", lineHeight: 1.4 }}>
+                {constraint.label}
+                <span style={{ color: "#777", fontSize: 10 }}> · {constraint.gap}/{constraint.weight} pts</span>
+              </div>
+              {trigger && (
+                <div style={{ fontSize: 10, color: "#5B8DB8", marginTop: 6 }}>
+                  Next trigger: {trigger.label} → +{trigger.potentialGain} pts
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* Watch Status + Outlook */}
         {watchStatus && watchStatus !== "STABLE" && (

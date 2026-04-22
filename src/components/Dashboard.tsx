@@ -188,6 +188,14 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
     if (filter === "operators") return c.activeOperators.length > 0;
     if (filter === "vertiport") return c.vertiportCount > 0;
     return true;
+  }).sort((a, b) => {
+    // Pin watched cities to top when showing all markets
+    if (filter === "all" && watchedCityIds.length > 0) {
+      const aWatched = watchedCityIds.includes(a.id) ? 1 : 0;
+      const bWatched = watchedCityIds.includes(b.id) ? 1 : 0;
+      if (aWatched !== bWatched) return bWatched - aWatched;
+    }
+    return (b.score ?? 0) - (a.score ?? 0);
   });
 
   // -------------------------------------------------------
@@ -529,6 +537,7 @@ export default function Dashboard({ initialCities, isAdmin }: DashboardProps) {
             isAdmin={!!isAdmin}
             watchStatus={watchData[selected.id]?.watchStatus}
             outlook={watchData[selected.id]?.outlook}
+            scoreDelta={scoreDeltas[selected.id]}
             analystNote={watchData[selected.id]?.analystNote}
           />
         )}
