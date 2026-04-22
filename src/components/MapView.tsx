@@ -662,6 +662,17 @@ export default function MapView({
     []
   );
 
+  // Fly to selected city when it changes (e.g. from sidebar click)
+  const prevSelectedId = useRef(selected?.id);
+  useEffect(() => {
+    if (!selected || !mapLoaded || !mapRef.current) return;
+    if (selected.id !== prevSelectedId.current) {
+      prevSelectedId.current = selected.id;
+      flyToCity(selected);
+      setHasNavigated(true);
+    }
+  }, [selected, mapLoaded, flyToCity]);
+
   // Fly to corridor bounds when selectedCorridor changes (e.g. from CORRIDORS tab)
   // mapLoaded dep ensures this fires after the map is ready on remount
   useEffect(() => {
