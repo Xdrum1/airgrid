@@ -16,7 +16,6 @@ import { redirect, notFound } from "next/navigation";
 import { auth } from "@/auth";
 import {
   getSiteRiskAssessment,
-  RISK_DEMO_SITE_IDS,
   type SiteGapFlag,
 } from "@/lib/risk-index";
 import { buildSatelliteTileUrl, buildContextTileUrl } from "@/lib/satellite-tile";
@@ -145,10 +144,6 @@ export default async function RiskAssessmentPage({
 
   const { siteId } = await params;
   const upper = siteId.toUpperCase();
-  if (!RISK_DEMO_SITE_IDS.includes(upper)) {
-    // Demo-set allowlist. Expand by editing RISK_DEMO_SITE_IDS.
-    notFound();
-  }
 
   const r = await getSiteRiskAssessment(upper);
   if (!r) notFound();
