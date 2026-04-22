@@ -529,10 +529,10 @@ export default async function LandingPage() {
                 ))}
               </div>
               <Image
-                src="/images/dashboard-preview.png"
-                alt="AirIndex intelligence platform — market readiness scoring, facility risk, and obstruction exposure in one view"
-                width={1920}
-                height={1080}
+                src="/images/dashboard-preview-facility.jpeg"
+                alt="AirIndex facility assessment — Miami heliport evaluated for viability, compliance, and operational exposure"
+                width={3828}
+                height={2074}
                 style={{ width: "100%", height: "auto", display: "block" }}
                 priority
               />
