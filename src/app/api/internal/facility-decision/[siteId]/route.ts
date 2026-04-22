@@ -5,6 +5,7 @@
  * Returns verdict-first response shaped for the FacilityDecisionPanel.
  */
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { getSiteRiskAssessment, type RiskTier } from "@/lib/risk-index";
 import { getDataQuality } from "@/lib/data-quality-score";
 import { loadAirflowData } from "@/lib/airflow-data";
@@ -246,6 +247,11 @@ export async function GET(
   _req: Request,
   { params }: { params: Promise<{ siteId: string }> },
 ) {
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { siteId } = await params;
   const upper = siteId.toUpperCase();
 

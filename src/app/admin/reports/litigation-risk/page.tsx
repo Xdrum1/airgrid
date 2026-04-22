@@ -4,6 +4,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import PrintButton from "@/app/reports/gap/[cityId]/PrintButton";
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "alan@airindex.io";
+
 export const metadata: Metadata = {
   title: "Heliport Litigation Risk Assessment — AirIndex",
   robots: "noindex, nofollow",
@@ -77,7 +79,8 @@ const S = {
 
 export default async function LitigationRiskAssessment() {
   const session = await auth();
-  if (!session?.user) redirect("/login");
+  if (!session?.user) redirect("/login?callbackUrl=/admin/reports/litigation-risk");
+  if (session.user.email !== ADMIN_EMAIL) redirect("/");
 
   const t = await getStats();
   const today = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });

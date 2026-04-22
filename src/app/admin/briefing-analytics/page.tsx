@@ -6,10 +6,14 @@
  * entityId of the form `briefing-<persona>:<cityId>`. This page parses
  * those tags into persona + city columns and aggregates over windows.
  *
- * Admin-gated by middleware.
+ * Admin-gated by session + email check.
  */
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import SiteNav from "@/components/SiteNav";
+
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "alan@airindex.io";
 import SiteFooter from "@/components/SiteFooter";
 
 const PERSONA_ACCENT: Record<string, string> = {
@@ -35,6 +39,10 @@ function parseEntityId(entityId: string): { persona: string; cityId: string } | 
 }
 
 export default async function BriefingAnalyticsPage() {
+  const session = await auth();
+  if (!session?.user) redirect("/login?callbackUrl=/admin/briefing-analytics");
+  if (session.user.email !== ADMIN_EMAIL) redirect("/");
+
   const now = new Date();
   const sevenDaysAgo = new Date(now.getTime() - 7 * 86400000);
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);

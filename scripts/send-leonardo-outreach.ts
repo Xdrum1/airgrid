@@ -44,18 +44,17 @@ async function main() {
 
   const html = `
 <div style="background:#ffffff;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;padding:40px 32px;max-width:600px;margin:0 auto;">
-  <p style="font-size:15px;line-height:1.7;color:#333;margin:0 0 16px;">Robert,</p>
-
   <p style="font-size:15px;line-height:1.7;color:#333;margin:0 0 16px;">
-    I appreciate you following along with the AirIndex updates. I've noticed you've been
-    consistently reading the market pieces.
+    Robert &mdash; appreciate you following along with the AirIndex updates.
+    I've noticed you've been consistently reading the market pieces.
   </p>
 
   <p style="font-size:15px;line-height:1.7;color:#333;margin:0 0 16px;">
-    Given your role on the operations/R&amp;D side at Leonardo, I pulled together a quick
-    snapshot looking at a few U.S. markets and how existing heliport infrastructure actually
-    lines up at the facility level &mdash; where things are viable vs where constraints start
-    to show up.
+    Given your role on the operations and R&amp;D side at Leonardo DRS, I
+    pulled together a quick snapshot looking at a few U.S. markets and
+    how existing heliport infrastructure lines up at the facility level &mdash;
+    where things are viable versus where operational constraints start to
+    appear.
   </p>
 
   <p style="font-size:15px;line-height:1.7;color:#333;margin:0 0 16px;">
@@ -65,12 +64,13 @@ async function main() {
   </p>
 
   <p style="font-size:15px;line-height:1.7;color:#333;margin:0 0 16px;">
-    The second page is really where things get interesting. It's what starts to show up
-    when you move from market-level readiness to actual facility-level conditions.
+    Page 2 is really where it gets interesting &mdash; that's where market-level
+    readiness gives way to actual facility-level conditions. The kind of
+    gaps that don't show up until you're planning real operations.
   </p>
 
   <p style="font-size:15px;line-height:1.7;color:#333;margin:0 0 24px;">
-    No expectations, just thought it might be useful from a practical standpoint.
+    No expectations &mdash; just thought it might be useful from a practical standpoint.
   </p>
 
   <div style="padding-top:20px;border-top:1px solid #eee;">
@@ -79,11 +79,7 @@ async function main() {
       Founder &amp; CEO, Vertical Data Group<br>
       <a href="https://www.airindex.io" style="color:#5B8DB8;text-decoration:none;">airindex.io</a>
       &nbsp;|&nbsp;
-      <a href="https://www.verticaldatagroup.com" style="color:#5B8DB8;text-decoration:none;">verticaldatagroup.com</a><br>
       <span style="color:#888;font-size:13px;">(202) 949-2709</span>
-    </p>
-    <p style="font-size:11px;color:#aaa;margin:10px 0 0;">
-      SAM.gov Registered &middot; UEI: RB63W8RYCHY3 &middot; CAGE: 1AUW7
     </p>
   </div>
 
