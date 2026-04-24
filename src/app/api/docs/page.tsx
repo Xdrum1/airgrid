@@ -513,7 +513,7 @@ export default async function ApiDocsPage() {
     },
     "notes": "Primary U.S. launch market for Joby and Archer...",
     "key_milestones": [
-      "Joby launches commercial service in Dubai (Feb 2026)"
+      "Joby first UAE piloted flight (Nov 2025)"
     ]
   }
 }`}</JsonBlock>

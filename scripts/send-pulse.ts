@@ -8,6 +8,7 @@
  *   npx tsx scripts/send-pulse.ts extra@email.com     # add extra recipients
  *   npx tsx scripts/send-pulse.ts --solo you@x.com    # tracked preview ONLY to listed emails (skips inner circle + subscribers)
  *   npx tsx scripts/send-pulse.ts --skip-preflight    # bypass the pre-flight check (use only when knowingly sending historical content)
+ *   npx tsx scripts/send-pulse.ts --subject "..."     # override the default subject line
  */
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
@@ -86,6 +87,8 @@ async function main() {
   const skipPreflight = args.includes("--skip-preflight");
   const issueIdx = args.indexOf("--issue");
   const issueNum = issueIdx >= 0 ? parseInt(args[issueIdx + 1]) : undefined;
+  const subjectIdx = args.indexOf("--subject");
+  const customSubject = subjectIdx >= 0 ? args[subjectIdx + 1] : undefined;
   const extraEmails = args.filter((a) => a.includes("@") && !a.startsWith("--"));
 
   if (solo && extraEmails.length === 0) {
@@ -94,9 +97,11 @@ async function main() {
 
   // Find the Pulse file
   const pulse = findPulseFile(issueNum);
+  if (customSubject) pulse.subject = customSubject;
   const html = readFileSync(pulse.path, "utf-8");
   console.log(`\nPulse: Issue ${pulse.issue}`);
-  console.log(`File:  ${pulse.path}\n`);
+  console.log(`File:  ${pulse.path}`);
+  console.log(`Subject: ${pulse.subject}\n`);
 
   // Pre-flight check — verifies leaderboard claims against DB and catches
   // hallucinated peer markets. Skip only when sending historical content.

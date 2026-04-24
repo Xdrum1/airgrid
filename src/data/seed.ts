@@ -420,7 +420,7 @@ const RAW_CITIES: City[] = [
       ],
       activePilotProgram: [
         { id: "pilot_operator_mou", label: "Active MOU with eVTOL operator", status: "achieved", citation: "Joby and Archer targeting LA commercial launch", citationDate: "2025-01" },
-        { id: "pilot_demo_flights", label: "Demo flights completed", status: "achieved", citation: "Joby Dubai commercial ops active; Archer Abu Dhabi flight tests", citationDate: "2026-02" },
+        { id: "pilot_demo_flights", label: "Demo flights completed", status: "achieved", citation: "Joby first UAE point-to-point piloted flight Nov 2025; Archer Abu Dhabi flight tests", citationDate: "2025-11" },
         { id: "pilot_municipal_commitment", label: "Municipal commitment documented", status: "achieved", citation: "LA Metro AAM Infrastructure Study", citationDate: "2024-09" },
       ],
       approvedVertiport: [
@@ -430,7 +430,7 @@ const RAW_CITIES: City[] = [
       ],
       activeOperatorPresence: [
         { id: "op_committed", label: "Operator publicly committed to market", status: "achieved", citation: "Joby and Archer confirmed LA operations", citationDate: "2026-03" },
-        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "achieved", citation: "Joby commercially operational in Dubai, LA is next US market", citationDate: "2026-02" },
+        { id: "op_beyond_announce", label: "Operator beyond announcement stage", status: "achieved", citation: "Joby targeting 2026 Dubai commercial launch (pre-commercial); LA confirmed as next US market after Dubai", citationDate: "2025-11" },
         { id: "op_multiple", label: "Multiple operators present", status: "achieved", citation: "Joby and Archer both active", citationDate: "2026-03" },
       ],
       vertiportZoning: [
@@ -448,8 +448,8 @@ const RAW_CITIES: City[] = [
         { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing", citation: "No dedicated low-altitude AAM weather sensing deployed", citationDate: "2026-03" },
       ],
     },
-    notes: "Primary US launch market for Joby and Archer. Joby commercially operational in Dubai (Feb 2026) via Uber Air partnership — LA is the confirmed next US market. Joby acquired Blade's passenger business (Aug 2025), consolidating LA operator presence under two brands. Archer completed Abu Dhabi Midnight flight test campaign. LA Metro actively planning vertiport integration with transit hubs.",
-    keyMilestones: ["Joby launches Uber Air in Dubai (Feb 2026)", "Joby acquires Blade passenger business (Aug 2025)", "Archer completes Abu Dhabi Midnight flight tests", "Joby/Archer targeting 2026 LA commercial ops", "CA UAM Task Force active"],
+    notes: "Primary US launch market for Joby and Archer. Joby targeting 2026 commercial launch in Dubai via 6-year exclusive RTA agreement (pre-commercial; first UAE point-to-point piloted flight Nov 2025). LA is the confirmed next US market after Dubai. Joby acquired Blade's passenger business (Aug 2025), consolidating LA operator presence under two brands. Archer completed Abu Dhabi Midnight flight test campaign. LA Metro actively planning vertiport integration with transit hubs.",
+    keyMilestones: ["Joby first UAE point-to-point piloted flight (Nov 2025)", "Joby acquires Blade passenger business (Aug 2025)", "Archer completes Abu Dhabi Midnight flight tests", "Joby/Archer targeting 2026 Dubai then LA commercial ops", "CA UAM Task Force active"],
     lastUpdated: "2026-03-03",
   },
   {
@@ -558,8 +558,8 @@ const RAW_CITIES: City[] = [
         { id: "wx_low_alt", label: "Low-altitude weather sensing", status: "missing", citation: "No dedicated low-altitude AAM sensing deployed", citationDate: "2026-03" },
       ],
     },
-    notes: "Texas passed landmark UAM-friendly legislation (HB 1735) in 2023. Wisk completed first flight of Gen 6 autonomous eVTOL (Dec 2025) — the first FAA type certification candidate for autonomous passenger eVTOL. Joby commercially operational in Dubai (Feb 2026). Dallas is a primary US target market.",
-    keyMilestones: ["Wisk Gen 6 autonomous eVTOL first flight (Dec 2025)", "Joby commercially operational in Dubai (Feb 2026)", "TX HB 1735 passed 2023", "DFW vertiport feasibility study complete"],
+    notes: "Texas passed landmark UAM-friendly legislation (HB 1735) in 2023. Wisk completed first flight of Gen 6 autonomous eVTOL (Dec 2025) — the first FAA type certification candidate for autonomous passenger eVTOL. Joby targeting 2026 Dubai commercial launch (pre-commercial; first UAE piloted flight Nov 2025). Dallas is a primary US target market.",
+    keyMilestones: ["Wisk Gen 6 autonomous eVTOL first flight (Dec 2025)", "Joby first UAE piloted flight (Nov 2025)", "TX HB 1735 passed 2023", "DFW vertiport feasibility study complete"],
     lastUpdated: "2026-03-03",
   },
   {

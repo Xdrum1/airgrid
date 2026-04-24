@@ -6,8 +6,8 @@ export const CHANGELOG_SEED: ChangelogEntry[] = [
     changeType: "status_change",
     relatedEntityType: "operator",
     relatedEntityId: "op_joby",
-    summary: "Joby Aviation launches Uber Air commercial eVTOL service in Dubai — first-ever commercial air taxi operations using Joby S4 aircraft. Service operated in partnership with Uber and Dubai's Roads and Transport Authority (RTA). Signals Joby is commercially operational ahead of US market launches in Los Angeles and Dallas.",
-    timestamp: "2026-02-26T08:00:00Z",
+    summary: "Joby Aviation completed first UAE point-to-point piloted test flight (Nov 9 2025). Targeting 2026 commercial launch in Dubai under a 6-year exclusive agreement with Dubai's Roads and Transport Authority (RTA). Three additional Dubai vertiport sites announced: American University of Dubai, Atlantis The Royal, Dubai Mall. Dubai International vertiport targeted Q1 2026 completion. Pre-commercial stage.",
+    timestamp: "2025-11-09T08:00:00Z",
     sourceUrl: "https://www.jobyaviation.com/news/",
   },
   {

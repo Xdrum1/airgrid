@@ -134,12 +134,9 @@ export async function runPreflight(html: string): Promise<Check[]> {
     leaderboardRows.push({ name: m[1], claimed: parseInt(m[2]) });
   }
 
-  if (leaderboardRows.length === 0) {
-    checks.push({
-      level: "warn",
-      message: "No leaderboard rows detected — table format may have changed",
-    });
-  } else {
+  // Pulse no longer ships a leaderboard table — silent when none detected.
+  // When rows ARE present (older formats or ad hoc re-inclusions), still validate against DB.
+  if (leaderboardRows.length > 0) {
     console.log(`Leaderboard rows found: ${leaderboardRows.length}`);
     for (const row of leaderboardRows) {
       const city = byDisplayName.get(row.name);
@@ -177,7 +174,8 @@ export async function runPreflight(html: string): Promise<Check[]> {
   // and the DB says otherwise, flag. Light heuristic — exact score-adjacent mentions.
   const phx = scored.find((c) => c.id === "phoenix");
   if (phx) {
-    const phxClaims = [...text.matchAll(/Phoenix[^.]{0,80}?(\d{2})\b/g)].map(
+    // \b on both sides so numbers embedded in bill codes (SB1457 → "57") don't match
+    const phxClaims = [...text.matchAll(/Phoenix[^.]{0,80}?\b(\d{2})\b/g)].map(
       (mm) => parseInt(mm[1]),
     );
     const wrongClaims = phxClaims.filter(
