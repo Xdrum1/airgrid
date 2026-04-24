@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Approved ≠ Operable — AirIndex</title>
+<meta name="viewport" content="width=1080, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060608;         /* near-black with a touch of blue-grey for polish */
+    --ink: #ffffff;
+    --dim: #8a8a8a;
+    --dimmer: #4a4a4a;
+    --accent: #5B8DB8;
+    --warn: #C97B63;
+    --ok: #6BA57A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; overflow-wrap: break-word; }
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    background: #141414;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Wrapper takes the SCALED layout size so the stage never overflows viewport */
+  .stage-wrapper {
+    position: relative;
+    width: min(96vw, calc(96vh * 1080 / 1350));
+    aspect-ratio: 1080 / 1350;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  /* The recordable canvas — 1080 x 1350 (4:5 LinkedIn feed) */
+  .stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 1350px;
+    background: var(--bg);
+    overflow: hidden;
+    transform-origin: top left;
+    transform: scale(calc(min(96vw, 96vh * 1080 / 1350) / 1080px));
+  }
+
+  .scene {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 400ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px;
+  }
+  .scene.active { opacity: 1; }
+
+  /* Typography */
+  .eyebrow {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .line {
+    font-size: 54px;
+    font-weight: 500;
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 700ms ease, transform 700ms ease;
+  }
+  .line.visible { opacity: 1; transform: translateY(0); }
+  .line.small { font-size: 32px; color: var(--dim); font-weight: 400; }
+  .line.large { font-size: 88px; font-weight: 600; letter-spacing: -0.02em; }
+  .line.mono { font-family: "SF Mono", ui-monospace, Menlo, monospace; font-weight: 400; }
+
+  /* Scene 1 — Hook */
+  .hook-stack { text-align: center; display: flex; flex-direction: column; gap: 28px; max-width: 900px; }
+
+  /* Scene 2 — Market looks ready */
+  .market {
+    position: absolute;
+    inset: 0;
+    display: flex; flex-direction: column; gap: 28px;
+    padding: 80px 80px;
+    overflow: hidden;
+  }
+  .market-header { display: flex; justify-content: space-between; align-items: flex-start; }
+  .market-city { display: flex; flex-direction: column; gap: 6px; }
+  .city-name { font-size: 48px; font-weight: 600; letter-spacing: -0.01em; }
+  .city-sub { font-size: 18px; color: var(--dim); letter-spacing: 0.12em; text-transform: uppercase; }
+  .score-plate {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+  }
+  .score-label { font-size: 14px; color: var(--dim); letter-spacing: 0.18em; text-transform: uppercase; }
+  .score-value { font-size: 86px; font-weight: 600; letter-spacing: -0.03em; color: var(--ok); line-height: 1; }
+  .score-max { font-size: 20px; color: var(--dim); margin-left: 4px; }
+
+  .readiness-list { display: flex; flex-direction: column; gap: 18px; margin-top: 20px; }
+  .readiness-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid #1e1e1e;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+  .readiness-row.visible { opacity: 1; transform: translateY(0); }
+  .readiness-label { font-size: 24px; font-weight: 400; color: var(--ink); }
+  .readiness-value { font-size: 22px; color: var(--dim); font-family: "SF Mono", ui-monospace, Menlo, monospace; }
+  .readiness-value .dot { color: var(--ok); margin-right: 8px; }
+
+  .market-footer {
+    margin-top: 16px;
+    text-align: left;
+    border-top: 1px solid #1e1e1e;
+    padding-top: 28px;
+  }
+
+  /* Scene 3 — Infrastructure */
+  .infra {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 80px 80px;
+    gap: 20px;
+    overflow: hidden;
+  }
+  .infra-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .infra-title { font-size: 32px; font-weight: 500; letter-spacing: -0.01em; }
+  .infra-meta { font-size: 14px; color: var(--dim); letter-spacing: 0.18em; text-transform: uppercase; }
+
+  .map-wrap {
+    position: relative;
+    min-height: 0;
+    border: 1px solid #1e1e1e;
+    border-radius: 2px;
+    overflow: hidden;
+    background: #060606;
+  }
+  .map-wrap svg {
+    width: 100%; height: 100%; display: block;
+    transform-origin: center;
+  }
+  /* Subtle slow zoom on the LA map while scene 3 is active */
+  .scene[data-scene="3"].active .map-wrap svg {
+    animation: subtle-zoom-in 7s ease-out both;
+  }
+  @keyframes subtle-zoom-in {
+    from { transform: scale(1); }
+    to   { transform: scale(1.05); }
+  }
+  .helipad-count {
+    position: absolute; bottom: 24px; left: 24px;
+    font-family: "SF Mono", ui-monospace, Menlo, monospace;
+    font-size: 16px;
+    color: var(--dim);
+    opacity: 0;
+    transition: opacity 500ms ease;
+  }
+  .helipad-count.visible { opacity: 1; }
+  .helipad-count .count-num { color: var(--ink); font-weight: 500; }
+
+  .infra-footer { }
+
+  /* Heliport dots */
+  .heliport { fill: var(--accent); opacity: 0; transition: opacity 400ms ease; }
+  .heliport.on { opacity: 0.85; }
+  .heliport.flagged { fill: var(--warn); opacity: 1; }
+
+  /* Scene 4 — Reality zoom */
+  .reality {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 80px 80px;
+    gap: 20px;
+    overflow: hidden;
+  }
+  .reality-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .reality-title { font-size: 28px; font-weight: 500; }
+  .reality-coord {
+    font-family: "SF Mono", ui-monospace, Menlo, monospace;
+    font-size: 14px; color: var(--dim); letter-spacing: 0.1em;
+  }
+  .rooftop-wrap {
+    position: relative;
+    min-height: 0;
+    border: 1px solid #1e1e1e;
+    border-radius: 2px;
+    overflow: hidden;
+    background: #0a0a0a;
+  }
+  .rooftop-wrap svg {
+    width: 100%; height: 100%; display: block;
+    transform-origin: center;
+  }
+  /* Subtle slow zoom on rooftop while scene 4 is active — draws eye in as findings appear */
+  .scene[data-scene="4"].active .rooftop-wrap svg {
+    animation: rooftop-zoom 11s ease-out both;
+  }
+  @keyframes rooftop-zoom {
+    from { transform: scale(1); }
+    to   { transform: scale(1.04); }
+  }
+
+  .findings {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .finding {
+    display: flex; align-items: center; gap: 18px;
+    padding: 10px 18px;
+    border: 1px solid #1e1e1e;
+    border-left: 3px solid var(--warn);
+    background: #0a0a0a;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+  .finding.visible { opacity: 1; transform: translateX(0); }
+  .finding-tag {
+    font-family: "SF Mono", ui-monospace, Menlo, monospace;
+    font-size: 12px;
+    color: var(--warn);
+    letter-spacing: 0.12em;
+    min-width: 80px;
+  }
+  .finding-text { font-size: 18px; color: var(--ink); font-weight: 400; }
+
+  /* Scene 5 — Bridge (punch line before break) */
+  .bridge {
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .bridge-line { text-align: center; max-width: 900px; }
+
+  /* Scene 6 — Break ("drop moment") */
+  .scene.break { padding: 40px; }  /* tighter padding so larger equation fits */
+  .break {
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .break-equation {
+    font-size: 108px;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    white-space: nowrap;
+    transform: scale(0.85);
+    opacity: 0;
+    transition: transform 550ms cubic-bezier(0.2, 0.9, 0.2, 1), opacity 450ms ease;
+  }
+  .scene.active .break-equation {
+    transform: scale(1);
+    opacity: 1;
+  }
+  .break-equation .neq { color: var(--warn); font-weight: 400; padding: 0 12px; }
+
+  /* Scene 6 — Position */
+  .position {
+    display: flex; flex-direction: column; justify-content: center;
+    text-align: left;
+    max-width: 840px;
+    gap: 28px;
+  }
+
+  /* Scene 7 — Close */
+  .close {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 22px;
+    text-align: center;
+  }
+  .brand {
+    font-size: 56px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .brand .dot { color: var(--accent); }
+  .tagline {
+    font-size: 20px;
+    color: var(--dim);
+    letter-spacing: 0.08em;
+  }
+  .url {
+    font-family: "SF Mono", ui-monospace, Menlo, monospace;
+    font-size: 16px;
+    color: var(--dimmer);
+    letter-spacing: 0.1em;
+    margin-top: 40px;
+  }
+
+  /* Timeline indicator (hidden by default; shown with ?debug) */
+  .timeline {
+    position: absolute;
+    bottom: 20px; left: 80px; right: 80px;
+    height: 1px;
+    background: #1e1e1e;
+    display: none;
+  }
+  .timeline.show { display: block; }
+  .timeline-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 100ms linear;
+  }
+
+  /* Controls (visible only outside recording area) */
+  .controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 8px;
+    font-family: "SF Mono", ui-monospace, Menlo, monospace;
+    font-size: 12px;
+    z-index: 100;
+  }
+  .controls button {
+    background: #222;
+    color: #ddd;
+    border: 1px solid #333;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .controls button:hover { background: #333; }
+
+  /* Airflow animation for rooftop */
+  .airflow-path {
+    stroke: var(--warn);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 4 6;
+    opacity: 0;
+    transition: opacity 800ms ease;
+  }
+  .airflow-path.on {
+    opacity: 0.7;
+    animation: flow 2s linear infinite;
+  }
+  @keyframes flow {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: -40; }
+  }
+
+  /* Pulse for single flagged heliport */
+  .flagged-pulse {
+    fill: none;
+    stroke: var(--warn);
+    stroke-width: 2;
+    opacity: 0;
+  }
+  .flagged-pulse.on {
+    opacity: 1;
+    animation: pulse 1.6s ease-out infinite;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  @keyframes pulse {
+    0% { r: 4; opacity: 1; }
+    100% { r: 22; opacity: 0; }
+  }
+
+  /* Viewfinder cross */
+  .viewfinder {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+  .viewfinder.on { opacity: 0.4; }
+  .viewfinder::before, .viewfinder::after {
+    content: "";
+    position: absolute;
+    background: var(--warn);
+  }
+</style>
+</head>
+<body>
+  <div class="controls">
+    <button id="replay">↻ REPLAY</button>
+    <button id="pause">❚❚ PAUSE</button>
+  </div>
+
+  <div class="stage-wrapper">
+  <div class="stage" id="stage">
+
+    <!-- SCENE 1 — HOOK -->
+    <section class="scene" data-scene="1">
+      <div class="hook-stack">
+        <div class="line" data-t="100">Everyone is focused on <em style="font-style: normal; color: var(--dim);">when</em> air taxis will fly.</div>
+        <div class="line small" data-t="1000">Almost no one is asking <span style="color: var(--ink);">where</span> they can actually operate.</div>
+      </div>
+    </section>
+
+    <!-- SCENE 2 — MARKET LOOKS READY -->
+    <section class="scene" data-scene="2">
+      <div class="market">
+        <div class="line small" style="opacity:1; transform:none; color: var(--dim); letter-spacing: 0.24em; text-transform: uppercase; font-size: 14px;">Market Level</div>
+        <div class="market-header">
+          <div class="market-city">
+            <div class="city-name">Los Angeles</div>
+            <div class="city-sub">AIS · Readiness Index</div>
+          </div>
+          <div class="score-plate">
+            <div class="score-label">Score</div>
+            <div><span class="score-value">95</span><span class="score-max">/100</span></div>
+          </div>
+        </div>
+
+        <div class="readiness-list">
+          <div class="readiness-row" data-t="400">
+            <div class="readiness-label">Legislation</div>
+            <div class="readiness-value"><span class="dot">●</span>Supportive</div>
+          </div>
+          <div class="readiness-row" data-t="700">
+            <div class="readiness-label">Operator presence</div>
+            <div class="readiness-value"><span class="dot">●</span>Active</div>
+          </div>
+          <div class="readiness-row" data-t="1000">
+            <div class="readiness-label">Zoning &amp; permitting</div>
+            <div class="readiness-value"><span class="dot">●</span>Favorable</div>
+          </div>
+          <div class="readiness-row" data-t="1300">
+            <div class="readiness-label">Weather</div>
+            <div class="readiness-value"><span class="dot">●</span>Favorable</div>
+          </div>
+          <div class="readiness-row" data-t="1600">
+            <div class="readiness-label">Pilot programs</div>
+            <div class="readiness-value"><span class="dot">●</span>Announced</div>
+          </div>
+        </div>
+
+        <div class="market-footer">
+          <div class="line" data-t="2200" style="font-size: 32px; font-weight: 400;">At a market level — everything looks ready.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 3 — INFRASTRUCTURE -->
+    <section class="scene" data-scene="3">
+      <div class="infra">
+        <div class="infra-header">
+          <div class="infra-title">Infrastructure</div>
+          <div class="infra-meta">FAA NASR · 5010 Dataset</div>
+        </div>
+        <div class="map-wrap">
+          <svg viewBox="0 0 920 720" preserveAspectRatio="xMidYMid meet">
+            <!-- Abstract LA basin -->
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f1f" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="920" height="720" fill="url(#grid)"/>
+
+            <!-- Ocean (left side, dark blue-black to read as water) -->
+            <path d="M 0 160 Q 80 220 120 340 Q 150 460 90 560 Q 40 640 0 680 L 0 720 L -10 720 L -10 0 L 0 0 Z"
+                  fill="#0b1420" stroke="none"/>
+            <!-- Coastline stroke (clearly visible) -->
+            <path d="M 0 160 Q 80 220 120 340 Q 150 460 90 560 Q 40 640 0 680"
+                  fill="none" stroke="#4a6784" stroke-width="1.5"/>
+            <!-- San Gabriel Mountains suggestion (top edge) -->
+            <path d="M 140 60 Q 300 90 500 70 Q 700 50 880 80"
+                  fill="none" stroke="#2e2e2e" stroke-width="1" stroke-dasharray="2 4"/>
+
+            <!-- Major arteries (abstract freeways — I-5, I-10, 101, 405) -->
+            <path d="M 140 520 L 880 440" stroke="#3a3a3a" stroke-width="1.5" fill="none"/>
+            <path d="M 200 120 L 360 720" stroke="#3a3a3a" stroke-width="1.5" fill="none"/>
+            <path d="M 520 80 L 600 720" stroke="#3a3a3a" stroke-width="1.5" fill="none"/>
+            <path d="M 160 300 L 880 200" stroke="#3a3a3a" stroke-width="1.5" fill="none"/>
+
+            <!-- LA label -->
+            <text x="360" y="680" font-family="Inter,sans-serif" font-size="14" fill="#666" letter-spacing="0.28em" font-weight="500">LOS ANGELES BASIN</text>
+
+            <!-- Neighborhood anchors (so it reads as LA) -->
+            <g font-family="SF Mono,monospace" font-size="10" fill="#555" letter-spacing="0.12em">
+              <circle cx="310" cy="470" r="2" fill="#666"/>
+              <text x="320" y="474">LAX</text>
+
+              <circle cx="460" cy="360" r="2" fill="#666"/>
+              <text x="472" y="364">DOWNTOWN</text>
+
+              <circle cx="360" cy="600" r="2" fill="#666"/>
+              <text x="372" y="604">LONG BEACH</text>
+
+              <circle cx="650" cy="250" r="2" fill="#666"/>
+              <text x="662" y="254">PASADENA</text>
+
+              <circle cx="380" cy="260" r="2" fill="#666"/>
+              <text x="392" y="264">HOLLYWOOD</text>
+
+              <circle cx="760" cy="500" r="2" fill="#666"/>
+              <text x="772" y="504">ANAHEIM</text>
+            </g>
+
+            <!-- Heliport dots — populated via JS -->
+            <g id="heliport-layer"></g>
+
+            <!-- Flagged heliport (scene 4 target) — positioned near Downtown but offset to avoid label -->
+            <g id="flagged-group" style="opacity:0;" transform="translate(500,420)">
+              <circle class="flagged-pulse" cx="0" cy="0" r="4"/>
+              <circle class="flagged-pulse" cx="0" cy="0" r="4" style="animation-delay: 0.8s;"/>
+              <circle cx="0" cy="0" r="5" fill="#C97B63"/>
+              <line x1="-30" y1="0" x2="-14" y2="0" stroke="#C97B63" stroke-width="1"/>
+              <line x1="14" y1="0" x2="30" y2="0" stroke="#C97B63" stroke-width="1"/>
+              <line x1="0" y1="-30" x2="0" y2="-14" stroke="#C97B63" stroke-width="1"/>
+              <line x1="0" y1="14" x2="0" y2="30" stroke="#C97B63" stroke-width="1"/>
+              <text x="40" y="5" font-family="SF Mono,monospace" font-size="11" fill="#C97B63" letter-spacing="0.1em">DOWNTOWN · ROOFTOP H-PAD</text>
+            </g>
+          </svg>
+          <div class="helipad-count"><span class="count-num">5,647</span> heliports · US</div>
+        </div>
+        <div class="infra-footer">
+          <div class="line" data-t="2000" style="font-size: 32px; font-weight: 400;">Plenty of places to land.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 4 — REALITY -->
+    <section class="scene" data-scene="4">
+      <div class="reality">
+        <div class="reality-header">
+          <div class="reality-title">Site Reality</div>
+          <div class="reality-coord">34.0515°N · 118.2559°W · ROOFTOP</div>
+        </div>
+        <div class="rooftop-wrap">
+          <svg viewBox="0 0 920 600" preserveAspectRatio="xMidYMid meet">
+            <!-- Surrounding context (adjacent buildings) -->
+            <rect x="0" y="0" width="920" height="600" fill="#060606"/>
+            <rect x="0" y="0" width="240" height="600" fill="#0f0f0f"/>
+            <rect x="680" y="0" width="240" height="600" fill="#0f0f0f"/>
+            <rect x="0" y="0" width="920" height="80" fill="#0f0f0f"/>
+            <rect x="0" y="520" width="920" height="80" fill="#0f0f0f"/>
+
+            <!-- Rooftop outline -->
+            <rect x="240" y="80" width="440" height="440" fill="#141414" stroke="#2a2a2a" stroke-width="1"/>
+
+            <!-- Rooftop equipment (HVAC, obstruction) -->
+            <g id="obstructions">
+              <rect x="260" y="100" width="60" height="28" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="0.5"/>
+              <rect x="340" y="100" width="40" height="28" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="0.5"/>
+              <rect x="600" y="460" width="60" height="40" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="0.5"/>
+              <circle cx="270" cy="480" r="14" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="0.5"/>
+              <!-- Antenna mast near TLOF (the problem) -->
+              <line id="antenna" x1="580" y1="180" x2="580" y2="80" stroke="#C97B63" stroke-width="2" opacity="0"/>
+              <circle id="antenna-base" cx="580" cy="180" r="3" fill="#C97B63" opacity="0"/>
+            </g>
+
+            <!-- TLOF / FATO circle -->
+            <circle cx="460" cy="300" r="140" fill="none" stroke="#2a2a2a" stroke-width="1" stroke-dasharray="4 4"/>
+            <circle cx="460" cy="300" r="80" fill="none" stroke="#444" stroke-width="1.5"/>
+            <text x="460" y="310" font-family="Inter,sans-serif" font-size="48" font-weight="600" fill="#444" text-anchor="middle">H</text>
+            <text x="460" y="470" font-family="SF Mono,monospace" font-size="10" fill="#2a2a2a" text-anchor="middle" letter-spacing="0.2em">FATO · 48ft</text>
+
+            <!-- Dimensional constraint overlay (highlight) -->
+            <g id="constraint-overlay" opacity="0">
+              <!-- Required clearance (larger than actual rooftop) -->
+              <circle cx="460" cy="300" r="180" fill="none" stroke="#C97B63" stroke-width="1" stroke-dasharray="2 3"/>
+              <text x="460" y="130" font-family="SF Mono,monospace" font-size="11" fill="#C97B63" text-anchor="middle" letter-spacing="0.15em">REQUIRED SAFETY AREA</text>
+              <!-- Red arrows showing encroachment -->
+              <path d="M 300 300 L 282 300" stroke="#C97B63" stroke-width="1.2" marker-end="url(#arrow)"/>
+              <path d="M 620 300 L 638 300" stroke="#C97B63" stroke-width="1.2" marker-end="url(#arrow)"/>
+            </g>
+
+            <!-- Airflow lines (scene 4 later) -->
+            <g id="airflow-group">
+              <path class="airflow-path" d="M 80 200 Q 240 180 400 220 Q 540 250 680 200 Q 820 170 920 210"/>
+              <path class="airflow-path" d="M 80 320 Q 260 300 420 340 Q 560 370 700 320 Q 840 290 920 330"/>
+              <path class="airflow-path" d="M 80 400 Q 240 380 400 420 Q 540 450 680 400 Q 820 370 920 410"/>
+            </g>
+
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M 0 0 L 8 4 L 0 8 z" fill="#C97B63"/>
+              </marker>
+            </defs>
+          </svg>
+        </div>
+        <div class="findings">
+          <div class="finding" data-t="400">
+            <div class="finding-tag">01 · DIM</div>
+            <div class="finding-text">Too small.</div>
+          </div>
+          <div class="finding" data-t="1400">
+            <div class="finding-tag">02 · OBS</div>
+            <div class="finding-text">Blocked.</div>
+          </div>
+          <div class="finding" data-t="2400">
+            <div class="finding-tag">03 · AIR</div>
+            <div class="finding-text">Unstable.</div>
+          </div>
+          <div class="finding" data-t="3400">
+            <div class="finding-tag">04 · DAT</div>
+            <div class="finding-text">Incomplete.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 5 — BREAK / DROP MOMENT -->
+    <section class="scene break" data-scene="5">
+      <div class="break-equation">
+        <span>Approved</span><span class="neq">≠</span><span>Operable</span>
+      </div>
+    </section>
+
+    <!-- SCENE 6 — POSITION -->
+    <section class="scene" data-scene="6">
+      <div class="position">
+        <div class="line" data-t="300" style="font-size: 46px; font-weight: 500; line-height: 1.3;">
+          AirIndex identifies where operations are actually viable
+        </div>
+        <div class="line small" data-t="2400" style="font-size: 28px; color: var(--dim); line-height: 1.4;">
+          before capital, engineering, or risk decisions are made.
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 7 — CLOSE -->
+    <section class="scene" data-scene="7">
+      <div class="close">
+        <div class="line" data-t="200" style="opacity:1; transform:none;">
+          <div class="brand">AirIndex<span class="dot">.</span></div>
+        </div>
+        <div class="line small" data-t="600" style="font-size: 18px;">
+          Market &amp; infrastructure intelligence for AAM
+        </div>
+        <div class="line mono" data-t="1200" style="font-size: 14px; color: var(--dimmer); margin-top: 40px; letter-spacing: 0.2em;">
+          AIRINDEX.IO
+        </div>
+      </div>
+    </section>
+
+    <div class="timeline" id="timeline"><div class="timeline-fill" id="timelineFill"></div></div>
+  </div>
+  </div>
+
+<script>
+(function() {
+  // Scene timing (cumulative ms from start) — V4: punchier findings, longer "Approved ≠ Operable" hold
+  const SCENES = [
+    { id: 1, start: 0,     duration: 3000  },  // hook (3s)
+    { id: 2, start: 3000,  duration: 7000  },  // market (7s)
+    { id: 3, start: 10000, duration: 7000  },  // infrastructure (7s)
+    { id: 4, start: 17000, duration: 11000 },  // breakdown (11s — tighter findings)
+    { id: 5, start: 28000, duration: 7000  },  // break / drop moment (7s — extended hold)
+    { id: 6, start: 35000, duration: 9000  },  // position (9s)
+    { id: 7, start: 44000, duration: 4000  },  // close (4s)
+  ];
+  const TOTAL = 48000;
+
+  const stage = document.getElementById('stage');
+  const scenes = [...document.querySelectorAll('.scene')];
+  const timelineFill = document.getElementById('timelineFill');
+
+  // Generate heliport dots (scene 3)
+  (function seedHeliports() {
+    const layer = document.getElementById('heliport-layer');
+    // Seeded random for consistency
+    let seed = 42;
+    const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const dots = [];
+    for (let i = 0; i < 140; i++) {
+      // Keep off the coast
+      const x = 140 + rand() * 740;
+      const y = 100 + rand() * 580;
+      // Avoid placing where flagged marker is
+      if (Math.abs(x - 500) < 22 && Math.abs(y - 420) < 22) continue;
+      dots.push({ x, y, delay: rand() * 1600 });
+    }
+    dots.forEach((d, i) => {
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('cx', d.x);
+      c.setAttribute('cy', d.y);
+      c.setAttribute('r', 2);
+      c.setAttribute('class', 'heliport');
+      c.dataset.delay = d.delay;
+      layer.appendChild(c);
+    });
+  })();
+
+  let startTime = null;
+  let rafId = null;
+  let paused = false;
+  let pauseAccumulated = 0;
+  let pauseStart = null;
+
+  function setActiveScene(sceneId) {
+    scenes.forEach(s => {
+      const id = parseInt(s.dataset.scene);
+      s.classList.toggle('active', id === sceneId);
+    });
+  }
+
+  // Per-scene choreography
+  const sceneHooks = {
+    1: (elapsed) => revealLines(1, elapsed),
+    2: (elapsed) => {
+      revealLines(2, elapsed);
+      revealRows(elapsed);
+    },
+    3: (elapsed) => {
+      revealLines(3, elapsed);
+      revealHeliports(elapsed);
+    },
+    4: (elapsed) => {
+      revealFindings(elapsed);
+      animateRooftop(elapsed);
+    },
+    5: () => {},                               // break — CSS-driven scale-in
+    6: (elapsed) => revealLines(6, elapsed),  // position
+    7: (elapsed) => revealLines(7, elapsed),  // close
+  };
+
+  function revealLines(sceneId, elapsed) {
+    const scene = scenes.find(s => parseInt(s.dataset.scene) === sceneId);
+    scene.querySelectorAll('.line[data-t]').forEach(el => {
+      const t = parseInt(el.dataset.t);
+      if (elapsed >= t) el.classList.add('visible');
+    });
+  }
+
+  function revealRows(elapsed) {
+    const scene = scenes.find(s => parseInt(s.dataset.scene) === 2);
+    scene.querySelectorAll('.readiness-row[data-t]').forEach(el => {
+      const t = parseInt(el.dataset.t);
+      if (elapsed >= t) el.classList.add('visible');
+    });
+  }
+
+  function revealHeliports(elapsed) {
+    const dots = document.querySelectorAll('.heliport');
+    // Dots start fading in at ~200ms, all on by ~1800ms
+    dots.forEach(d => {
+      const delay = parseFloat(d.dataset.delay) * 0.7 + 200;
+      if (elapsed >= delay) d.classList.add('on');
+    });
+    // Count label at ~1800ms
+    const countEl = document.querySelector('.helipad-count');
+    if (elapsed >= 1800) countEl.classList.add('visible');
+    // Flagged heliport pulse appears at ~3500ms (foreshadow scene 4)
+    const flagged = document.getElementById('flagged-group');
+    if (elapsed >= 3500) {
+      flagged.style.transition = 'opacity 600ms ease';
+      flagged.style.opacity = '1';
+      flagged.querySelectorAll('.flagged-pulse').forEach(p => p.classList.add('on'));
+    }
+  }
+
+  function revealFindings(elapsed) {
+    document.querySelectorAll('#scene4-findings .finding, [data-scene="4"] .finding').forEach(el => {
+      const t = parseInt(el.dataset.t);
+      if (elapsed >= t) el.classList.add('visible');
+    });
+  }
+
+  function animateRooftop(elapsed) {
+    const constraint = document.getElementById('constraint-overlay');
+    const antenna = document.getElementById('antenna');
+    const antennaBase = document.getElementById('antenna-base');
+    const airflows = document.querySelectorAll('.airflow-path');
+
+    // 400ms: dimensional constraint overlay (matches DIM finding)
+    if (elapsed >= 400) {
+      constraint.style.transition = 'opacity 500ms ease';
+      constraint.style.opacity = '1';
+    }
+    // 1400ms: antenna obstruction (matches OBS finding)
+    if (elapsed >= 1400) {
+      antenna.style.transition = 'opacity 500ms ease';
+      antennaBase.style.transition = 'opacity 500ms ease';
+      antenna.style.opacity = '0.9';
+      antennaBase.style.opacity = '0.9';
+    }
+    // 2400ms: airflow lines (matches AIR finding)
+    if (elapsed >= 2400) {
+      airflows.forEach(p => p.classList.add('on'));
+    }
+  }
+
+  function tick(now) {
+    if (!startTime) startTime = now;
+    const elapsed = now - startTime - pauseAccumulated;
+
+    if (elapsed >= TOTAL) {
+      // End — hold on final scene
+      setActiveScene(7);
+      timelineFill.style.width = '100%';
+      return;
+    }
+
+    // Find active scene
+    const active = SCENES.find(s => elapsed >= s.start && elapsed < s.start + s.duration);
+    if (active) {
+      setActiveScene(active.id);
+      const sceneElapsed = elapsed - active.start;
+      const hook = sceneHooks[active.id];
+      if (hook) hook(sceneElapsed);
+    }
+
+    timelineFill.style.width = (elapsed / TOTAL * 100) + '%';
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function reset() {
+    cancelAnimationFrame(rafId);
+    startTime = null;
+    pauseAccumulated = 0;
+    pauseStart = null;
+    paused = false;
+    document.getElementById('pause').textContent = '❚❚ PAUSE';
+    // Reset all visible states
+    document.querySelectorAll('.visible').forEach(el => el.classList.remove('visible'));
+    document.querySelectorAll('.heliport.on').forEach(el => el.classList.remove('on'));
+    document.querySelectorAll('.flagged-pulse.on').forEach(el => el.classList.remove('on'));
+    document.querySelectorAll('.airflow-path.on').forEach(el => el.classList.remove('on'));
+    document.querySelector('.helipad-count').classList.remove('visible');
+    document.getElementById('flagged-group').style.opacity = '0';
+    document.getElementById('constraint-overlay').style.opacity = '0';
+    document.getElementById('antenna').style.opacity = '0';
+    document.getElementById('antenna-base').style.opacity = '0';
+    timelineFill.style.width = '0%';
+    rafId = requestAnimationFrame(tick);
+  }
+
+  document.getElementById('replay').addEventListener('click', reset);
+  document.getElementById('pause').addEventListener('click', () => {
+    const btn = document.getElementById('pause');
+    if (!paused) {
+      paused = true;
+      pauseStart = performance.now();
+      cancelAnimationFrame(rafId);
+      btn.textContent = '▶ PLAY';
+    } else {
+      paused = false;
+      pauseAccumulated += performance.now() - pauseStart;
+      btn.textContent = '❚❚ PAUSE';
+      rafId = requestAnimationFrame(tick);
+    }
+  });
+
+  // Show timeline if ?debug
+  if (window.location.search.includes('debug')) {
+    document.getElementById('timeline').classList.add('show');
+  }
+
+  // Hide controls if ?hide-ui (for headless rendering)
+  if (window.location.search.includes('hide-ui')) {
+    const controls = document.querySelector('.controls');
+    if (controls) controls.style.display = 'none';
+  }
+
+  // Expose start hook for headless rendering
+  window.__animStart = () => { reset(); };
+
+  // Auto-start unless ?hold (headless renderer will trigger manually)
+  if (!window.location.search.includes('hold')) {
+    rafId = requestAnimationFrame(tick);
+  }
+})();
+</script>
+</body>
+</html>
