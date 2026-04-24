@@ -24,6 +24,9 @@ out/
 dist/
 build/
 
+# Generated snapshot PNGs — regenerable via scripts/render-snapshot.ts
+public/snapshots/output/
+
 # OS
 .DS_Store
 Thumbs.db
