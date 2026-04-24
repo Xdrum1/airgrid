@@ -426,8 +426,9 @@ export async function runIngestion(): Promise<{
         console.error("[ingestion] SEC EDGAR fetch failed:", err);
         return [] as IngestedRecord[][];
       }),
-      // 4. Operator news via Google News RSS
-      fetchAllOperatorNews(30).catch((err) => {
+      // 4. Operator news via Google News RSS (60d window catches slower-cycle
+      //    market news; dedup on linkHash means same article → same id → upsert)
+      fetchAllOperatorNews(60).catch((err) => {
         fetchErrors.operator_news = `${err?.message ?? err}`;
         console.error("[ingestion] Operator news fetch failed:", err);
         return [] as IngestedRecord[];

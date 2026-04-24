@@ -54,6 +54,34 @@ const OPERATOR_FEEDS: OperatorFeed[] = [
   { operatorId: "industry", query: '"eVTOL" OR "vertiport" OR "advanced air mobility"' },
 ];
 
+// Market-specific feeds — combine metro terms with AAM terms to catch local
+// signals that operator-query feeds miss (e.g., Texas legislation, DFW
+// feasibility, FAA regional activity). Each feed still produces IngestedRecord
+// with source="operator_news"; the `raw.operatorId` distinguishes them.
+// Added 2026-04-24 after audit found 18 of 25 markets had zero 7d signal activity.
+const MARKET_FEEDS: OperatorFeed[] = [
+  {
+    operatorId: "market_dallas",
+    query: '("Dallas" OR "DFW" OR "Fort Worth") AND ("eVTOL" OR "vertiport" OR "advanced air mobility")',
+  },
+  {
+    operatorId: "market_san_francisco",
+    query: '("San Francisco" OR "Bay Area" OR "Oakland") AND ("eVTOL" OR "vertiport" OR "advanced air mobility")',
+  },
+  {
+    operatorId: "market_houston",
+    query: '"Houston" AND ("eVTOL" OR "vertiport" OR "advanced air mobility")',
+  },
+  {
+    operatorId: "market_washington_dc",
+    query: '("Washington DC" OR "DCA airport" OR "Capital Region") AND ("eVTOL" OR "vertiport" OR "advanced air mobility")',
+  },
+  {
+    operatorId: "market_chicago",
+    query: '"Chicago" AND ("eVTOL" OR "vertiport" OR "advanced air mobility")',
+  },
+];
+
 // -------------------------------------------------------
 // RSS parsing (lightweight, no external deps)
 // -------------------------------------------------------
@@ -225,12 +253,16 @@ export async function fetchAllOperatorNews(
   daysBack: number = 30
 ): Promise<IngestedRecord[]> {
   const allNews: IngestedRecord[] = [];
+  const feeds = [...OPERATOR_FEEDS, ...MARKET_FEEDS];
 
-  for (const feed of OPERATOR_FEEDS) {
+  for (const feed of feeds) {
     const news = await fetchOperatorNews(feed, daysBack);
     allNews.push(...news);
   }
 
-  console.log(`[operator-news] Fetched ${allNews.length} articles across ${OPERATOR_FEEDS.length} operators`);
+  console.log(
+    `[operator-news] Fetched ${allNews.length} articles across ${feeds.length} feeds ` +
+      `(${OPERATOR_FEEDS.length} operator + ${MARKET_FEEDS.length} market)`,
+  );
   return allNews;
 }
