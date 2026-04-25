@@ -58,28 +58,46 @@ const OPERATOR_FEEDS: OperatorFeed[] = [
 // signals that operator-query feeds miss (e.g., Texas legislation, DFW
 // feasibility, FAA regional activity). Each feed still produces IngestedRecord
 // with source="operator_news"; the `raw.operatorId` distinguishes them.
-// Added 2026-04-24 after audit found 18 of 25 markets had zero 7d signal activity.
+//
+// Phase 1 (Apr 24 2026): 5 feeds (Dallas, SF, Houston, DC, Chicago).
+// Phase 2 (Apr 25 2026): expanded to all 25 tracked markets + added "air taxi"
+// to AAM term group + broadened Chicago to include "Vertiport Chicago" (the
+// existing facility) since it has lower news flux than other top metros.
+const AAM_TERMS = '("eVTOL" OR "vertiport" OR "advanced air mobility" OR "air taxi")';
+
 const MARKET_FEEDS: OperatorFeed[] = [
-  {
-    operatorId: "market_dallas",
-    query: '("Dallas" OR "DFW" OR "Fort Worth") AND ("eVTOL" OR "vertiport" OR "advanced air mobility")',
-  },
-  {
-    operatorId: "market_san_francisco",
-    query: '("San Francisco" OR "Bay Area" OR "Oakland") AND ("eVTOL" OR "vertiport" OR "advanced air mobility")',
-  },
-  {
-    operatorId: "market_houston",
-    query: '"Houston" AND ("eVTOL" OR "vertiport" OR "advanced air mobility")',
-  },
-  {
-    operatorId: "market_washington_dc",
-    query: '("Washington DC" OR "DCA airport" OR "Capital Region") AND ("eVTOL" OR "vertiport" OR "advanced air mobility")',
-  },
-  {
-    operatorId: "market_chicago",
-    query: '"Chicago" AND ("eVTOL" OR "vertiport" OR "advanced air mobility")',
-  },
+  // Phase 1 markets (kept, term group broadened)
+  { operatorId: "market_dallas", query: `("Dallas" OR "DFW" OR "Fort Worth") AND ${AAM_TERMS}` },
+  { operatorId: "market_san_francisco", query: `("San Francisco" OR "Bay Area" OR "Oakland") AND ${AAM_TERMS}` },
+  { operatorId: "market_houston", query: `"Houston" AND ${AAM_TERMS}` },
+  { operatorId: "market_washington_dc", query: `("Washington DC" OR "DCA airport" OR "Capital Region") AND ${AAM_TERMS}` },
+  { operatorId: "market_chicago", query: `("Chicago" OR "Vertiport Chicago") AND ${AAM_TERMS}` },
+
+  // Phase 2 — silent markets (zero 7d activity in Apr 25 audit)
+  { operatorId: "market_san_diego", query: `"San Diego" AND ${AAM_TERMS}` },
+  { operatorId: "market_las_vegas", query: `("Las Vegas" OR "Clark County" OR "LVCC") AND ${AAM_TERMS}` },
+  { operatorId: "market_atlanta", query: `("Atlanta" OR "Hartsfield" OR "Fulton County") AND ${AAM_TERMS}` },
+  { operatorId: "market_nashville", query: `"Nashville" AND ${AAM_TERMS}` },
+  { operatorId: "market_charlotte", query: `"Charlotte" AND ${AAM_TERMS}` },
+  { operatorId: "market_denver", query: `("Denver" OR "DEN airport") AND ${AAM_TERMS}` },
+  { operatorId: "market_seattle", query: `("Seattle" OR "SeaTac" OR "Puget Sound") AND ${AAM_TERMS}` },
+  { operatorId: "market_boston", query: `("Boston" OR "Logan airport") AND ${AAM_TERMS}` },
+  { operatorId: "market_minneapolis", query: `("Minneapolis" OR "Twin Cities") AND ${AAM_TERMS}` },
+  { operatorId: "market_columbus", query: `"Columbus" AND ("Ohio" OR "Franklin County") AND ${AAM_TERMS}` },
+  { operatorId: "market_cincinnati", query: `"Cincinnati" AND ${AAM_TERMS}` },
+
+  // Phase 2 — markets with operator-feed coverage; metro feeds catch
+  // city/agency signals operators don't push (zoning, mayor announcements,
+  // local FAA activity, infrastructure funding)
+  { operatorId: "market_los_angeles", query: `("Los Angeles" OR "LADOT" OR "LAX" OR "LA County") AND ${AAM_TERMS}` },
+  { operatorId: "market_new_york", query: `("New York" OR "NYC" OR "Manhattan" OR "JFK airport" OR "LaGuardia") AND ${AAM_TERMS}` },
+  { operatorId: "market_miami", query: `("Miami" OR "Miami-Dade" OR "MIA airport") AND ${AAM_TERMS}` },
+  { operatorId: "market_orlando", query: `("Orlando" OR "Lake Nona" OR "MCO airport") AND ${AAM_TERMS}` },
+  { operatorId: "market_phoenix", query: `("Phoenix" OR "Maricopa" OR "Sky Harbor") AND ${AAM_TERMS}` },
+  { operatorId: "market_austin", query: `("Austin" OR "Austin-Bergstrom") AND ${AAM_TERMS}` },
+  { operatorId: "market_san_antonio", query: `"San Antonio" AND ${AAM_TERMS}` },
+  { operatorId: "market_tampa", query: `("Tampa" OR "Tampa Bay") AND ${AAM_TERMS}` },
+  { operatorId: "market_salt_lake_city", query: `("Salt Lake City" OR "SLC airport") AND ${AAM_TERMS}` },
 ];
 
 // -------------------------------------------------------
