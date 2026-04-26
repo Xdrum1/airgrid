@@ -140,18 +140,21 @@ function renderEmailHtml(issue: OneMarketMondayIssue, recipient: IntroRecipient)
       </tr>`;
   }).join("");
 
+  // Intro mailer renders only legacy prose sections — newer kinds are skipped.
   const sectionsHtml = issue.sections
-    .map(
-      (s) => `
-      <h2 style="font:700 22px/1.3 'Helvetica Neue',Arial,sans-serif;color:#111;margin:36px 0 16px;letter-spacing:-0.01em;">${escapeHtml(s.heading)}</h2>
-      ${s.paragraphs
+    .map((s) => {
+      if ("kind" in s && s.kind && s.kind !== "prose") return "";
+      const prose = s as { heading: string; paragraphs: string[] };
+      return `
+      <h2 style="font:700 22px/1.3 'Helvetica Neue',Arial,sans-serif;color:#111;margin:36px 0 16px;letter-spacing:-0.01em;">${escapeHtml(prose.heading)}</h2>
+      ${prose.paragraphs
         .map(
           (p) =>
             `<p style="font:17px/1.75 'Helvetica Neue',Arial,sans-serif;color:#333;margin:0 0 18px;">${escapeHtml(p)}</p>`,
         )
         .join("")}
-    `,
-    )
+    `;
+    })
     .join("");
 
   return `<!doctype html>

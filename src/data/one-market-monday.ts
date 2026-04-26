@@ -1,18 +1,67 @@
 /**
- * One Market Monday — weekly deep-dive series.
+ * One Market Monday — weekly market intelligence brief.
  *
- * Editorial discipline:
- *   - ~1000 words max per issue
- *   - One angle, one chart (the 7-factor breakdown for the featured city)
- *   - Every claim cites a primary source
- *   - Three sections: The Score, The Angle, What to Watch
- *   - No quotes, no "further reading", no hedging
+ * CANONICAL 8-SECTION STRUCTURE (Apr 26 2026 onward):
+ *   1. Headline       — full piece title (issue.headline)
+ *   2. Hook           — 2-4 short lines: simple fact / contradiction / insight (issue.hook)
+ *   3. Snapshot       — quick facts (Score / Tier / Watch / Key gap) — kind: "snapshot"
+ *   4. Core Insight   — the dominant analytical thread — kind: "prose"
+ *   5. Signal Event   — optional: a fresh classifier signal + why it matters — kind: "signalEvent"
+ *   6. Model Note     — optional: methodology context (use sparingly) — kind: "modelNote"
+ *   7. What to Watch  — predictive layer: 2-4 punchy items — kind: "watchItems"
+ *   8. Final Take     — closing decision-style statement — kind: "finalTake"
+ *
+ * The "ONE thing" rule: every issue must answer a single dominant question.
+ * If you can't name it in one sentence, the piece is too broad.
+ *
+ * Backwards compat: existing issues (#1-#3) use legacy { heading, paragraphs }
+ * sections without a kind field. The renderer falls back to "prose" treatment.
  */
 
-export interface OneMarketMondaySection {
+// Legacy prose section — kind is optional for backwards compat with #1-#3.
+export interface ProseSection {
+  kind?: "prose";
   heading: string;
   paragraphs: string[];
 }
+
+export interface SnapshotSection {
+  kind: "snapshot";
+  rows: Array<{ label: string; value: string }>;
+}
+
+export interface SignalEventSection {
+  kind: "signalEvent";
+  heading: string; // e.g. "Signal Event"
+  event: string; // what happened, sourced from the pipeline
+  whyItMatters: string; // pattern shift / new operating model / implication
+}
+
+export interface ModelNoteSection {
+  kind: "modelNote";
+  heading?: string; // defaults to "Model Note"
+  paragraphs: string[];
+}
+
+export interface WatchItemsSection {
+  kind: "watchItems";
+  heading: string; // e.g. "What to Watch"
+  intro?: string;
+  items: Array<{ headline: string; support: string }>;
+}
+
+export interface FinalTakeSection {
+  kind: "finalTake";
+  lines: string[];
+}
+
+export type OneMarketMondaySection =
+  | ProseSection
+  | SnapshotSection
+  | SignalEventSection
+  | ModelNoteSection
+  | WatchItemsSection
+  | FinalTakeSection;
 
 export interface OneMarketMondayIssue {
   slug: string;
@@ -20,7 +69,10 @@ export interface OneMarketMondayIssue {
   publishDate: string; // ISO
   cityId: string; // matches City.id in seed.ts
   headline: string;
+  /** Legacy lede — replaced by `hook` when present. Issues #1-#3 still use this. */
   subhead: string;
+  /** New canonical opening: 2-4 short lines (simple fact / contradiction / insight). */
+  hook?: string[];
   sections: OneMarketMondaySection[];
   footerNote: string;
 }
@@ -149,6 +201,89 @@ export const ONE_MARKET_MONDAY_ISSUES: OneMarketMondayIssue[] = [
     ],
     footerNote:
       "AirIndex tracks regulatory, operator, and infrastructure signals across 25 US UAM markets. Dallas's full factor breakdown, score history, and live intelligence feed are available on the platform. One Market Monday is AirIndex's weekly deep-dive on a single market in our coverage universe.",
+  },
+  {
+    slug: "los-angeles-april-2026",
+    issueNumber: 4,
+    publishDate: "2026-04-27",
+    cityId: "los_angeles",
+    headline: "Los Angeles at 95: The Index's Other Top Market — and the Watchlist It Hasn't Joined",
+    // Legacy subhead retained for SEO / OpenGraph metadata. Email + page render `hook` instead.
+    subhead:
+      "Los Angeles is one of the highest-scoring markets in the index — and not on the watchlist. The separation between score and watch is the most useful signal LA produces this week.",
+    hook: [
+      "Los Angeles is one of the highest-scoring markets in the index.",
+      "It is not on the watchlist.",
+      "That separation is the most important signal this week.",
+    ],
+    sections: [
+      {
+        kind: "snapshot",
+        rows: [
+          { label: "Score", value: "95 (ADVANCED)" },
+          { label: "Tier", value: "ADVANCED — tied with Dallas, top of the 25-market index" },
+          { label: "Watch", value: "DEVELOPING / STABLE — not POSITIVE_WATCH" },
+          { label: "Key gap", value: "Weather infrastructure (5 pts to 100)" },
+        ],
+      },
+      {
+        kind: "prose",
+        heading: "The Core Insight",
+        paragraphs: [
+          "Last week's One Market Monday covered Dallas at 95 — a market with regulatory clearance and an authorized corridor that cannot yet support commercial operations because the weather infrastructure isn't there. Dallas's path to 100 is mechanical: deploy low-altitude sensing at the DFW vertiport site, characterize the corridor, score moves to 100. NTCOG is identified in federal stakeholder catalogs. The actor is named. The action is known.",
+          "Los Angeles is not that kind of market. LA's 5-point gap is functionally identical, but the path to closing it runs through institutional density that Dallas doesn't have. Caltrans, LADOT, LA Metro, LAX (LAWA), and a portfolio of municipal jurisdictions across the Greater LA Metro all hold pieces of the airspace and infrastructure decision. The 2024 LA Metro AAM Infrastructure Study acknowledged this — its central recommendation was coordination, not deployment.",
+          "Dallas executes. LA coordinates. That is the difference.",
+          "LA has assembled the stack — and is not currently accelerating. This is what a \"complete but stalled\" market looks like.",
+        ],
+      },
+      {
+        kind: "signalEvent",
+        heading: "Signal Event — Century Plaza",
+        event:
+          "Across a 36-hour window between April 24 and April 25, AirIndex's classifier produced four high-confidence approvedVertiport overrides — from four distinct news sources — tied to a single development: Joby Aviation's vertiport at Century Plaza, in partnership with Reuben Brothers, a private real estate developer rather than a municipal authority. A fifth high-confidence override hit the same day on the activeOperatorPresence factor.",
+        whyItMatters:
+          "This is a third operating model. Joby's known LA pattern has been operator-airport (LAX-Adjacent) or operator-municipal (the Metro Infrastructure Study). Operator-private-RE — vertiports on luxury rooftops, partnered with institutional capital rather than public agencies — is new for LA and new for the index. The signal does not move LA's score directly. What it moves is the question: whether private RE can route around the institutional coordination delay that is currently capping LA's velocity.",
+      },
+      {
+        kind: "modelNote",
+        heading: "Model Note — Score vs Watch",
+        paragraphs: [
+          "Score answers what regulatory and operator infrastructure has accumulated. Watch answers whether that infrastructure is still building. LA at 95 / DEVELOPING / STABLE means the stack is in place but momentum has not accelerated — the divergence between the two is the editorial story.",
+          "Separately, the pipeline holds a tracked tension on California regulatory posture. On March 18, the classifier produced a medium-confidence override (proposed value: restrictive), sourced from an industry article describing California's stance toward early air taxi operations. AirIndex methodology preserves the October 2023 Executive Order citation pending stronger evidence. If formal CA rulemaking under SB 944 lands restrictive in 2026, posture downgrades from friendly to neutral and LA drops from 95 to 90.",
+        ],
+      },
+      {
+        kind: "watchItems",
+        heading: "What to Watch",
+        intro: "Three forward signals will determine whether LA closes the gap to 100, holds at 95, or moves down.",
+        items: [
+          {
+            headline: "Private-RE model proves repeatable",
+            support:
+              "If two or three more private-RE vertiport announcements land in LA over Q2 2026, the operator-private-RE model becomes a recognized pattern, not an outlier. Watch whether Archer pursues a similar partnership in Santa Monica or DTLA, or whether Century Plaza stays isolated.",
+          },
+          {
+            headline: "SB 944 implementation defines posture",
+            support:
+              "The first formal CA rulemaking under SB 944 — expected in H2 2026 — resolves the tracked tension between the October 2023 Executive Order and the March 2026 \"restrictive\" signal. If implementation lands restrictive, posture downgrades and LA drops from 95 to 90 — the first negative score movement at the top of the index.",
+          },
+          {
+            headline: "LA28 imposes a hard deadline",
+            support:
+              "The Olympic Games begin July 14, 2028. Working backward through Part 135 certification (12-18 months), vertiport occupancy (6-9 months), and FAA corridor authorization (60-90 days), all three threads need to clear by mid-2027. The Olympics are not a scoring factor — they are a deadline.",
+          },
+        ],
+      },
+      {
+        kind: "finalTake",
+        lines: [
+          "LA at 95 / DEVELOPING / STABLE is the index's most ambiguous top-tier market.",
+          "The next eight weeks will determine whether it accelerates — or stalls.",
+        ],
+      },
+    ],
+    footerNote:
+      "AirIndex tracks regulatory, operator, and infrastructure signals across 25 US UAM markets. Los Angeles's full factor breakdown, score history, and live intelligence feed are available on the platform. One Market Monday is AirIndex's weekly market intelligence brief.",
   },
 ];
 

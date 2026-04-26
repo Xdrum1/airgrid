@@ -11,6 +11,7 @@
  *   npx tsx scripts/send-market-monday.ts extra@email.com  # add extra recipients
  *   npx tsx scripts/send-market-monday.ts --solo you@example.com  # preview mode: ONLY to listed emails (skips inner circle + subscribers)
  *   npx tsx scripts/send-market-monday.ts --exclude a@x.com,b@y.com  # omit specific addresses (e.g. first-time recipients receiving a personal intro)
+ *   npx tsx scripts/send-market-monday.ts --subject "..."     # override the default subject line
  */
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
@@ -33,6 +34,7 @@ import {
   buildTrackingPixelUrl,
   buildClickTrackUrl,
 } from "../src/lib/newsletter-token";
+import { TYPO, COLOR } from "../src/lib/email-typography";
 
 const prisma = new PrismaClient();
 
@@ -119,19 +121,88 @@ function renderEmailHtml(issue: OneMarketMondayIssue, recipientEmail?: string): 
       </tr>`;
   }).join("");
 
-  const sectionsHtml = issue.sections
-    .map(
-      (s) => `
-      <h2 style="font:700 22px/1.3 'Helvetica Neue',Arial,sans-serif;color:#111;margin:36px 0 16px;letter-spacing:-0.01em;">${escapeHtml(s.heading)}</h2>
-      ${s.paragraphs
+  const renderSection = (s: OneMarketMondayIssue["sections"][number]): string => {
+    // Default to prose when kind is omitted (legacy issues #1-#3)
+    if (!("kind" in s) || s.kind === undefined || s.kind === "prose") {
+      return `
+        <h2 style="${TYPO.h2}margin:40px 0 18px;">${escapeHtml(s.heading)}</h2>
+        ${s.paragraphs.map((p) => `<p style="${TYPO.body}margin:0 0 20px;">${escapeHtml(p)}</p>`).join("")}`;
+    }
+    if (s.kind === "snapshot") {
+      const rows = s.rows
         .map(
-          (p) =>
-            `<p style="font:17px/1.75 'Helvetica Neue',Arial,sans-serif;color:#333;margin:0 0 18px;">${escapeHtml(p)}</p>`,
+          (r) => `
+          <tr>
+            <td style="padding:9px 14px 9px 0;font:700 11px/1.4 'Courier New',monospace;color:#5B8DB8;letter-spacing:0.12em;text-transform:uppercase;width:130px;vertical-align:top;">${escapeHtml(r.label)}</td>
+            <td style="padding:9px 0;font:600 17px/1.5 'Helvetica Neue',Arial,sans-serif;color:#0a0a0a;">${escapeHtml(r.value)}</td>
+          </tr>`,
         )
-        .join("")}
-    `,
-    )
-    .join("");
+        .join("");
+      return `
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:36px 0 8px;border-top:1px solid #d8dde3;border-bottom:1px solid #d8dde3;">
+          ${rows}
+        </table>`;
+    }
+    if (s.kind === "signalEvent") {
+      return `
+        <h2 style="${TYPO.h2}margin:40px 0 18px;">${escapeHtml(s.heading)}</h2>
+        <p style="${TYPO.body}margin:0 0 18px;">${escapeHtml(s.event)}</p>
+        <p style="font:700 11px/1.4 'Courier New',monospace;color:#5B8DB8;letter-spacing:0.12em;text-transform:uppercase;margin:24px 0 10px;">Why it matters</p>
+        <p style="${TYPO.body}margin:0 0 20px;">${escapeHtml(s.whyItMatters)}</p>`;
+    }
+    if (s.kind === "modelNote") {
+      const heading = s.heading ?? "Model Note";
+      return `
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:32px 0 8px;background:#f3f5f8;border-left:3px solid #5B8DB8;border-radius:4px;">
+          <tr><td style="padding:18px 22px;">
+            <p style="font:700 11px/1.4 'Courier New',monospace;color:#5B8DB8;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 10px;">${escapeHtml(heading)}</p>
+            ${s.paragraphs.map((p) => `<p style="${TYPO.bodyMuted}margin:0 0 12px;">${escapeHtml(p)}</p>`).join("")}
+          </td></tr>
+        </table>`;
+    }
+    if (s.kind === "watchItems") {
+      const intro = s.intro ? `<p style="${TYPO.body}margin:0 0 22px;">${escapeHtml(s.intro)}</p>` : "";
+      const items = s.items
+        .map(
+          (item, i) => `
+          <div style="margin:0 0 22px;">
+            <p style="font:700 18px/1.4 'Helvetica Neue',Arial,sans-serif;color:#0a0a0a;margin:0 0 6px;">
+              <span style="color:#5B8DB8;">${i + 1}.</span> ${escapeHtml(item.headline)}
+            </p>
+            <p style="${TYPO.bodyMuted}margin:0 0 0;padding-left:22px;">${escapeHtml(item.support)}</p>
+          </div>`,
+        )
+        .join("");
+      return `
+        <h2 style="${TYPO.h2}margin:40px 0 18px;">${escapeHtml(s.heading)}</h2>
+        ${intro}
+        ${items}`;
+    }
+    if (s.kind === "finalTake") {
+      const lines = s.lines
+        .map((l) => `<p style="font:600 19px/1.5 'Helvetica Neue',Arial,sans-serif;color:#0a0a0a;margin:0 0 12px;">${escapeHtml(l)}</p>`)
+        .join("");
+      return `
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:36px 0 8px;background:#0a0a0a;border-radius:8px;">
+          <tr><td style="padding:24px 28px;">
+            <p style="font:700 11px/1.4 'Courier New',monospace;color:#5B8DB8;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 12px;">Final Take</p>
+            ${lines.replace(/color:#0a0a0a/g, "color:#ffffff")}
+          </td></tr>
+        </table>`;
+    }
+    return "";
+  };
+
+  const sectionsHtml = issue.sections.map(renderSection).join("");
+
+  // Hook (new) replaces subhead lede when present
+  const ledeHtml = issue.hook
+    ? `<div style="border-left:3px solid ${COLOR.brand};padding-left:18px;">
+         ${issue.hook.map((line) => `<p style="${TYPO.ledeSerif}margin:0 0 10px;">${escapeHtml(line)}</p>`).join("")}
+       </div>`
+    : `<p style="${TYPO.ledeSerif}margin:0;border-left:3px solid ${COLOR.brand};padding-left:18px;">
+         ${escapeHtml(issue.subhead)}
+       </p>`;
 
   return `<!doctype html>
 <html lang="en">
@@ -147,26 +218,24 @@ function renderEmailHtml(issue: OneMarketMondayIssue, recipientEmail?: string): 
 
         <!-- Header -->
         <tr><td style="padding:40px 48px 20px;">
-          <div style="font:700 11px/1 'Courier New',monospace;color:#5B8DB8;letter-spacing:0.15em;text-transform:uppercase;">
+          <div style="${TYPO.eyebrow}color:${COLOR.brand};">
             ONE MARKET MONDAY · Issue ${String(issue.issueNumber).padStart(2, "0")}
           </div>
-          <div style="font:11px/1 'Courier New',monospace;color:#999;margin-top:8px;">
+          <div style="${TYPO.date}margin-top:8px;">
             ${formatDate(issue.publishDate)}
           </div>
         </td></tr>
 
         <!-- Headline -->
         <tr><td style="padding:0 48px 16px;">
-          <h1 style="font:700 28px/1.25 'Helvetica Neue',Arial,sans-serif;color:#111;margin:0;letter-spacing:-0.02em;">
+          <h1 style="${TYPO.h1}margin:0;">
             ${escapeHtml(issue.headline)}
           </h1>
         </td></tr>
 
-        <!-- Lede -->
+        <!-- Lede (Hook when present, else legacy subhead) -->
         <tr><td style="padding:12px 48px 32px;">
-          <p style="font:italic 17px/1.7 Georgia,serif;color:#444;margin:0;border-left:3px solid #5B8DB8;padding-left:18px;">
-            ${escapeHtml(issue.subhead)}
-          </p>
+          ${ledeHtml}
         </td></tr>
 
         <!-- Score card -->
@@ -204,22 +273,22 @@ function renderEmailHtml(issue: OneMarketMondayIssue, recipientEmail?: string): 
         </td></tr>
 
         <!-- Read on web -->
-        <tr><td style="padding:24px 48px 16px;" align="center">
-          <a href="${track(issueUrl)}" style="display:inline-block;padding:12px 28px;background:#5B8DB8;color:#ffffff;font:700 12px/1 'Helvetica Neue',Arial,sans-serif;text-decoration:none;border-radius:6px;letter-spacing:0.06em;">
+        <tr><td style="padding:28px 48px 20px;" align="center">
+          <a href="${track(issueUrl)}" style="display:inline-block;padding:14px 30px;background:${COLOR.brand};color:#ffffff;${TYPO.cta}text-decoration:none;border-radius:6px;">
             READ THIS ISSUE ON AIRINDEX →
           </a>
         </td></tr>
 
         <!-- Footer note -->
-        <tr><td style="padding:32px 48px 40px;border-top:1px solid #eef0f2;">
-          <p style="font:12px/1.7 'Helvetica Neue',Arial,sans-serif;color:#888;margin:0 0 16px;">
+        <tr><td style="padding:32px 48px 40px;border-top:1px solid ${COLOR.borderLight};">
+          <p style="${TYPO.caption}margin:0 0 16px;">
             ${escapeHtml(issue.footerNote)}
           </p>
-          <p style="font:13px/1.7 'Helvetica Neue',Arial,sans-serif;color:#666;margin:0 0 14px;font-style:italic;">
+          <p style="${TYPO.caption}margin:0 0 14px;font-style:italic;">
             Evaluating a specific market or facility? Happy to run a quick assessment — just reply to this email.
           </p>
-          <p style="font:11px/1.6 'Helvetica Neue',Arial,sans-serif;color:#aaa;margin:0;">
-            AirIndex · UAM Market Readiness Intelligence · <a href="${track(BASE_URL)}" style="color:#5B8DB8;text-decoration:none;">airindex.io</a>
+          <p style="${TYPO.fineprint}margin:0;">
+            AirIndex · UAM Market Readiness Intelligence · <a href="${track(BASE_URL)}" style="color:${COLOR.brand};text-decoration:none;">airindex.io</a>
           </p>
         </td></tr>
 
@@ -239,6 +308,8 @@ async function main() {
   const slugIdx = args.indexOf("--slug");
   const issueNum = issueIdx >= 0 ? parseInt(args[issueIdx + 1]) : undefined;
   const slugArg = slugIdx >= 0 ? args[slugIdx + 1] : undefined;
+  const subjectIdx = args.indexOf("--subject");
+  const customSubject = subjectIdx >= 0 ? args[subjectIdx + 1] : undefined;
 
   // --exclude takes a comma-separated list: --exclude a@x.com,b@y.com
   // Used when sending personalized intros separately (e.g. first-time recipients).
@@ -270,7 +341,23 @@ async function main() {
     if (!issue) throw new Error("No issues defined in one-market-monday.ts");
   }
 
-  const subject = `One Market Monday #${String(issue.issueNumber).padStart(2, "0")} — ${issue.headline}`;
+  const subject = customSubject
+    ?? `One Market Monday #${String(issue.issueNumber).padStart(2, "0")} — ${issue.headline}`;
+
+  // Publish-date guard: prevent accidental sends before issue.publishDate.
+  // Compares against today's date in America/New_York (the editorial timezone).
+  // Bypassed by --dry-run, --solo, or --force-early.
+  const forceEarly = args.includes("--force-early");
+  const isPreview = dryRun || solo;
+  const todayET = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+  if (!isPreview && !forceEarly && issue.publishDate !== todayET) {
+    console.error(`\n⛔ REFUSING SEND — publish-date guard tripped`);
+    console.error(`   Today (America/New_York): ${todayET}`);
+    console.error(`   Issue ${issue.slug} publishDate: ${issue.publishDate}`);
+    console.error(`   To override (e.g. emergency send), pass --force-early.`);
+    console.error(`   To preview, use --dry-run or --solo <email>.\n`);
+    process.exit(1);
+  }
 
   console.log(`\nIssue: ${issue.slug} (#${issue.issueNumber})`);
   console.log(`City:  ${issue.cityId}`);

@@ -164,20 +164,45 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
           {issue.headline}
         </h1>
 
-        {/* Subhead / lede */}
-        <p
-          style={{
-            color: "#bbb",
-            fontSize: 17,
-            lineHeight: 1.75,
-            margin: "0 0 48px",
-            fontStyle: "italic",
-            borderLeft: "3px solid #5B8DB8",
-            paddingLeft: 20,
-          }}
-        >
-          {issue.subhead}
-        </p>
+        {/* Lede — Hook (new) replaces subhead when present */}
+        {issue.hook ? (
+          <div
+            style={{
+              borderLeft: "3px solid #5B8DB8",
+              paddingLeft: 20,
+              margin: "0 0 48px",
+            }}
+          >
+            {issue.hook.map((line, i) => (
+              <p
+                key={i}
+                style={{
+                  color: "#bbb",
+                  fontSize: 17,
+                  lineHeight: 1.7,
+                  margin: "0 0 10px",
+                  fontStyle: "italic",
+                }}
+              >
+                {line}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <p
+            style={{
+              color: "#bbb",
+              fontSize: 17,
+              lineHeight: 1.75,
+              margin: "0 0 48px",
+              fontStyle: "italic",
+              borderLeft: "3px solid #5B8DB8",
+              paddingLeft: 20,
+            }}
+          >
+            {issue.subhead}
+          </p>
+        )}
 
         {/* Score card */}
         <div
@@ -319,36 +344,285 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
           </div>
         </div>
 
-        {/* Sections */}
-        {issue.sections.map((section, i) => (
-          <section key={i} style={{ marginBottom: 40 }}>
-            <h2
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: 22,
-                fontWeight: 700,
-                color: "#ffffff",
-                margin: "0 0 20px",
-                letterSpacing: "-0.01em",
-              }}
-            >
-              {section.heading}
-            </h2>
-            {section.paragraphs.map((p, j) => (
-              <p
-                key={j}
+        {/* Sections — discriminated by `kind` */}
+        {issue.sections.map((section, i) => {
+          // Legacy prose (kind absent) for issues #1-#3
+          if (!("kind" in section) || section.kind === undefined || section.kind === "prose") {
+            return (
+              <section key={i} style={{ marginBottom: 40 }}>
+                <h2
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: 22,
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    margin: "0 0 20px",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {section.heading}
+                </h2>
+                {section.paragraphs.map((p, j) => (
+                  <p
+                    key={j}
+                    style={{
+                      color: "#bbb",
+                      fontSize: 15,
+                      lineHeight: 1.85,
+                      margin: "0 0 18px",
+                    }}
+                  >
+                    {p}
+                  </p>
+                ))}
+              </section>
+            );
+          }
+          if (section.kind === "snapshot") {
+            return (
+              <section
+                key={i}
                 style={{
-                  color: "#bbb",
-                  fontSize: 15,
-                  lineHeight: 1.85,
-                  margin: "0 0 18px",
+                  marginBottom: 40,
+                  borderTop: "1px solid rgba(255,255,255,0.08)",
+                  borderBottom: "1px solid rgba(255,255,255,0.08)",
+                  padding: "18px 0",
                 }}
               >
-                {p}
-              </p>
-            ))}
-          </section>
-        ))}
+                {section.rows.map((row, j) => (
+                  <div
+                    key={j}
+                    style={{
+                      display: "flex",
+                      padding: "8px 0",
+                      borderBottom:
+                        j < section.rows.length - 1
+                          ? "1px solid rgba(255,255,255,0.04)"
+                          : "none",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 130,
+                        fontFamily: "'Space Mono', monospace",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: "#5B8DB8",
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {row.label}
+                    </div>
+                    <div
+                      style={{
+                        flex: 1,
+                        fontSize: 16,
+                        fontWeight: 600,
+                        color: "#ffffff",
+                      }}
+                    >
+                      {row.value}
+                    </div>
+                  </div>
+                ))}
+              </section>
+            );
+          }
+          if (section.kind === "signalEvent") {
+            return (
+              <section key={i} style={{ marginBottom: 40 }}>
+                <h2
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: 22,
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    margin: "0 0 20px",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {section.heading}
+                </h2>
+                <p
+                  style={{
+                    color: "#bbb",
+                    fontSize: 15,
+                    lineHeight: 1.85,
+                    margin: "0 0 22px",
+                  }}
+                >
+                  {section.event}
+                </p>
+                <p
+                  style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#5B8DB8",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    margin: "0 0 10px",
+                  }}
+                >
+                  Why it matters
+                </p>
+                <p
+                  style={{
+                    color: "#bbb",
+                    fontSize: 15,
+                    lineHeight: 1.85,
+                    margin: 0,
+                  }}
+                >
+                  {section.whyItMatters}
+                </p>
+              </section>
+            );
+          }
+          if (section.kind === "modelNote") {
+            return (
+              <section
+                key={i}
+                style={{
+                  marginBottom: 40,
+                  background: "rgba(91,141,184,0.06)",
+                  borderLeft: "3px solid #5B8DB8",
+                  borderRadius: 4,
+                  padding: "20px 24px",
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#5B8DB8",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    margin: "0 0 12px",
+                  }}
+                >
+                  {section.heading ?? "Model Note"}
+                </p>
+                {section.paragraphs.map((p, j) => (
+                  <p
+                    key={j}
+                    style={{
+                      color: "#aaa",
+                      fontSize: 14,
+                      lineHeight: 1.8,
+                      margin: j < section.paragraphs.length - 1 ? "0 0 12px" : 0,
+                    }}
+                  >
+                    {p}
+                  </p>
+                ))}
+              </section>
+            );
+          }
+          if (section.kind === "watchItems") {
+            return (
+              <section key={i} style={{ marginBottom: 40 }}>
+                <h2
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: 22,
+                    fontWeight: 700,
+                    color: "#ffffff",
+                    margin: "0 0 20px",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {section.heading}
+                </h2>
+                {section.intro && (
+                  <p
+                    style={{
+                      color: "#bbb",
+                      fontSize: 15,
+                      lineHeight: 1.85,
+                      margin: "0 0 22px",
+                    }}
+                  >
+                    {section.intro}
+                  </p>
+                )}
+                {section.items.map((item, j) => (
+                  <div key={j} style={{ marginBottom: 22 }}>
+                    <p
+                      style={{
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontSize: 17,
+                        fontWeight: 700,
+                        color: "#ffffff",
+                        margin: "0 0 6px",
+                      }}
+                    >
+                      <span style={{ color: "#5B8DB8" }}>{j + 1}.</span>{" "}
+                      {item.headline}
+                    </p>
+                    <p
+                      style={{
+                        color: "#999",
+                        fontSize: 14,
+                        lineHeight: 1.75,
+                        margin: 0,
+                        paddingLeft: 22,
+                      }}
+                    >
+                      {item.support}
+                    </p>
+                  </div>
+                ))}
+              </section>
+            );
+          }
+          if (section.kind === "finalTake") {
+            return (
+              <section
+                key={i}
+                style={{
+                  marginBottom: 40,
+                  background: "rgba(91,141,184,0.08)",
+                  border: "1px solid rgba(91,141,184,0.25)",
+                  borderRadius: 8,
+                  padding: "24px 28px",
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#5B8DB8",
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    margin: "0 0 14px",
+                  }}
+                >
+                  Final Take
+                </p>
+                {section.lines.map((line, j) => (
+                  <p
+                    key={j}
+                    style={{
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontSize: 18,
+                      fontWeight: 600,
+                      color: "#ffffff",
+                      lineHeight: 1.5,
+                      margin: j < section.lines.length - 1 ? "0 0 12px" : 0,
+                    }}
+                  >
+                    {line}
+                  </p>
+                ))}
+              </section>
+            );
+          }
+          return null;
+        })}
 
         {/* Footer note */}
         <div
