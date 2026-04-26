@@ -2,6 +2,9 @@ const { withSentryConfig } = require("@sentry/nextjs");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Keep puppeteer-core + chromium out of the bundle — they're loaded
+  // dynamically inside /api/admin/render-pdf and require native binaries.
+  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium"],
   async redirects() {
     return [
       {
