@@ -61,7 +61,7 @@ export default async function AboutPage() {
     <div
       style={{
         background: "#ffffff",
-        color: "#e0e0e0",
+        color: "#0a2540",
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
       }}
@@ -131,6 +131,13 @@ export default async function AboutPage() {
               didn&apos;t exist and the industry needed it. Where others track the aircraft and the
               companies building them, AirIndex tracks the geography — the regulatory, infrastructure,
               and political conditions that determine which markets win the race to commercial operations.
+            </p>
+            <p style={{ marginBottom: 14 }}>
+              Founded by Alan Holmes, a data and algorithm systems builder with a long-standing
+              interest in vertical flight. Holmes is a Regular member of the Vertical Flight Society,
+              with active engagement across DOT, FAA, and NASA programs on AAM market development.
+              He started AirIndex to apply ratings-agency rigor to a market that lacked a standardized
+              readiness benchmark.
             </p>
             <p style={{ marginBottom: 14 }}>
               Our scoring methodology is developed in consultation with infrastructure developers,
@@ -393,7 +400,7 @@ export default async function AboutPage() {
               display: "inline-block",
               padding: "12px 24px",
               background: "#5B8DB8",
-              color: "#050508",
+              color: "#ffffff",
               fontSize: 12,
               fontWeight: 700,
               letterSpacing: "0.06em",
@@ -464,24 +471,24 @@ export default async function AboutPage() {
           paddingTop: 24,
           marginTop: 8,
           fontSize: 11,
-          color: "#cbd5e1",
+          color: "#697386",
           lineHeight: 1.6,
         }}>
           <p>
-            <a href="https://verticaldatagroup.com" target="_blank" rel="noopener noreferrer" style={{ color: "#cbd5e1", textDecoration: "none" }}>
+            <a href="https://verticaldatagroup.com" target="_blank" rel="noopener noreferrer" style={{ color: "#5B8DB8", textDecoration: "none" }}>
               Vertical Data Group, LLC
             </a>{" "}
             &middot; PO Box 31172 &middot; Myrtle Beach, SC 29588
           </p>
-          <p style={{ marginTop: 4, color: "#3a3a3a" }}>
+          <p style={{ marginTop: 4, color: "#697386" }}>
             SAM.gov Registered &middot; UEI RB63W8RYCHY3 &middot; CAGE 1AUW7 &middot; South Carolina LLC
           </p>
           <p style={{ marginTop: 4 }}>
-            <Link href="/" style={{ color: "#cbd5e1", textDecoration: "none" }}>airindex.io</Link>
+            <Link href="/" style={{ color: "#5B8DB8", textDecoration: "none" }}>airindex.io</Link>
             {" "}&middot;{" "}
-            <Link href="/terms" style={{ color: "#cbd5e1", textDecoration: "none" }}>Terms</Link>
+            <Link href="/terms" style={{ color: "#697386", textDecoration: "none" }}>Terms</Link>
             {" "}&middot;{" "}
-            <Link href="/privacy" style={{ color: "#cbd5e1", textDecoration: "none" }}>Privacy</Link>
+            <Link href="/privacy" style={{ color: "#697386", textDecoration: "none" }}>Privacy</Link>
           </p>
         </div>
       </main>
