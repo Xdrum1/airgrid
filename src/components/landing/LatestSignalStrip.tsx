@@ -45,6 +45,18 @@ function formatSignalDate(d: Date): string {
     .toUpperCase();
 }
 
+function formatAsOfDate(): string {
+  // Page is ISR'd hourly — this is "today" within the cache window.
+  return new Date()
+    .toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "America/New_York",
+    })
+    .toUpperCase();
+}
+
 export default async function LatestSignalStrip() {
   const override = await prisma.scoringOverride
     .findFirst({
@@ -121,7 +133,7 @@ export default async function LatestSignalStrip() {
                   textTransform: "uppercase",
                 }}
               >
-                Live Signal · {formatSignalDate(override.createdAt)}
+                Live Signal · Detected {formatSignalDate(override.createdAt)}
               </span>
             </div>
             <p
@@ -182,6 +194,28 @@ export default async function LatestSignalStrip() {
               {override.confidence}
             </span>
           </div>
+        </div>
+
+        {/* As-of stamp — confirms the index reflects current state */}
+        <div
+          style={{
+            marginTop: 10,
+            paddingLeft: 4,
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.08em",
+              color: "#9aa6b3",
+              textTransform: "uppercase",
+            }}
+          >
+            Index current as of {formatAsOfDate()}
+          </span>
         </div>
       </Link>
 
