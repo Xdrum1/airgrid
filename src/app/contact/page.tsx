@@ -7,12 +7,16 @@ import { Suspense } from "react";
 import { plausible } from "@/lib/plausible";
 import NavClient from "@/components/NavClient";
 import SiteFooter from "@/components/SiteFooter";
+import { getProduct, PRODUCTS, CONTAINER_ORDER, type Product } from "@/lib/products";
 
 function ContactForm() {
   const searchParams = useSearchParams();
   const inquiry = searchParams.get("inquiry") ?? "";
   const ref = searchParams.get("ref") ?? "";
   const buyer = searchParams.get("buyer") ?? "";
+  const productParam = searchParams.get("product") ?? "";
+
+  const initialProduct: Product | undefined = productParam ? getProduct(productParam) : undefined;
 
   const [form, setForm] = useState({
     name: "",
@@ -20,7 +24,8 @@ function ContactForm() {
     company: "",
     role: "",
     tier: inquiry || "general",
-    buyerType: buyer || "",
+    buyerType: buyer || initialProduct?.container || "",
+    productId: initialProduct?.id || "",
     message: "",
     website: "", // honeypot — bots fill this, humans don't see it
   });
@@ -34,11 +39,16 @@ function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, source: ref || undefined, buyerType: form.buyerType || undefined }),
+        body: JSON.stringify({
+          ...form,
+          source: ref || undefined,
+          buyerType: form.buyerType || undefined,
+          productId: form.productId || undefined,
+        }),
       });
       if (res.ok) {
         setState("success");
-        plausible("Contact Submission", { tier: form.tier });
+        plausible("Contact Submission", { tier: form.tier, productId: form.productId || "none" });
       } else {
         setState("error");
       }
@@ -48,6 +58,7 @@ function ContactForm() {
   };
 
   const inquiryLocked = !!inquiry;
+  const productLocked = !!initialProduct;
 
   if (state === "success") {
     return (
@@ -103,8 +114,38 @@ function ContactForm() {
     marginBottom: 6,
   };
 
+  // Group orderable products by container for the dropdown
+  const orderableProducts = PRODUCTS.filter((p) => p.status !== "coming_soon");
+  const productGroups = CONTAINER_ORDER.map((container) => ({
+    container,
+    label: orderableProducts.find((p) => p.container === container)?.containerLabel ?? "",
+    products: orderableProducts.filter((p) => p.container === container),
+  })).filter((g) => g.products.length > 0);
+
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 480, margin: "0 auto" }}>
+      {initialProduct && (
+        <div
+          style={{
+            background: "#f0f9ff",
+            border: `1px solid ${initialProduct.accent}33`,
+            borderLeft: `3px solid ${initialProduct.accent}`,
+            borderRadius: 6,
+            padding: "12px 14px",
+            marginBottom: 20,
+          }}
+        >
+          <div style={{ fontSize: 9, letterSpacing: 2, color: initialProduct.accent, fontFamily: "'Space Mono', monospace", marginBottom: 4, textTransform: "uppercase" }}>
+            Inquiring About
+          </div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#0a2540", marginBottom: 2 }}>
+            {initialProduct.name}
+          </div>
+          <div style={{ fontSize: 11, color: "#697386" }}>
+            {initialProduct.price}{initialProduct.priceNote ? ` · ${initialProduct.priceNote}` : ""}{initialProduct.turnaround ? ` · ${initialProduct.turnaround}` : ""}
+          </div>
+        </div>
+      )}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
         <div>
           <label style={labelStyle}>NAME *</label>
@@ -150,6 +191,44 @@ function ContactForm() {
             placeholder="Strategy Analyst"
           />
         </div>
+      </div>
+      <div style={{ marginBottom: 16 }}>
+        <label style={labelStyle}>WHICH PRODUCT?</label>
+        <select
+          value={form.productId}
+          onChange={(e) => {
+            const next = e.target.value;
+            const p = next ? getProduct(next) : undefined;
+            setForm({
+              ...form,
+              productId: next,
+              // Auto-set buyerType from product container if user hasn't set one
+              buyerType: form.buyerType || p?.container || "",
+            });
+          }}
+          disabled={productLocked}
+          style={{
+            ...inputStyle,
+            appearance: "none",
+            cursor: productLocked ? "default" : "pointer",
+            opacity: productLocked ? 0.7 : 1,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 14px center",
+            paddingRight: 36,
+          }}
+        >
+          <option value="">Not sure / general inquiry</option>
+          {productGroups.map((group) => (
+            <optgroup key={group.container} label={group.label}>
+              {group.products.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name} — {p.price}{p.priceNote ? ` ${p.priceNote}` : ""}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
       </div>
       <div style={{ marginBottom: 16 }}>
         <label style={labelStyle}>INQUIRY TYPE</label>

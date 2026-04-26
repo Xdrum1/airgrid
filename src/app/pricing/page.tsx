@@ -2,64 +2,241 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import {
+  PRODUCTS,
+  CONTAINER_ORDER,
+  CONTAINER_LABELS,
+  STATUS_LABELS,
+  type Product,
+  type ProductContainer,
+} from "@/lib/products";
 
 export const metadata: Metadata = {
-  title: "Access — AirIndex",
-  description: "Intelligence access for organizations shaping where eVTOL operates. Market readiness data, gap analysis, corridor intelligence, and API access.",
+  title: "Products & Pricing — AirIndex",
+  description:
+    "Market readiness intelligence for the buyers shaping where eVTOL operates — insurance, infrastructure, operators, municipalities, investors, and federal.",
 };
-
-const CAPABILITIES = [
-  {
-    title: "Market Readiness Intelligence",
-    description: "Readiness scores across 20+ U.S. markets with full factor-level breakdowns, source citations, and audit trails. Updated daily from primary sources.",
-    items: ["7-factor composite scoring", "Factor-level breakdowns with citations", "Score history and trajectory analysis", "Gap analysis with actionable recommendations"],
-  },
-  {
-    title: "Regulatory & Legislative Monitoring",
-    description: "Automated pipeline tracking federal filings, state legislation, operator disclosures, and FAA regulatory actions across every tracked market.",
-    items: ["Federal regulatory monitoring", "Congressional bill tracking", "State legislation tracking", "Operator disclosure monitoring"],
-  },
-  {
-    title: "Infrastructure Intelligence",
-    description: "Corridor tracking, vertiport data, heliport infrastructure mapping, and operator presence monitoring with facility-level detail.",
-    items: ["5,647 FAA heliport facilities mapped", "Flight corridor tracking with status", "Vertiport and operator data", "Infrastructure density visualization"],
-  },
-  {
-    title: "Reports & Deliverables",
-    description: "Downloadable market snapshots, pre-feasibility assessments, and the weekly UAM Market Pulse intelligence briefing.",
-    items: ["Per-city market snapshot PDFs", "Gap analysis reports", "Weekly Market Pulse briefing", "Custom deliverables on request"],
-  },
-  {
-    title: "API & Data Access",
-    description: "RESTful API with market data, score history, and export capabilities for organizations embedding UAM intelligence into their workflows.",
-    items: ["Bearer token authentication", "Market, detail, history, export endpoints", "JSON responses with rate limiting", "Bulk data export"],
-  },
-] as const;
 
 const FAQS = [
   {
     q: "How does pricing work?",
-    a: "Access is negotiated based on your organization's needs. We work with individual analysts, consulting teams, government agencies, and enterprise data partners — each with different requirements. Request access and we'll scope what makes sense for you.",
+    a: "Every product has a price band — what you see here. Final pricing is set in scoping based on number of facilities, markets, or jurisdictions. We don't run self-serve checkout — every engagement starts with a 30-minute scoping call.",
   },
   {
-    q: "What's publicly available?",
-    a: "The UAM Market Pulse weekly briefing, our published methodology, and research insights are freely available. The full intelligence platform — scoring data, gap analysis, corridors, filings, API — is available through access agreements.",
+    q: "What's a 'container'?",
+    a: "We organize products by buyer type — insurance underwriters, infrastructure developers, operators, municipalities, investors, federal. The same readiness data feeds every container, but each gets a deliverable framed for the questions their buyers actually ask.",
+  },
+  {
+    q: "What's the difference between a Briefing and an Assessment?",
+    a: "Briefings are market-level — readiness, gap analysis, regulatory trajectory, and recommendations for an entire city or state. Assessments are site-level — facility-by-facility risk, compliance, and exposure scoring. Briefings inform strategy. Assessments inform underwriting and engineering.",
   },
   {
     q: "How often is the data updated?",
-    a: "The AirIndex scoring pipeline runs daily. Score changes, regulatory signals, and legislative updates are detected and reflected within 24 hours. Score snapshots are archived weekly for trend analysis.",
+    a: "The AirIndex pipeline runs daily. Score changes, regulatory signals, and legislative updates are detected and reflected within 24 hours. Briefings include 12-month platform access so you see updates as they happen.",
   },
   {
     q: "What data sources does AirIndex use?",
-    a: "AirIndex draws exclusively from primary government and regulatory databases — federal agencies, state legislatures, FAA registries, and regulatory filings. Every score is auditable and traceable to its origin records.",
-  },
-  {
-    q: "Can we integrate AirIndex data into our own systems?",
-    a: "Yes. The API provides programmatic access to all market data with structured JSON responses. Custom integrations, webhooks, and data feeds are available for enterprise agreements.",
+    a: "Exclusively primary government and regulatory sources — federal agencies, state legislatures, FAA registries, regulatory filings, and partner data agreements. Every score is auditable and traceable to its origin records.",
   },
 ] as const;
 
+function ProductCard({ product }: { product: Product }) {
+  const isLive = product.status === "live";
+  const ctaHref = isLive && product.sampleRoute
+    ? product.sampleRoute
+    : `/contact?product=${product.id}&ref=pricing`;
+
+  return (
+    <div
+      style={{
+        background: "#ffffff",
+        border: "1px solid #e3e8ee",
+        borderTop: `3px solid ${product.accent}`,
+        borderRadius: 10,
+        padding: "24px 24px 22px",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+        boxShadow: "0 1px 3px rgba(10,37,64,0.04)",
+      }}
+    >
+      {product.badge && (
+        <span
+          style={{
+            position: "absolute",
+            top: 14,
+            right: 14,
+            fontFamily: "'Space Mono', monospace",
+            fontSize: 8,
+            letterSpacing: 1.5,
+            color: "#050508",
+            background: product.accent,
+            padding: "3px 8px",
+            borderRadius: 3,
+            fontWeight: 700,
+            textTransform: "uppercase",
+          }}
+        >
+          {product.badge}
+        </span>
+      )}
+
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+        <span
+          style={{
+            fontFamily: "'Space Mono', monospace",
+            fontSize: 9,
+            letterSpacing: 1.5,
+            color: "#8792a2",
+            textTransform: "uppercase",
+          }}
+        >
+          {STATUS_LABELS[product.status]}
+        </span>
+        <span style={{ fontSize: 9, color: "#cbd5e1" }}>·</span>
+        <span
+          style={{
+            fontFamily: "'Space Mono', monospace",
+            fontSize: 9,
+            letterSpacing: 1,
+            color: product.accent,
+            textTransform: "uppercase",
+          }}
+        >
+          {product.format}
+        </span>
+      </div>
+
+      <h3
+        style={{
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontWeight: 700,
+          fontSize: 17,
+          color: "#0a2540",
+          margin: "0 0 6px",
+          lineHeight: 1.3,
+        }}
+      >
+        {product.name}
+      </h3>
+
+      <div
+        style={{
+          fontFamily: "'Space Grotesk', sans-serif",
+          fontSize: 16,
+          fontWeight: 700,
+          color: "#0a2540",
+          marginBottom: 2,
+        }}
+      >
+        {product.price}
+      </div>
+      <div
+        style={{
+          fontSize: 11,
+          color: "#697386",
+          marginBottom: 14,
+        }}
+      >
+        {[product.priceNote, product.turnaround].filter(Boolean).join(" · ")}
+      </div>
+
+      <p
+        style={{
+          fontSize: 12.5,
+          color: "#425466",
+          lineHeight: 1.6,
+          margin: "0 0 16px",
+          flex: 1,
+        }}
+      >
+        {product.description}
+      </p>
+
+      {product.features && product.features.length > 0 && (
+        <ul style={{ margin: "0 0 18px", padding: 0, listStyle: "none" }}>
+          {product.features.slice(0, 3).map((f) => (
+            <li
+              key={f}
+              style={{
+                fontSize: 11.5,
+                color: "#0a2540",
+                marginBottom: 6,
+                paddingLeft: 14,
+                position: "relative",
+                lineHeight: 1.5,
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 6,
+                  width: 5,
+                  height: 5,
+                  borderRadius: "50%",
+                  background: product.accent,
+                }}
+              />
+              {f}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div style={{ display: "flex", gap: 8, marginTop: "auto" }}>
+        <Link
+          href={ctaHref}
+          style={{
+            flex: 1,
+            display: "block",
+            textAlign: "center",
+            padding: "10px 0",
+            background: product.accent,
+            color: "#ffffff",
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 700,
+            fontSize: 12,
+            borderRadius: 6,
+            textDecoration: "none",
+            letterSpacing: 0.3,
+          }}
+        >
+          {isLive && product.sampleRoute ? "View Sample" : product.cta}
+        </Link>
+        {isLive && product.sampleRoute && (
+          <Link
+            href={`/contact?product=${product.id}&ref=pricing`}
+            style={{
+              padding: "10px 14px",
+              border: `1px solid ${product.accent}`,
+              color: product.accent,
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 700,
+              fontSize: 12,
+              borderRadius: 6,
+              textDecoration: "none",
+              letterSpacing: 0.3,
+            }}
+          >
+            {product.cta}
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function PricingPage() {
+  // Group products by container, drop empty containers
+  const groups = CONTAINER_ORDER
+    .map((container: ProductContainer) => ({
+      container,
+      label: CONTAINER_LABELS[container],
+      products: PRODUCTS.filter((p) => p.container === container),
+    }))
+    .filter((g) => g.products.length > 0);
+
   return (
     <div
       style={{
@@ -73,131 +250,146 @@ export default function PricingPage() {
 
       {/* Header */}
       <section style={{ maxWidth: 800, margin: "0 auto", padding: "clamp(48px, 6vw, 80px) 20px 0", textAlign: "center" }}>
+        <div
+          style={{
+            fontFamily: "'Space Mono', monospace",
+            fontSize: 10,
+            letterSpacing: 2,
+            color: "#5B8DB8",
+            textTransform: "uppercase",
+            marginBottom: 14,
+          }}
+        >
+          Products & Pricing
+        </div>
         <h1
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 700,
             fontSize: "clamp(28px, 4vw, 40px)",
             margin: "0 0 16px",
-            lineHeight: 1.3,
+            lineHeight: 1.2,
           }}
         >
-          Intelligence access for your organization
+          Intelligence built for the decision you&rsquo;re actually making.
         </h1>
-        <p style={{ color: "#697386", fontSize: 15, margin: "0 auto 40px", lineHeight: 1.7, maxWidth: 580 }}>
-          Market readiness data, gap analysis, regulatory monitoring, and infrastructure intelligence — scoped to what your organization needs.
+        <p style={{ color: "#425466", fontSize: 15, margin: "0 auto 28px", lineHeight: 1.7, maxWidth: 620 }}>
+          Every product below pulls from the same primary-source intelligence pipeline. What changes is the
+          deliverable — framed for insurance underwriters, developers, operators, cities, investors, and federal buyers.
         </p>
-        <Link
-          href="/contact"
-          style={{
-            display: "inline-block",
-            padding: "14px 36px",
-            background: "#5B8DB8",
-            color: "#ffffff",
-            fontSize: 12,
-            fontWeight: 700,
-            fontFamily: "'Inter', sans-serif",
-            letterSpacing: "0.06em",
-            textDecoration: "none",
-            borderRadius: 6,
-          }}
-        >
-          Talk to Us
-        </Link>
-      </section>
-
-      {/* Capabilities */}
-      <section style={{ maxWidth: 900, margin: "0 auto", padding: "clamp(48px, 6vw, 80px) 20px" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          {CAPABILITIES.map((cap) => (
-            <div
-              key={cap.title}
-              style={{
-                background: "#f9fbfd",
-                border: "1px solid #e3e8ee",
-                borderRadius: 12,
-                padding: "28px 32px",
-              }}
-            >
-              <h3
-                style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  fontWeight: 700,
-                  fontSize: 16,
-                  color: "#0a2540",
-                  margin: "0 0 8px",
-                }}
-              >
-                {cap.title}
-              </h3>
-              <p style={{ color: "#697386", fontSize: 13, lineHeight: 1.7, margin: "0 0 16px", maxWidth: 600 }}>
-                {cap.description}
-              </p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px" }}>
-                {cap.items.map((item) => (
-                  <span
-                    key={item}
-                    style={{
-                      fontSize: 11,
-                      color: "#8792a2",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
-                    }}
-                  >
-                    <span style={{ color: "#5B8DB8", fontSize: 8 }}>&#10003;</span>
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Who uses */}
-      <section style={{ maxWidth: 900, margin: "0 auto", padding: "0 20px 64px" }}>
-        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, #e3e8ee 20%, #e3e8ee 80%, transparent)", marginBottom: 64 }} />
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 12px" }}>
-            Who uses AirIndex
-          </h2>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "12px 24px", maxWidth: 700, margin: "0 auto" }}>
-          {[
-            "eVTOL Operators",
-            "Infrastructure Developers",
-            "City Planners & Airport Authorities",
-            "Aerospace & Defense",
-            "Insurance & Risk",
-            "Investment & Finance",
-            "Policy & Government",
-            "Economic Development Alliances",
-          ].map((role) => (
-            <div key={role} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ color: "#5B8DB8", fontSize: 8, flexShrink: 0 }}>&#9646;</span>
-              <span style={{ color: "#425466", fontSize: 12 }}>{role}</span>
-            </div>
-          ))}
-        </div>
-        <div style={{ textAlign: "center", marginTop: 32 }}>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
           <Link
-            href="/contact"
+            href="/contact?ref=pricing"
             style={{
               display: "inline-block",
-              padding: "12px 32px",
-              border: "1px solid rgba(91,141,184,0.4)",
-              borderRadius: 6,
-              color: "#5B8DB8",
-              fontSize: 11,
+              padding: "12px 28px",
+              background: "#5B8DB8",
+              color: "#ffffff",
+              fontSize: 13,
               fontWeight: 700,
-              letterSpacing: "0.06em",
+              fontFamily: "'Inter', sans-serif",
+              letterSpacing: "0.04em",
               textDecoration: "none",
+              borderRadius: 6,
             }}
           >
             Talk to Us
           </Link>
+          <Link
+            href="#products"
+            style={{
+              display: "inline-block",
+              padding: "12px 28px",
+              border: "1px solid #5B8DB8",
+              color: "#5B8DB8",
+              fontSize: 13,
+              fontWeight: 700,
+              fontFamily: "'Inter', sans-serif",
+              letterSpacing: "0.04em",
+              textDecoration: "none",
+              borderRadius: 6,
+            }}
+          >
+            Browse the Catalog ↓
+          </Link>
         </div>
+      </section>
+
+      {/* Container quick-nav */}
+      <section style={{ maxWidth: 1080, margin: "0 auto", padding: "48px 20px 0" }} id="products">
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 8,
+            justifyContent: "center",
+            marginBottom: 40,
+          }}
+        >
+          {groups.map((g) => (
+            <a
+              key={g.container}
+              href={`#container-${g.container}`}
+              style={{
+                fontSize: 11,
+                color: "#425466",
+                background: "#f9fbfd",
+                border: "1px solid #e3e8ee",
+                borderRadius: 999,
+                padding: "6px 14px",
+                textDecoration: "none",
+                fontWeight: 600,
+                letterSpacing: 0.2,
+              }}
+            >
+              {g.label} · {g.products.length}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* Product grid by container */}
+      <section style={{ maxWidth: 1080, margin: "0 auto", padding: "0 20px 64px" }}>
+        {groups.map((g) => (
+          <div key={g.container} id={`container-${g.container}`} style={{ marginBottom: 56, scrollMarginTop: 80 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: 12,
+                marginBottom: 20,
+                paddingBottom: 12,
+                borderBottom: "1px solid #e3e8ee",
+              }}
+            >
+              <h2
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 22,
+                  color: "#0a2540",
+                  margin: 0,
+                }}
+              >
+                {g.label}
+              </h2>
+              <span style={{ fontSize: 12, color: "#8792a2", fontFamily: "'Space Mono', monospace" }}>
+                {g.products.length} {g.products.length === 1 ? "product" : "products"}
+              </span>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))",
+                gap: 18,
+              }}
+            >
+              {g.products.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* FAQ */}
@@ -230,6 +422,24 @@ export default function PricingPage() {
             </div>
           </div>
         ))}
+        <div style={{ textAlign: "center", marginTop: 40 }}>
+          <Link
+            href="/contact?ref=pricing"
+            style={{
+              display: "inline-block",
+              padding: "12px 32px",
+              background: "#5B8DB8",
+              color: "#ffffff",
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              textDecoration: "none",
+              borderRadius: 6,
+            }}
+          >
+            Talk to Us
+          </Link>
+        </div>
       </section>
 
       <SiteFooter theme="light" />
