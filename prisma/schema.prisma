@@ -247,7 +247,9 @@ model ContactInquiry {
   email     String
   company   String?
   role      String?
-  tier      String   // "pro" | "institutional" | "enterprise"
+  tier      String   // "pro" | "institutional" | "enterprise" — legacy field, kept for existing data
+  productId String?  // id from src/lib/products.ts catalog (e.g. "ahj-fire-marshal")
+  buyerType String?  // matches Product.container — denormalized for analytics
   message   String?
   status    String   @default("new") // new | contacted | qualified | converted | closed
   notes     String?  // admin notes for follow-up tracking
@@ -258,6 +260,7 @@ model ContactInquiry {
   @@index([tier])
   @@index([email])
   @@index([status])
+  @@index([productId])
 }
 
 model ApiKey {

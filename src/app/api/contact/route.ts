@@ -3,6 +3,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/admin-helpers";
 import { sendSesEmail } from "@/lib/ses";
 import { prisma } from "@/lib/prisma";
+import { getProduct, isValidProductId } from "@/lib/products";
 
 function escapeHtml(str: string): string {
   return str
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, email, company, role, tier, message, website, source, buyerType } = body as {
+    const { name, email, company, role, tier, message, website, source, buyerType, productId } = body as {
       name: string;
       email: string;
       company?: string;
@@ -36,7 +37,11 @@ export async function POST(request: NextRequest) {
       website?: string;
       source?: string;
       buyerType?: string;
+      productId?: string;
     };
+
+    // Validate productId against catalog (silently drop unknown ids)
+    const product = productId && isValidProductId(productId) ? getProduct(productId) : null;
 
     // Honeypot — hidden field that only bots fill in
     if (website) {
@@ -67,6 +72,8 @@ export async function POST(request: NextRequest) {
         company: company?.trim() || null,
         role: role?.trim() || null,
         tier: tier || "pro",
+        productId: product?.id ?? null,
+        buyerType: buyerType?.trim().slice(0, 50) || product?.container || null,
         message: message?.trim() || null,
         source: source?.trim().slice(0, 100) || null,
       },
@@ -96,6 +103,7 @@ export async function POST(request: NextRequest) {
       const safeTier = escapeHtml(tier || "not specified");
       const safeBuyerType = buyerType ? escapeHtml(buyerType) : "";
       const safeMessage = message ? escapeHtml(message) : "";
+      const safeProduct = product ? escapeHtml(`${product.name} (${product.price}${product.priceNote ? " " + product.priceNote : ""})`) : "";
 
       const html = `
         <div style="font-family: monospace; max-width: 600px;">
@@ -105,6 +113,7 @@ export async function POST(request: NextRequest) {
             <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Email</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;"><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>
             ${safeCompany ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Company</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeCompany}</td></tr>` : ""}
             ${safeRole ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Role</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeRole}</td></tr>` : ""}
+            ${safeProduct ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Product</td><td style="padding: 8px 12px; border-bottom: 1px solid #222; font-weight: bold; color: #5B8DB8;">${safeProduct}</td></tr>` : ""}
             ${safeBuyerType ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Buyer Type</td><td style="padding: 8px 12px; border-bottom: 1px solid #222; font-weight: bold;">${safeBuyerType}</td></tr>` : ""}
             <tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Tier</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeTier}</td></tr>
             ${safeMessage ? `<tr><td style="padding: 8px 12px; color: #999; border-bottom: 1px solid #222;">Message</td><td style="padding: 8px 12px; border-bottom: 1px solid #222;">${safeMessage}</td></tr>` : ""}
@@ -114,10 +123,11 @@ export async function POST(request: NextRequest) {
       `;
 
       try {
+        const subjectLabel = product ? product.name : (tier || "General");
         await sendSesEmail({
           to: adminEmail,
           from: fromEmail,
-          subject: `AirIndex Inquiry: ${(tier || "General").replace(/[\r\n]/g, "")} — ${(name || "").replace(/[\r\n]/g, "")} (${(company || "Individual").replace(/[\r\n]/g, "")})`,
+          subject: `AirIndex Inquiry: ${subjectLabel.replace(/[\r\n]/g, "")} — ${(name || "").replace(/[\r\n]/g, "")} (${(company || "Individual").replace(/[\r\n]/g, "")})`,
           html,
         });
       } catch (emailErr) {
@@ -127,12 +137,14 @@ export async function POST(request: NextRequest) {
       console.log("[contact] ADMIN_NOTIFY_EMAIL not configured — skipping email");
     }
 
-    // Send tier-specific confirmation email to the user (best-effort)
+    // Send product- or tier-specific confirmation email to the user (best-effort)
     if (fromEmail) {
       const appUrl = process.env.APP_URL || "https://www.airindex.io";
       const firstName = name.trim().split(/\s+/)[0];
 
-      const tierConfirm: Record<string, { subject: string; heading: string; body: string; cta: { label: string; href: string } }> = {
+      type ConfirmEmail = { subject: string; heading: string; body: string; cta: { label: string; href: string } };
+
+      const tierConfirm: Record<string, ConfirmEmail> = {
         pro: {
           subject: "You're on the Pro waitlist — AirIndex",
           heading: `${firstName}, you're on the list.`,
@@ -153,7 +165,19 @@ export async function POST(request: NextRequest) {
         },
       };
 
-      const confirm = tierConfirm[tier || "pro"] || tierConfirm.pro;
+      let confirm: ConfirmEmail;
+      if (product) {
+        confirm = {
+          subject: `Your ${product.name} inquiry — AirIndex`,
+          heading: `Thanks, ${firstName}.`,
+          body: `We've received your inquiry about the ${product.name} (${product.price}${product.priceNote ? " " + product.priceNote : ""}${product.turnaround ? ", " + product.turnaround : ""}). Our team will reach out within 48 hours to scope your engagement and confirm next steps.`,
+          cta: product.sampleRoute
+            ? { label: "View Sample", href: `${appUrl}${product.sampleRoute}` }
+            : { label: "View the Dashboard", href: `${appUrl}/dashboard` },
+        };
+      } else {
+        confirm = tierConfirm[tier || "pro"] || tierConfirm.pro;
+      }
 
       try {
         await sendSesEmail({
