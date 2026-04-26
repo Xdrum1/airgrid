@@ -86,13 +86,13 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
   return (
     <div
       style={{
-        background: "#050508",
-        color: "#e0e0e0",
+        background: "#ffffff",
+        color: "#0a2540",
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
       }}
     >
-      <SiteNav />
+      <SiteNav theme="light" />
 
       <main
         style={{
@@ -106,7 +106,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
           <Link
             href="/insights"
             style={{
-              color: "#666",
+              color: "#697386",
               fontSize: 12,
               textDecoration: "none",
               letterSpacing: "0.04em",
@@ -130,7 +130,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
               fontWeight: 700,
               letterSpacing: "0.12em",
               color: "#5B8DB8",
-              background: "rgba(91,141,184,0.1)",
+              background: "rgba(91,141,184,0.08)",
               border: "1px solid rgba(91,141,184,0.25)",
               borderRadius: 3,
               padding: "4px 10px",
@@ -140,7 +140,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
           </span>
           <span
             style={{
-              color: "#555",
+              color: "#697386",
               fontSize: 12,
               fontFamily: "'Space Mono', monospace",
             }}
@@ -155,7 +155,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: "clamp(28px, 4.5vw, 40px)",
             fontWeight: 700,
-            color: "#ffffff",
+            color: "#0a2540",
             margin: "0 0 20px",
             letterSpacing: "-0.02em",
             lineHeight: 1.2,
@@ -177,7 +177,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
               <p
                 key={i}
                 style={{
-                  color: "#bbb",
+                  color: "#425466",
                   fontSize: 17,
                   lineHeight: 1.7,
                   margin: "0 0 10px",
@@ -191,7 +191,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
         ) : (
           <p
             style={{
-              color: "#bbb",
+              color: "#425466",
               fontSize: 17,
               lineHeight: 1.75,
               margin: "0 0 48px",
@@ -208,8 +208,8 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
         <div
           style={{
             padding: "28px 32px",
-            background: "rgba(255,255,255,0.02)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            background: "#f6f9fc",
+            border: "1px solid #e3e8ee",
             borderRadius: 10,
             marginBottom: 40,
           }}
@@ -230,7 +230,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontSize: 22,
                   fontWeight: 700,
-                  color: "#ffffff",
+                  color: "#0a2540",
                   margin: 0,
                 }}
               >
@@ -238,7 +238,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
               </div>
               <div
                 style={{
-                  color: "#777",
+                  color: "#697386",
                   fontSize: 12,
                   marginTop: 4,
                   fontFamily: "'Space Mono', monospace",
@@ -296,15 +296,15 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                       fontFamily: "'Space Mono', monospace",
                     }}
                   >
-                    <span style={{ color: "#aaa" }}>{FACTOR_LABELS[key]}</span>
-                    <span style={{ color: "#666" }}>
+                    <span style={{ color: "#425466" }}>{FACTOR_LABELS[key]}</span>
+                    <span style={{ color: "#697386" }}>
                       {value} / {max}
                     </span>
                   </div>
                   <div
                     style={{
                       height: 6,
-                      background: "rgba(255,255,255,0.05)",
+                      background: "#e3e8ee",
                       borderRadius: 3,
                       overflow: "hidden",
                     }}
@@ -328,9 +328,9 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
             style={{
               marginTop: 20,
               paddingTop: 16,
-              borderTop: "1px solid rgba(255,255,255,0.06)",
+              borderTop: "1px solid #e3e8ee",
               fontSize: 11,
-              color: "#666",
+              color: "#697386",
               fontFamily: "'Space Mono', monospace",
             }}
           >
@@ -355,7 +355,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                     fontFamily: "'Space Grotesk', sans-serif",
                     fontSize: 22,
                     fontWeight: 700,
-                    color: "#ffffff",
+                    color: "#0a2540",
                     margin: "0 0 20px",
                     letterSpacing: "-0.01em",
                   }}
@@ -366,7 +366,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                   <p
                     key={j}
                     style={{
-                      color: "#bbb",
+                      color: "#425466",
                       fontSize: 15,
                       lineHeight: 1.85,
                       margin: "0 0 18px",
@@ -384,8 +384,8 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                 key={i}
                 style={{
                   marginBottom: 40,
-                  borderTop: "1px solid rgba(255,255,255,0.08)",
-                  borderBottom: "1px solid rgba(255,255,255,0.08)",
+                  borderTop: "1px solid #e3e8ee",
+                  borderBottom: "1px solid #e3e8ee",
                   padding: "18px 0",
                 }}
               >
@@ -397,7 +397,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                       padding: "8px 0",
                       borderBottom:
                         j < section.rows.length - 1
-                          ? "1px solid rgba(255,255,255,0.04)"
+                          ? "1px solid #f0f3f7"
                           : "none",
                     }}
                   >
@@ -419,7 +419,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                         flex: 1,
                         fontSize: 16,
                         fontWeight: 600,
-                        color: "#ffffff",
+                        color: "#0a2540",
                       }}
                     >
                       {row.value}
@@ -437,7 +437,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                     fontFamily: "'Space Grotesk', sans-serif",
                     fontSize: 22,
                     fontWeight: 700,
-                    color: "#ffffff",
+                    color: "#0a2540",
                     margin: "0 0 20px",
                     letterSpacing: "-0.01em",
                   }}
@@ -446,7 +446,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                 </h2>
                 <p
                   style={{
-                    color: "#bbb",
+                    color: "#425466",
                     fontSize: 15,
                     lineHeight: 1.85,
                     margin: "0 0 22px",
@@ -469,7 +469,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                 </p>
                 <p
                   style={{
-                    color: "#bbb",
+                    color: "#425466",
                     fontSize: 15,
                     lineHeight: 1.85,
                     margin: 0,
@@ -509,7 +509,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                   <p
                     key={j}
                     style={{
-                      color: "#aaa",
+                      color: "#425466",
                       fontSize: 14,
                       lineHeight: 1.8,
                       margin: j < section.paragraphs.length - 1 ? "0 0 12px" : 0,
@@ -529,7 +529,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                     fontFamily: "'Space Grotesk', sans-serif",
                     fontSize: 22,
                     fontWeight: 700,
-                    color: "#ffffff",
+                    color: "#0a2540",
                     margin: "0 0 20px",
                     letterSpacing: "-0.01em",
                   }}
@@ -539,7 +539,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                 {section.intro && (
                   <p
                     style={{
-                      color: "#bbb",
+                      color: "#425466",
                       fontSize: 15,
                       lineHeight: 1.85,
                       margin: "0 0 22px",
@@ -555,7 +555,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                         fontFamily: "'Space Grotesk', sans-serif",
                         fontSize: 17,
                         fontWeight: 700,
-                        color: "#ffffff",
+                        color: "#0a2540",
                         margin: "0 0 6px",
                       }}
                     >
@@ -564,7 +564,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                     </p>
                     <p
                       style={{
-                        color: "#999",
+                        color: "#697386",
                         fontSize: 14,
                         lineHeight: 1.75,
                         margin: 0,
@@ -610,7 +610,7 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
                       fontFamily: "'Space Grotesk', sans-serif",
                       fontSize: 18,
                       fontWeight: 600,
-                      color: "#ffffff",
+                      color: "#0a2540",
                       lineHeight: 1.5,
                       margin: j < section.lines.length - 1 ? "0 0 12px" : 0,
                     }}
@@ -629,9 +629,9 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
           style={{
             marginTop: 56,
             paddingTop: 28,
-            borderTop: "1px solid rgba(255,255,255,0.08)",
+            borderTop: "1px solid #e3e8ee",
             fontSize: 13,
-            color: "#888",
+            color: "#697386",
             lineHeight: 1.75,
           }}
         >
@@ -640,11 +640,11 @@ export default async function OneMarketMondayIssuePage({ params }: PageProps) {
 
         {/* Subscribe CTA */}
         <div style={{ marginTop: 48, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
-          <PulseSubscribe source="one-market-monday" compact />
+          <PulseSubscribe source="one-market-monday" compact theme="light" />
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter theme="light" />
     </div>
   );
 }

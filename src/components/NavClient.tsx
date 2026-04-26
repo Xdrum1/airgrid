@@ -24,7 +24,6 @@ const NAV_ITEMS: NavItem[] = [
       { label: "How AIS Works", href: "/how-it-works", desc: "System architecture — sources, scoring, and audit trail" },
       { label: "Methodology", href: "/methodology", desc: "Published 7-factor scoring model with full transparency" },
       { label: "Insights", href: "/insights", desc: "Analysis and commentary on UAM market developments" },
-      { label: "Updates", href: "/updates", desc: "Platform releases, scoring changes, and data additions" },
       { label: "Terminology", href: "/terminology", desc: "Source-traced definitions for vertical flight infrastructure" },
     ],
   },

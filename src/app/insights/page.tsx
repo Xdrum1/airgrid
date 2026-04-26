@@ -126,7 +126,7 @@ export default function InsightsPage() {
     <div
       style={{
         background: "#ffffff",
-        color: "#e0e0e0",
+        color: "#0a2540",
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
       }}
@@ -147,7 +147,7 @@ export default function InsightsPage() {
               fontFamily: "'Space Grotesk', sans-serif",
               fontSize: "clamp(28px, 4vw, 40px)",
               fontWeight: 700,
-              color: "#ffffff",
+              color: "#0a2540",
               margin: "0 0 12px",
               letterSpacing: "-0.02em",
             }}
@@ -409,7 +409,7 @@ export default function InsightsPage() {
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontSize: "clamp(20px, 2.5vw, 26px)",
                   fontWeight: 700,
-                  color: "#ffffff",
+                  color: "#0a2540",
                   margin: "0 0 12px",
                   lineHeight: 1.3,
                 }}
@@ -420,7 +420,7 @@ export default function InsightsPage() {
               {/* Summary */}
               <p
                 style={{
-                  color: "#aaa",
+                  color: "#425466",
                   fontSize: 15,
                   lineHeight: 1.8,
                   margin: "0 0 20px",
