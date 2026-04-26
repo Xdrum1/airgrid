@@ -396,7 +396,7 @@ export default async function GridPage({ params }: { params: Promise<{ cityId: s
 
         {/* Footer */}
         <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${T.cardBorder}`, fontSize: 11, color: T.textTertiary, lineHeight: 1.6 }}>
-          Grid cells generated per Don Berchoff&apos;s 5nm rule (FAA NPRM Part 108, pp. 96–98). ASOS station coordinates sourced from FAA NASR. Cells shown: {cells.length} · Heliports: {heliportPins.length} · Pre-development: {preDevPins.length} · Imagery © Mapbox © OpenStreetMap.
+          Grid cells generated per the 5nm rule (FAA NPRM Part 108, pp. 96–98). ASOS station coordinates sourced from FAA NASR. Cells shown: {cells.length} · Heliports: {heliportPins.length} · Pre-development: {preDevPins.length} · Imagery © Mapbox © OpenStreetMap.
         </div>
       </div>
     </div>
