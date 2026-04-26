@@ -5,16 +5,21 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import StatNumber from "@/components/landing/StatNumber";
+import LatestSignalStrip from "@/components/landing/LatestSignalStrip";
 import PulseSubscribe from "@/components/PulseSubscribe";
 
 // ─────────────────────────────────────────────────────────
 // Conversion-focused homepage.
 //
 // Structure follows the advisor framework:
-// Hero → Stats → Framework → Dashboard (proof) → Products → Urgency → Sample → Buyers → API → Pulse → CTA
+// Hero → Stats → Live Signal → Framework → Dashboard (proof) → Products → Urgency → Sample → Buyers → API → Pulse → CTA
 //
 // Split intentionally preserved: dashboard is dark, marketing is light.
 // ─────────────────────────────────────────────────────────
+
+// Revalidate hourly so the live-signal strip stays fresh as the daily
+// pipeline (06:00 UTC) and auto-reviewer apply new overrides.
+export const revalidate = 3600;
 
 export default async function LandingPage() {
   // ── Design tokens ──
@@ -323,6 +328,11 @@ export default async function LandingPage() {
           ))}
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════════════ */}
+      {/* Live signal strip — most recent applied override      */}
+      {/* ════════════════════════════════════════════════════ */}
+      <LatestSignalStrip />
 
       {/* ════════════════════════════════════════════════════ */}
       {/* 2. THE CORE FRAMEWORK — three questions                */}
