@@ -1024,6 +1024,56 @@ export async function runAutoReview(
     }
   }
 
+  // Staleness sweep: supersede overrides where auto-reviewer voted approve but
+  // couldn't auto-apply (e.g., primary-source guard blocked promotion for
+  // hasActivePilotProgram / hasVertiportZoning / stateLegislationStatus) AND no
+  // human has actioned them within STALENESS_DAYS. Keeps the admin queue from
+  // accumulating items that won't move without primary-source documentation.
+  if (!dryRun) {
+    try {
+      const prisma = await getPrisma();
+      const STALENESS_DAYS = 14;
+      const staleCutoff = new Date(Date.now() - STALENESS_DAYS * 24 * 3600 * 1000);
+
+      const staleApprovedResults = await prisma.autoReviewResult.findMany({
+        where: {
+          decision: "approve",
+          applied: false,
+          createdAt: { lt: staleCutoff },
+        },
+        select: { overrideId: true },
+        distinct: ["overrideId"],
+      });
+      const staleIds = staleApprovedResults.map((r) => r.overrideId);
+
+      if (staleIds.length > 0) {
+        const stillPending = await prisma.scoringOverride.findMany({
+          where: {
+            id: { in: staleIds },
+            appliedAt: null,
+            supersededAt: null,
+          },
+          select: { id: true, cityId: true, field: true },
+        });
+
+        if (stillPending.length > 0) {
+          const now = new Date();
+          await prisma.scoringOverride.updateMany({
+            where: { id: { in: stillPending.map((o) => o.id) } },
+            data: { supersededAt: now },
+          });
+          logger.info(
+            `[auto-review] Stale-archived ${stillPending.length} primary-source-guarded overrides ` +
+              `(unactioned >${STALENESS_DAYS}d): ` +
+              stillPending.map((o) => `${o.cityId}/${o.field}`).join(", ")
+          );
+        }
+      }
+    } catch (err) {
+      logger.error("[auto-review] Failed to run staleness sweep:", err);
+    }
+  }
+
   const pending = await getPendingOverrides();
   const toProcess = pending.slice(0, maxOverrides);
 
