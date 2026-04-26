@@ -556,8 +556,58 @@ export async function runIngestion(): Promise<{
       );
     }
 
-    // 10. Enrich sparse summaries before classification
-    const changedRecords = [...diff.newRecords, ...diff.updatedRecords];
+    // 10. Rescue unclassified records from prior runs that lost their classify
+    // pass to a Lambda timeout. The cron retry mechanism can write records to
+    // IngestedRecord but fail before ClassificationResult writes complete; the
+    // next cron then sees the records as "already in DB" → diff returns 0 new
+    // → skips classification entirely. Without this rescue, those records sit
+    // unclassified forever. Bounded to 7d window + 200-record cap to keep API
+    // cost predictable.
+    const rescueWindowMs = 7 * 24 * 60 * 60 * 1000;
+    const rescueSince = new Date(Date.now() - rescueWindowMs);
+    const RESCUE_CAP = 200;
+    let rescuedRecords: IngestedRecord[] = [];
+    try {
+      const candidates = await prisma.ingestedRecord.findMany({
+        where: {
+          ingestedAt: { gte: rescueSince },
+          // exclude what's already in this run's diff (will be classified anyway)
+          id: { notIn: [...diff.newRecords, ...diff.updatedRecords].map((r) => r.id) },
+        },
+        select: { id: true, source: true, sourceId: true, title: true, summary: true, status: true, date: true, url: true, state: true, raw: true, ingestedAt: true },
+      });
+      const ids = candidates.map((r) => r.id);
+      if (ids.length > 0) {
+        const alreadyClassified = await prisma.classificationResult.findMany({
+          where: { recordId: { in: ids } },
+          select: { recordId: true },
+        });
+        const classifiedSet = new Set(alreadyClassified.map((c) => c.recordId));
+        rescuedRecords = candidates
+          .filter((r) => !classifiedSet.has(r.id))
+          .slice(0, RESCUE_CAP)
+          .map((r) => ({
+            id: r.id,
+            source: r.source as IngestedRecord["source"],
+            sourceId: r.sourceId,
+            title: r.title,
+            summary: r.summary,
+            status: r.status,
+            date: r.date,
+            url: r.url,
+            state: r.state ?? undefined,
+            raw: r.raw as Record<string, unknown>,
+            ingestedAt: r.ingestedAt.toISOString(),
+          }));
+        if (rescuedRecords.length > 0) {
+          console.log(`[ingestion] Rescued ${rescuedRecords.length} unclassified records from prior runs (capped at ${RESCUE_CAP})`);
+        }
+      }
+    } catch (err) {
+      console.error("[ingestion] Backlog rescue failed (non-blocking):", err);
+    }
+
+    const changedRecords = [...diff.newRecords, ...diff.updatedRecords, ...rescuedRecords];
     if (changedRecords.length > 0) {
       await enrichSecFilings(changedRecords);
       await enrichOperatorNews(changedRecords);
