@@ -14,6 +14,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { auth } from "@/auth";
+import { verifyShareToken } from "@/lib/share-token";
 import {
   getSiteRiskAssessment,
   type SiteGapFlag,
@@ -133,17 +134,40 @@ function QRow({ label, value, note }: { label: string; value: string; note?: str
 
 export default async function RiskAssessmentPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ siteId: string }>;
+  searchParams: Promise<{ token?: string }>;
 }) {
-  if (process.env.NODE_ENV !== "development") {
+  const { siteId } = await params;
+  const upper = siteId.toUpperCase();
+  const search = await searchParams;
+
+  // Auth: admin OR valid share token for THIS site
+  let isShareView = false;
+  let shareClientName: string | undefined;
+
+  if (search.token) {
+    const payload = verifyShareToken(search.token);
+    if (
+      payload &&
+      payload.type === "risk-assessment" &&
+      (payload.params.siteId || "").toUpperCase() === upper
+    ) {
+      isShareView = true;
+      shareClientName = payload.clientName;
+    }
+  }
+
+  if (!isShareView && process.env.NODE_ENV !== "development") {
     const session = await auth();
     if (!session?.user) redirect("/login?callbackUrl=/admin");
     if (session.user.email !== ADMIN_EMAIL) redirect("/");
   }
 
-  const { siteId } = await params;
-  const upper = siteId.toUpperCase();
+  // shareClientName is currently surfaced via the URL but not yet rendered on
+  // the cover; reserve here for a future cover-page customization.
+  void shareClientName;
 
   const r = await getSiteRiskAssessment(upper);
   if (!r) notFound();
