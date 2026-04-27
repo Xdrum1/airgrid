@@ -1,6 +1,7 @@
 import { fetchFederalRegisterUAM, fetchStateBills, fetchOperatorFilings, OPERATOR_CIKS } from "@/lib/faa-api";
 import type { FederalFiling, StateBill, SecFiling } from "@/lib/faa-api";
 import { fetchAllOperatorNews } from "@/lib/operator-news";
+import { fetchAllOperatorPress } from "@/lib/operator-press";
 import { searchCongressBills, type CongressBill } from "@/lib/congress-api";
 import { searchRegulations, type RegulationDocument } from "@/lib/regulations-api";
 import { addChangelogEntries } from "@/lib/changelog";
@@ -25,7 +26,7 @@ async function getPrisma() {
 
 export interface IngestedRecord {
   id: string;
-  source: "federal_register" | "legiscan" | "sec_edgar" | "operator_news" | "congress_gov" | "regulations_gov";
+  source: "federal_register" | "legiscan" | "sec_edgar" | "operator_news" | "operator_press" | "congress_gov" | "regulations_gov";
   sourceId: string;
   title: string;
   summary: string;
@@ -400,7 +401,7 @@ export async function runIngestion(): Promise<{
     const SEC_FORM_TYPES = ["8-K", "10-K", "10-Q"];
     const fetchErrors: Record<string, string> = {};
 
-    const [federalFilings, legiscanResults, secEdgarResults, operatorNews, congressBills, regulationDocs] = await Promise.all([
+    const [federalFilings, legiscanResults, secEdgarResults, operatorNews, operatorPress, congressBills, regulationDocs] = await Promise.all([
       // 1. Federal Register
       fetchFederalRegisterUAM(90).catch((err) => {
         fetchErrors.federal_register = `${err?.message ?? err}`;
@@ -433,6 +434,13 @@ export async function runIngestion(): Promise<{
         console.error("[ingestion] Operator news fetch failed:", err);
         return [] as IngestedRecord[];
       }),
+      // 4b. Operator-direct press releases (Joby + Beta). Catches operator
+      //     announcements at issue time, ahead of Google News propagation lag.
+      fetchAllOperatorPress(60).catch((err) => {
+        fetchErrors.operator_press = `${err?.message ?? err}`;
+        console.error("[ingestion] Operator press fetch failed:", err);
+        return [] as IngestedRecord[];
+      }),
       // 5. Congress.gov federal bills (skips gracefully if no API key)
       searchCongressBills().catch((err) => {
         fetchErrors.congress_gov = `${err?.message ?? err}`;
@@ -457,6 +465,7 @@ export async function runIngestion(): Promise<{
     console.log(`[ingestion] Federal Register: ${federalFilings.length} filings`);
     console.log(`[ingestion] LegiScan: ${allBills.length} bills`);
     console.log(`[ingestion] SEC EDGAR: ${allSecFilings.length} filings (${SEC_FORM_TYPES.join(", ")})`);
+    console.log(`[ingestion] Operator press: ${operatorPress.length} releases`);
     console.log(`[ingestion] Congress.gov: ${congressBills.length} bills`);
     console.log(`[ingestion] Regulations.gov: ${regulationDocs.length} documents`);
 
@@ -466,6 +475,7 @@ export async function runIngestion(): Promise<{
       ...allBills.map(normalizeStateBill),
       ...allSecFilings,
       ...operatorNews,
+      ...operatorPress,
       ...congressBills.map(normalizeCongressBill),
       ...regulationDocs.map(normalizeRegulation),
     ];
@@ -496,6 +506,7 @@ export async function runIngestion(): Promise<{
       legiscan: allBills.length,
       sec_edgar: allSecFilings.length,
       operator_news: operatorNews.length,
+      operator_press: operatorPress.length,
       congress_gov: congressBills.length,
       regulations_gov: regulationDocs.length,
     };
