@@ -418,7 +418,7 @@ export default function GridMap({ cells, heliports, preDev, bounds, mapboxToken 
 
             {/* Footer hint */}
             <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid #f3f4f6", fontSize: 10, color: "#8792a2", lineHeight: 1.5 }}>
-              Coverage credit per Don Berchoff&apos;s 5nm rule. Cell tier derives from nearest-ASOS distance.
+              Coverage credit per the 5nm rule (FAA NPRM Part 108, pp. 96–98). Cell tier derives from nearest-ASOS distance.
             </div>
           </div>
         </div>
