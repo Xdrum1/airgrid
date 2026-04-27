@@ -23,6 +23,8 @@ const NAV_ITEMS: NavItem[] = [
       { label: "Sample Assessment", href: "/sample", desc: "See what a facility-level assessment reveals" },
       { label: "How AIS Works", href: "/how-it-works", desc: "System architecture — sources, scoring, and audit trail" },
       { label: "Methodology", href: "/methodology", desc: "Published 7-factor scoring model with full transparency" },
+      { label: "Forecasts", href: "/forecasts", desc: "Active score-movement forecasts with resolution dates" },
+      { label: "Catalysts", href: "/catalysts", desc: "Tracked regulatory and infrastructure events by date" },
       { label: "Insights", href: "/insights", desc: "Analysis and commentary on UAM market developments" },
       { label: "Terminology", href: "/terminology", desc: "Source-traced definitions for vertical flight infrastructure" },
     ],
