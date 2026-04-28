@@ -6,69 +6,34 @@ import { alertCronFailure } from "@/lib/cron-alerts";
 // Max execution time for serverless — Amplify Lambda default is 60s
 export const maxDuration = 120;
 
-function streamIngestion(): Response {
-  const encoder = new TextEncoder();
+// Fire-and-forget ingestion. Amplify Hosting's gateway has a 30s integration
+// timeout and does not honor SSE keepalives reliably; the underlying Lambda
+// keeps running to maxDuration regardless of whether the gateway disconnected,
+// so we ack the trigger immediately and let the work continue. The cron action
+// parses the SSE-style body as a successful trigger; downstream verification
+// happens via the IngestionRun table (and rescue paths catch anything cut off
+// before completion).
+function fireAndForgetIngestion(): Response {
+  void (async () => {
+    try {
+      const { runIngestion } = await import("@/lib/ingestion");
+      const { diff, meta } = await runIngestion();
+      console.log(
+        `[API /ingest] Complete: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged, sources: ${meta.sources.join(", ")}, fetchCounts: ${JSON.stringify(meta.fetchCounts)}, fetchErrors: ${JSON.stringify(meta.fetchErrors)}`
+      );
+    } catch (err) {
+      console.error("[API /ingest] Ingestion error:", err);
+      await alertCronFailure("ingest", err);
+    }
+  })();
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      // Send initial keepalive immediately
-      controller.enqueue(encoder.encode("data: {\"status\":\"started\"}\n\n"));
-
-      // Send keepalive pings every 10s to prevent gateway timeout
-      const keepalive = setInterval(() => {
-        try {
-          controller.enqueue(encoder.encode("data: {\"status\":\"running\"}\n\n"));
-        } catch {
-          clearInterval(keepalive);
-        }
-      }, 10_000);
-
-      try {
-        // Lazy-import ingestion to reduce cold start time — the heavy module
-        // tree (classifier, rules engine, market leads) loads after the stream
-        // has started, preventing Amplify's 30s gateway integration timeout.
-        const { runIngestion } = await import("@/lib/ingestion");
-        const { diff, meta } = await runIngestion();
-        clearInterval(keepalive);
-
-        const result = JSON.stringify({
-          status: "complete",
-          success: true,
-          newRecords: diff.newRecords.length,
-          updatedRecords: diff.updatedRecords.length,
-          unchangedCount: diff.unchangedCount,
-          sources: meta.sources,
-          fetchCounts: meta.fetchCounts,
-          fetchErrors: meta.fetchErrors,
-        });
-
-        console.log(
-          `[API /ingest] Complete: ${diff.newRecords.length} new, ${diff.updatedRecords.length} updated, ${diff.unchangedCount} unchanged, sources: ${meta.sources.join(", ")}, fetchCounts: ${JSON.stringify(meta.fetchCounts)}, fetchErrors: ${JSON.stringify(meta.fetchErrors)}`
-        );
-
-        controller.enqueue(encoder.encode(`data: ${result}\n\n`));
-        controller.close();
-      } catch (err) {
-        clearInterval(keepalive);
-        console.error("[API /ingest] Ingestion error:", err);
-        await alertCronFailure("ingest", err);
-
-        const error = JSON.stringify({
-          status: "error",
-          success: false,
-          error: "Ingestion failed — check server logs",
-        });
-        controller.enqueue(encoder.encode(`data: ${error}\n\n`));
-        controller.close();
-      }
-    },
-  });
-
-  return new Response(stream, {
+  const body =
+    'data: {"status":"started"}\n\n' +
+    'data: {"status":"complete","async":true}\n\n';
+  return new Response(body, {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
-      Connection: "keep-alive",
     },
   });
 }
@@ -82,7 +47,7 @@ async function startIngestion(): Promise<Response> {
     );
   }
 
-  return streamIngestion();
+  return fireAndForgetIngestion();
 }
 
 // Crons send GET requests
