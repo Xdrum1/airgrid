@@ -9,85 +9,34 @@ on:
 jobs:
   ingest:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Health check + deep warmup
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci --no-audit --no-fund
+
+      - name: Prisma generate
+        run: npx prisma generate
+
+      - name: Run ingestion
         env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-          APP_URL: ${{ vars.APP_URL }}
-        run: |
-          URL="${APP_URL:-https://www.airindex.io}"
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/health")
-          echo "Health: $HTTP_CODE"
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "::warning::Health check returned $HTTP_CODE — app may be degraded"
-          fi
-          # Deep warmup: hit the ingest endpoint with ?warmup=true to cold-start
-          # the Lambda AND lazy-load the full ingestion module tree (classifier,
-          # rules engine, Prisma client, etc.) without running actual ingestion.
-          echo "Deep-warming ingest Lambda (loading full module tree)..."
-          WARMUP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 45 \
-            -H "Authorization: Bearer $CRON_SECRET" \
-            "$URL/api/ingest?warmup=true")
-          echo "Warmup: $WARMUP_CODE"
-          if [ "$WARMUP_CODE" != "200" ]; then
-            echo "::warning::Warmup returned $WARMUP_CODE — cold start may still be in progress"
-          fi
-          # Wait longer for Lambda to stay warm — 3s was too short,
-          # Amplify may spin up a new instance for the next request
-          sleep 8
-
-      - name: Trigger ingestion endpoint (with retry)
-        env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-          APP_URL: ${{ vars.APP_URL }}
-        run: |
-          URL="${APP_URL:-https://www.airindex.io}"
-          MAX_ATTEMPTS=3
-
-          for ATTEMPT in $(seq 1 $MAX_ATTEMPTS); do
-            echo "Attempt $ATTEMPT/$MAX_ATTEMPTS..."
-
-            RESPONSE=$(curl -s -w "\n%{http_code}" \
-              --max-time 120 \
-              -H "Authorization: Bearer $CRON_SECRET" \
-              "$URL/api/ingest")
-
-            HTTP_CODE=$(echo "$RESPONSE" | tail -1)
-            BODY=$(echo "$RESPONSE" | sed '$d')
-
-            echo "Status: $HTTP_CODE"
-
-            if [ "$HTTP_CODE" = "200" ]; then
-              echo "Response: $BODY"
-
-              # Check the final SSE event for success
-              LAST_EVENT=$(echo "$BODY" | grep "^data:" | tail -1 | sed 's/^data: //')
-              echo "Final event: $LAST_EVENT"
-
-              if echo "$LAST_EVENT" | grep -q '"status":"error"'; then
-                echo "::error::Ingestion completed with error"
-                exit 1
-              fi
-
-              if echo "$LAST_EVENT" | grep -q '"status":"complete"'; then
-                echo "Ingestion completed successfully"
-                exit 0
-              else
-                echo "::warning::Unexpected final event status"
-                exit 0
-              fi
-            fi
-
-            # Non-200: retry after delay (unless last attempt)
-            if [ "$ATTEMPT" -lt "$MAX_ATTEMPTS" ]; then
-              echo "::warning::Attempt $ATTEMPT failed with status $HTTP_CODE — retrying in 15s..."
-              # Re-warm before retry
-              curl -s -o /dev/null -w "Re-warm: %{http_code}\n" --max-time 45 \
-                -H "Authorization: Bearer $CRON_SECRET" \
-                "$URL/api/ingest?warmup=true"
-              sleep 15
-            else
-              echo "::error::Ingestion failed after $MAX_ATTEMPTS attempts (last status: $HTTP_CODE)"
-              exit 1
-            fi
-          done
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LEGISCAN_API_KEY: ${{ secrets.LEGISCAN_API_KEY }}
+          CONGRESS_API_KEY: ${{ secrets.CONGRESS_API_KEY }}
+          REGULATIONS_GOV_API_KEY: ${{ secrets.REGULATIONS_GOV_API_KEY }}
+          SES_ACCESS_KEY_ID: ${{ secrets.SES_ACCESS_KEY_ID }}
+          SES_SECRET_ACCESS_KEY: ${{ secrets.SES_SECRET_ACCESS_KEY }}
+          SES_REGION: ${{ secrets.SES_REGION }}
+          SES_FROM_EMAIL: ${{ secrets.SES_FROM_EMAIL }}
+          ADMIN_NOTIFY_EMAIL: ${{ secrets.ADMIN_NOTIFY_EMAIL }}
+          NODE_ENV: production
+        run: npx tsx scripts/run-ingestion.ts
