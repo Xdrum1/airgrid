@@ -43,6 +43,10 @@ async function fetchJobyPress(daysBack: number): Promise<IngestedRecord[]> {
           "Mozilla/5.0 (compatible; AirIndex/1.0; +https://www.airindex.io)",
       },
       redirect: "follow",
+      // AWS Lambda egress hangs on this host without a timeout; without one
+      // a stalled fetch blocks the whole ingestion Promise.all and trips the
+      // Amplify 30s gateway timeout.
+      signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) {
       console.warn(`[operator-press] Joby fetch failed: ${res.status}`);
@@ -107,7 +111,10 @@ async function fetchBetaPress(daysBack: number): Promise<IngestedRecord[]> {
   try {
     const res = await fetch(
       "https://investors.beta.team/news-events/press-releases/rss",
-      { headers: { "User-Agent": "AirIndex/1.0" } },
+      {
+        headers: { "User-Agent": "AirIndex/1.0" },
+        signal: AbortSignal.timeout(10_000),
+      },
     );
     if (!res.ok) {
       console.warn(`[operator-press] Beta fetch failed: ${res.status}`);
