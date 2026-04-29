@@ -334,6 +334,34 @@ function detectOperators(text: string): string[] {
   return OPERATOR_NAME_PATTERNS.filter((p) => p.pattern.test(text)).map((p) => p.id);
 }
 
+// Deterministic guard for activeOperatorPresence — backstops the v7 prompt
+// rule that the classifier alone wasn't enforcing (Apr 29 audit found 43
+// activeOperatorPresence=true overrides emitted from NYC headlines like
+// "Air-taxi company completes..." that don't actually name an operator).
+//
+// Patterns are intentionally tight: bare `\beve\b` / `\bbeta\b` would match
+// "eve of the announcement" / "beta version", so the multi-word eVTOL
+// companies require their corporate qualifier.
+const NAMED_OPERATOR_GUARD: RegExp[] = [
+  /\bjoby\b/i,
+  /\barcher\b/i,
+  /\bbeta\s+(technologies|aviation|aircraft|electric|air)\b/i,
+  /\bvolocopter\b/i,
+  /\beve\s+(air\s+mobility|holding|aerospace|aircraft)\b/i,
+  /\blilium\b/i,
+  /\bwisk\b/i,
+  /\bvertical\s+aerospace\b/i,
+  /\bblade\b/i,
+  /\bskydrive\b/i,
+  /\behang\b/i,
+  /\boverair\b/i,
+  /\bsupernal\b/i,
+];
+
+export function namesTrackedOperator(text: string): boolean {
+  return NAMED_OPERATOR_GUARD.some((p) => p.test(text));
+}
+
 function getOperatorCities(operatorId: string): string[] {
   const op = OPERATORS.find((o) => o.id === operatorId);
   return op?.activeMarkets ?? [];
@@ -344,6 +372,7 @@ function mapToOverrideCandidates(
   recordsById: Map<string, IngestedRecord>
 ): OverrideCandidate[] {
   const candidates: OverrideCandidate[] = [];
+  let guardDrops = 0;
 
   for (const item of classifications) {
     // Skip not_relevant classifications unless they identified factor changes
@@ -402,6 +431,23 @@ function mapToOverrideCandidates(
     for (const factor of item.factorsAffected) {
       if (!VALID_FIELDS.has(factor.field)) continue;
 
+      // v7 named-operator guard (deterministic backstop for prompt rule #8).
+      // The classifier sees only title + summary; if neither names a tracked
+      // eVTOL operator, an activeOperatorPresence=true claim is unsupported
+      // by its input and must be dropped regardless of confidence.
+      if (factor.field === "activeOperatorPresence" && factor.value === true) {
+        const sourceText = `${record.title} ${record.summary}`;
+        if (!namesTrackedOperator(sourceText)) {
+          guardDrops++;
+          console.log(
+            `[classifier] guard drop: activeOperatorPresence=true with no ` +
+              `named operator in source — record=${record.id} ` +
+              `title="${record.title.slice(0, 80)}"`,
+          );
+          continue;
+        }
+      }
+
       for (const cityId of cityIds) {
         candidates.push({
           cityId,
@@ -416,6 +462,10 @@ function mapToOverrideCandidates(
         });
       }
     }
+  }
+
+  if (guardDrops > 0) {
+    console.log(`[classifier] Named-operator guard dropped ${guardDrops} activeOperatorPresence=true factor(s)`);
   }
 
   return candidates;
