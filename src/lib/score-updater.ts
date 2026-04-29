@@ -162,12 +162,28 @@ export async function applyOverrides(candidates: OverrideCandidate[]): Promise<{
       overridesByCity.set(override.cityId, existing);
     }
 
-    // Recalculate and track score changes
+    // Recalculate and track score changes. oldScore is the score the system
+    // last *displayed* — i.e., the most recent ScoreSnapshot — not the static
+    // seed. Comparing against the seed makes regressions silent: when an
+    // override is superseded and the score returns to its seed value, the
+    // change goes unlogged (caught Apr 29 when san_antonio dropped 60→45 with
+    // no ChangelogEntry after a HIGH approvedVertiport override was demoted).
+    const priorSnapshots = await prisma.scoreSnapshot.findMany({
+      where: { cityId: { in: Array.from(affectedCityIds) } },
+      orderBy: { capturedAt: "desc" },
+      select: { cityId: true, score: true, capturedAt: true },
+    });
+    const priorScoreByCity = new Map<string, number>();
+    for (const s of priorSnapshots) {
+      // findMany with desc order; first one we see per city is the most recent
+      if (!priorScoreByCity.has(s.cityId)) priorScoreByCity.set(s.cityId, s.score);
+    }
+
     for (const cityId of Array.from(affectedCityIds)) {
       const baseCity = CITIES_MAP[cityId];
       if (!baseCity) continue;
 
-      const oldScore = baseCity.score ?? 0;
+      const oldScore = priorScoreByCity.get(cityId) ?? baseCity.score ?? 0;
       const cityOverrides = overridesByCity.get(cityId) ?? {};
 
       // Merge overrides onto the base city data
