@@ -362,6 +362,38 @@ export function namesTrackedOperator(text: string): boolean {
   return NAMED_OPERATOR_GUARD.some((p) => p.test(text));
 }
 
+// Deterministic guard for approvedVertiport — backstops the prompt rule
+// that "approved/built" must mean an actual approval or completed build,
+// not a partnership / MOU / "plans to build". Apr 29 audit caught the
+// SkyGrid + Port San Antonio MOU news ("...to build Texas' first vertiport...")
+// being classified as approvedVertiport=true at HIGH confidence, lifting
+// san_antonio 45→60 for two days off forward-looking partnership language.
+//
+// Strategy: BLOCK when source contains future-tense / partnership / study
+// signals. Anything else is allowed through (the classifier already decided
+// approvedVertiport=true; we're just catching the obvious "this is a plan,
+// not an approval" cases).
+const VERTIPORT_PLAN_PATTERNS: RegExp[] = [
+  /\bto\s+build\b/i,
+  /\bplans?\s+to\s+(build|develop|create|construct|launch)\b/i,
+  /\bwill\s+(build|develop|create|construct)\b/i,
+  /\bpartner(?:ship)?\s+(with|to)\b/i,
+  /\bMOU\b/,
+  /\bmemorandum\s+of\s+understanding\b/i,
+  /\bproposed?\s+vertiport\b/i,
+  /\bexplor(e|es|ing|atory)\b/i,
+  /\bjoint[- ]use\b/i,
+  /\benvisions?\b/i,
+  /\bdeveloping\s+plans?\b/i,
+  /\bfuture\s+vertiport\b/i,
+  /\bstud(y|ies|ying)\s+(vertiport|aam|advanced\s+air)/i,
+  /\bpaving\s+(the\s+)?way\b/i,
+];
+
+export function vertiportClaimLooksApproved(text: string): boolean {
+  return !VERTIPORT_PLAN_PATTERNS.some((p) => p.test(text));
+}
+
 function getOperatorCities(operatorId: string): string[] {
   const op = OPERATORS.find((o) => o.id === operatorId);
   return op?.activeMarkets ?? [];
@@ -443,6 +475,22 @@ function mapToOverrideCandidates(
             `[classifier] guard drop: activeOperatorPresence=true with no ` +
               `named operator in source — record=${record.id} ` +
               `title="${record.title.slice(0, 80)}"`,
+          );
+          continue;
+        }
+      }
+
+      // approvedVertiport guard — drops claims that are actually about
+      // partnerships, MOUs, or "plans to build" rather than approved/built
+      // infrastructure. Caught san_antonio 45→60 false lift on Apr 28 from
+      // the SkyGrid + Port San Antonio MOU.
+      if (factor.field === "approvedVertiport" && factor.value === true) {
+        const sourceText = `${record.title} ${record.summary}`;
+        if (!vertiportClaimLooksApproved(sourceText)) {
+          guardDrops++;
+          console.log(
+            `[classifier] guard drop: approvedVertiport=true on plan/MOU ` +
+              `language — record=${record.id} title="${record.title.slice(0, 80)}"`,
           );
           continue;
         }

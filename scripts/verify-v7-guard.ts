@@ -8,7 +8,7 @@
  * Usage: npx tsx scripts/verify-v7-guard.ts
  */
 
-import { namesTrackedOperator } from "@/lib/classifier";
+import { namesTrackedOperator, vertiportClaimLooksApproved } from "@/lib/classifier";
 
 // Drop-shaped: classifier was given title + "[source] Tags: market. {title}".
 // All of these triggered activeOperatorPresence=true under v7 prompt-only.
@@ -73,6 +73,48 @@ function check(label: string, samples: string[], expected: boolean) {
   return fail;
 }
 
+// === Vertiport guard tests ===
+
+// Plan / MOU / partnership headlines — must drop (vertiportClaimLooksApproved → false)
+const VERTIPORT_DROP = [
+  "SkyGrid and Port San Antonio to build Texas' first vertiport, paving way for autonomous air taxis - MSN",
+  "SkyGrid and Port San Antonio Partner to Enable Advanced Air Mobility at a Joint-Use Airfield",
+  "Skyports and Atlanta sign MOU to develop vertiport network",
+  "City Council exploring vertiport options for downtown",
+  "Joby plans to build vertiport at Miami International",
+  "Memorandum of Understanding signed for vertiport feasibility study",
+  "Port Authority envisions multi-vertiport network by 2030",
+  "Developing plans for Phoenix vertiport hub announced",
+  "Proposed vertiport site identified near LAX",
+];
+
+// Real approval / build / open headlines — must pass
+const VERTIPORT_PASS = [
+  "Reuben Brothers Unveil Joby Vertiport at Century Plaza",
+  "FAA approves vertiport zoning at Dallas Love Field",
+  "First operational vertiport opens in Miami",
+  "Joby completes vertiport construction at Manhattan heliport",
+  "Skyports vertiport breaks ground at LAX",
+  "City Council approves vertiport ordinance for Houston",
+  "Atlanta vertiport ribbon-cutting marks first operational AAM hub",
+];
+
+function checkVertiport(label: string, samples: string[], expected: boolean) {
+  let pass = 0;
+  let fail = 0;
+  for (const s of samples) {
+    const result = vertiportClaimLooksApproved(`${s} [Source] Tags: market. ${s}`);
+    const ok = result === expected;
+    if (ok) pass++;
+    else {
+      fail++;
+      console.log(`  [${expected ? "expected PASS" : "expected DROP"} got ${result ? "PASS" : "DROP"}] ${s}`);
+    }
+  }
+  console.log(`${label}: ${pass}/${samples.length} as expected${fail > 0 ? ` (${fail} mismatch)` : ""}`);
+  return fail;
+}
+
 let mismatches = 0;
 console.log("Verifying v7 named-operator guard\n");
 mismatches += check("Historical failures (must drop)", SHOULD_DROP, false);
@@ -82,6 +124,10 @@ for (const s of EDGE_CASES_DROP) {
   const result = namesTrackedOperator(s);
   console.log(`  ${result ? "matched" : "skipped"}: ${s}`);
 }
+
+console.log("\nVerifying approvedVertiport guard\n");
+mismatches += checkVertiport("Plan/MOU headlines (must drop)", VERTIPORT_DROP, false);
+mismatches += checkVertiport("Real approval/open (must pass)", VERTIPORT_PASS, true);
 
 console.log(`\n${mismatches === 0 ? "PASS" : `FAIL — ${mismatches} mismatches`}`);
 process.exit(mismatches === 0 ? 0 : 1);
