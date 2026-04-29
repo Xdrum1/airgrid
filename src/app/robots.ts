@@ -19,6 +19,7 @@ export default function robots(): MetadataRoute.Robots {
           "/api/keys/",
           "/reports/gap/",
           "/monitoring",
+          "/demo/",
         ],
       },
     ],

@@ -3,7 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>AirIndex — Interactive Airflow Design Tool</title>
+<script>
+(function(){
+  try {
+    var u = new URLSearchParams(location.search).get('u');
+    if (u) sessionStorage.setItem('aix_demo_u', u);
+    window.AIX_DEMO_RECIPIENT = sessionStorage.getItem('aix_demo_u') || 'anonymous';
+  } catch(e) { window.AIX_DEMO_RECIPIENT = 'anonymous'; }
+  window.plausible = window.plausible || function(){(plausible.q=plausible.q||[]).push(arguments)};
+  window.plausible.init = window.plausible.init || function(i){plausible.o=i||{}};
+  window.plausible.init();
+  window.aixTrack = function(name, props){
+    try {
+      var p = Object.assign({ recipient: window.AIX_DEMO_RECIPIENT }, props || {});
+      window.plausible(name, p);
+    } catch(e) {}
+  };
+  window.aixTrack('Demo Page View', { page: 'af-preview/index' });
+})();
+</script>
+<script src="https://plausible.io/js/pa-d8Fqfg9wRL9bqO620StZS.js" defer></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #080c18; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; color: #fff; }
@@ -531,10 +552,19 @@ const speedSlider = document.getElementById('speed-slider');
 const COMPASS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
 function degToCompass(d) { return COMPASS[Math.round(d / 22.5) % 16]; }
 
+let _windTrackTimer = null;
+let _lastTrackedWindDeg = windDeg;
 windSlider.addEventListener('input', () => {
   windDeg = parseInt(windSlider.value);
   document.getElementById('wind-val').textContent = degToCompass(windDeg) + ' ' + windDeg + '°';
   updateUI();
+  clearTimeout(_windTrackTimer);
+  _windTrackTimer = setTimeout(() => {
+    if (Math.abs(windDeg - _lastTrackedWindDeg) >= 15) {
+      window.aixTrack && window.aixTrack('Demo Wind Change', { facility: currentFacId, direction: Math.round(windDeg/30)*30 });
+      _lastTrackedWindDeg = windDeg;
+    }
+  }, 1500);
 });
 
 speedSlider.addEventListener('input', () => {
@@ -550,9 +580,11 @@ document.getElementById('show-hvac').addEventListener('change', (e) => { showHva
 
 document.getElementById('fac-selector').addEventListener('change', (e) => {
   loadFacility(e.target.value);
+  window.aixTrack && window.aixTrack('Demo Facility Change', { facility: e.target.value });
 });
 
 document.getElementById('export-btn').addEventListener('click', () => {
+  window.aixTrack && window.aixTrack('Demo Export Snapshot', { facility: currentFacId });
   const s = computeOES();
   const fac = FACILITY_DATA[currentFacId];
   const dirs = [];
@@ -597,6 +629,7 @@ document.getElementById('export-btn').addEventListener('click', () => {
 });
 
 document.getElementById('reset-btn').addEventListener('click', () => {
+  window.aixTrack && window.aixTrack('Demo Building Edit', { facility: currentFacId, action: 'reset' });
   buildings = JSON.parse(JSON.stringify(INITIAL_BUILDINGS));
   windDeg = 112; windSlider.value = 112;
   speedFactor = 1.0; speedSlider.value = 10;
@@ -607,6 +640,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
 });
 
 document.getElementById('add-bldg-btn').addEventListener('click', () => {
+  window.aixTrack && window.aixTrack('Demo Building Edit', { facility: currentFacId, action: 'add' });
   buildings.push({
     name: 'New Structure ' + (buildings.length + 1),
     h: 25,

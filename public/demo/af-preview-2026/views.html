@@ -3,7 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>AirIndex — Airflow & Ventilation Risk Assessment</title>
+<script>
+(function(){
+  try {
+    var u = new URLSearchParams(location.search).get('u');
+    if (u) sessionStorage.setItem('aix_demo_u', u);
+    window.AIX_DEMO_RECIPIENT = sessionStorage.getItem('aix_demo_u') || 'anonymous';
+  } catch(e) { window.AIX_DEMO_RECIPIENT = 'anonymous'; }
+  window.plausible = window.plausible || function(){(plausible.q=plausible.q||[]).push(arguments)};
+  window.plausible.init = window.plausible.init || function(i){plausible.o=i||{}};
+  window.plausible.init();
+  window.aixTrack = function(name, props){
+    try {
+      var p = Object.assign({ recipient: window.AIX_DEMO_RECIPIENT }, props || {});
+      window.plausible(name, p);
+    } catch(e) {}
+  };
+  window.aixTrack('Demo Page View', { page: 'af-preview/views' });
+})();
+</script>
+<script src="https://plausible.io/js/pa-d8Fqfg9wRL9bqO620StZS.js" defer></script>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
 <script>
 window.__MBT_READY = fetch('/api/internal/mapbox-token').then(r=>r.json()).then(d=>{window.__MBT=d.token||'';return d.token;}).catch(()=>'');
@@ -749,6 +770,7 @@ document.querySelectorAll('.view-tab').forEach(tab => {
     currentView = tab.dataset.view;
     document.getElementById('view-'+currentView).classList.add('active');
     initView(currentFac, currentView);
+    window.aixTrack && window.aixTrack('Demo View Change', { view: currentView, facility: currentFac && currentFac.id });
   });
 });
 
@@ -760,6 +782,7 @@ document.getElementById('fac-selector').addEventListener('change', (e) => {
   // Cancel all animations
   Object.values(animFrames).forEach(f => { if(f) cancelAnimationFrame(f); });
   initView(currentFac, currentView);
+  window.aixTrack && window.aixTrack('Demo Facility Change', { facility: e.target.value, view: currentView });
 });
 
 // ── Obstruction View ──
