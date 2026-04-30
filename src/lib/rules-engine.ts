@@ -50,6 +50,18 @@ const UAM_KEYWORDS = /evtol|vtol|powered.lift|vertiport|air.taxi|air.mobility|ur
 
 // Pre-filter: reject ceremonial / proclamation bills before rules evaluation
 const NOISE_TITLE_PATTERNS = /commemorat|commend|honoring|anniversary|memorial|designat\w*\s+(?:a\s+)?(?:day|week|month)/i;
+
+// Criminal-code guard: bills that mention UAS/drones in a criminal-justice
+// context (stalking, harassment, sentencing, etc.) are NOT UAM enabling
+// legislation. Caught Apr 30 from NE LB935 — an omnibus criminal-code bill
+// that mentions "operation of unmanned aircraft systems" only as part of
+// stalking/swatting offenses, surfaced as a "Unknown, NE" market lead with
+// aiRecommendation=ENRICH.
+const CRIMINAL_CODE_CONTEXT = /\b(stalking|swatting|harassment|protection\s+order|court\s+fees|sentencing|child\s+exploitation|hearsay|paternity|criminal\s+offense|criminal\s+penalt|incentives\s+for\s+rural\s+legal|prohibited\s+content)\b/i;
+
+export function looksLikeCriminalCodeBill(text: string): boolean {
+  return CRIMINAL_CODE_CONTEXT.test(text);
+}
 const SIGNED_STATUS = /signed|enacted|passed|chaptered|approved by governor/i;
 const ZONING_KEYWORDS = /zoning|land.use|vertiport.sit|heliport.permit/i;
 const CORRIDOR_KEYWORDS = /corridor|airway|route.auth|airspace.design|powered.lift.operations/i;
@@ -137,6 +149,13 @@ function evaluateRecord(record: IngestedRecord): OverrideCandidate[] {
   }
 
   const text = `${record.title} ${record.summary}`.toLowerCase();
+
+  // Criminal-code guard: legiscan bills that mention UAS/drones only as part
+  // of criminal-offense legislation (stalking, swatting, etc.) are not UAM
+  // enabling legislation and must not generate hasStateLegislation overrides.
+  if (record.source === "legiscan" && looksLikeCriminalCodeBill(text)) {
+    return candidates;
+  }
 
   // Rule 1: State bill signed → stateLegislationStatus = "enacted"
   if (
@@ -265,6 +284,13 @@ function detectMarketLeadSignals(record: IngestedRecord): MarketLeadSignal[] {
 
   // Skip ceremonial bills
   if (record.source === "legiscan" && NOISE_TITLE_PATTERNS.test(record.title)) {
+    return signals;
+  }
+
+  // Skip criminal-code bills that incidentally mention UAS/drones — these are
+  // stalking/swatting/harassment legislation, not UAM enabling. (Apr 30: NE
+  // LB935 surfaced as "Unknown, NE" lead before this guard existed.)
+  if (record.source === "legiscan" && looksLikeCriminalCodeBill(text)) {
     return signals;
   }
 

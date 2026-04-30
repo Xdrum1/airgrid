@@ -394,6 +394,56 @@ export function vertiportClaimLooksApproved(text: string): boolean {
   return !VERTIPORT_PLAN_PATTERNS.some((p) => p.test(text));
 }
 
+// Deterministic guard for hasActivePilotProgram — backstops the classifier's
+// over-eagerness to label any "test/demo flight" as an active pilot program.
+// Apr 30 audit: the SF queue was getting hasActivePilotProgram=true overrides
+// 5x in 4 days from variants of the "Joby Bay Area flight" headline, even
+// though a single demo flight near an operator's HQ is not a federally- or
+// state-designated pilot program. Block when source describes a flight test
+// UNLESS it also names a designated program (White House Pilot, eIPP, etc.)
+// or references state-program designation.
+const DEMO_FLIGHT_PATTERNS: RegExp[] = [
+  // "test flight", "piloted eVTOL flight", "demonstration air-taxi operation",
+  // etc. — allow an optional aircraft/modifier word between the demo qualifier
+  // and the flight/test noun.
+  /\b(demo|test|experimental|piloted|demonstration)\s+(?:(?:eVTOL|aircraft|air[- ]taxi|electric|VTOL|airplane)\s+)?(flight|flights|test|operation)\b/i,
+  /\b(?:bay\s+area|local|first)\s+flight\b/i,
+  /\bconducting\s+(?:flight|piloted|air\s+taxi)\s+(?:test|demo|operation)/i,
+];
+
+const DESIGNATED_PROGRAM_MARKERS: RegExp[] = [
+  /\bWhite\s+House\s+Pilot\b/i,
+  /\beIPP\b/,
+  /\beVTOL\s+Integration\s+Pilot\s+Program\b/i,
+  /\bPilot\s+Program\s+(?:Phase|cohort|state|partner)/i,
+  /\bfederal\s+(?:flying[- ]taxi|eVTOL|AAM)\s+pilot\b/i,
+  /\bDOT\s*\/?\s*FAA\s+(?:eVTOL|pilot)/i,
+  /\bselected\s+(?:by|for)\s+(?:DOT|FAA|White\s+House|federal)/i,
+];
+
+export function pilotClaimLooksLikeProgram(text: string): boolean {
+  // Allow any text that names a designated program — that's the strong signal.
+  if (DESIGNATED_PROGRAM_MARKERS.some((p) => p.test(text))) return true;
+  // Block when text describes only a flight test/demo with no program marker.
+  return !DEMO_FLIGHT_PATTERNS.some((p) => p.test(text));
+}
+
+// Deterministic guard for hasStateLegislation — drops claims when the source
+// is a criminal-code bill that incidentally mentions UAS/drones (stalking,
+// swatting, etc.). Caught Apr 30 from NE LB935 — an omnibus bill whose UAS
+// reference is the criminalization of drone misuse, not UAM enabling. Mirrors
+// the rules-engine criminal-code guard at the classifier layer so NLP-emitted
+// state-legislation overrides don't slip through when rules-engine missed.
+const CRIMINAL_CODE_CLASSIFIER_PATTERNS: RegExp[] = [
+  /\b(stalking|swatting|harassment|protection\s+order|court\s+fees|sentencing|child\s+exploitation|hearsay|paternity)\b/i,
+  /\bcriminal\s+(offense|penalt)/i,
+  /\bincentives\s+for\s+rural\s+legal\b/i,
+];
+
+export function legislationLooksLikeUam(text: string): boolean {
+  return !CRIMINAL_CODE_CLASSIFIER_PATTERNS.some((p) => p.test(text));
+}
+
 function getOperatorCities(operatorId: string): string[] {
   const op = OPERATORS.find((o) => o.id === operatorId);
   return op?.activeMarkets ?? [];
@@ -496,6 +546,42 @@ function mapToOverrideCandidates(
         }
       }
 
+      // Demo-flight guard for hasActivePilotProgram. A "test/demo/Bay Area
+      // flight" is operational activity, not a designated pilot program.
+      // Apr 30 audit: SF queue saw 5 overrides in 4 days from variants of
+      // the same Joby Bay Area flight headline. Only allow this factor when
+      // the source explicitly names a designated program (eIPP, White House
+      // Pilot, federal flying-taxi pilot, etc.).
+      if (factor.field === "hasActivePilotProgram" && factor.value === true) {
+        const sourceText = `${record.title} ${record.summary}`;
+        if (!pilotClaimLooksLikeProgram(sourceText)) {
+          guardDrops++;
+          console.log(
+            `[classifier] guard drop: hasActivePilotProgram=true on demo/test ` +
+              `flight with no designated-program marker — record=${record.id} ` +
+              `title="${record.title.slice(0, 80)}"`,
+          );
+          continue;
+        }
+      }
+
+      // Criminal-code guard for hasStateLegislation. NE LB935 (Apr 30) surfaced
+      // as a state-legislation signal because the omnibus bill mentions
+      // "operation of unmanned aircraft systems" only as part of stalking /
+      // swatting offenses. Mirror the rules-engine guard at the classifier
+      // layer so NLP-emitted state-legislation overrides are also blocked.
+      if (factor.field === "hasStateLegislation") {
+        const sourceText = `${record.title} ${record.summary}`;
+        if (!legislationLooksLikeUam(sourceText)) {
+          guardDrops++;
+          console.log(
+            `[classifier] guard drop: hasStateLegislation on criminal-code ` +
+              `bill — record=${record.id} title="${record.title.slice(0, 80)}"`,
+          );
+          continue;
+        }
+      }
+
       for (const cityId of cityIds) {
         candidates.push({
           cityId,
@@ -513,7 +599,7 @@ function mapToOverrideCandidates(
   }
 
   if (guardDrops > 0) {
-    console.log(`[classifier] Named-operator guard dropped ${guardDrops} activeOperatorPresence=true factor(s)`);
+    console.log(`[classifier] Deterministic guards dropped ${guardDrops} factor(s) (named-operator / vertiport-plan / demo-flight / criminal-code)`);
   }
 
   return candidates;
