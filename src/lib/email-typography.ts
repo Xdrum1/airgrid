@@ -26,41 +26,41 @@ export const TYPO = {
   // Section heading (H2) — "The Score", "The Angle", etc.
   h2: `font:700 28px/1.3 ${SANS};color:#111;`,
 
-  // Body paragraph
-  body: `font:19px/1.7 ${SANS};color:#333;`,
+  // Body paragraph (no reading text in the teens — older-reader floor)
+  body: `font:20px/1.7 ${SANS};color:#333;`,
 
   // Body paragraph (Pulse-style muted variant)
-  bodyMuted: `font:19px/1.7 ${SANS};color:#555;`,
+  bodyMuted: `font:20px/1.7 ${SANS};color:#555;`,
 
   // Lede / subhead (italic, set in serif for editorial contrast)
-  ledeSerif: `font:italic 19px/1.7 ${SERIF};color:#444;`,
+  ledeSerif: `font:italic 20px/1.7 ${SERIF};color:#444;`,
 
   // Lede / subhead (sans-serif variant — matches Pulse)
-  ledeSans: `font:19px/1.7 ${SANS};color:#555;`,
+  ledeSans: `font:20px/1.7 ${SANS};color:#555;`,
 
   // Callout box (highlighted paragraph inside a colored panel)
-  callout: `font:18px/1.6 ${SANS};`,
+  callout: `font:20px/1.6 ${SANS};`,
 
-  // Eyebrow / kicker — "ONE MARKET MONDAY · Issue 04"
-  eyebrow: `font:700 14px/1 ${MONO};letter-spacing:0.15em;text-transform:uppercase;`,
+  // Eyebrow / kicker — uppercase tracking label, decorative not reading
+  eyebrow: `font:700 12px/1 ${MONO};letter-spacing:0.15em;text-transform:uppercase;`,
 
   // Date line under eyebrow
-  date: `font:14px/1 ${MONO};color:#999;`,
+  date: `font:12px/1 ${MONO};color:#999;`,
 
   // Section-level eyebrow inside body (smaller than top eyebrow)
-  sectionEyebrow: `font:700 13px/1 ${MONO};letter-spacing:0.1em;`,
+  sectionEyebrow: `font:700 12px/1 ${MONO};letter-spacing:0.1em;`,
 
-  // Caption / footer body
-  caption: `font:13px/1.7 ${SANS};color:#666;`,
+  // Caption / footer body — readable, not reading text but still must be legible
+  caption: `font:20px/1.7 ${SANS};color:#666;`,
 
   // Caption / footer fine print
-  fineprint: `font:11px/1.6 ${SANS};color:#aaa;`,
+  fineprint: `font:12px/1.6 ${SANS};color:#aaa;`,
 
   // Score / metric display number (large numeric)
   metric: `font:700 44px/1 ${SANS};`,
 
   // CTA button label
-  cta: `font:700 14px/1 ${SANS};letter-spacing:0.06em;`,
+  cta: `font:700 20px/1 ${SANS};letter-spacing:0.06em;`,
 } as const;
 
 export const COLOR = {
@@ -75,4 +75,39 @@ export const COLOR = {
   bgScoreCard: "#f3f5f8",
   borderLight: "#eef0f2",
   borderMid: "#d8dde3",
+} as const;
+
+/**
+ * Structured form of the same standard, for React inline-style consumers
+ * (report pages where TYPO's CSS-string form can't be used directly).
+ * Single source of truth — same families, same sizes — just split into
+ * the keys React `style={{ ... }}` accepts.
+ */
+export const FAMILY = {
+  sans: "'Helvetica Neue', Arial, sans-serif",
+  mono: "'Courier New', monospace",
+  serif: "Georgia, serif",
+} as const;
+
+export const SIZE = {
+  h1: 36,
+  h2: 28,
+  h3: 22,
+  body: 20,
+  bodySmall: 20,
+  callout: 20,
+  eyebrow: 12,
+  date: 12,
+  sectionEyebrow: 12,
+  caption: 20,
+  fineprint: 12,
+  metric: 44,
+  cta: 20,
+} as const;
+
+export const WEIGHT = {
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
 } as const;

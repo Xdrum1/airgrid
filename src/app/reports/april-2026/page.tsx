@@ -5,11 +5,12 @@ import SiteFooter from "@/components/SiteFooter";
 import PulseSubscribe from "@/components/PulseSubscribe";
 import { CITIES, MARKET_COUNT } from "@/data/seed";
 import { getScoreColor, getScoreTier } from "@/lib/scoring";
+import { FAMILY, SIZE, WEIGHT } from "@/lib/email-typography";
 
 export const metadata: Metadata = {
   title: "UAM Market Readiness Brief — April 2026 — AirIndex",
   description:
-    "April 2026 market readiness brief. Federal program selection became a first-order score driver. Four markets repriced simultaneously on April 26 — the first synchronized federal-driven score event in AirIndex history.",
+    "April 2026 market readiness brief. Federal program selection became a first-order score driver. Three markets repriced simultaneously on April 26 — the first synchronized federal-driven score event in AirIndex history.",
 };
 
 // -------------------------------------------------------
@@ -60,7 +61,7 @@ const SCORE_MOVEMENTS = [
     from: 50,
     to: 65,
     delta: 15,
-    cause: "Texas named as one of eight states selected for federal flying-taxi pilot program. Operator presence factor lifted; intra-tier movement.",
+    cause: "TxDOT selected for the federal eVTOL Integration Pilot Program (eIPP). Operator presence factor lifted; intra-tier movement.",
   },
   {
     city: "Atlanta",
@@ -68,7 +69,7 @@ const SCORE_MOVEMENTS = [
     from: 10,
     to: 25,
     delta: 15,
-    cause: "Vertical Aerospace named Atlanta as a target market in operator press. Lift is intra-tier and tied to a non-tracked operator — treat as a soft federal-cohort signal pending validation.",
+    cause: "Operator press flagged Atlanta as a target market via the activeOperatorPresence override pipeline. Tied to a non-tracked operator — treat as a soft federal-cohort signal pending validation.",
   },
   {
     city: "Washington D.C.",
@@ -85,7 +86,7 @@ const PRIMARY_SIGNAL = {
   accent: "#16a34a",
   title: "Federal program selection now moves markets directly.",
   observation:
-    "On April 26, three markets repriced inside a 2-hour window off three distinct federal channels firing the same day: Texas's selection for the federal flying-taxi pilot, USDOT's approval of NC's eVTOL proposals + Concord airport designation, and Vertical Aerospace's Atlanta announcement. AirIndex has not previously observed a synchronization of this size from federal activity.",
+    "On April 26, three markets repriced inside a 2-hour window off three distinct federal channels firing the same day: TxDOT's selection for the federal eVTOL Integration Pilot Program, USDOT's approval of NC's eVTOL proposals + Concord airport designation, and an operator-press signal targeting Atlanta. AirIndex has not previously observed a synchronization of this size from federal activity.",
   call:
     "Next federal cohort announcement should move 3–5 additional markets, concentrated in the NASCENT→EARLY band. Site designations move infrastructure factors. Operator selections move presence factors. Corridor selections move both.",
 };
@@ -112,7 +113,7 @@ const SECONDARY_SIGNALS = [
     accent: "#6d28d9",
     title: "Tiers are sticky.",
     observation:
-      "One of 25 markets crossed a tier in April: Charlotte (NASCENT → EARLY). 633 new records, 1,470 classifications, 277 applied overrides — single crossing.",
+      "One tier crossing held in April: Charlotte (NASCENT → EARLY). Two same-day excursions to MODERATE reverted within 24 hours (Charlotte Apr 27, San Antonio Apr 28) as the override pipeline tested then re-validated signals. 693 new records, 1,549 classifications, 304 applied overrides.",
     call:
       "≤2 tier crossings per month under current methodology. Each crossing warrants analyst review. Most monthly movement is intra-tier creep; tier landscape is the horizon for genuine market evolution.",
   },
@@ -132,7 +133,7 @@ const CLUSTERS = [
     accent: "#16a34a",
     label: "Federally Accelerating",
     description: "Markets repriced in April off federal-channel triggers. Near-term ceiling depends on cohort follow-on activity.",
-    cities: ["Charlotte, NC", "Houston, TX", "Atlanta, GA", "Washington D.C."],
+    cities: ["Charlotte, NC", "Houston, TX", "Atlanta, GA"],
   },
   {
     accent: "#0a4f8a",
@@ -206,7 +207,7 @@ export default function AprilReportPage() {
         background: C.bg,
         color: C.primary,
         minHeight: "100vh",
-        fontFamily: "'Inter', sans-serif",
+        fontFamily: FAMILY.sans,
       }}
     >
       <SiteNav theme="light" />
@@ -219,13 +220,13 @@ export default function AprilReportPage() {
             fontSize: 9,
             letterSpacing: 3,
             color: C.accent,
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: FAMILY.mono,
             marginBottom: 12,
           }}>
             APRIL 2026 &middot; ISSUE 3
           </div>
           <h1 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
+            fontFamily: FAMILY.sans,
             fontSize: "clamp(28px, 4vw, 42px)",
             fontWeight: 700,
             color: C.primary,
@@ -234,7 +235,7 @@ export default function AprilReportPage() {
           }}>
             UAM Market Readiness Brief
           </h1>
-          <p style={{ color: C.secondary, fontSize: 14, lineHeight: 1.7, maxWidth: 600, margin: "0 auto" }}>
+          <p style={{ color: C.secondary, fontSize: 20, lineHeight: 1.7, maxWidth: 600, margin: "0 auto" }}>
             What the market is telling us. Forward calls grounded in {MARKET_COUNT}-market readiness data.
           </p>
           <div style={{ marginTop: 20, display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
@@ -244,7 +245,7 @@ export default function AprilReportPage() {
               borderRadius: 4,
               padding: "4px 12px",
               fontSize: 10,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: FAMILY.mono,
               letterSpacing: 1,
               color: C.accent,
             }}>
@@ -256,7 +257,7 @@ export default function AprilReportPage() {
               borderRadius: 4,
               padding: "4px 12px",
               fontSize: 10,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: FAMILY.mono,
               letterSpacing: 1,
               color: "#166534",
             }}>
@@ -268,8 +269,8 @@ export default function AprilReportPage() {
         {/* ═══ Opening Thesis ═══ */}
         <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: `1px solid ${C.border}` }}>
           <h2 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 22,
+            fontFamily: FAMILY.sans,
+            fontSize: SIZE.h2,
             fontWeight: 700,
             color: C.primary,
             marginBottom: 20,
@@ -310,7 +311,7 @@ export default function AprilReportPage() {
                 textAlign: "center",
               }}>
                 <div style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontFamily: FAMILY.sans,
                   fontSize: 28,
                   fontWeight: 800,
                   color: m.color,
@@ -318,7 +319,7 @@ export default function AprilReportPage() {
                   {m.value}
                 </div>
                 <div style={{
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: FAMILY.mono,
                   fontSize: 9,
                   letterSpacing: 2,
                   color: C.tertiary,
@@ -334,15 +335,15 @@ export default function AprilReportPage() {
         {/* ═══ Score Movements ═══ */}
         <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: `1px solid ${C.border}` }}>
           <h2 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 22,
+            fontFamily: FAMILY.sans,
+            fontSize: SIZE.h2,
             fontWeight: 700,
             color: C.primary,
             marginBottom: 8,
           }}>
             System Movement
           </h2>
-          <p style={{ color: C.secondary, fontSize: 14, lineHeight: 1.7, marginBottom: 20, fontWeight: 500 }}>
+          <p style={{ color: C.secondary, fontSize: 20, lineHeight: 1.7, marginBottom: 20, fontWeight: 500 }}>
             Four markets moved in April. Three repriced within a two-hour window from federal triggers.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -362,18 +363,18 @@ export default function AprilReportPage() {
                 }}>
                   <span style={{
                     color,
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: 14,
+                    fontFamily: FAMILY.mono,
+                    fontSize: 20,
                     fontWeight: 700,
                     minWidth: 48,
                   }}>
                     {isUp ? "+" : ""}{m.delta}
                   </span>
                   <div style={{ minWidth: 140 }}>
-                    <div style={{ color: C.primary, fontSize: 13, fontWeight: 600 }}>
+                    <div style={{ color: C.primary, fontSize: 20, fontWeight: 600 }}>
                       {m.city}, {m.state}
                     </div>
-                    <div style={{ color: C.tertiary, fontSize: 11, fontFamily: "'Space Mono', monospace", marginTop: 2 }}>
+                    <div style={{ color: C.tertiary, fontSize: 11, fontFamily: FAMILY.mono, marginTop: 2 }}>
                       {m.from} → {m.to}
                     </div>
                   </div>
@@ -390,7 +391,7 @@ export default function AprilReportPage() {
                   }}>
                     {getScoreTier(m.to)}
                   </span>
-                  <span style={{ color: C.secondary, fontSize: 12, lineHeight: 1.6, flex: 1, minWidth: 280 }}>
+                  <span style={{ color: C.secondary, fontSize: 20, lineHeight: 1.6, flex: 1, minWidth: 280 }}>
                     {m.cause}
                   </span>
                 </div>
@@ -408,8 +409,8 @@ export default function AprilReportPage() {
           borderRadius: "0 10px 10px 0",
         }}>
           <p style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 22,
+            fontFamily: FAMILY.sans,
+            fontSize: SIZE.h2,
             fontWeight: 700,
             color: C.primary,
             lineHeight: 1.4,
@@ -423,8 +424,8 @@ export default function AprilReportPage() {
         {/* ═══ Structural Signals — Primary + Secondary hierarchy ═══ */}
         <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: `1px solid ${C.border}` }}>
           <h2 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 22,
+            fontFamily: FAMILY.sans,
+            fontSize: SIZE.h2,
             fontWeight: 700,
             color: C.primary,
             marginBottom: 20,
@@ -442,7 +443,7 @@ export default function AprilReportPage() {
             boxShadow: `0 1px 3px rgba(10,37,64,0.04)`,
           }}>
             <div style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: FAMILY.mono,
               fontSize: 10,
               letterSpacing: 3,
               color: PRIMARY_SIGNAL.accent,
@@ -453,16 +454,16 @@ export default function AprilReportPage() {
             </div>
             <div style={{
               color: C.primary,
-              fontSize: 22,
+              fontSize: SIZE.h2,
               fontWeight: 700,
               marginBottom: 14,
               lineHeight: 1.3,
-              fontFamily: "'Space Grotesk', sans-serif",
+              fontFamily: FAMILY.sans,
               letterSpacing: "-0.01em",
             }}>
               {PRIMARY_SIGNAL.title}
             </div>
-            <div style={{ color: C.secondary, fontSize: 14, lineHeight: 1.75, marginBottom: 16 }}>
+            <div style={{ color: C.secondary, fontSize: 20, lineHeight: 1.75, marginBottom: 16 }}>
               {PRIMARY_SIGNAL.observation}
             </div>
             <div style={{
@@ -473,7 +474,7 @@ export default function AprilReportPage() {
               alignItems: "flex-start",
             }}>
               <span style={{
-                fontFamily: "'Space Mono', monospace",
+                fontFamily: FAMILY.mono,
                 fontSize: 10,
                 letterSpacing: 3,
                 color: PRIMARY_SIGNAL.accent,
@@ -483,7 +484,7 @@ export default function AprilReportPage() {
               }}>
                 CALL
               </span>
-              <span style={{ color: C.primary, fontSize: 14, lineHeight: 1.75, fontWeight: 500 }}>
+              <span style={{ color: C.primary, fontSize: 20, lineHeight: 1.75, fontWeight: 500 }}>
                 {PRIMARY_SIGNAL.call}
               </span>
             </div>
@@ -491,7 +492,7 @@ export default function AprilReportPage() {
 
           {/* Secondary signals — compact 2-col grid */}
           <div style={{
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: FAMILY.mono,
             fontSize: 9,
             letterSpacing: 2,
             color: C.tertiary,
@@ -508,10 +509,10 @@ export default function AprilReportPage() {
                 borderRadius: "0 6px 6px 0",
                 padding: "14px 18px",
               }}>
-                <div style={{ color: C.primary, fontSize: 13, fontWeight: 700, marginBottom: 8, lineHeight: 1.35 }}>
+                <div style={{ color: C.primary, fontSize: 20, fontWeight: 700, marginBottom: 8, lineHeight: 1.35 }}>
                   {s.title}
                 </div>
-                <div style={{ color: C.secondary, fontSize: 12, lineHeight: 1.7, marginBottom: 10 }}>
+                <div style={{ color: C.secondary, fontSize: 20, lineHeight: 1.7, marginBottom: 10 }}>
                   {s.observation}
                 </div>
                 <div style={{
@@ -522,7 +523,7 @@ export default function AprilReportPage() {
                   alignItems: "flex-start",
                 }}>
                   <span style={{
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: FAMILY.mono,
                     fontSize: 8,
                     letterSpacing: 2,
                     color: s.accent,
@@ -532,7 +533,7 @@ export default function AprilReportPage() {
                   }}>
                     CALL
                   </span>
-                  <span style={{ color: C.primary, fontSize: 12, lineHeight: 1.7 }}>
+                  <span style={{ color: C.primary, fontSize: 20, lineHeight: 1.7 }}>
                     {s.call}
                   </span>
                 </div>
@@ -544,15 +545,15 @@ export default function AprilReportPage() {
         {/* ═══ Market Clusters ═══ */}
         <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: `1px solid ${C.border}` }}>
           <h2 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 22,
+            fontFamily: FAMILY.sans,
+            fontSize: SIZE.h2,
             fontWeight: 700,
             color: C.primary,
             marginBottom: 8,
           }}>
             Market Clusters
           </h2>
-          <p style={{ color: C.secondary, fontSize: 14, lineHeight: 1.7, marginBottom: 20, fontWeight: 500 }}>
+          <p style={{ color: C.secondary, fontSize: 20, lineHeight: 1.7, marginBottom: 20, fontWeight: 500 }}>
             The 25-market field, framed by structural posture rather than score.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -565,15 +566,15 @@ export default function AprilReportPage() {
                 padding: "16px 20px",
               }}>
                 <div style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontFamily: FAMILY.sans,
                   color: C.primary,
-                  fontSize: 15,
+                  fontSize: 20,
                   fontWeight: 700,
                   marginBottom: 6,
                 }}>
                   {cluster.label}
                 </div>
-                <div style={{ color: C.secondary, fontSize: 12, lineHeight: 1.7, marginBottom: 10 }}>
+                <div style={{ color: C.secondary, fontSize: 20, lineHeight: 1.7, marginBottom: 10 }}>
                   {cluster.description}
                 </div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -599,15 +600,15 @@ export default function AprilReportPage() {
         {/* ═══ Constraints Across the Index ═══ */}
         <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: `1px solid ${C.border}` }}>
           <h2 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 22,
+            fontFamily: FAMILY.sans,
+            fontSize: SIZE.h2,
             fontWeight: 700,
             color: C.primary,
             marginBottom: 8,
           }}>
             Key Constraints Across the Index
           </h2>
-          <p style={{ color: C.secondary, fontSize: 14, lineHeight: 1.7, marginBottom: 20, fontWeight: 500 }}>
+          <p style={{ color: C.secondary, fontSize: 20, lineHeight: 1.7, marginBottom: 20, fontWeight: 500 }}>
             Three structural barriers holding the field back from broader movement.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -621,8 +622,8 @@ export default function AprilReportPage() {
                 borderRadius: 8,
               }}>
                 <div style={{
-                  fontFamily: "'Space Mono', monospace",
-                  fontSize: 18,
+                  fontFamily: FAMILY.mono,
+                  fontSize: 22,
                   fontWeight: 700,
                   color: C.accent,
                   minWidth: 32,
@@ -630,10 +631,10 @@ export default function AprilReportPage() {
                   0{i + 1}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ color: C.primary, fontSize: 14, fontWeight: 700, marginBottom: 4 }}>
+                  <div style={{ color: C.primary, fontSize: 20, fontWeight: 700, marginBottom: 4 }}>
                     {c.label}
                   </div>
-                  <div style={{ color: C.secondary, fontSize: 12, lineHeight: 1.7 }}>
+                  <div style={{ color: C.secondary, fontSize: 20, lineHeight: 1.7 }}>
                     {c.body}
                   </div>
                 </div>
@@ -645,15 +646,15 @@ export default function AprilReportPage() {
         {/* ═══ Watchlist ═══ */}
         <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: `1px solid ${C.border}` }}>
           <h2 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 22,
+            fontFamily: FAMILY.sans,
+            fontSize: SIZE.h2,
             fontWeight: 700,
             color: C.primary,
             marginBottom: 8,
           }}>
             Forward Signals (30–90 Days)
           </h2>
-          <p style={{ color: C.secondary, fontSize: 14, lineHeight: 1.7, marginBottom: 20, fontWeight: 500 }}>
+          <p style={{ color: C.secondary, fontSize: 20, lineHeight: 1.7, marginBottom: 20, fontWeight: 500 }}>
             Four markets where a near-term trigger has a credible path to a score-moving event.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -665,7 +666,7 @@ export default function AprilReportPage() {
                 padding: "16px 20px",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8, flexWrap: "wrap" }}>
-                  <span style={{ color: C.primary, fontSize: 14, fontWeight: 600 }}>{m.city}</span>
+                  <span style={{ color: C.primary, fontSize: 20, fontWeight: 600 }}>{m.city}</span>
                   <span style={{
                     fontSize: 9,
                     fontWeight: 700,
@@ -675,16 +676,16 @@ export default function AprilReportPage() {
                     background: C.accentSoft,
                     color: C.accent,
                     border: `1px solid ${C.border}`,
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: FAMILY.mono,
                   }}>
                     {m.horizon}
                   </span>
                 </div>
-                <div style={{ color: C.secondary, fontSize: 12, lineHeight: 1.6, marginBottom: 8 }}>
-                  <span style={{ color: C.tertiary, textTransform: "uppercase", fontSize: 10, letterSpacing: 1, fontFamily: "'Space Mono', monospace" }}>Trigger:</span>{" "}
+                <div style={{ color: C.secondary, fontSize: 20, lineHeight: 1.6, marginBottom: 8 }}>
+                  <span style={{ color: C.tertiary, textTransform: "uppercase", fontSize: 10, letterSpacing: 1, fontFamily: FAMILY.mono }}>Trigger:</span>{" "}
                   {m.trigger}
                 </div>
-                <div style={{ color: C.secondary, fontSize: 12, lineHeight: 1.7 }}>{m.impact}</div>
+                <div style={{ color: C.secondary, fontSize: 20, lineHeight: 1.7 }}>{m.impact}</div>
               </div>
             ))}
           </div>
@@ -693,15 +694,15 @@ export default function AprilReportPage() {
         {/* ═══ End-of-Month Rankings ═══ */}
         <section style={{ marginBottom: 48, padding: "32px 0", borderBottom: `1px solid ${C.border}` }}>
           <h2 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 22,
+            fontFamily: FAMILY.sans,
+            fontSize: SIZE.h2,
             fontWeight: 700,
             color: C.primary,
             marginBottom: 8,
           }}>
             End-of-Month Rankings
           </h2>
-          <p style={{ color: C.secondary, fontSize: 14, lineHeight: 1.7, marginBottom: 20, fontWeight: 500 }}>
+          <p style={{ color: C.secondary, fontSize: 20, lineHeight: 1.7, marginBottom: 20, fontWeight: 500 }}>
             Top-tier markets remain unchanged — the federal layer is building capacity beneath them.
           </p>
           <div style={{
@@ -716,7 +717,7 @@ export default function AprilReportPage() {
               padding: "10px 16px",
               borderBottom: `1px solid ${C.border}`,
               fontSize: 9,
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: FAMILY.mono,
               letterSpacing: 2,
               color: C.tertiary,
             }}>
@@ -739,10 +740,10 @@ export default function AprilReportPage() {
                   alignItems: "center",
                 }}>
                   <span style={{ color: C.tertiary, fontSize: 11 }}>{i + 1}</span>
-                  <span style={{ color: C.primary, fontSize: 13, fontWeight: 500 }}>
+                  <span style={{ color: C.primary, fontSize: 20, fontWeight: 500 }}>
                     {city.city}, {city.state}
                   </span>
-                  <span style={{ textAlign: "right", color, fontSize: 14, fontWeight: 700, fontFamily: "'Space Mono', monospace" }}>
+                  <span style={{ textAlign: "right", color, fontSize: 20, fontWeight: 700, fontFamily: FAMILY.mono }}>
                     {score}
                   </span>
                   <span style={{ textAlign: "center" }}>
@@ -777,7 +778,7 @@ export default function AprilReportPage() {
           color: "#ffffff",
         }}>
           <div style={{
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: FAMILY.mono,
             fontSize: 10,
             letterSpacing: 3,
             color: "#7eb8ff",
@@ -787,8 +788,8 @@ export default function AprilReportPage() {
             FINAL TAKE
           </div>
           <p style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 22,
+            fontFamily: FAMILY.sans,
+            fontSize: SIZE.h2,
             fontWeight: 600,
             lineHeight: 1.45,
             color: "#ffffff",
@@ -798,7 +799,7 @@ export default function AprilReportPage() {
             April marks a shift from isolated market development to synchronized federal-driven movement.
           </p>
           <p style={{
-            fontSize: 16,
+            fontSize: 20,
             lineHeight: 1.65,
             color: "#cbd6e2",
             margin: 0,
@@ -810,7 +811,7 @@ export default function AprilReportPage() {
 
         {/* ═══ Methodology footnote ═══ */}
         <section style={{ marginBottom: 48, padding: "24px 0", borderBottom: `1px solid ${C.border}` }}>
-          <p style={{ color: C.tertiary, fontSize: 12, lineHeight: 1.7 }}>
+          <p style={{ color: C.tertiary, fontSize: 20, lineHeight: 1.7 }}>
             Scores are computed under{" "}
             <Link href="/methodology" style={{ color: C.accent, textDecoration: "underline" }}>
               v1.3 methodology
@@ -831,15 +832,15 @@ export default function AprilReportPage() {
           marginTop: 32,
         }}>
           <h3 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 18,
+            fontFamily: FAMILY.sans,
+            fontSize: 22,
             fontWeight: 700,
             color: C.primary,
             marginBottom: 8,
           }}>
             Want the per-market traces and the audit trail behind these calls?
           </h3>
-          <p style={{ color: C.secondary, fontSize: 13, marginBottom: 20, lineHeight: 1.6 }}>
+          <p style={{ color: C.secondary, fontSize: 20, marginBottom: 20, lineHeight: 1.6 }}>
             Full April brief includes per-market factor traces, classifier audit data, and
             the prediction ledger entries linked to each forward call.
           </p>
@@ -850,7 +851,7 @@ export default function AprilReportPage() {
               padding: "12px 28px",
               background: C.accent,
               color: "#ffffff",
-              fontSize: 12,
+              fontSize: 20,
               fontWeight: 700,
               letterSpacing: "0.06em",
               textDecoration: "none",
