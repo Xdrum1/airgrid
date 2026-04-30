@@ -51,8 +51,28 @@ export function buildTrackingPixelUrl(email: string, issue: number, series = "ne
   return `${base}/api/newsletter/track?e=${encodeURIComponent(email)}&i=${issue}&t=${token}&s=${series}`;
 }
 
+// ── Click tokens (URL-bound — prevents open-redirect token reuse) ─────────────
+//
+// The pixel/track tokens above are bound to (email, issue) only, which is fine
+// for an open pixel since there's no destination to abuse. Click tokens MUST
+// also bind the destination URL — otherwise any holder of a valid (e, i, t)
+// triple can substitute `url=` to redirect through airindex.io to any host.
+
+export function generateClickToken(email: string, issue: number, url: string): string {
+  const hmac = createHmac("sha256", getSecret())
+    .update(`newsletter-click:${email}:${issue}:${url}`)
+    .digest("hex");
+  return hmac;
+}
+
+export function verifyClickToken(email: string, issue: number, url: string, token: string): boolean {
+  const expected = generateClickToken(email, issue, url);
+  if (token.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(token), Buffer.from(expected));
+}
+
 export function buildClickTrackUrl(email: string, issue: number, destinationUrl: string, series = "newsletter"): string {
-  const token = generateTrackingToken(email, issue);
+  const token = generateClickToken(email, issue, destinationUrl);
   const base = process.env.APP_URL || "https://www.airindex.io";
   return `${base}/api/newsletter/click?e=${encodeURIComponent(email)}&i=${issue}&t=${token}&s=${series}&url=${encodeURIComponent(destinationUrl)}`;
 }
